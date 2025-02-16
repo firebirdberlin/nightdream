@@ -25,6 +25,7 @@ import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -421,6 +422,21 @@ public class NightDreamActivity extends BillingHelperActivity
         Utility.createNotificationChannels(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Log.i(TAG, "onStart took: " + (System.currentTimeMillis() - startTime) + " ms");
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+                || keyCode == KeyEvent.KEYCODE_VOLUME_UP
+        ) {
+            Log.i(TAG, "volume button event");
+            if (mySettings.snoozeUsingVolumeButtons && AlarmHandlerService.alarmIsRunning()) {
+                AlarmHandlerService.snooze(context);
+                return true;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     @SuppressLint("MissingPermission")

@@ -452,4 +452,5 @@ OR
     <string name="weather_sun_set">Sunset</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
+    <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
 </resources>

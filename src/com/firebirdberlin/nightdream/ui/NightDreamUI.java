@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -58,12 +59,10 @@ import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.SoundMeter;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
-import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
@@ -439,11 +438,19 @@ public class NightDreamUI {
             if (locked) {
                 sidePanel.closeMenu();
             }
-            VibrationHandler handler = new VibrationHandler(mContext);
-            handler.startOneShotVibration(50);
+            if (Utility.hasPermission(mContext, Manifest.permission.VIBRATE)) {
+                v.performHapticFeedback(
+                        HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                );
+            } else {
+                Log.w(TAG, "PERMISSION VIBRATE is missing");
+            }
+
             return true;
         };
         menuIcon.setOnLongClickListener(onMenuItemLongClickListener);
+        menuIcon.setHapticFeedbackEnabled(true);
 
         menuIcon.setScaleX(.8f);
         menuIcon.setScaleY(.8f);
