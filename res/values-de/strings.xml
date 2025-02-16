@@ -453,4 +453,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_sun_set">Sonnenuntergang</string>
     <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
+    <string name="snoozeUsingVolumeButtons">Lautstärketasten verwenden</string>
 </resources>
