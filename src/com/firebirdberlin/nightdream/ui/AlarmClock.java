@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -29,7 +30,6 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
-import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
@@ -59,11 +59,14 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView.setSingleLine();
 
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        alarmTimeTextView.setHapticFeedbackEnabled(true);
         alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
             final Handler handler = new Handler();
             final Runnable longPress = () -> {
-                VibrationHandler vibrationHandler = new VibrationHandler(context);
-                vibrationHandler.startOneShotVibration(50);
+                performHapticFeedback(
+                        HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+                );
             };
             float startX = 0;
             float max_move_seen = 0;

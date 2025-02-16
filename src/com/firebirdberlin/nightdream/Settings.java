@@ -162,6 +162,7 @@ public class Settings {
     public long lastReviewRequestTime = 0L;
     public long sleepTimeInMillis = 0L; // 5 min
     public long snoozeTimeInMillis = 300000; // 5 min
+    public boolean snoozeUsingVolumeButtons = false;
     public long autoSnoozeTimeInMillis = 120000; // 2 min
     public int autoSnoozeCycles = 20;
     public String AlarmToneUri = "";
@@ -509,10 +510,11 @@ public class Settings {
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
         showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
+        showPollen = settings.getBoolean("showPollen", false);
         showTemperature = settings.getBoolean("showTemperature", true);
         showWindSpeed = settings.getBoolean("showWindSpeed", false);
-        showPollen = settings.getBoolean("showPollen", false);
         snoozeTimeInMillis = 60000L * settings.getInt("snoozeTimeInMinutes", 5);
+        snoozeUsingVolumeButtons = settings.getBoolean("snoozeUsingVolumeButtons", false);
         autoSnoozeTimeInMillis = 60000L * settings.getInt("autoSnoozeTimeInMinutes", 2);
         autoSnoozeCycles = settings.getInt("autoSnoozeCycles", 20);
 

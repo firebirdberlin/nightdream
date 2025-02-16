@@ -9,6 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.InflateException;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
@@ -131,7 +132,7 @@ public class Notification implements Parcelable {
                 container.addView(remoteView.apply(context, container));
                 return container;
             }
-        } catch (SecurityException | RemoteViews.ActionException ignored) {}
+        } catch (SecurityException | RemoteViews.ActionException | InflateException ignored) {}
         return null;
     }
 
