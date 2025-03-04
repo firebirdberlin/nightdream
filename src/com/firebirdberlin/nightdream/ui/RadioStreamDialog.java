@@ -1,7 +1,9 @@
 package com.firebirdberlin.nightdream.ui;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.widget.ContentLoadingProgressBar;
 
@@ -28,6 +31,7 @@ import com.firebirdberlin.radiostreamapi.CountryRequestTask;
 import com.firebirdberlin.radiostreamapi.StationRequestTask;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -196,6 +200,7 @@ public class RadioStreamDialog
 
     @Override
     public void onCountryRequestFinished(List<Country> countries) {
+        Log.d(TAG,"onCountryRequestFinished()");
         // sort countries alphabetically
         Collections.sort(countries, (lhs, rhs) -> {
             if (lhs.name == null) {
@@ -206,6 +211,16 @@ public class RadioStreamDialog
             }
             return lhs.name.compareTo(rhs.name);
         });
+
+        if (countries.size() == 0) {
+            Activity activity = (Activity) ((ContextWrapper) context).getBaseContext();
+            Snackbar snackbarCountriesError = Snackbar
+                    .make((View) activity.findViewById(android.R.id.content), R.string.radio_stream_unreachable_server, Snackbar.LENGTH_LONG);
+            snackbarCountriesError.setTextColor(context.getResources().getColor(R.color.material_red));
+            snackbarCountriesError.show();
+
+            //Toast.makeText(context, R.string.radio_stream_unreachable_server, Toast.LENGTH_LONG).show();
+        }
 
         updateCountryNameToCodeMap(countries);
         updateCountrySpinner(countries, preferredCountry);

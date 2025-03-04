@@ -320,6 +320,7 @@ OR
     <string name="radio_stream_require_wifi">require WiFi connection</string>
     <string name="radio_stream_require_wifi_desc">If on, alarms will play web radio streams only with an established WiFi connection.</string>
     <string name="radio_stream_search">Search</string>
+    <string name="radio_stream_unreachable_server">The Server is not reachable.</string>
     <string name="radio_stream_unreachable_url">The URL is not reachable.</string>
     <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
