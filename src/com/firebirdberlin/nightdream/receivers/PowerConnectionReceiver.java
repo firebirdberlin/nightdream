@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
-    private static String TAG = "NightDream.PowerConnectionReceiver";
+    private static final String TAG = "NightDream:PwrConnecRvr";
     private static int PENDING_INTENT_START_APP = 0;
 
     public static PowerConnectionReceiver register(Context ctx) {
