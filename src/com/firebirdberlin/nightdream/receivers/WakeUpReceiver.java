@@ -134,6 +134,11 @@ public class WakeUpReceiver extends BroadcastReceiver {
         pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry, PendingIntent.FLAG_CANCEL_CURRENT);
         long nextAlarmTime = nextAlarmEntry.getMillis();
         if (Build.VERSION.SDK_INT >= 21) {
+            if ( Build.VERSION.SDK_INT >= 31 && !am.canScheduleExactAlarms())
+            {
+                // context.startActivity(new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+                return;
+            }
             PendingIntent pi = getShowIntent(context);
             AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(nextAlarmTime, pi);
             am.setAlarmClock(info, pI);
