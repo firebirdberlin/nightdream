@@ -1,8 +1,10 @@
 <PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:key="autostart"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-    app:title="@string/handle_power">
+    app:title="@string/handle_power"
+    android:layout_marginTop="?attr/actionBarSize">
 
     <com.firebirdberlin.nightdream.ui.IgnoreBatteryOptimizationPreference
         app:icon="@drawable/ic_expert"

@@ -84,6 +84,7 @@ public class mAudioManager{
         ) {
             int dndmode = allowPriority ? NotificationManager.INTERRUPTION_FILTER_PRIORITY
                                         : NotificationManager.INTERRUPTION_FILTER_ALARMS;
+            // TODO migrate to Android 15
             notificationManager.setInterruptionFilter(
                     enabled ? dndmode : NotificationManager.INTERRUPTION_FILTER_ALL
             );

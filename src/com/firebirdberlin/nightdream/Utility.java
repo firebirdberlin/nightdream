@@ -262,7 +262,8 @@ public class Utility {
                 || "google_sdk".equals(Build.PRODUCT)
                 || "sdk_gphone_x86".equals(Build.PRODUCT)
                 || "sdk_gphone_x86_64".equals(Build.MODEL)
-                || "sdk_gphone64_x86_64".equals(Build.MODEL);
+                || "sdk_gphone64_x86_64".equals(Build.MODEL)
+                || "sdk_gtablet_x86_64".equals(Build.PRODUCT);
     }
 
     public static int getScreenOffTimeout(Context context) {

@@ -8,7 +8,8 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="16dp"
     android:layout_width="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <ScrollView
         android:layout_width="match_parent"

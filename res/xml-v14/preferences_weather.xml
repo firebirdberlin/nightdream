@@ -1,10 +1,12 @@
 <PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:icon="@drawable/ic_cloud"
     app:key="weather"
-    app:title="@string/weather">
-
+    android:fitsSystemWindows="true"
+    app:title="@string/weather"
+    >
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"

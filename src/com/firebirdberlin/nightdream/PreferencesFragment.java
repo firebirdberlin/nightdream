@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
@@ -232,6 +234,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
+
     int getMaxNumImages() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
                 && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
@@ -408,32 +411,30 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     setPreferencesFromResource(R.xml.preferences_nightmode, rootKey);
                     break;
                 case "notifications":
-                    if (Build.VERSION.SDK_INT >= 18) {
-                        setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
+                    setPreferencesFromResource(R.xml.preferences_notifications, rootKey);
 
-                        Preference showNotificationPreference = findPreference("showNotification");
-                        if (showNotificationPreference != null) {
-                            handler.post(runnableNotificationAccessChanged);
-                        }
+                    Preference showNotificationPreference = findPreference("showNotification");
+                    if (showNotificationPreference != null) {
+                        handler.post(runnableNotificationAccessChanged);
+                    }
 
-                        if (showNotificationPreference != null) {
+                    if (showNotificationPreference != null) {
 
-                            if (isNotificationAccessDenied()) {
-                                showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
-                                showNotificationPreference.setEnabled(false);
+                        if (isNotificationAccessDenied()) {
+                            showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessNotGranted));
+                            showNotificationPreference.setEnabled(false);
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                                builder.setTitle(getString(R.string.showNotificationsAccessNotGranted))
-                                        .setMessage(getString(R.string.showNotificationsAlertText))
-                                        .setPositiveButton(android.R.string.yes, null)
-                                        .setIcon(android.R.drawable.ic_dialog_alert);
-                                AlertDialog alertdialog = builder.create();
-                                dialogs.add(alertdialog);
-                                alertdialog.show();
-                            } else {
-                                showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessGranted));
-                                showNotificationPreference.setEnabled(true);
-                            }
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                            builder.setTitle(getString(R.string.showNotificationsAccessNotGranted))
+                                    .setMessage(getString(R.string.showNotificationsAlertText))
+                                    .setPositiveButton(android.R.string.yes, null)
+                                    .setIcon(android.R.drawable.ic_dialog_alert);
+                            AlertDialog alertdialog = builder.create();
+                            dialogs.add(alertdialog);
+                            alertdialog.show();
+                        } else {
+                            showNotificationPreference.setSummary(getString(R.string.showNotificationsAccessGranted));
+                            showNotificationPreference.setEnabled(true);
                         }
                     }
                     break;
@@ -489,6 +490,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final RecyclerView recyclerView = getListView();
+        if (recyclerView != null) {
+            recyclerView.setPadding(recyclerView.getPaddingLeft(), 0, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+        }
+    }
+
+    private int getActionBarHeight() {
+        TypedValue tv = new TypedValue();
+        if (getActivity() != null && getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return 0;
     }
 
     private void init() {
@@ -499,7 +512,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         settings = new Settings(mContext);
 
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        if (prefs != null) {
+            prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        }
 
         Resources res = getResources();
         boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
