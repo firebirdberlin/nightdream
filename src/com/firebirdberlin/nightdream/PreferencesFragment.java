@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
@@ -18,6 +19,7 @@ import android.os.PowerManager;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -491,15 +496,29 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    private int getActionBarHeight() {
+        TypedValue tv = new TypedValue();
+        if (getActivity() != null && getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return 0;
+    }
+
     private void init() {
         Log.d(TAG, "init rootkey: " + rootKey);
         final Context context = mContext;
 
+        View view = getView();
+        if (view != null) {
+            view.setPadding(view.getPaddingLeft(), getActionBarHeight(), view.getPaddingRight(), view.getPaddingBottom());
+        }
         togglePurchasePreferences();
         settings = new Settings(mContext);
 
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        if (prefs != null) {
+            prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        }
 
         Resources res = getResources();
         boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);

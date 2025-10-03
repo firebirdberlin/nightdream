@@ -7,7 +7,9 @@
     android:paddingStart="5dp"
     android:paddingTop="5sp"
     android:visibility="visible"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    >
 
     <TextView
         android:id="@+id/timeView"
