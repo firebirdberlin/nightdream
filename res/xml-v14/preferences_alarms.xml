@@ -1,8 +1,10 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:icon="@drawable/ic_alarm_clock_icon"
     app:key="alarms"
-    app:title="@string/alarm">
+    app:title="@string/alarm"
+    android:layout_marginTop="?attr/actionBarSize">
 
     <PreferenceCategory
         app:title="@string/alarmVolume"

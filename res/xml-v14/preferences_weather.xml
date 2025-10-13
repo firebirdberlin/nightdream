@@ -1,9 +1,11 @@
 <PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:icon="@drawable/ic_cloud"
     app:key="weather"
-    app:title="@string/weather">
+    app:title="@string/weather"
+    android:layout_marginTop="?attr/actionBarSize">
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"

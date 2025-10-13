@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.TypedValue;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -42,6 +44,11 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private void init() {
+        View view = getView();
+        if (view != null) {
+            view.setPadding(view.getPaddingLeft(), getActionBarHeight(), view.getPaddingRight(), view.getPaddingBottom());
+        }
+
         settings = new Settings(getContext());
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
@@ -67,6 +74,14 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
                     }
             );
         }
+    }
+
+    private int getActionBarHeight() {
+        TypedValue tv = new TypedValue();
+        if (getActivity() != null && getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return 0;
     }
 
     private void showPreference(String key, boolean visible) {
