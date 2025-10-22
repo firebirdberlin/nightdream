@@ -130,7 +130,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             setupStandByService(sharedPreferences);
                             break;
                         case "Night.muteRinger":
-                            setupNotificationAccessPermission(sharedPreferences, "Night.muteRinger");
+                            setupNotificationAccessPermission(sharedPreferences, "Night.muteRuteRinger");
                             break;
                         case "activateDoNotDisturb":
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
@@ -496,14 +496,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private int getActionBarHeight() {
-        TypedValue tv = new TypedValue();
-        if (getActivity() != null && getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return 0;
-    }
-
     private void init() {
         Log.d(TAG, "init rootkey: " + rootKey);
         final Context context = mContext;
@@ -628,7 +620,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                         isPurchased(BillingHelperActivity.ITEM_DONATION)
                                 );
                                 PreferencesActivity activity = ((PreferencesActivity) mContext);
-                                activity.initFragment();
+                                activity.recreate(); // Changed from initFragment() to recreate()
                             });
 
                     AlertDialog alertdialog = builder.create();

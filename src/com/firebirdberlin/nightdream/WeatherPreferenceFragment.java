@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
@@ -37,23 +41,24 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
         init();
     }
 
-    private void init() {
-        View view = getView();
-        if (view != null) {
-            view.setPadding(view.getPaddingLeft(), getActionBarHeight(), view.getPaddingRight(), view.getPaddingBottom());
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final RecyclerView recyclerView = getListView();
+        if (recyclerView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(recyclerView, (v, insets) -> {
+                int top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+                v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
         }
+    }
+
+    private void init() {
         settings = new Settings(getContext());
         setupWeatherProviderPreference();
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
-    }
-
-    private int getActionBarHeight() {
-        TypedValue tv = new TypedValue();
-        if (getActivity() != null && getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return 0;
     }
 
     private void setupWeatherProviderPreference() {

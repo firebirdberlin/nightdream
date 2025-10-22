@@ -55,6 +55,17 @@
             app:srcCompat="@drawable/ic_cloud" />
 
         <ImageView
+            android:id="@+id/torch_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/smart_home"
+            android:focusable="true"
+            android:onClick="onBulbClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_lightbulb" />
+
+        <ImageView
             android:id="@+id/night_mode_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,17 +75,6 @@
             android:onClick="onNightModeClick"
             android:padding="5dp"
             app:srcCompat="@drawable/ic_sun" />
-
-        <ImageView
-            android:id="@+id/torch_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/flashlight"
-            android:focusable="true"
-            android:onClick="onBulbClick"
-            android:padding="5dp"
-            app:srcCompat="@drawable/ic_lightbulb" />
 
         <ImageView
             android:id="@+id/flashlight_icon"
