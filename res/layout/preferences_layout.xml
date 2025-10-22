@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_frame"
     android:layout_width="match_parent"
+    android:layout_marginTop="?actionBarSize"
     android:layout_height="match_parent"
     android:name="com.firebirdberlin.nightdream.PreferencesFragment"
     android:fitsSystemWindows="true"

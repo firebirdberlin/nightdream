@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.10.0'
-    implementation 'com.android.billingclient:billing:6.1.0'
+    implementation 'com.android.billingclient:billing:8.0.0'
     implementation 'androidx.fragment:fragment:1.6.2'
 
     // implementation 'uk.co.samuelwall:material-tap-target-prompt:3.0.0'
@@ -127,12 +127,12 @@ android {
         unitTests.returnDefaultValues = true
     }
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         compileSdk 35
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
         targetSdkVersion 35
-        renderscriptTargetApi 19
+        renderscriptTargetApi 21
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true

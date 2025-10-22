@@ -9,7 +9,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -20,6 +19,7 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
@@ -35,7 +35,7 @@ import java.util.Map;
 
 public abstract class BillingHelperActivity
         extends AppCompatActivity
-        implements PurchasesUpdatedListener {
+{
     public static final String ITEM_WEATHER_DATA = "weather_data";
     public static final String ITEM_DONATION = "donation";
     public static final String ITEM_WEB_RADIO = "web_radio";
@@ -65,6 +65,23 @@ public abstract class BillingHelperActivity
     List<ProductDetails> productDetails;
     SharedPreferences preferences;
     private BillingClient mBillingClient;
+    private final PurchasesUpdatedListener purchasesUpdatedListener = (billingResult, purchases) -> {
+        Log.d(TAG, "onPurchasesUpdated()");
+        int responseCode = billingResult.getResponseCode();
+        if (responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (Purchase purchase : purchases) {
+                handlePurchase(purchase);
+            }
+        } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+            // Handle an error caused by a user cancelling the purchase flow.
+            Log.d(TAG, "User Canceled" + responseCode);
+        } else if (responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+            Toast.makeText(this, R.string.dialog_message_already_owned, Toast.LENGTH_LONG).show();
+        } else {
+            Log.d(TAG, "Other code" + responseCode);
+            // Handle any other error codes.
+        }
+    };
 
     static QueryProductDetailsParams.Product buildProduct(String sku) {
         return QueryProductDetailsParams.Product.newBuilder()
@@ -188,7 +205,9 @@ public abstract class BillingHelperActivity
     }
 
     private void updateAllPurchases() {
-        // TODO
+        if (mBillingClient != null && mBillingClient.isReady()) {
+            queryPurchases();
+        }
     }
 
     @Override
@@ -274,26 +293,6 @@ public abstract class BillingHelperActivity
         setPurchased(sku, false);
     }
 
-    @Override
-    public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
-        Log.d(TAG, "onPurchasesUpdated()");
-        int responseCode = billingResult.getResponseCode();
-        if (responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (Purchase purchase : purchases) {
-                handlePurchase(purchase);
-            }
-        } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            // Handle an error caused by a user cancelling the purchase flow.
-            Log.d(TAG, "User Canceled" + responseCode);
-        } else if (responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            Toast.makeText(this, R.string.dialog_message_already_owned, Toast.LENGTH_LONG).show();
-        } else {
-            Log.d(TAG, "Other code" + responseCode);
-            // Handle any other error codes.
-        }
-
-    }
-
     void handlePurchase(final Purchase purchase) {
         if (purchase == null) {
             return;
@@ -332,10 +331,14 @@ public abstract class BillingHelperActivity
     }
 
     void initBillingClient() {
-        mBillingClient = BillingClient
-                .newBuilder(this)
-                .setListener(this)
-                .enablePendingPurchases()
+        // Build the PendingPurchasesParams object
+        PendingPurchasesParams pendingParams = PendingPurchasesParams.newBuilder()
+                .enableOneTimeProducts()   // or .enableAllPurchases()
+                .build();
+
+        mBillingClient = BillingClient.newBuilder(this)
+                .enablePendingPurchases(pendingParams)
+                .setListener(purchasesUpdatedListener)
                 .build();
 
         mBillingClient.startConnection(new BillingClientStateListener() {
@@ -402,24 +405,29 @@ public abstract class BillingHelperActivity
                 .setProductList(productList)
                 .build();
 
-        mBillingClient.queryProductDetailsAsync(
-                params,
-                (result, productDetailsList) -> {
-                    if (result.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                        this.productDetails = productDetailsList;
-                        prices.clear();
-                        for (ProductDetails details : productDetailsList) {
-                            String sku = details.getProductId();
-                            ProductDetails.OneTimePurchaseOfferDetails oneTimePurchaseOfferDetails = details.getOneTimePurchaseOfferDetails();
-                            if (oneTimePurchaseOfferDetails != null) {
-                                String price = oneTimePurchaseOfferDetails.getFormattedPrice();
-                                Log.i(TAG, String.format("price %s = %s", sku, price));
-                                prices.put(sku, price);
-                            }
-                        }
+        // Execute the async query
+        mBillingClient.queryProductDetailsAsync(params, (billingResult, productDetailsResult) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsResult != null) {
+                this.productDetails = productDetailsResult.getProductDetailsList();
+                prices.clear();
+
+                for (ProductDetails details : this.productDetails) {
+                    String productId = details.getProductId();
+
+                    ProductDetails.OneTimePurchaseOfferDetails oneTimeOffer = details.getOneTimePurchaseOfferDetails();
+                    if (oneTimeOffer != null) {
+                        String price = oneTimeOffer.getFormattedPrice();
+                        Log.i(TAG, String.format("price %s = %s", productId, price));
+                        prices.put(productId, price);
+                    } else {
+                        // Handle subscriptions or multi-offer products if needed
+                        Log.w(TAG, "No OneTimePurchaseOfferDetails for product: " + productId);
                     }
                 }
-        );
+            } else {
+                Log.e(TAG, "Failed to query product details: " + billingResult.getDebugMessage());
+            }
+        });
     }
 
     void consumePurchase(Purchase purchase) {
@@ -473,8 +481,7 @@ public abstract class BillingHelperActivity
 
     public boolean hasPermission(String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return (ContextCompat.checkSelfPermission(this, permission)
-                    == PackageManager.PERMISSION_GRANTED);
+            return (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED);
         }
         return true;
     }
