@@ -13,6 +13,8 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference.SummaryProvider;
 import androidx.preference.Preference;
@@ -41,17 +43,25 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final RecyclerView recyclerView = getListView();
+        if (recyclerView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(recyclerView, (v, insets) -> {
+                int top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+                v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         init();
     }
 
     private void init() {
-        View view = getView();
-        if (view != null) {
-            view.setPadding(view.getPaddingLeft(), getActionBarHeight(), view.getPaddingRight(), view.getPaddingBottom());
-        }
-
         settings = new Settings(getContext());
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
@@ -77,14 +87,6 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
                     }
             );
         }
-    }
-
-    private int getActionBarHeight() {
-        TypedValue tv = new TypedValue();
-        if (getActivity() != null && getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        return 0;
     }
 
     private void showPreference(String key, boolean visible) {

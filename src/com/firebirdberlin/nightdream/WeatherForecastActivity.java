@@ -20,7 +20,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -92,11 +91,11 @@ public class WeatherForecastActivity
         }
 
         @Override
-        public void onProviderEnabled(String s) {
+        public void onProviderEnabled(@NonNull String s) {
         }
 
         @Override
-        public void onProviderDisabled(String s) {
+        public void onProviderDisabled(@NonNull String s) {
         }
     };
 
@@ -204,7 +203,7 @@ public class WeatherForecastActivity
 
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
-        if (entries.size() > 0) {
+        if (!entries.isEmpty()) {
             WeatherEntry firstEntry = entries.get(0);
             actionBarSetup(firstEntry.cityName);
         }
@@ -464,25 +463,17 @@ public class WeatherForecastActivity
     private boolean isLocationProviderEnabled() {
         int locationMode = 0;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            try {
-                locationMode = android.provider.Settings.Secure.getInt(
-                        getContentResolver(), android.provider.Settings.Secure.LOCATION_MODE
-                );
-
-            } catch (android.provider.Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            return locationMode != android.provider.Settings.Secure.LOCATION_MODE_OFF;
-
-        } else {
-            String locationProviders = android.provider.Settings.Secure.getString(
-                    getContentResolver(),
-                    android.provider.Settings.Secure.LOCATION_PROVIDERS_ALLOWED
+        try {
+            locationMode = android.provider.Settings.Secure.getInt(
+                    getContentResolver(), android.provider.Settings.Secure.LOCATION_MODE
             );
-            return !locationProviders.isEmpty();
+
+        } catch (android.provider.Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error getting location mode");
         }
+
+        return locationMode != android.provider.Settings.Secure.LOCATION_MODE_OFF;
+
     }
 
     private void conditionallyShowSnackBar() {

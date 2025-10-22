@@ -41,10 +41,9 @@ public class AlarmsPreferenceActivity extends AppCompatActivity {
         }
     }
 
-    // Optional: Handle the Up button click
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        finish();
         return true;
     }
 }

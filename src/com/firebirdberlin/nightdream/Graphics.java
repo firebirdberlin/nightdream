@@ -1,5 +1,6 @@
 package com.firebirdberlin.nightdream;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,18 +9,47 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 
-import com.google.android.renderscript.Toolkit;
+import androidx.renderscript.Allocation;
+import androidx.renderscript.Element;
+import androidx.renderscript.RenderScript;
+import androidx.renderscript.ScriptIntrinsicBlur;
+
+
 
 public class Graphics {
 
-    public static Bitmap blur(Bitmap bitmap) {
+
+
+    public static Bitmap blur(Context context, Bitmap bitmap) {
         if (bitmap == null) {
             return null;
         }
-        int blurRadius = 15;
-        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
 
-        return Toolkit.INSTANCE.blur(bitmap, blurRadius);
+        // The radius should be between 1 and 25.
+        float blurRadius = 15f;
+        Bitmap outputBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+        // Use the support library's ScriptIntrinsicBlur. This is the universally compatible method.
+        RenderScript rs = null;
+        try {
+            rs = RenderScript.create(context);
+            ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+
+            Allocation tmpIn = Allocation.createFromBitmap(rs, bitmap);
+            Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+
+            theIntrinsic.setRadius(blurRadius);
+            theIntrinsic.setInput(tmpIn);
+            theIntrinsic.forEach(tmpOut);
+            tmpOut.copyTo(outputBitmap);
+        } finally {
+            // Important to release resources to prevent memory leaks.
+            if (rs != null) {
+                rs.destroy();
+            }
+        }
+
+        return outputBitmap;
     }
 
     public static Bitmap sketch(final Bitmap bitmap) {
