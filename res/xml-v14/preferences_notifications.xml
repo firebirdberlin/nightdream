@@ -27,7 +27,7 @@
             app:icon="@drawable/ic_googleplay"
             app:key="purchaseActions3"
             app:isPreferenceVisible="false"
-            app:title="@string/purchaseActions" />
+            app:title="@string/buy_upgrade_summary" />
 
         <PreferenceCategory
             app:iconSpaceReserved="false"

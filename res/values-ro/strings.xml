@@ -95,7 +95,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging">Status baterie permanent</string>
     <string name="persistent_battery_value_while_charging_summary">Afişare status baterie permanent în timpul încărcării</string>
     <string name="preview">Previzualizare</string>
-    <string name="purchaseWeatherData">Cumpărare licență</string>
     <string name="radio_stream">Canale radio</string>
     <string name="radio_stream_no_search_results">Nu s-au găsit înregistrări</string>
     <string name="radio_stream_query_hint">Cauta cuvant</string>

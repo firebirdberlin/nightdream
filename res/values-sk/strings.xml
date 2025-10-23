@@ -111,9 +111,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Náhľad</string>
     <string name="product_name_donation">Daruj</string>
     <string name="product_name_pro">Plná verzia</string>
-    <string name="product_name_weather">Počasie a dizajnový balík</string>
-    <string name="product_name_webradio">Webové rádio balík</string>
-    <string name="purchaseWeatherData">Kúpiť licenciu</string>
     <string name="radio">Rádio</string>
     <string name="radio_stream">Rádiové vysielanie</string>
     <string name="radio_stream_failure">Rádiové vysielanie na prd</string>

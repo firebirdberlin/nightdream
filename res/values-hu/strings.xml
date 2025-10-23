@@ -110,9 +110,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Előnézet</string>
     <string name="product_name_donation">Adomány</string>
     <string name="product_name_pro">Teljes verzió</string>
-    <string name="product_name_weather">Időjárás és design csomag</string>
-    <string name="product_name_webradio">Webes rádiócsomag</string>
-    <string name="purchaseWeatherData">Engedély vásárlása</string>
     <string name="radio">Rádió</string>
     <string name="radio_stream">Rádióadások</string>
     <string name="radio_stream_failure">Rádiósugárzás hiba</string>

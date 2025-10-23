@@ -204,13 +204,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n- linha de informação meteorológica mostrada abaixo do relógio
 \n- previsão meteorológica de 5 dias
 \n- mais estilos de relógio</string>
-    <string name="product_name_actions">Pacote "Always On"</string>
     <string name="product_name_donation">Doação</string>
     <string name="product_name_pro">Versão Completa</string>
-    <string name="product_name_weather">Pacote de previsão do tempo e design</string>
-    <string name="product_name_webradio">Pacote web radio</string>
-    <string name="purchaseActions">Comprar uma licença</string>
-    <string name="purchaseWeatherData">Comprar uma licença</string>
     <string name="radio">Rádio</string>
     <string name="radio_station">Estação de rádio</string>
     <string name="radio_station_dialog_title">Selecionar uma estação de rádio</string>

@@ -103,7 +103,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging">מצב הסוללה</string>
     <string name="persistent_battery_value_while_charging_summary">הצג את מצב הסוללה באפן קבוע בזמן הטעינה</string>
     <string name="preview">תצוגה מקדימה </string>
-    <string name="purchaseWeatherData">קנה רשיון</string>
     <string name="radio">רדיו</string>
     <string name="radio_stream">הזרמת תחנות רדיו</string>
     <string name="radio_stream_no_search_results">לא נמצאו תוצאות</string>

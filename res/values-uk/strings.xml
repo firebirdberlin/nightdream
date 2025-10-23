@@ -145,9 +145,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Перегляд</string>
     <string name="product_name_donation">Пожертва</string>
     <string name="product_name_pro">Повна версія</string>
-    <string name="product_name_weather">Погода</string>
-    <string name="product_name_webradio">Веб-радіо</string>
-    <string name="purchaseWeatherData">Придбати ліцензію</string>
     <string name="radio">Радіо</string>
     <string name="radio_stream">Радіопотоки</string>
     <string name="radio_stream_failure">Помилка радіопотоку</string>

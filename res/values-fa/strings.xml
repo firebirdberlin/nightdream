@@ -95,7 +95,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging">نشانگر مداوم وضعیت باطری</string>
     <string name="persistent_battery_value_while_charging_summary">وضعیت باطری را طی شارژ کردن به طور مداوم نشان بده</string>
     <string name="preview">پیش نمایش</string>
-    <string name="purchaseWeatherData">خرید اشتراک</string>
     <string name="radio">رادیو</string>
     <string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
     <string name="radio_stream_offline">افلاین</string>

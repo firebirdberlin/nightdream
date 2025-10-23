@@ -142,8 +142,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="prev">前へ</string>
     <string name="preview">プレビュー</string>
     <string name="product_name_pro">フルバージョン</string>
-    <string name="purchaseActions">ライセンスを購入する</string>
-    <string name="purchaseWeatherData">天気予報のライセンスを購入する</string>
     <string name="radio">ラジオ</string>
     <string name="radio_station">ラジオ局</string>
     <string name="radio_station_dialog_title">ラジオ局名</string>

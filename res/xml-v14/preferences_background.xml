@@ -20,7 +20,7 @@
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseDesignPackageBackground"
         app:isPreferenceVisible="false"
-        app:title="@string/purchaseWeatherData" />
+        app:title="@string/buy_upgrade_summary" />
 
     <com.rarepebble.colorpicker.ColorPreference
         android:defaultValue="#000000"

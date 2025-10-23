@@ -110,9 +110,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="preview">Aurreikusi</string>
 <string name="product_name_donation">Donatu</string>
 <string name="product_name_pro">Bertsio osoa</string>
-<string name="product_name_weather">Eguraldiko eta diseinuko paketea</string>
-<string name="product_name_webradio">Web bidezko irratiko paketea</string>
-<string name="purchaseWeatherData">Lizentzia bat erosi</string>
     <string name="radio">Irratia</string>
     <string name="radio_stream">Irratiko streaming-ak</string>
 <string name="radio_stream_failure">Irratiako streaming-aren akatsa</string>

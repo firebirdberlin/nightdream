@@ -133,10 +133,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Predogled</string>
     <string name="product_name_donation">Donacija</string>
     <string name="product_name_pro">Polna verzija</string>
-    <string name="product_name_weather">Vremenski in dizajn paket</string>
-    <string name="product_name_webradio">Paket internetni radio</string>
-    <string name="purchaseActions">Kupi licenco</string>
-    <string name="purchaseWeatherData">Kupi licenco</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radijska postaja</string>
     <string name="radio_station_dialog_title">Izberi postajo</string>

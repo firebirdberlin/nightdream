@@ -193,13 +193,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">تفضيلات</string>
     <string name="prev">السابق</string>
     <string name="preview">العرض</string>
-    <string name="product_name_actions">حزمة دائماً مشغل</string>
     <string name="product_name_donation">تبرع</string>
     <string name="product_name_pro">النسخة الكاملة</string>
-    <string name="product_name_weather">حزمة التصميم والطقس</string>
-    <string name="product_name_webradio">حزمة شبكة الراديو</string>
-    <string name="purchaseActions">شراء ترخيص</string>
-    <string name="purchaseWeatherData">اشتري ترخيص</string>
     <string name="radio">راديو</string>
     <string name="radio_station">محطة الراديو</string>
     <string name="radio_station_dialog_title">إختار محطة الراديو</string>

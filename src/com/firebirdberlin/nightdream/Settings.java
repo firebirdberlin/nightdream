@@ -184,7 +184,6 @@ public class Settings {
     boolean showBatteryWarning = true;
     int batteryTimeout = 5;
     SharedPreferences settings;
-    private boolean purchasedDonation = false;
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = BACKGROUND_BLACK;
     private long nextAlwaysOnTime = 0L;
@@ -384,11 +383,11 @@ public class Settings {
         return preferences.getBoolean("flashlightIsOn", false);
     }
 
-    public static void storeWeatherDataPurchase(Context context, boolean weatherIsPurchased, boolean donationIsPurchased) {
+    public static void storeWeatherDataPurchase(Context context, boolean weatherIsPurchased) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, 0);
         SharedPreferences.Editor editor = prefs.edit();
+        Log.i(TAG, "weatherIsPurchased: " + weatherIsPurchased);
         editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
-        editor.putBoolean("purchasedDonation", donationIsPurchased);
         editor.apply();
     }
 
@@ -492,7 +491,6 @@ public class Settings {
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
         if (Utility.isEmulator()) purchasedWeatherData = true;
-        purchasedDonation = settings.getBoolean("purchasedDonation", false);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
@@ -768,7 +766,7 @@ public class Settings {
     public int getValidatedClockLayoutID(int clockLayoutId, boolean preview) {
         if (preview) {
             return clockLayoutId;
-        } else if (clockLayoutId == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedDonation) {
+        } else if (clockLayoutId == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;
         } else if (clockLayoutId >= 2 && !purchasedWeatherData) {
             return ClockLayout.LAYOUT_ID_DIGITAL;

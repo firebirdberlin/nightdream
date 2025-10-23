@@ -455,8 +455,7 @@ public class WeatherForecastActivity
         invalidateOptionsMenu();
         Settings.storeWeatherDataPurchase(
                 this,
-                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
-                isPurchased(BillingHelperActivity.ITEM_DONATION)
+                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
         );
     }
 

@@ -78,7 +78,7 @@
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseActions2"
         app:isPreferenceVisible="false"
-        app:title="@string/purchaseActions" />
+        app:title="@string/buy_upgrade_summary" />
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
