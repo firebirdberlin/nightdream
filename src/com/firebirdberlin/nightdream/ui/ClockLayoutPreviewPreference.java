@@ -265,8 +265,8 @@ public class ClockLayoutPreviewPreference extends Preference {
     private void setupPurchaseHint(Settings settings) {
         int layoutID = settings.getClockLayoutID(true);
         if (layoutID == ClockLayout.LAYOUT_ID_CALENDAR
-                && !purchased(BillingHelperActivity.ITEM_DONATION)) {
-            textViewPurchaseHint.setText(getContext().getString(R.string.gift_for_donors));
+                && !purchased(BillingHelperActivity.ITEM_WEATHER_DATA)) {
+            textViewPurchaseHint.setText(getContext().getString(R.string.product_name_pro));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
 
         } else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2

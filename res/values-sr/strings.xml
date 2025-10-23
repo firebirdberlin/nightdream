@@ -98,7 +98,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging">Stalno prikazivanje statusa baterije</string>
     <string name="persistent_battery_value_while_charging_summary">Stalno prikazivanje statusa baterije prilikom punjenja.</string>
     <string name="preview">Pregled</string>
-    <string name="purchaseWeatherData">Kupiti licencu</string>
     <string name="radio">Radio</string>
     <string name="radio_stream">Radio strimovi</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretrage.</string>

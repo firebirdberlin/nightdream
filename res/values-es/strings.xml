@@ -253,13 +253,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n- Una linea de clima bajo el reloj
 \n- pronóstico de clima para 5 días
 \n- Modos de reloj adicionales</string>
-    <string name="product_name_actions">Paquete "siempre encendido"</string>
     <string name="product_name_donation">Donación</string>
     <string name="product_name_pro">Versión completa</string>
-    <string name="product_name_weather">Paquete de clima y diseño</string>
-    <string name="product_name_webradio">Paquete de radio web</string>
-    <string name="purchaseActions">Comprar una licencia</string>
-    <string name="purchaseWeatherData">Compra el paquete de Clima y Diseño</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Estación de radio</string>
     <string name="radio_station_dialog_title">Seleccione una estación de radio</string>

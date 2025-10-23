@@ -254,13 +254,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n- een één-lijns weerbericht onder de klok
 \n- een vijfdaagse weersvoorspelling
 \n- meer wijzerplaten</string>
-    <string name="product_name_actions">Altijd aanwezig</string>
     <string name="product_name_donation">Donatie</string>
     <string name="product_name_pro">Volledige versie</string>
-    <string name="product_name_weather">Weer- en ontwerppakket</string>
-    <string name="product_name_webradio">Internetradiopakket</string>
-    <string name="purchaseActions">Koop een licentie</string>
-    <string name="purchaseWeatherData">Koop een licentie</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radiostation</string>
     <string name="radio_station_dialog_title">Selecteer een radiostation</string>

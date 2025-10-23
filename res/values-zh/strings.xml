@@ -110,9 +110,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">預覽</string>
     <string name="product_name_donation">贊助</string>
     <string name="product_name_pro">完整版</string>
-    <string name="product_name_weather">天氣與設計組件</string>
-    <string name="product_name_webradio">網路收音機組件</string>
-    <string name="purchaseWeatherData">購買授權</string>
     <string name="radio">收音機</string>
     <string name="radio_stream">串流廣播</string>
     <string name="radio_stream_failure">串流廣播失敗</string>

@@ -616,8 +616,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                 db.close();
                                 Settings.storeWeatherDataPurchase(
                                         mContext,
-                                        isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
-                                        isPurchased(BillingHelperActivity.ITEM_DONATION)
+                                        isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
                                 );
                                 PreferencesActivity activity = ((PreferencesActivity) mContext);
                                 activity.recreate(); // Changed from initFragment() to recreate()
@@ -1144,7 +1143,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onClick(View v) {
             if (isAdded()) {
                 PreferencesActivity activity = ((PreferencesActivity) mContext);
-                activity.launchBillingFlow(BillingHelperActivity.ITEM_PRO);
+                activity.launchBillingFlow(BillingHelperActivity.ITEM_ONE_YEAR_SUBSCRIPTION);
 
             }
         }

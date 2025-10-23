@@ -125,7 +125,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker_summary">Prati svoje dnevno radno vrijeme.</string>
     <string name="other_apps_tinytimetracker">Mini zapisnik vremena</string>
     <string name="preview">Pregled</string>
-    <string name="purchaseWeatherData">Kupi licencu</string>
     <string name="radio_stream">Radio streamovi</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretraživanja.</string>
     <string name="radio_stream_query_hint">Niz za pretraživanje</string>

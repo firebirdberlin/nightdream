@@ -142,9 +142,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Önizleme</string>
     <string name="product_name_donation">Bağış yap</string>
     <string name="product_name_pro">Tam sürüm</string>
-    <string name="product_name_weather">Hava durumu eklentisi</string>
-    <string name="product_name_webradio">Internet radyo eklentisi</string>
-    <string name="purchaseWeatherData">Lisans satın al</string>
     <string name="radio">Radyo</string>
     <string name="radio_stream">Radyo akışları</string>
     <string name="radio_stream_failure">Radyo akış hatası</string>

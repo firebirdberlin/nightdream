@@ -75,7 +75,6 @@
             app:entryValues="@array/batteryTimeoutValues"
             app:key="batteryTimeout"
             app:title="@string/batteryTimeoutDescription" />
-
     </PreferenceCategory>
 
     <Preference
@@ -83,7 +82,7 @@
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseActions"
         app:isPreferenceVisible="false"
-        app:title="@string/purchaseActions" />
+        app:title="@string/buy_upgrade_summary" />
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
