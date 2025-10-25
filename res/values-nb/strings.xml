@@ -196,13 +196,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Innstillinger</string>
     <string name="prev">forrige</string>
     <string name="preview">Forhåndsvisning</string>
-    <string name="product_name_actions">\'Alltid På\'-innstallasjon</string>
     <string name="product_name_donation">Donasjon</string>
     <string name="product_name_pro">Full versjon</string>
-    <string name="product_name_weather"> Vær-applikasjon</string>
-    <string name="product_name_webradio">Radio-applikasjon</string>
-    <string name="purchaseActions">Kjøp en lisens</string>
-    <string name="purchaseWeatherData">Kjøp en lisens</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radiostasjon</string>
     <string name="radio_station_dialog_title">Velg en radiostasjon</string>

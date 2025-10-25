@@ -107,9 +107,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Xem lại</string>
     <string name="product_name_donation">Quyên góp</string>
     <string name="product_name_pro">Full ver</string>
-    <string name="product_name_weather">Gói giao diện và thời tiết</string>
-    <string name="product_name_webradio">Gói radio net</string>
-    <string name="purchaseWeatherData">Mua bản quyền</string>
     <string name="radio">Radio</string>
     <string name="radio_stream">luồng phát thanh</string>
     <string name="radio_stream_failure">Lỗi luồng phát thanh</string>

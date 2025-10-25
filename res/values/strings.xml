@@ -285,13 +285,8 @@ OR
     \n- a weather forecast
     \n- more clock faces
     </string>
-    <string name="product_name_actions">Abilities package</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
-    <string name="product_name_weather">Weather and design package</string>
-    <string name="product_name_webradio">Web radio package</string>
-    <string name="purchaseActions">Buy a license</string>
-    <string name="purchaseWeatherData">Buy a license</string>
     <string name="radio">Radio</string>
     <string name="radio_connecting">connecting</string>
     <string name="radio_muting">muting ads</string>
@@ -396,7 +391,7 @@ OR
     <string name="smart_home_avm_host_summary">Address of your Fritz!Box, e.g. http://fritz.box</string>
     <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_avm_password">Password</string>
-    <string name="smart_home_purchase_request">Operate your devices with the Abilities package.</string>
+    <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="snoozeAfter">Auto snooze after</string>
     <string name="snoozeCycles">Auto snooze cycles before auto stop</string>
@@ -453,4 +448,5 @@ OR
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
     <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
+    <string name="product_name_subscription">one-year subscription</string>
 </resources>

@@ -18,7 +18,7 @@
         app:key="purchaseDesignPackage"
         app:allowDividerAbove="true"
         app:isPreferenceVisible="false"
-        app:title="@string/purchaseWeatherData" />
+        app:title="@string/buy_upgrade_summary" />
 
     <PreferenceCategory
         android:key="category_appearance"

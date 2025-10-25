@@ -19,11 +19,18 @@ public class SmartHomePreferenceActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.PreferencesTheme);
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_smarthome_preference);
+
         actionBarSetup();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, new SmartHomePreferenceFragment())
-                .commit();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new SmartHomePreferenceFragment())
+                    .commit();
+        }
+
     }
 
     private void actionBarSetup() {

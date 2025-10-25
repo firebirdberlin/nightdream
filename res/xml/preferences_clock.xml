@@ -11,7 +11,7 @@
         app:icon="@drawable/ic_googleplay"
         app:key="purchaseDesignPackage"
         app:isPreferenceVisible="false"
-        app:title="@string/purchaseWeatherData" />
+        app:title="@string/buy_upgrade_summary" />
 
     <ListPreference
         app:iconSpaceReserved="false"

@@ -253,13 +253,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n-Uma linha do estado do tempo mostrada abaixo do relógio;
 \n-Previsão do tempo para 5 dias;
 \n-Mais mostradores de relógio.l</string>
-    <string name="product_name_actions">Pacote Sempre ligado</string>
     <string name="product_name_donation">Donativo</string>
     <string name="product_name_pro">Versão completa</string>
-    <string name="product_name_weather">Pacote de clima e design</string>
-    <string name="product_name_webradio">Pacote de rádio online</string>
-    <string name="purchaseActions">Comprar uma licença</string>
-    <string name="purchaseWeatherData">Comprar uma licença</string>
     <string name="radio">Rádio</string>
     <string name="radio_station">Estação de rádio</string>
     <string name="radio_station_dialog_title">Selecione uma estação de rádio</string>

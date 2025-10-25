@@ -36,8 +36,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.firebirdberlin.nightdream.Settings.WeatherProvider.MET_NO;
-
 public class WeatherForecastActivity
         extends BillingHelperActivity
         implements ForecastRequestTask.AsyncResponse,
@@ -93,11 +91,11 @@ public class WeatherForecastActivity
         }
 
         @Override
-        public void onProviderEnabled(String s) {
+        public void onProviderEnabled(@NonNull String s) {
         }
 
         @Override
-        public void onProviderDisabled(String s) {
+        public void onProviderDisabled(@NonNull String s) {
         }
     };
 
@@ -112,8 +110,8 @@ public class WeatherForecastActivity
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
         cities = Settings.getFavoriteWeatherLocations(this);
     }
 
@@ -205,7 +203,7 @@ public class WeatherForecastActivity
 
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
-        if (entries.size() > 0) {
+        if (!entries.isEmpty()) {
             WeatherEntry firstEntry = entries.get(0);
             actionBarSetup(firstEntry.cityName);
         }
@@ -457,33 +455,24 @@ public class WeatherForecastActivity
         invalidateOptionsMenu();
         Settings.storeWeatherDataPurchase(
                 this,
-                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA),
-                isPurchased(BillingHelperActivity.ITEM_DONATION)
+                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
         );
     }
 
     private boolean isLocationProviderEnabled() {
         int locationMode = 0;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            try {
-                locationMode = android.provider.Settings.Secure.getInt(
-                        getContentResolver(), android.provider.Settings.Secure.LOCATION_MODE
-                );
-
-            } catch (android.provider.Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            return locationMode != android.provider.Settings.Secure.LOCATION_MODE_OFF;
-
-        } else {
-            String locationProviders = android.provider.Settings.Secure.getString(
-                    getContentResolver(),
-                    android.provider.Settings.Secure.LOCATION_PROVIDERS_ALLOWED
+        try {
+            locationMode = android.provider.Settings.Secure.getInt(
+                    getContentResolver(), android.provider.Settings.Secure.LOCATION_MODE
             );
-            return !locationProviders.isEmpty();
+
+        } catch (android.provider.Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error getting location mode");
         }
+
+        return locationMode != android.provider.Settings.Secure.LOCATION_MODE_OFF;
+
     }
 
     private void conditionallyShowSnackBar() {

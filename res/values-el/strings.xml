@@ -111,9 +111,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Προεπισκόπηση</string>
     <string name="product_name_donation">Δωρεά</string>
     <string name="product_name_pro">Πλήρη έκδοση</string>
-    <string name="product_name_weather">Πακέτο σχεδίασης καιρού</string>
-    <string name="product_name_webradio">Πακέτο ιντερνετικού ράδιου</string>
-    <string name="purchaseWeatherData">Αγορά άδειας</string>
     <string name="radio">Ράδιο</string>
     <string name="radio_stream">Ροές</string>
     <string name="radio_stream_failure">Σφάλμα ροής</string>

@@ -190,7 +190,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging">Trvalý stav baterie</string>
     <string name="persistent_battery_value_while_charging_summary">Neustále zobrazovat stav baterie během nabíjení.</string>
     <string name="preview">Náhled</string>
-    <string name="purchaseWeatherData">Koupit licenci</string>
     <string name="radio">Rádio</string>
     <string name="radio_station">Rozhlasová stanice.</string>
     <string name="radio_station_dialog_title">Vybrat rozhlasovou stanici.</string>

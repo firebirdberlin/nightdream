@@ -235,13 +235,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n- строка состояния погоды отображается под часами;
 \n- прогноз погоды на 5 дней;
 \n- больше циферблатов;</string>
-    <string name="product_name_actions">Всегда Включено</string>
     <string name="product_name_donation">Пожертвование</string>
     <string name="product_name_pro">Полная версия</string>
-    <string name="product_name_weather">Погодный и дизайнерский пакет</string>
-    <string name="product_name_webradio">Пакет веб-радио</string>
-    <string name="purchaseActions">Купить лицензию</string>
-    <string name="purchaseWeatherData">Купить лицензию</string>
     <string name="radio">Радио</string>
     <string name="radio_station">Радио станция</string>
     <string name="radio_station_dialog_title">Выберите радио станцию</string>

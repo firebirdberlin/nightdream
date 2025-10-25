@@ -19,19 +19,31 @@ public class AlarmsPreferenceActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.PreferencesTheme);
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_alarms_preference);
+
         actionBarSetup();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(android.R.id.content, new AlarmsPreferenceFragment())
-                .commit();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new AlarmsPreferenceFragment())
+                    .commit();
+        }
     }
 
     private void actionBarSetup() {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle(R.string.preferences);
+            // Optional: Add an Up button to go back
+            ab.setDisplayHomeAsUpEnabled(true);
         }
     }
 
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
 }

@@ -254,13 +254,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n- una linea del meteo attuale mostrata sotto l\'orologio
 \n- le previsioni dei 5 giorni successivi
 \n- più quadranti selezionabili</string>
-    <string name="product_name_actions">Pacchetto sempre attivo</string>
     <string name="product_name_donation">Donazione</string>
     <string name="product_name_pro">Versione completa</string>
-    <string name="product_name_weather">Meteo e pacchetto di design</string>
-    <string name="product_name_webradio">Pacchetto web radio</string>
-    <string name="purchaseActions">Acquista una licenza</string>
-    <string name="purchaseWeatherData">Acquista una licenza</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Stazione radio</string>
     <string name="radio_station_dialog_title">Seleziona una stazione radio</string>

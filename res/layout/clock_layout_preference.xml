@@ -51,7 +51,7 @@
         android:layout_marginStart="10dp"
         android:background="@color/custom_red"
         android:rotation="0"
-        android:text="@string/product_name_weather"
+        android:text="@string/product_name_pro"
         tools:ignore="RelativeOverlap" />
 
     <ImageButton

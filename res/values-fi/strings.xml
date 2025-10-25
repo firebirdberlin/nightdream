@@ -140,8 +140,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preview">Esikatselu</string>
     <string name="product_name_donation">Lahjoitus</string>
     <string name="product_name_pro">Täysi versio</string>
-    <string name="purchaseActions">Osta lisenssi</string>
-    <string name="purchaseWeatherData">Osta lisenssi</string>
     <string name="radio">Radio</string>
     <string name="radio_station_dialog_title">Valitse radio kanava</string>
     <string name="radio_station_none">Ei radio kanavaa</string>

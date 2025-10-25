@@ -254,13 +254,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n-Visning av väderinformation under klockan
 \n-En 5 dagars väderprognos
 \n-Fler bakgrunder för klockan</string>
-    <string name="product_name_actions">Alltid på tillägg</string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Fullständig version</string>
-    <string name="product_name_weather">Tillägg för Väder och Design</string>
-    <string name="product_name_webradio">Tillägg för Webbradio</string>
-    <string name="purchaseActions">Köp en licens</string>
-    <string name="purchaseWeatherData">Köp en licens</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radiostation</string>
     <string name="radio_station_dialog_title">Välj en radiostation</string>
