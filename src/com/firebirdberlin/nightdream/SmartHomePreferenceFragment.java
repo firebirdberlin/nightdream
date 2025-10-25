@@ -1,18 +1,25 @@
 package com.firebirdberlin.nightdream;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.TypedValue;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference.SummaryProvider;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
@@ -33,6 +40,19 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
         setPreferencesFromResource(R.xml.preferences_smarthome, rootKey);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final RecyclerView recyclerView = getListView();
+        if (recyclerView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(recyclerView, (v, insets) -> {
+                int top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+                v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
     }
 
     @Override

@@ -287,13 +287,8 @@ Please preserve the xml tags and the utf8 encoding.
     \n- Wettervorhersage
     \n- mehr Uhrendesigns
     </string>
-    <string name="product_name_actions">Zusatzfunktionen</string>
     <string name="product_name_donation">Spende</string>
     <string name="product_name_pro">Vollversion</string>
-    <string name="product_name_weather">Wetter- und Design-Paket</string>
-    <string name="product_name_webradio">Webradio-Paket</string>
-    <string name="purchaseActions">Zusatzfunktionen-Paket kaufen</string>
-    <string name="purchaseWeatherData">Wetter- und Design-Paket kaufen</string>
     <string name="radio">Radio</string>
     <string name="radio_connecting">verbinde</string>
     <string name="radio_muting">Werbung stummschalten</string>
@@ -397,7 +392,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="smart_home_avm_host_summary">Addresse der Fritz!Box, z.B. http://fritz.box</string>
     <string name="smart_home_avm_password">Passwort</string>
     <string name="smart_home_avm_username">Username</string>
-    <string name="smart_home_purchase_request">Geräte schalten mit dem Paket "Zusatzfunktionen"</string>
+    <string name="smart_home_purchase_request">AVM Geräte schalten mit der Pro Version</string>
     <string name="snoozeAfter">Automatisch schlummern nach</string>
     <string name="snoozeCycles">Maximale Wiederholungen der Schlummerfunktion vor Auto-Stopp</string>
     <string name="snoozeTime">Schlummerzeit</string>

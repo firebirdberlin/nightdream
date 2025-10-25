@@ -45,14 +45,15 @@ public class WeatherEntry {
 
     }
 
-    public long getSunriseTime() {
-        if (sunriseTime > 0L) {
-            return sunriseTime * 1000;
-        }
+    public long getSunriseTime() {        if (sunriseTime > 0L) {
+        return sunriseTime * 1000;
+    }
         SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
-        Date rise = sunTime.getRise();
+        // The library now returns a ZonedDateTime object
+        java.time.ZonedDateTime rise = sunTime.getRise();
         if (rise != null) {
-            return rise.getTime();
+            // Convert ZonedDateTime to milliseconds since epoch
+            return rise.toInstant().toEpochMilli();
         }
         return 0L;
     }
@@ -62,9 +63,11 @@ public class WeatherEntry {
             return sunsetTime * 1000;
         }
         SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
-        Date set = sunTime.getSet();
+        // The library now returns a ZonedDateTime object
+        java.time.ZonedDateTime set = sunTime.getSet();
         if (set != null) {
-            return set.getTime();
+            // Convert ZonedDateTime to milliseconds since epoch
+            return set.toInstant().toEpochMilli();
         }
         return 0L;
     }

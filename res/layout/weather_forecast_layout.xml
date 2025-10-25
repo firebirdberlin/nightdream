@@ -7,7 +7,9 @@
     android:paddingStart="5dp"
     android:paddingTop="5sp"
     android:visibility="visible"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    >
 
     <TextView
         android:id="@+id/timeView"
@@ -28,12 +30,13 @@
         <TextView
             android:id="@+id/iconText"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_gravity="top"
+            android:layout_height="@dimen/weather_icon_height"
             android:ellipsize="none"
             android:text="m"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-            android:textSize="55sp"
+            android:textSize="@dimen/weather_icon_text_size"
             android:singleLine="true"
             android:layout_margin="6dp"
             />
@@ -41,6 +44,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             app:alignContent="stretch"
             app:alignItems="center"
             app:flexWrap="wrap"

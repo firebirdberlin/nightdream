@@ -1,20 +1,22 @@
 package com.firebirdberlin.nightdream;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
@@ -40,6 +42,19 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
     public void onResume() {
         super.onResume();
         init();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final RecyclerView recyclerView = getListView();
+        if (recyclerView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(recyclerView, (v, insets) -> {
+                int top = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top;
+                v.setPadding(v.getPaddingLeft(), top, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
+        }
     }
 
     private void init() {

@@ -207,13 +207,8 @@ Please preserve the xml tags and the utf8 encoding.
 \n- en vejrstatuslinje vist under uret
 \n- en 5-dages vejrudsigt
 \n- flere urskiver</string>
-    <string name="product_name_actions">Altid på pakken</string>
     <string name="product_name_donation">Donatiosn</string>
     <string name="product_name_pro">Fuld version</string>
-    <string name="product_name_weather">Vejr og design pakke</string>
-    <string name="product_name_webradio">Web radio pakke</string>
-    <string name="purchaseActions">Køb en licens</string>
-    <string name="purchaseWeatherData">Køb en licens</string>
     <string name="radio">Radio</string>
     <string name="radio_station">Radio station</string>
     <string name="radio_station_dialog_title">Vælg en radio station</string>
