@@ -170,7 +170,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         @Override
         public void run() {
             handler.removeCallbacks(runnableNotificationAccessChanged);
-            if (Build.VERSION.SDK_INT < 18 || !"notifications".equals(rootKey) || !isAdded()) {
+            if (!"notifications".equals(rootKey) || !isAdded()) {
                 return;
             }
             Log.i(TAG, "Runnable called");
@@ -304,7 +304,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void resetAlwaysOnModeIfNotPurchased() {
-        if (isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+        if (isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return;
         }
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -315,7 +315,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void resetUseDeviceLockIfNotPurchased() {
-        if (isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+        if (isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return;
         }
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -331,9 +331,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void togglePurchasePreferences() {
-        boolean isPurchasedDonation = isPurchased(BillingHelperActivity.ITEM_DONATION);
-        boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
-        boolean isPurchasedActions = isPurchased(BillingHelperActivity.ITEM_ACTIONS);
+        boolean isPurchasedDonation = isPurchased(PurchaseManager.ITEM_DONATION);
+        boolean isPurchasedWeather = isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
+        boolean isPurchasedActions = isPurchased(PurchaseManager.ITEM_ACTIONS);
         Log.i(TAG, "actions: " + isPurchasedActions);
         Log.i(TAG, "weather: " + isPurchasedWeather);
         Log.i(TAG, "donation: " + isPurchasedDonation);
@@ -616,7 +616,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                 db.close();
                                 Settings.storeWeatherDataPurchase(
                                         mContext,
-                                        isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
+                                        isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
                                 );
                                 PreferencesActivity activity = ((PreferencesActivity) mContext);
                                 activity.recreate(); // Changed from initFragment() to recreate()
@@ -799,9 +799,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("backgroundMovein", on);
         showPreference("backgroundImageFilter", on);
         showPreference("backgroundEXIF", on);
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            showPreference("chooseDirectoryBackgroundImage", on);
-        }
+        showPreference("chooseDirectoryBackgroundImage", on);
 
         on = Utility.equalsAny(selection, "3", "4");
         showPreference("autoAccentColor", on);
@@ -809,7 +807,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("hideBackgroundImage", !"1".equals(selection));
         showPreference("clockBackgroundTransparency", !"1".equals(selection));
 
-        boolean isPurchasedWeather = isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA);
+        boolean isPurchasedWeather = isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
         showPreference("purchaseDesignPackageBackground", "4".equals(selection) && !isPurchasedWeather);
         boolean shallEnable = !"4".equals(selection) || isPurchasedWeather;
         enablePreference("autoAccentColor", shallEnable);
@@ -1077,8 +1075,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (
                 (snackbar != null && snackbar.isShown())
                         || Utility.isAirplaneModeOn(mContext)
-                        || isPurchased(BillingHelperActivity.ITEM_DONATION) || isPurchased(BillingHelperActivity.ITEM_PRO)
-                        || (isPurchased(BillingHelperActivity.ITEM_WEB_RADIO) && isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA))
+                        || isPurchased(PurchaseManager.ITEM_DONATION) || isPurchased(PurchaseManager.ITEM_PRO)
+                        || (isPurchased(PurchaseManager.ITEM_WEB_RADIO) && isPurchased(PurchaseManager.ITEM_WEATHER_DATA))
                         || daysInstalled < 4
                         || timeSinceShown < 60000 * 60 * 12 // 12 hours
         ) {
@@ -1143,7 +1141,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onClick(View v) {
             if (isAdded()) {
                 PreferencesActivity activity = ((PreferencesActivity) mContext);
-                activity.launchBillingFlow(BillingHelperActivity.ITEM_ONE_YEAR_SUBSCRIPTION);
+                activity.launchBillingFlow(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
 
             }
         }

@@ -136,7 +136,7 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(MotionEvent e) {
-            if (nightDreamUI.isLocked() || !isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+            if (nightDreamUI.isLocked() || !isPurchased(PurchaseManager.ITEM_ACTIONS)) {
                 return;
             }
 
@@ -766,7 +766,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (AlarmHandlerService.alarmIsRunning()) {
             AlarmHandlerService.stop(this);
         }
-        if (!isPurchased(BillingHelperActivity.ITEM_WEB_RADIO)) {
+        if (!isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
             showPurchaseDialog();
             return;
         }
