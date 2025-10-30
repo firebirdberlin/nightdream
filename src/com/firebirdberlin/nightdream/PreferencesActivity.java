@@ -186,7 +186,7 @@ public class PreferencesActivity extends BillingHelperActivity
         }
         Settings.storeWeatherDataPurchase(
                 this,
-                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
+                isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
         );
     }
 
@@ -199,7 +199,7 @@ public class PreferencesActivity extends BillingHelperActivity
                 fragment.onPurchasesInitialized();
                 Settings.storeWeatherDataPurchase(
                         this,
-                        isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
+                        isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
                 );
             }
             );

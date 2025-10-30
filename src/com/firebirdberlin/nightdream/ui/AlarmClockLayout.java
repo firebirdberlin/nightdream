@@ -29,6 +29,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.BillingHelperActivity;
+import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
@@ -230,7 +231,7 @@ public class AlarmClockLayout extends LinearLayout {
             FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
             ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
             dialog.setIsPurchased(
-                    ((BillingHelperActivity) context).isPurchased(BillingHelperActivity.ITEM_WEB_RADIO)
+                    ((BillingHelperActivity) context).isPurchased(PurchaseManager.ITEM_WEB_RADIO)
             );
             dialog.setContext(getContext());
             dialog.setSelectedUri(alarmClockEntry.soundUri);
@@ -273,7 +274,7 @@ public class AlarmClockLayout extends LinearLayout {
             if (alarmClockEntry == null) return;
 
             BillingHelperActivity billingHelperActivity = (BillingHelperActivity) context;
-            if (!billingHelperActivity.isPurchased(BillingHelperActivity.ITEM_WEB_RADIO)) {
+            if (!billingHelperActivity.isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
                 billingHelperActivity.showPurchaseDialog();
             } else {
                 FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();

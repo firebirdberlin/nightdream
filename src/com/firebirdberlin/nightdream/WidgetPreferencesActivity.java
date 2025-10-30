@@ -61,7 +61,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         Log.d(TAG, "onPurchasesInitialized()");
         runOnUiThread(() -> {
                     fragment = SettingsFragment.newInstance(appWidgetId,
-                            isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
+                            isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
                     );
 
                     getSupportFragmentManager()
@@ -78,7 +78,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         Log.d(TAG, "onItemPurchased( " + sku + ")");
         runOnUiThread(() -> {
                     fragment = SettingsFragment.newInstance(appWidgetId,
-                            isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
+                            isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
                     );
 
                     getSupportFragmentManager()

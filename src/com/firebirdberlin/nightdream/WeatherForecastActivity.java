@@ -145,7 +145,7 @@ public class WeatherForecastActivity
     void init() {
         Log.d(TAG, "init()");
 
-        if (!isPurchased(ITEM_WEATHER_DATA)) {
+        if (!isPurchased(PurchaseManager.ITEM_WEATHER_DATA)) {
             adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
             adapter.addFragment(new WeatherForecastTabPreview(), getResources().getString(R.string.forecast));
 
@@ -276,7 +276,7 @@ public class WeatherForecastActivity
         menu.getItem(num_items - 3).setCheckable(true);
         menu.getItem(num_items - 3).setChecked(locationAccessGranted && autoLocationEnabled);
 
-        boolean on = isPurchased(ITEM_WEATHER_DATA);
+        boolean on = isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
         for (int i = 0; i < num_items; i++) {
             menu.getItem(i).setEnabled(on);
         }
@@ -455,7 +455,7 @@ public class WeatherForecastActivity
         invalidateOptionsMenu();
         Settings.storeWeatherDataPurchase(
                 this,
-                isPurchased(BillingHelperActivity.ITEM_WEATHER_DATA)
+                isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
         );
     }
 
