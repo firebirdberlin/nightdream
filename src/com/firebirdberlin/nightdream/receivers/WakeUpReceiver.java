@@ -42,25 +42,19 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private final static String TAG = "WakeUpReceiver";
 
     public static void schedule(Context context, DataSource db) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmNotificationService.cancelNotification(context);
-        }
+        AlarmNotificationService.cancelNotification(context);
         SimpleTime next = db.getNextAlarmToSchedule();
         if (next != null) {
             setAlarm(context, next);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AlarmNotificationService.scheduleJob(context, next);
-                AlarmWifiService.scheduleJob(context, next);
-            }
+            AlarmNotificationService.scheduleJob(context, next);
+            AlarmWifiService.scheduleJob(context, next);
         } else {
             PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             am.cancel(pI);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AlarmNotificationService.cancelJob(context);
-                AlarmWifiService.cancelJob(context);
-            }
+            AlarmNotificationService.cancelJob(context);
+            AlarmWifiService.cancelJob(context);
         }
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);

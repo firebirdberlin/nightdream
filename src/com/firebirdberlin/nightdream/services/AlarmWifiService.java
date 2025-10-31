@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.services;
 
-import android.annotation.TargetApi;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -8,7 +7,6 @@ import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.work.Configuration;
@@ -17,7 +15,6 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AlarmWifiService extends JobService {
     private static final String TAG = "AlarmWifiService";
 
@@ -26,11 +23,7 @@ public class AlarmWifiService extends JobService {
         builder.setJobSchedulerJobIdRange(0, 1000);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, SimpleTime nextAlarmTime) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
 
         Settings settings = new Settings(context);
         if (!settings.getShallRadioStreamActivateWiFi() || nextAlarmTime.radioStationIndex < 0) {
@@ -38,23 +31,20 @@ public class AlarmWifiService extends JobService {
         }
 
         ComponentName serviceComponent = new ComponentName(
-                context.getPackageName(), AlarmWifiService.class.getName());
+                context.getPackageName(), AlarmWifiService.class.getName()
+        );
         JobInfo.Builder builder = new JobInfo.Builder(Config.JOB_ID_ALARM_WIFI, serviceComponent);
         builder.setPersisted(true);
         builder.setRequiresCharging(false);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
 
         long nowInMillis = System.currentTimeMillis();
         long nextAlarmTimeMillis = nextAlarmTime.getMillis();
 
-        long minutes_to_start = 5;
-        long minLatency = 1000;
-        if (nextAlarmTimeMillis - nowInMillis > minutes_to_start * 60000) {
-            minLatency = (nextAlarmTimeMillis - minutes_to_start * 60000) - nowInMillis - 30000;
-        }
+        long fiveMinutesInMillis = 5 * 60 * 1000;
+        long timeUntilFiveMinutesBeforeAlarm = nextAlarmTimeMillis - fiveMinutesInMillis - nowInMillis;
+        long minLatency = Math.max(0, timeUntilFiveMinutesBeforeAlarm);
         builder.setMinimumLatency(minLatency);
         builder.setOverrideDeadline(minLatency + 30000);
-
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
@@ -65,14 +55,12 @@ public class AlarmWifiService extends JobService {
 
         if (jobResult == JobScheduler.RESULT_SUCCESS) {
             Log.d(TAG, "scheduled AlarmWifiService job successfully");
+        } else {
+            Log.e(TAG, "failed to schedule AlarmWifiService job. Result code: " + jobResult);
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void cancelJob(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
             return;
