@@ -3,6 +3,7 @@ package com.firebirdberlin.nightdream.NotificationList;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Parcel;
@@ -14,14 +15,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
-import androidx.annotation.RequiresApi;
-
 import java.text.SimpleDateFormat;
 
 public class Notification implements Parcelable {
 
     public static final Creator<Notification> CREATOR = new Creator<Notification>() {
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public Notification createFromParcel(Parcel in) {
             return new Notification(in);
@@ -59,7 +57,6 @@ public class Notification implements Parcelable {
     private Spanned notification_textlines;
     private int childId;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected Notification(Parcel in) {
         bigPicture = (Bitmap) getParcelable(in, Bitmap.class.getClassLoader());
         time = in.readString();
@@ -129,10 +126,14 @@ public class Notification implements Parcelable {
             RemoteViews remoteView = intent.getParcelableExtra(name);
             if (remoteView != null) {
                 FrameLayout container = new FrameLayout(context);
-                container.addView(remoteView.apply(context, container));
+//                View inflatedView = remoteView.apply(context, container);
+//                container.addView(inflatedView);
+                remoteView.apply(context, container);
                 return container;
             }
-        } catch (SecurityException | RemoteViews.ActionException | InflateException ignored) {}
+        } catch (SecurityException | RemoteViews.ActionException | InflateException |
+                 Resources.NotFoundException ignored) {
+        }
         return null;
     }
 
@@ -168,6 +169,9 @@ public class Notification implements Parcelable {
         parcel.writeByte((byte) (isClearable ? 1 : 0));
         parcel.writeInt(childId);
         parcel.writeInt(color);
+        parcel.writeInt(notificationID);
+        parcel.writeString(notificationKey);
+        parcel.writeString(notificationTag);
     }
 
     public String getText() {
