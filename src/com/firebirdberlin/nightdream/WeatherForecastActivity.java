@@ -453,10 +453,6 @@ public class WeatherForecastActivity
         super.onPurchasesInitialized();
         init();
         invalidateOptionsMenu();
-        Settings.storeWeatherDataPurchase(
-                this,
-                isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
-        );
     }
 
     private boolean isLocationProviderEnabled() {

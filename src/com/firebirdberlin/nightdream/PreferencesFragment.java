@@ -614,10 +614,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                                 db.open();
                                 db.dropData();
                                 db.close();
-                                Settings.storeWeatherDataPurchase(
-                                        mContext,
-                                        isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
-                                );
                                 PreferencesActivity activity = ((PreferencesActivity) mContext);
                                 activity.recreate(); // Changed from initFragment() to recreate()
                             });
