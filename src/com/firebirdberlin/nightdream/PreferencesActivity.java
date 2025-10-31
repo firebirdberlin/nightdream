@@ -184,10 +184,6 @@ public class PreferencesActivity extends BillingHelperActivity
         if (fragment != null) {
             fragment.onPurchasesInitialized();
         }
-        Settings.storeWeatherDataPurchase(
-                this,
-                isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
-        );
     }
 
     @Override
@@ -197,10 +193,6 @@ public class PreferencesActivity extends BillingHelperActivity
         if (fragment != null) {
             runOnUiThread(() -> {
                 fragment.onPurchasesInitialized();
-                Settings.storeWeatherDataPurchase(
-                        this,
-                        isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
-                );
             }
             );
         }

@@ -1,5 +1,7 @@
 package com.firebirdberlin.nightdream;
 
+import static android.text.format.DateFormat.getBestDateTimePattern;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -26,7 +28,6 @@ import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
-import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -40,8 +41,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import static android.text.format.DateFormat.getBestDateTimePattern;
 
 public class Settings {
     public static final String PREFS_KEY = "NightDream preferences";
@@ -177,7 +176,6 @@ public class Settings {
     public Set<Integer> scheduledAutostartWeekdays;
     public double NOISE_AMPLITUDE_WAKE = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
-    public boolean purchasedWeatherData = false;
     public int clockLayout;
     boolean autostartForNotifications = true;
     public boolean showBattery = true;
@@ -191,10 +189,11 @@ public class Settings {
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
-    private final Gson gson = new Gson();
+    private final PurchaseManager purchaseManager;
 
     public Settings(Context context) {
         this.mContext = context;
+        purchaseManager = PurchaseManager.getInstance(context.getApplicationContext());
         settings = context.getSharedPreferences(PREFS_KEY, 0);
 
         reload();
@@ -383,14 +382,6 @@ public class Settings {
         return preferences.getBoolean("flashlightIsOn", false);
     }
 
-    public static void storeWeatherDataPurchase(Context context, boolean weatherIsPurchased) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, 0);
-        SharedPreferences.Editor editor = prefs.edit();
-        Log.i(TAG, "weatherIsPurchased: " + weatherIsPurchased);
-        editor.putBoolean("purchasedWeatherData", weatherIsPurchased);
-        editor.apply();
-    }
-
     public String getWeatherProviderString() {
         return settings.getString("weatherProvider", "0");
     }
@@ -398,15 +389,14 @@ public class Settings {
     public WeatherProvider getWeatherProvider() {
         String provider = settings.getString("weatherProvider", "0");
         switch (provider) {
-            case "0":
-            default:
-                return WeatherProvider.OPEN_WEATHER_MAP;
             case "1":
             case "2":
                 return WeatherProvider.BRIGHT_SKY;
             case "3":
                 return WeatherProvider.MET_NO;
-
+            case "0":
+            default:
+                return WeatherProvider.OPEN_WEATHER_MAP;
         }
     }
 
@@ -489,8 +479,6 @@ public class Settings {
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
-        purchasedWeatherData = settings.getBoolean("purchasedWeatherData", false);
-        if (Utility.isEmulator()) purchasedWeatherData = true;
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
@@ -764,6 +752,7 @@ public class Settings {
     }
 
     public int getValidatedClockLayoutID(int clockLayoutId, boolean preview) {
+        boolean purchasedWeatherData = purchaseManager.isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
         if (preview) {
             return clockLayoutId;
         } else if (clockLayoutId == ClockLayout.LAYOUT_ID_CALENDAR && !purchasedWeatherData) {
@@ -776,6 +765,7 @@ public class Settings {
     }
 
     public int getBackgroundMode() {
+        boolean purchasedWeatherData = purchaseManager.isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
         if (Utility.isLowRamDevice(mContext)) {
             return BACKGROUND_BLACK;
         } else if (background_mode != BACKGROUND_SLIDESHOW || purchasedWeatherData) {
