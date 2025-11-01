@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.widget;
 
-import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -19,12 +17,10 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
-import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 
 import java.util.Calendar;
 import java.util.Locale;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class AlarmClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "AlarmClockWidget";
@@ -68,7 +64,9 @@ public class AlarmClockWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(TAG, "onUpdate");
-        ScreenWatcherService.conditionallyStart(context);
+        // this service should already be running, but starting it here is forbidden as onUpdate
+        // is called by a broadcast
+//        ScreenWatcherService.conditionallyStart(context);
 
         for (int widgetId : appWidgetIds) {
             updateWidget(context, appWidgetManager, widgetId);

@@ -1,6 +1,5 @@
 package com.firebirdberlin.nightdream.widget;
 
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -25,7 +24,6 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.DataSource;
@@ -41,12 +39,10 @@ import com.firebirdberlin.nightdream.ui.ClockLayout;
 import java.util.Calendar;
 import java.util.Locale;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class ClockWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "WidgetProvider";
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
-    private static String nextAlarmString ="";
     private AlarmManager mAlarmManager;
     private static final int RC_UPDATE = 0x13;
 
@@ -78,8 +74,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return new ViewInfo(container, widthPixel, heightPixel);
     }
 
-    private static String getEmojiByUnicode(int unicode){
-        return new String(Character.toChars(unicode));
+    private static String getAlarmClockEmoji(){
+        return new String(Character.toChars(0x1F514));
     }
 
     private static TextView getNextAlarm(Context context, Settings settings){
@@ -89,9 +85,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         db.close();
 
         if (nextAlarm != null) {
-            nextAlarmString = String.format(
+            String nextAlarmString = String.format(
                     "%s %s",
-                    getEmojiByUnicode(0x1F514),
+                    getAlarmClockEmoji(),
                     Utility.getTimeFormatted(context, nextAlarm.getCalendar())
             );
 
@@ -232,7 +228,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         return widgetsIds.length > 0;
     }
 
-    public WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
+    private WidgetDimension widgetDimensionFromBundle(Bundle bundle) {
         // API 16 and up only
         //portrait mode: width=minWidth, height=maxHeight, landscape mode: width=maxWidth, height=minHeight
         int minWidth = bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
@@ -289,8 +285,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                               int appWidgetId, WidgetDimension dimension) {
 
         //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated widget");
-
-        final PrepareBitmapTask task = new PrepareBitmapTask(appWidgetManager, appWidgetId, dimension);
+        final PrepareBitmapTask task = new PrepareBitmapTask(context, appWidgetManager, appWidgetId, dimension);
         task.execute(context);
     }
 
@@ -303,11 +298,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         long millis = calendar.getTimeInMillis();
         PendingIntent pendingIntent = getUpdateIntent(context, widgetIds);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mAlarmManager.setExact(AlarmManager.RTC, millis, pendingIntent);
-        } else {
-            mAlarmManager.set(AlarmManager.RTC, millis, pendingIntent);
-        }
+        mAlarmManager.setExact(AlarmManager.RTC, millis, pendingIntent);
     }
 
     private static ComponentName getComponentName(Context context) {
@@ -317,7 +308,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle bundle) {
         WidgetDimension w = widgetDimensionFromBundle(bundle);
-        Log.d(TAG, String.format("onUpdate: widgetId=%d minwidth=%d maxwidth=%d minheight=%d maxheight=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
+        Log.d(TAG, String.format("onUpdate: widgetId=%d min width=%d max width=%d min height=%d max height=%d", appWidgetId, w.minWidth, w.maxWidth, w.minHeight, w.maxHeight));
 
         updateWidget(context, appWidgetManager, appWidgetId, w);
     }
@@ -334,111 +325,94 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private static class PrepareBitmapTask extends AsyncTask<Context, Void, RemoteViews> {
+    private static class PrepareBitmapTask extends AsyncTask<Context, Void, PrepareBitmapTask.TaskResult> {
 
         private final AppWidgetManager appWidgetManager;
         private final int appWidgetId;
         private final WidgetDimension dimension;
+        private final Context applicationContext;
 
-        PrepareBitmapTask(
-                AppWidgetManager appWidgetManager, int appWidgetId, WidgetDimension dimension
-        ) {
+        static class TaskResult {
+            final ViewInfo viewInfo;
+            final RemoteViews remoteViews;
+
+            TaskResult(ViewInfo viewInfo, RemoteViews remoteViews) {
+                this.viewInfo = viewInfo;
+                this.remoteViews = remoteViews;
+            }
+        }
+
+        PrepareBitmapTask(Context context, AppWidgetManager appWidgetManager, int appWidgetId, WidgetDimension dimension) {
             super();
+            this.applicationContext = context.getApplicationContext();
             this.appWidgetManager = appWidgetManager;
             this.appWidgetId = appWidgetId;
             this.dimension = dimension;
         }
 
         @Override
-        protected RemoteViews doInBackground(Context... contexts) {
-            Context context = contexts[0];
-            final ViewInfo sourceView = prepareSourceView(context, dimension, appWidgetId);
-            Bitmap widgetBitmap = loadBitmapFromView(sourceView);
+        protected TaskResult doInBackground(Context... contexts) {
+            final ViewInfo sourceView = prepareSourceView(applicationContext, dimension, appWidgetId);
 
-            RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.clock_widget);
-            if (widgetBitmap == null) {
-                return null;
-            }
-
-            try {
-                updateViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
-
-            // click activates app
-            Intent intent = new Intent(context, NightDreamActivity.class);
-            PendingIntent pendingIntent = Utility.getImmutableActivity(context, 0, intent);
+            RemoteViews updateViews = new RemoteViews(applicationContext.getPackageName(), R.layout.clock_widget);
+            Intent intent = new Intent(applicationContext, NightDreamActivity.class);
+            PendingIntent pendingIntent = Utility.getImmutableActivity(applicationContext, 0, intent);
             updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
 
-            System.gc();
-            return updateViews;
+            return new TaskResult(sourceView, updateViews);
         }
 
-        private Bitmap loadBitmapFromView(ViewInfo viewInfo) {
+        private static Bitmap loadBitmapFromView(ViewInfo viewInfo) {
             Bitmap bitmap = null;
             View view = viewInfo.view;
-            if (view != null) {
-                view.setDrawingCacheEnabled(true);
-                view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-                try {
-                    view.buildDrawingCache();
-                    Bitmap drawingCache = view.getDrawingCache();
-                    if (drawingCache != null) {
-                        // assert that the bitmap is not larger than the widget area (bitmaps larger than the screen cause IllegalArgumentException in RemoteViews)
-                        if (view.getWidth() > viewInfo.widgetWidthPixel || view.getHeight() > viewInfo.widgetHeightPixel) {
-                            // down-scale the bitmap
-                            bitmap = Bitmap.createScaledBitmap(drawingCache, viewInfo.widgetWidthPixel, viewInfo.widgetHeightPixel, true);
-                        } else {
-                            bitmap = Bitmap.createBitmap(drawingCache);
-                        }
-                    }
-                } finally {
-                    view.setDrawingCacheEnabled(false);
-                }
-
-                if (bitmap == null) {
-                    bitmap = createLargeBitmapFromView(viewInfo);
-                }
+            if (view == null) {
+                return null;
             }
-
-            return bitmap;
-        }
-
-        /**
-         * fallback if getDrawingCache() returns null
-         */
-        private Bitmap createLargeBitmapFromView(ViewInfo viewInfo) {
-            View view = viewInfo.view;
 
             int w = view.getWidth();
             int h = view.getHeight();
 
-            Bitmap bitmap = null;
             if (w > 0 && h > 0) {
                 bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
                 view.draw(canvas);
 
-                // assert that the bitmap is not larger than the widget area (bitmaps larger than the screen cause IllegalArgumentException in RemoteViews)
-                if (view.getWidth() > viewInfo.widgetWidthPixel || view.getHeight() > viewInfo.widgetHeightPixel) {
-                    // down-scale the bitmap
+                if (w > viewInfo.widgetWidthPixel || h > viewInfo.widgetHeightPixel) {
                     bitmap = Bitmap.createScaledBitmap(bitmap, viewInfo.widgetWidthPixel, viewInfo.widgetHeightPixel, true);
                 }
             }
+
             return bitmap;
         }
 
         @Override
-        protected void onPostExecute(RemoteViews updateViews) {
-            if (updateViews == null) return;
-            try {
-                appWidgetManager.updateAppWidget(appWidgetId, updateViews);
-            } catch (IllegalArgumentException ignore) {
-
+        protected void onPostExecute(TaskResult result) {
+            if (result == null || result.viewInfo == null || result.remoteViews == null) {
+                return;
             }
+
+            Bitmap widgetBitmap = loadBitmapFromView(result.viewInfo);
+
+            if (widgetBitmap == null) {
+                return;
+            }
+
+            try {
+                result.remoteViews.setImageViewBitmap(R.id.clockWidgetImageView, widgetBitmap);
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Failed to set bitmap to RemoteViews", e);
+                return;
+            }
+
+            try {
+                appWidgetManager.updateAppWidget(appWidgetId, result.remoteViews);
+            } catch (IllegalArgumentException ignore) {
+            }
+
+            System.gc(); //optional
         }
     }
+
 
     public static final class Dimension {
         public final int width;
@@ -450,7 +424,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    final class WidgetDimension {
+    static final class WidgetDimension {
         final int minWidth;
         final int minHeight;
         final int maxWidth;
