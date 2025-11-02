@@ -48,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
@@ -293,10 +294,11 @@ public class NightDreamUI {
             final int[] size = new int[2];
 
             @Override
-            public void onShowPress(MotionEvent e) {
-                super.onShowPress(e);
+            public void onLongPress(@NonNull MotionEvent e) {
+                super.onLongPress(e);
                 Log.i(TAG, "onShowPress");
                 if (isInsideClockLayout(e)) {
+                    clockLayout.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     clockLayout_xDelta = e.getRawX() - clockLayout.getX();
                     clockLayout_yDelta = e.getRawY() - clockLayout.getY();
                     enableMoveClock();
