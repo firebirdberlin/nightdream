@@ -19,6 +19,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -689,12 +691,25 @@ public class NightDreamUI {
 
                         Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
                         backgroundImages[other].setImageDrawable(colorBlack);
+
                         if (bitmap != null) {
                             setDominantColorFromBitmap(bitmap);
                             if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                                backgroundImages[other].setImageBitmap(
-                                        Graphics.blur(mContext, bitmap)
-                                );
+
+                                final ImageView targetImageView = backgroundImages[other];
+                                final float blurRadius = 15f; // Same radius as before
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    targetImageView.setImageBitmap(bitmap);
+                                    RenderEffect blurEffect = RenderEffect.createBlurEffect(blurRadius, blurRadius, Shader.TileMode.CLAMP);
+                                    targetImageView.setRenderEffect(blurEffect);
+                                } else {
+                                    targetImageView.setRenderEffect(null);
+                                    targetImageView.setImageBitmap(
+                                            Graphics.blur(mContext, bitmap)
+                                    );
+                                }
+
                             }
                         }
                         backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -916,6 +931,12 @@ public class NightDreamUI {
         setImageScale();
 
         backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && settings.background_filter == 7) {
+            final float blurRadius = 15f; // Same radius as before
+            ImageView targetImageView = backgroundImages[activeBackgroundImage];
+            RenderEffect blurEffect = RenderEffect.createBlurEffect(blurRadius, blurRadius, Shader.TileMode.CLAMP);
+            targetImageView.setRenderEffect(blurEffect);
+        }
 
         backgroundImages[activeBackgroundImage].setScaleX(1);
         backgroundImages[activeBackgroundImage].setScaleY(1);
@@ -1672,7 +1693,9 @@ public class NightDreamUI {
             case 6:
                 return Graphics.sketch(bitmap);
             case 7:
-                return Graphics.blur(mContext, bitmap);
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
+                    return Graphics.blur(mContext, bitmap);
+                }
         }
 
         return bitmap.copy(Bitmap.Config.ARGB_8888, true);
