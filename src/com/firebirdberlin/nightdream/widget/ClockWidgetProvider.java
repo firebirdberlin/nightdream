@@ -138,7 +138,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         clockLayout.showPollenExposure(false);
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
-        if (settings.showWeather) {
+        if (settings.shallShowWeather()) {
             if (settings.getWeatherAutoLocationEnabled()) {
                 Location location = Utility.getLastKnownLocation(context);
                 settings.setLocation(location);
@@ -155,7 +155,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                     settings.temperatureUnit
             );
             clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
-            clockLayout.showWeather(showWeather && settings.showWeather);
+            clockLayout.showWeather(showWeather && settings.shallShowWeather());
             clockLayout.setWeatherLocation(false);
             clockLayout.setWeatherIconMode(settings.weather_icon);
             clockLayout.update(settings.weatherEntry, true);

@@ -53,7 +53,7 @@ public class DownloadWeatherService extends Worker {
     }
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {
-        if (!settings.showWeather || !Utility.isScreenOn(context)) return false;
+        if (!settings.shallShowWeather() || !Utility.isScreenOn(context)) return false;
         WeatherEntry entry = settings.weatherEntry;
         long age = entry.ageMillis();
         final int maxAge = 60 * 60 * 1000;
