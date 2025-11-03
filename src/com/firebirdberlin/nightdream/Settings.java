@@ -67,7 +67,7 @@ public class Settings {
     public boolean alwaysOnStartWithLockedUI = false;
     public boolean allow_screen_off = false;
     public boolean alarmFadeIn = true;
-    public boolean standbyEnabledWhileDisconnected = false;
+    private boolean standbyEnabledWhileDisconnected = false;
     public boolean standbyEnabledWhileDisconnectedScreenUp = false;
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
@@ -87,7 +87,7 @@ public class Settings {
     public boolean persistentBatteryValueWhileCharging = true;
     public ScreenProtectionModes screenProtection = ScreenProtectionModes.MOVE;
     public boolean showDate = true;
-    public boolean showWeather = false;
+    private boolean showWeather = false;
     public boolean showApparentTemperature = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
@@ -100,7 +100,7 @@ public class Settings {
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamRequireWiFi = false;
-    public boolean scheduledAutoStartEnabled = false;
+    private boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
     public float dim_offset = 0.8f;
     public float nightModeBrightness = 0.f;
@@ -812,14 +812,23 @@ public class Settings {
         prefEditor.apply();
     }
 
+    public boolean isStandbyEnabledWhileDisconnected() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return standbyEnabledWhileDisconnected;
+    }
+
+    public boolean isScheduledAutoStartEnabled() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return scheduledAutoStartEnabled;
+    }
+
     private String getDefaultDateFormat() {
         // Return the date format as used in versions previous to the version code 72
-        if (Build.VERSION.SDK_INT >= 18) {
-            return getBestDateTimePattern(Locale.getDefault(), "EEEEddLLLL");
-
-        }
-        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        return ((SimpleDateFormat) formatter).toLocalizedPattern();
+        return getBestDateTimePattern(Locale.getDefault(), "EEEEddLLLL");
     }
 
     public Typeface loadTypeface() {
@@ -1102,11 +1111,11 @@ public class Settings {
         prefEditor.apply();
     }
 
-    public void setFetchWeatherData(boolean on) {
-        showWeather = on;
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putBoolean("showWeather", on);
-        prefEditor.apply();
+    public boolean shallShowWeather() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_WEATHER_DATA)) {
+            return false;
+        }
+        return showWeather;
     }
 
     public Location getLocation() {

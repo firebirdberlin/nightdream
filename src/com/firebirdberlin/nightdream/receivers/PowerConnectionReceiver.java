@@ -85,7 +85,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         );
 
         Settings settings = new Settings(context);
-        if (settings.scheduledAutoStartEnabled) {
+        if (settings.isScheduledAutoStartEnabled()) {
             // The autostart feature is replaced by a new version which has a separate setting
             // in the preferences. Thus, the old autostart is deactivated when the new one is
             // active.
@@ -101,7 +101,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     public static void conditionallyStartApp(final Context context, final String action) {
         Settings settings = new Settings(context);
 
-        if (settings.scheduledAutoStartEnabled && Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+        if (settings.isScheduledAutoStartEnabled() && Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             return;
         }
 

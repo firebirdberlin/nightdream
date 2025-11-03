@@ -537,7 +537,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 });
             }
 
-            if (mySettings.showWeather) {
+            if (mySettings.shallShowWeather()) {
                 AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);

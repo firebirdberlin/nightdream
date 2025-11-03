@@ -743,7 +743,7 @@ public class NightDreamUI {
     }
 
     private void updateWeatherData() {
-        if (!settings.showWeather) return;
+        if (!settings.shallShowWeather()) return;
         Log.i(TAG, "updateWeatherData() 2");
 
         // handle outdated weather data
@@ -754,7 +754,7 @@ public class NightDreamUI {
     }
 
     private void updatePollenExposure(WeatherEntry entry) {
-        if (settings.showWeather && settings.showPollen) {
+        if (settings.shallShowWeather() && settings.showPollen) {
             ConstraintLayout pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
             if (pollenContainer != null) {
@@ -784,9 +784,9 @@ public class NightDreamUI {
         clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.showDate(settings.showDate);
-        clockLayout.showWeather(settings.showWeather);
+        clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
-        clockLayout.showPollenExposure(settings.showWeather && settings.showPollen);
+        clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
