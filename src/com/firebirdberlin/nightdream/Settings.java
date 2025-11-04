@@ -62,7 +62,7 @@ public class Settings {
 
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
-    public boolean activateDoNotDisturb = false;
+    private boolean activateDoNotDisturb = false;
     public boolean activateDoNotDisturbAllowPriority = true;
     public boolean alwaysOnStartWithLockedUI = false;
     public boolean allow_screen_off = false;
@@ -72,7 +72,7 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
-    public boolean speakTime = false;
+    private boolean speakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
     public boolean handle_power_disconnection_at_time_range_end = true;
@@ -92,7 +92,7 @@ public class Settings {
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean showPollen = false;
-    public boolean useDeviceLock = false;
+    private boolean useDeviceLock = false;
     public boolean stopAlarmOnTap = true;
     public boolean stopAlarmOnLongPress = false;
     public boolean useAlarmSwipeGesture = false;
@@ -328,27 +328,30 @@ public class Settings {
 
     public static boolean showNotificationPreview(Context context) {
         Resources res = context.getResources();
-        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return false;
         }
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         return enabled && preferences.getBoolean("showNotificationPreview", false);
     }
 
     public static boolean showMediaStyleNotification(Context context) {
         Resources res = context.getResources();
-        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return false;
         }
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         return enabled && preferences.getBoolean("showMediaStyleNotification", false);
     }
 
     public static boolean useNotificationStatusBar(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return true;
         }
         return preferences.getBoolean("showNotificationsInStatusBar", true);
@@ -360,7 +363,8 @@ public class Settings {
 
     public static int getMinNotificationImportance(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return 3;
         }
         String val = preferences.getString("minNotificationImportance", "3");
@@ -810,6 +814,27 @@ public class Settings {
         prefEditor.putBoolean("handle_power", false);
         prefEditor.putBoolean("standbyEnabledWhileDisconnected", false);
         prefEditor.apply();
+    }
+
+    public boolean shallUseDeviceLock() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return useDeviceLock;
+    }
+
+    public boolean shallActivateDoNotDisturb() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return activateDoNotDisturb;
+    }
+
+    public boolean isSpeakTimeEnabled() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return speakTime;
     }
 
     public boolean isStandbyEnabledWhileDisconnected() {
