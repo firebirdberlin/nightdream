@@ -137,11 +137,7 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(@NonNull MotionEvent e) {
-            if (nightDreamUI.isLocked() || !isPurchased(PurchaseManager.ITEM_ACTIONS)) {
-                return;
-            }
-
-            if (!mySettings.speakTime) {
+            if (nightDreamUI.isLocked() || !mySettings.isSpeakTimeEnabled()) {
                 return;
             }
 
@@ -219,7 +215,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
     private final Runnable lockDevice = () -> {
-        if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
+        if (mySettings.shallUseDeviceLock() && mgr.isAdminActive(cn) && !isLocked()) {
             mgr.lockNow();
             Utility.turnScreenOn(context);
         }
@@ -564,7 +560,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setKeepScreenOn(true);
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
-        if (mySettings.activateDoNotDisturb) {
+        if (mySettings.shallActivateDoNotDisturb()) {
             AudioManage.activateDnDMode(true, mySettings.activateDoNotDisturbAllowPriority);
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
@@ -664,7 +660,7 @@ public class NightDreamActivity extends BillingHelperActivity
         unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
-        if (mySettings.activateDoNotDisturb) {
+        if (mySettings.shallActivateDoNotDisturb()) {
             AudioManage.activateDnDMode(false, mySettings.activateDoNotDisturbAllowPriority);
         }
 
