@@ -152,7 +152,7 @@ public class SmartHomeActivity
 
     public void onDeviceStateChangeRequest(AvmAhaDevice device, String newState) {
         Log.d(TAG, "onDeviceStateChangeRequest " + device.toString());
-        if (isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+        if (isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             new AvmAhaRequestTask(this, credentials).setSimpleOnOff(device, newState);
         } else {
             // reset the switch state to the current device state
@@ -190,7 +190,7 @@ public class SmartHomeActivity
     }
 
     private void conditionallyShowSnackBar() {
-        if (!isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+        if (!isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             View view = findViewById(android.R.id.content);
             snackbar = Snackbar.make(
                     view, R.string.smart_home_purchase_request, Snackbar.LENGTH_INDEFINITE

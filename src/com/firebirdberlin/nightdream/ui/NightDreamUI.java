@@ -19,6 +19,8 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -48,6 +50,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
@@ -293,10 +296,11 @@ public class NightDreamUI {
             final int[] size = new int[2];
 
             @Override
-            public void onShowPress(MotionEvent e) {
-                super.onShowPress(e);
+            public void onLongPress(@NonNull MotionEvent e) {
+                super.onLongPress(e);
                 Log.i(TAG, "onShowPress");
                 if (isInsideClockLayout(e)) {
+                    clockLayout.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                     clockLayout_xDelta = e.getRawX() - clockLayout.getX();
                     clockLayout_yDelta = e.getRawY() - clockLayout.getY();
                     enableMoveClock();
@@ -648,11 +652,21 @@ public class NightDreamUI {
         preloadBackgroundImage = null;
         preloadBackgroundImageFile = null;
         exifLayoutContainer.setVisibility(View.GONE);
+
+        int backgroundMode = settings.getBackgroundMode();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (backgroundMode != Settings.BACKGROUND_SLIDESHOW) {
+                for (ImageView view : backgroundImages) {
+                    view.setRenderEffect(null);
+                }
+            }
+        }
+
         if (Utility.isLowRamDevice(mContext)) {
             bgshape = colorBlack;
             backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
         } else {
-            switch (settings.getBackgroundMode()) {
+            switch (backgroundMode) {
                 case Settings.BACKGROUND_TRANSPARENT: {
                     Log.d(TAG, "BACKGROUND_TRANSPARENT");
                     bgshape = colorTransparent;
@@ -687,12 +701,24 @@ public class NightDreamUI {
 
                         Bitmap bitmap = backgroundImages[activeBackgroundImage].getBitmap();
                         backgroundImages[other].setImageDrawable(colorBlack);
+
                         if (bitmap != null) {
                             setDominantColorFromBitmap(bitmap);
                             if (settings.slideshowStyle == Settings.SLIDESHOW_STYLE_CENTER) {
-                                backgroundImages[other].setImageBitmap(
-                                        Graphics.blur(mContext, bitmap)
-                                );
+
+                                final ImageView targetImageView = backgroundImages[other];
+                                final float blurRadius = 15f; // Same radius as before
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    targetImageView.setImageBitmap(bitmap);
+                                    RenderEffect blurEffect = RenderEffect.createBlurEffect(blurRadius, blurRadius, Shader.TileMode.CLAMP);
+                                    targetImageView.setRenderEffect(blurEffect);
+                                } else {
+                                    targetImageView.setImageBitmap(
+                                            Graphics.blur(mContext, bitmap)
+                                    );
+                                }
+
                             }
                         }
                         backgroundImages[other].setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -741,7 +767,7 @@ public class NightDreamUI {
     }
 
     private void updateWeatherData() {
-        if (!settings.showWeather) return;
+        if (!settings.shallShowWeather()) return;
         Log.i(TAG, "updateWeatherData() 2");
 
         // handle outdated weather data
@@ -752,7 +778,7 @@ public class NightDreamUI {
     }
 
     private void updatePollenExposure(WeatherEntry entry) {
-        if (settings.showWeather && settings.showPollen) {
+        if (settings.shallShowWeather() && settings.showPollen) {
             ConstraintLayout pollenContainer = clockLayout.findViewById(R.id.pollen_container);
 
             if (pollenContainer != null) {
@@ -782,9 +808,9 @@ public class NightDreamUI {
         clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.showDate(settings.showDate);
-        clockLayout.showWeather(settings.showWeather);
+        clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
-        clockLayout.showPollenExposure(settings.showWeather && settings.showPollen);
+        clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
         Configuration config = getConfiguration();
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
@@ -914,6 +940,18 @@ public class NightDreamUI {
         setImageScale();
 
         backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ImageView targetImageView = backgroundImages[activeBackgroundImage];
+            if (settings.background_filter == 7) {
+                final float blurRadius = 15f; // Same radius as before
+                RenderEffect blurEffect = RenderEffect.createBlurEffect(blurRadius, blurRadius, Shader.TileMode.CLAMP);
+                targetImageView.setRenderEffect(blurEffect);
+            } else {
+                for (ImageView view : backgroundImages) {
+                    view.setRenderEffect(null);
+                }
+            }
+        }
 
         backgroundImages[activeBackgroundImage].setScaleX(1);
         backgroundImages[activeBackgroundImage].setScaleY(1);
@@ -1670,7 +1708,9 @@ public class NightDreamUI {
             case 6:
                 return Graphics.sketch(bitmap);
             case 7:
-                return Graphics.blur(mContext, bitmap);
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
+                    return Graphics.blur(mContext, bitmap);
+                }
         }
 
         return bitmap.copy(Bitmap.Config.ARGB_8888, true);

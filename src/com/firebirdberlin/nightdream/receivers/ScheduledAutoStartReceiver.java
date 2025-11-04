@@ -45,7 +45,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
     }
 
     public static boolean shallAutostart(Context context, Settings settings) {
-        if (!settings.scheduledAutoStartEnabled) return false;
+        if (!settings.isScheduledAutoStartEnabled()) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
@@ -88,11 +88,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         Log.d(TAG, start.toString());
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-        if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
-        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
     }
 
     public static void conditionallyStartApp(final Context context) {
