@@ -75,6 +75,7 @@ def getApiKeyDarkSky() {
 
 android {
     namespace 'com.firebirdberlin.nightdream'
+    compileSdk 35
 
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -127,10 +128,9 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        compileSdk 35
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
-        targetSdkVersion 35
+        targetSdk 35
         renderscriptTargetApi 21
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true

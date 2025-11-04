@@ -104,7 +104,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
 
-        if (settings.standbyEnabledWhileDisconnected
+        if (settings.isStandbyEnabledWhileDisconnected()
                 && (
                 battery.reference.isCharging
                         || settings.alwaysOnBatteryLevel <= battery.reference.level

@@ -132,11 +132,12 @@ public class NightDreamActivity extends BillingHelperActivity
     private Settings mySettings = null;
     private Configuration prevConfig;
     private final long startTime = System.currentTimeMillis();
+    private static final String UTTERANCE_ID_SPEAK_TIME = "UTTERANCE_ID_SPEAK_TIME";
 
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
-        public void onLongPress(MotionEvent e) {
-            if (nightDreamUI.isLocked() || !isPurchased(BillingHelperActivity.ITEM_ACTIONS)) {
+        public void onLongPress(@NonNull MotionEvent e) {
+            if (nightDreamUI.isLocked() || !isPurchased(PurchaseManager.ITEM_ACTIONS)) {
                 return;
             }
 
@@ -154,13 +155,17 @@ public class NightDreamActivity extends BillingHelperActivity
 
             if (textToSpeech != null) {
                 // TODO implement audio ducking
-                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                if (!text.isEmpty()) {
+                    textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID_SPEAK_TIME);
+                } else {
+                    Log.w("TTS", "Attempted to speak null or empty text.");
+                }
             }
             super.onLongPress(e);
         }
 
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
+        public boolean onDoubleTap(@NonNull MotionEvent e) {
             if (!mySettings.doubleTapToFinish) {
                 return false;
             }
@@ -171,9 +176,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private final LocationListener locationListener = new LocationListener() {
 
         @Override
-        public void onLocationChanged(final Location location) {
-            if (location == null) return;
-
+        public void onLocationChanged(@NonNull final Location location) {
             if ((mySettings.getLocation().getLongitude() != location.getLongitude()) ||
                     (mySettings.getLocation().getLatitude() != location.getLatitude())) {
                 City city = new City();
@@ -534,7 +537,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 });
             }
 
-            if (mySettings.showWeather) {
+            if (mySettings.shallShowWeather()) {
                 AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
@@ -766,7 +769,7 @@ public class NightDreamActivity extends BillingHelperActivity
         if (AlarmHandlerService.alarmIsRunning()) {
             AlarmHandlerService.stop(this);
         }
-        if (!isPurchased(BillingHelperActivity.ITEM_WEB_RADIO)) {
+        if (!isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
             showPurchaseDialog();
             return;
         }

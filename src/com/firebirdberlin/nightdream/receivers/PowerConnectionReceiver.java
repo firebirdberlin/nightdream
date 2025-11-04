@@ -48,7 +48,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
     }
 
     public static boolean shallAutostart(@NonNull Context context, @NonNull Settings settings) {
-        if (context == null || settings == null || !settings.handle_power) return false;
+        if (!settings.handle_power) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
@@ -85,8 +85,8 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         );
 
         Settings settings = new Settings(context);
-        if (settings.scheduledAutoStartEnabled) {
-            // The autostart feature is replaced by a new version which has a seperate setting
+        if (settings.isScheduledAutoStartEnabled()) {
+            // The autostart feature is replaced by a new version which has a separate setting
             // in the preferences. Thus, the old autostart is deactivated when the new one is
             // active.
             return;
@@ -95,17 +95,13 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-        if (Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
-        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
     }
 
     public static void conditionallyStartApp(final Context context, final String action) {
         Settings settings = new Settings(context);
 
-        if (settings.scheduledAutoStartEnabled && Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+        if (settings.isScheduledAutoStartEnabled() && Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             return;
         }
 

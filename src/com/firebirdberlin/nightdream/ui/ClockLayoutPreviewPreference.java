@@ -25,8 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
-import com.firebirdberlin.nightdream.BillingHelperActivity;
 import com.firebirdberlin.nightdream.PreferencesActivity;
+import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -124,7 +124,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
         clockLayout.setWeatherLocation(false);
         clockLayout.setWeatherIconMode(settings.weather_icon);
-        clockLayout.showWeather(settings.showWeather);
+        clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setShowNotifications(false);
         clockLayout.showPollenExposure(false);
 
@@ -153,7 +153,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             case ClockLayout.LAYOUT_ID_DIGITAL3:
                 CustomDigitalClockPreferencesLayout prefs_digital =
                         new CustomDigitalClockPreferencesLayout(context, settings, getActivity(), clockLayoutID);
-                prefs_digital.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_digital.setIsPurchased(purchased(PurchaseManager.ITEM_WEATHER_DATA));
                 prefs_digital.setOnConfigChangedListener(
                         new CustomDigitalClockPreferencesLayout.OnConfigChangedListener() {
                             @Override
@@ -172,7 +172,7 @@ public class ClockLayoutPreviewPreference extends Preference {
             case ClockLayout.LAYOUT_ID_CALENDAR:
                 CustomCalendarClockPreferencesLayout prefs_calendar =
                         new CustomCalendarClockPreferencesLayout(context, settings, getActivity());
-                prefs_calendar.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_calendar.setIsPurchased(purchased(PurchaseManager.ITEM_WEATHER_DATA));
                 prefs_calendar.setOnConfigChangedListener(
                         new CustomCalendarClockPreferencesLayout.OnConfigChangedListener() {
                             @Override
@@ -217,7 +217,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                 CustomAnalogClockPreferencesLayout prefs_analog =
                         new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
 
-                prefs_analog.setIsPurchased(purchased(BillingHelperActivity.ITEM_WEATHER_DATA));
+                prefs_analog.setIsPurchased(purchased(PurchaseManager.ITEM_WEATHER_DATA));
                 prefs_analog.setOnConfigChangedListener(
                         new CustomAnalogClockPreferencesLayout.OnConfigChangedListener() {
                             @Override
@@ -265,12 +265,12 @@ public class ClockLayoutPreviewPreference extends Preference {
     private void setupPurchaseHint(Settings settings) {
         int layoutID = settings.getClockLayoutID(true);
         if (layoutID == ClockLayout.LAYOUT_ID_CALENDAR
-                && !purchased(BillingHelperActivity.ITEM_WEATHER_DATA)) {
+                && !purchased(PurchaseManager.ITEM_WEATHER_DATA)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.product_name_pro));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
 
         } else if (layoutID >= ClockLayout.LAYOUT_ID_ANALOG2
-                && !purchased(BillingHelperActivity.ITEM_WEATHER_DATA)) {
+                && !purchased(PurchaseManager.ITEM_WEATHER_DATA)) {
             textViewPurchaseHint.setText(getContext().getString(R.string.product_name_pro));
             textViewPurchaseHint.setVisibility(View.VISIBLE);
 
