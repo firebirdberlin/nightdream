@@ -13,6 +13,7 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnAlarmStarted;
@@ -42,12 +43,16 @@ public class AlarmHandlerService extends BroadcastReceiver {
                 Utility.hasFastNetworkConnection(context) : Utility.hasNetworkConnection(context);
 
         SimpleTime alarmTime = getCurrentlyActiveAlarm();
-        int radioStationIndex = (alarmTime != null) ? alarmTime.radioStationIndex : -1;
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+
+        int radioStationIndex = -1;
+        if (purchaseManager.isPurchased(PurchaseManager.ITEM_WEB_RADIO) && alarmTime != null) {
+            radioStationIndex = alarmTime.radioStationIndex;
+        }
         Log.d(TAG, "settings.radioStreamRequireWiFi: " + settings.radioStreamRequireWiFi);
         Log.d(TAG, "hasNetworkConnection: " + hasNetworkConnection);
         Log.d(TAG, "radioStationIndex: " + radioStationIndex);
         if (radioStationIndex > -1 && hasNetworkConnection) {
-
             RadioStreamService.start(context, alarmTime);
         } else {
             if (RadioStreamService.streamingMode != RadioStreamService.StreamingMode.INACTIVE) {

@@ -149,6 +149,7 @@ public class AlarmClockLayout extends LinearLayout {
 
     private void init() {
 
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View child = inflater.inflate(R.layout.alarm_clock_layout, null);
@@ -230,9 +231,7 @@ public class AlarmClockLayout extends LinearLayout {
 
             FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
             ManageAlarmSoundsDialogFragment dialog = new ManageAlarmSoundsDialogFragment();
-            dialog.setIsPurchased(
-                    ((BillingHelperActivity) context).isPurchased(PurchaseManager.ITEM_WEB_RADIO)
-            );
+            dialog.setIsPurchased(purchaseManager.isPurchased(PurchaseManager.ITEM_WEB_RADIO));
             dialog.setContext(getContext());
             dialog.setSelectedUri(alarmClockEntry.soundUri);
             dialog.setOnAlarmToneSelectedListener(new ManageAlarmSoundsDialogFragment.ManageAlarmSoundsDialogListener() {
@@ -257,7 +256,10 @@ public class AlarmClockLayout extends LinearLayout {
         });
 
         String stationName = getResources().getString(R.string.radio_station_none);
-        if (alarmClockEntry.radioStationIndex > -1) {
+        if (
+                purchaseManager.isPurchased(PurchaseManager.ITEM_WEB_RADIO)
+                && alarmClockEntry.radioStationIndex > -1
+        ) {
 
             stationName = getResources().getString(R.string.radio_station) + " #" + (alarmClockEntry.radioStationIndex + 1);
             if (radioStations != null) {

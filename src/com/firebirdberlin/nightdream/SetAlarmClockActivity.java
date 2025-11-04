@@ -294,9 +294,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     public void onDeleteClick(View view) {
         SimpleTime entry = (SimpleTime) view.getTag();
         db.delete(entry);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmNotificationService.cancelNotification(this);
-        }
+        AlarmNotificationService.cancelNotification(this);
         WakeUpReceiver.schedule(this, db);
     }
 
@@ -381,12 +379,10 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         entry.hour = intent.getIntExtra(AlarmClock.EXTRA_HOUR, 0);
         entry.min = intent.getIntExtra(AlarmClock.EXTRA_MINUTES, 0);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            ArrayList<Integer> days = intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS);
-            if (days != null) {
-                for (int day : days) {
-                    entry.addRecurringDay(day);
-                }
+        ArrayList<Integer> days = intent.getIntegerArrayListExtra(AlarmClock.EXTRA_DAYS);
+        if (days != null) {
+            for (int day : days) {
+                entry.addRecurringDay(day);
             }
         }
         entry.isActive = true;
