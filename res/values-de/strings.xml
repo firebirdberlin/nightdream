@@ -29,13 +29,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_new_alarm">neuen Wecker hinzufügen</string>
     <string name="alarm">Wecker</string>
     <string name="alarmName">Name des Weckers</string>
-    <string name="alarmFadeIn">ansteigende Lautstärke</string>
+    <string name="alarmFadeIn">Ansteigende Lautstärke</string>
     <string name="alarmFadeInDurationSeconds">Dauer</string>
+    <string name="alarmFadeInMaxVolumePercent">maximale Lautstärke</string>
     <string name="alarmStartDate">Nächster Alarm am</string>
     <string name="alarmStartsFrom">ab</string>
     <string name="alarmUpcoming">Anstehende Weckzeit</string>
     <string name="alarmVolume">Lautstärke</string>
-    <string name="alarmVolumeReductionPercent">Lautstärkereduzierung</string>
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="allow_screen_off_summary">Der Bildschirm darf sich während der Nacht abschalten.</string>
     <string name="alwaysOnBatteryLevel">Akkustand ist über</string>

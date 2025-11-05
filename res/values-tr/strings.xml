@@ -34,7 +34,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartsFrom">Başlangıç</string>
     <string name="alarmUpcoming">Yaklaşan alarm</string>
     <string name="alarmVolume">Alarm ses seviyesi</string>
-    <string name="alarmVolumeReductionPercent">..ile sesi azalt</string>
     <string name="allow_screen_off_summary">Gece boyunca ekran kapalı</string>
     <string name="allow_screen_off">Ekranı kapat</string>
     <string name="always_on">Herzaman Açık</string>

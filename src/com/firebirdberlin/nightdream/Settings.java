@@ -32,8 +32,6 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -118,6 +116,7 @@ public class Settings {
     public int alarmVolume = 3;
     public int alarmVolumeReductionPercent = 0;
     public int alarmFadeInDurationSeconds = 10;
+    private int alarmFadeInMaxVolumePercent = 100;
     public int slideshowStyle = 1;
     public int backgroundImageDuration = 4;
     public int clockBackgroundTransparency = 4;
@@ -185,7 +184,7 @@ public class Settings {
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = BACKGROUND_BLACK;
     private long nextAlwaysOnTime = 0L;
-    private Context mContext;
+    private final Context mContext;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
@@ -416,10 +415,11 @@ public class Settings {
         alwaysOnStartWithLockedUI = settings.getBoolean("alwaysOnStartWithLockedUI", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);
-        alarmVolumeReductionPercent = settings.getInt("alarmVolumeReductionPercent", 0);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         notifyForUpcomingAlarms = settings.getBoolean("notifyForUpcomingAlarms", false);
         alarmFadeInDurationSeconds = settings.getInt("alarmFadeInDurationSeconds", 10);
+        alarmVolumeReductionPercent = settings.getInt("alarmVolumeReductionPercent", 0);
+        alarmFadeInMaxVolumePercent = settings.getInt("alarmFadeInMaxVolumePercent", 100 - alarmVolumeReductionPercent);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autostartForNotifications = settings.getBoolean("autostartForNotifications", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
@@ -563,6 +563,10 @@ public class Settings {
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
         }
+    }
+
+    public int getAlarmMaxVolumePercent() {
+        return (alarmFadeIn) ? alarmFadeInMaxVolumePercent : 100;
     }
 
     int getBatteryTimeoutMinutes() {
@@ -1158,7 +1162,7 @@ public class Settings {
         try {
             return Double.longBitsToDouble(settings.getLong(key, 0));
         }catch (Exception ex){
-            return (double) settings.getFloat(key, 0.f);
+            return settings.getFloat(key, 0.f);
         }
     }
 
