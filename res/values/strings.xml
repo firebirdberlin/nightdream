@@ -31,11 +31,11 @@ OR
     <string name="alarmName">Name of the alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>
+    <string name="alarmFadeInMaxVolumePercent">maximum volume</string>
     <string name="alarmStartDate">Next alarm on</string>
     <string name="alarmStartsFrom">from</string>
     <string name="alarmUpcoming">Upcoming alarm</string>
     <string name="alarmVolume">Volume</string>
-    <string name="alarmVolumeReductionPercent">reduce volume by</string>
     <string name="allow_screen_off_summary">Turn the screen off during the night.</string>
     <string name="allow_screen_off">Turn screen off</string>
     <string name="always_on">Always on</string>

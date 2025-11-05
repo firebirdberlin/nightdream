@@ -34,7 +34,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartsFrom">Iz</string>
     <string name="alarmUpcoming">Dolazni alarm</string>
     <string name="alarmVolume">Glasnoća</string>
-    <string name="alarmVolumeReductionPercent">smanjiti glasnoću za</string>
     <string name="allow_screen_off_summary">Isključite zaslon tijekom noći</string>
     <string name="allow_screen_off">Ugašen zaslon</string>
     <string name="always_on">Isključite zaslon</string>

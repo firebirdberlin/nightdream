@@ -34,7 +34,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartsFrom">od</string>
     <string name="alarmUpcoming">Nadchodzący alarm</string>
     <string name="alarmVolume">Głosność</string>
-    <string name="alarmVolumeReductionPercent">redukcja głośności o</string>
     <string name="allow_screen_off_summary">Wyłacz ekran na noc</string>
     <string name="allow_screen_off">Ekran wyłączony</string>
     <string name="always_on">Zawsze włączony</string>
