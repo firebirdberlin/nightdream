@@ -19,9 +19,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.TypedValue;
@@ -63,7 +61,6 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
-import com.firebirdberlin.nightdream.ui.AskForOverlayPermissionDialogFragment;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -111,7 +108,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private final Runnable finishApp = this::finish;
     private final Runnable runnableSetupNightMode = this::setupNightMode;
     public CastContext mCastContext;
-    protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
     private ImageView alarmClockIcon;
@@ -193,12 +189,12 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         @Override
-        public void onProviderEnabled(String s) {
+        public void onProviderEnabled(@NonNull String s) {
 
         }
 
         @Override
-        public void onProviderDisabled(String s) {
+        public void onProviderDisabled(@NonNull String s) {
 
         }
     };
@@ -582,14 +578,12 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void setExcludeFromRecents() {
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            boolean isConfiguredAsDaydream = Utility.isConfiguredAsDaydream(this);
-            List<ActivityManager.AppTask> tasks = (am != null) ? am.getAppTasks() : null;
-            if (tasks != null) {
-                for (ActivityManager.AppTask task : tasks)
-                    task.setExcludeFromRecents(isConfiguredAsDaydream);
-            }
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        boolean isConfiguredAsDaydream = Utility.isConfiguredAsDaydream(this);
+        List<ActivityManager.AppTask> tasks = (am != null) ? am.getAppTasks() : null;
+        if (tasks != null) {
+            for (ActivityManager.AppTask task : tasks)
+                task.setExcludeFromRecents(isConfiguredAsDaydream);
         }
     }
 
@@ -940,8 +934,12 @@ public class NightDreamActivity extends BillingHelperActivity
             return true;
         }
 
-        Log.i(TAG, "1 " + (isCharging || mySettings.isAlwaysOnAllowed()));
-        if ((isCharging || mySettings.isAlwaysOnAllowed()) && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)) {
+        BatteryStats batteryStats = new BatteryStats(context);
+        Log.i(TAG, "1 " + (isCharging || mySettings.isWithinAlwaysOnTime(batteryStats.reference.level)));
+        if (
+                (isCharging || mySettings.isWithinAlwaysOnTime(batteryStats.reference.level))
+                && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)
+        ) {
             Log.d(TAG, "shallKeepScreenOn() 2 true");
             return true;
         }
@@ -992,8 +990,9 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
         Log.i(TAG, "new intent received");

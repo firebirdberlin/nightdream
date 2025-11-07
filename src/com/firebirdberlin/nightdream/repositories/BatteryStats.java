@@ -109,9 +109,6 @@ public class BatteryStats {
     }
 
     private boolean isChargingWireless(int chargingMethod) {
-        if (Build.VERSION.SDK_INT >= 17) {
-            return (chargingMethod == BatteryManager.BATTERY_PLUGGED_WIRELESS);
-        }
-        return false;
+        return (chargingMethod == BatteryManager.BATTERY_PLUGGED_WIRELESS);
     }
 }

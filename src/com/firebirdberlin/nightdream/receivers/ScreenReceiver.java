@@ -90,7 +90,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         } else {
             Log.i(TAG, "conditionallyActivateAlwaysOn(): Not activating standby mode");
         }
-        settings.deleteNextAlwaysOnTime();
     }
 
     public static boolean shallActivateStandby(final Context context, Settings settings) {
@@ -99,7 +98,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
         BatteryStats battery = new BatteryStats(context);
-        if (settings.handle_power && battery.reference.isCharging && settings.isAlwaysOnAllowed()) {
+        if (settings.handle_power && battery.reference.isCharging && settings.isWithinAlwaysOnTime(battery.reference.level)) {
             Log.i(TAG, "shallActivateStandby() autostart allowed");
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
@@ -109,25 +108,14 @@ public class ScreenReceiver extends BroadcastReceiver {
                 battery.reference.isCharging
                         || settings.alwaysOnBatteryLevel <= battery.reference.level
                 )
-                && settings.isAlwaysOnAllowed()
+                && settings.isWithinAlwaysOnTime(battery.reference.level)
                 && !deviceIsCovered
                 && !Utility.isInCall(context)
                 && (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)
         ) {
             Log.i(TAG, "shallActivateStandby() standby allowed");
+            return true;
 
-            Calendar now = Calendar.getInstance();
-            if (!settings.alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) return false;
-
-            Calendar start = new SimpleTime(settings.alwaysOnTimeRangeStartInMinutes).getCalendar();
-            Calendar end = new SimpleTime(settings.alwaysOnTimeRangeEndInMinutes).getCalendar();
-            boolean shall_auto_start = true;
-            if (end.before(start)) {
-                shall_auto_start = (now.after(start) || now.before(end));
-            } else if (!start.equals(end)) {
-                shall_auto_start = (now.after(start) && now.before(end));
-            }
-            return shall_auto_start;
         }
 
         Log.i(TAG, "shallActivateStandby() standby not allowed");
@@ -219,7 +207,6 @@ public class ScreenReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             deviceIsCovered = false;
             isScreenUp = false;
-            settings.deleteNextAlwaysOnTime();
         }
     }
 }

@@ -183,7 +183,6 @@ public class Settings {
     SharedPreferences settings;
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = BACKGROUND_BLACK;
-    private long nextAlwaysOnTime = 0L;
     private final Context mContext;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
@@ -482,7 +481,6 @@ public class Settings {
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
-        nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
@@ -1024,34 +1022,27 @@ public class Settings {
         EventBus.getDefault().post(new OnSleepTimeChanged(sleepTimeInMillis));
     }
 
-    public void updateNextAlwaysOnTime() {
-        long now = System.currentTimeMillis();
-        nextAlwaysOnTime = now;
-        nextAlwaysOnTime += Utility.getScreenOffTimeout(mContext);
-        nextAlwaysOnTime += 20000;
+    public boolean isWithinAlwaysOnTime(int batteryLevel) {
+        boolean isBatteryOk = (batteryLevel < 0) || (alwaysOnBatteryLevel <= batteryLevel); // Use -1 for unknown
+        if (isStandbyEnabledWhileDisconnected() && isBatteryOk
+        ) {
+            Calendar now = Calendar.getInstance();
+            if (!alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
+               return false;
+            }
 
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.apply();
-    }
-
-    public void deleteNextAlwaysOnTime() {
-        nextAlwaysOnTime = 0L;
-
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.apply();
-    }
-
-    public boolean isAlwaysOnAllowed() {
-        Calendar now = Calendar.getInstance();
-        boolean isAllowed = true;
-        if (batteryTimeout > 0 && nextAlwaysOnTime > 0L) {
-            Calendar alwaysOnTime = Calendar.getInstance();
-            alwaysOnTime.setTimeInMillis(nextAlwaysOnTime);
-            isAllowed = now.after(alwaysOnTime);
+            Calendar start = new SimpleTime(alwaysOnTimeRangeStartInMinutes).getCalendar();
+            Calendar end = new SimpleTime(alwaysOnTimeRangeEndInMinutes).getCalendar();
+            boolean isWithinAlwaysOnTime = true;
+            if (end.before(start)) {
+                isWithinAlwaysOnTime = (now.after(start) || now.before(end));
+            } else if (!start.equals(end)) {
+                isWithinAlwaysOnTime = (now.after(start) && now.before(end));
+            }
+            return isWithinAlwaysOnTime;
         }
-        return isAllowed;
+
+        return false;
     }
 
     public void setPositionClock(float x, float y, int orientation) {
