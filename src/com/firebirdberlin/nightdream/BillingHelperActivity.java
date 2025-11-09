@@ -91,11 +91,11 @@ public abstract class BillingHelperActivity
         purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
         if (!purchased_subscription) {
             if (!purchased_pro) {
-//                entries.add(getProductWithPrice(prices, R.string.product_name_subscription, PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION));
 //                TODO Switch to subscription model in a later step
-//                values.add(PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
-                entries.add(getProductWithPrice(R.string.product_name_pro, PurchaseManager.ITEM_PRO));
-                values.add(PurchaseManager.PRODUCT_ID_PRO);
+                  entries.add(getProductWithPrice(R.string.product_name_subscription, PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION));
+                  values.add(PurchaseManager.PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
+//                entries.add(getProductWithPrice(R.string.product_name_pro, PurchaseManager.ITEM_PRO));
+//                values.add(PurchaseManager.PRODUCT_ID_PRO);
             }
         }
 
