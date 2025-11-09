@@ -4,7 +4,7 @@
     app:key="autostart"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:title="@string/handle_power"
-    android:layout_marginTop="?attr/actionBarSize">
+    >
 
     <com.firebirdberlin.nightdream.ui.IgnoreBatteryOptimizationPreference
         app:icon="@drawable/ic_expert"
@@ -51,9 +51,7 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:title="@string/handle_auto_stop">
-
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
             app:defaultValue="true"
@@ -86,7 +84,6 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:icon="@drawable/ic_expert"
         app:key="expert_screen"
         app:enabled="false"
@@ -158,7 +155,6 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:enabled="false"
         app:icon="@drawable/ic_expert"
         app:key="scheduled_autostart_screen"

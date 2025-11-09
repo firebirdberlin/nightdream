@@ -6,7 +6,6 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:key="cat_notifications"
         app:title="@string/notifications">
 
