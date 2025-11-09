@@ -344,7 +344,7 @@ OR
     <string name="review_request">Please rate this application. Thanks !</string>
     <string name="scheduledAutoStart">Scheduled Autostart</string>
     <string name="scheduledAutoStartChargerRequired">only when charging</string>
-    <string name="scheduledAutoStartEnabledDesc">Schedule the autostart for a specific time.</string>
+    <string name="scheduledAutoStartEnabledDesc">Schedule the autostart for a specific time. It keeps the display active within the autostart time range.</string>
     <string name="scheduledAutoStartEnabledTitle">Scheduled Autostart</string>
     <string name="scheduledAutoStartTimeRange">time range</string>
     <string name="screen_orientation_automatic">automatic</string>
