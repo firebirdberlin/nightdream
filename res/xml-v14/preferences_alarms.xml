@@ -141,7 +141,6 @@
 
 
     <PreferenceCategory
-        app:layout="@layout/preferences_category"
         app:iconSpaceReserved="false"
         app:key="category_radio_stream"
         app:title="@string/radio_stream">

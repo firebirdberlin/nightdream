@@ -490,10 +490,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final RecyclerView recyclerView = getListView();
-        if (recyclerView != null) {
-            recyclerView.setPadding(recyclerView.getPaddingLeft(), 0, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
-        }
+        view.post(() -> {
+            final RecyclerView recyclerView = getListView();
+            if (recyclerView != null) {
+                recyclerView.setPadding(recyclerView.getPaddingLeft(), 0, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+            }
+        });
     }
 
     private void init() {
