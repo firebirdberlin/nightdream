@@ -4,6 +4,14 @@
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
     app:title="@string/rss">
 
+    <Preference
+        app:iconSpaceReserved="false"
+        app:allowDividerAbove="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseProRss"
+        app:isPreferenceVisible="false"
+        app:title="@string/buy_upgrade_summary" />
+
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         app:defaultValue="false"

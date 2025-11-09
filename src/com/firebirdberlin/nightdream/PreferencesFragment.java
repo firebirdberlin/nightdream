@@ -136,7 +136,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
                             break;
                         case "enableRSS":
-                            if (settings.rssEnabled) {
+                            if (settings.isRssEnabled()) {
                                 RSSViewModel.loadDataPeriodicFromWorker(mContext, (LifecycleOwner) mContext);
                             } else {
                                 RSSViewModel.stopWorker();
@@ -144,7 +144,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                         case "rssURL":
                         case "rssCharSetMode":
-                            if (settings.rssEnabled) {
+                            if (settings.isRssEnabled()) {
                                 RSSViewModel.refreshDataFromWorker(mContext);
                             }
                             break;
@@ -343,6 +343,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("speakTime", isPurchasedActions);
         enablePreference("useDeviceLock", isPurchasedActions);
         enablePreference("category_notifications", isPurchasedActions);
+        enablePreference("enableRSS", isPurchasedActions);
 
         boolean enableNightMode =
                 isPurchasedActions
@@ -355,6 +356,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("purchaseActions", !isPurchasedActions);
         showPreference("purchaseActions2", !isPurchasedActions);
         showPreference("purchaseActions3", !isPurchasedActions);
+        showPreference("purchaseProRss", !isPurchasedActions);
     }
 
     private void showPurchaseDialog() {
@@ -459,6 +461,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("purchaseActions");
         initPurchasePreference("purchaseActions2");
         initPurchasePreference("purchaseActions3");
+        initPurchasePreference("purchaseProRss");
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseDesignPackage");
         initPurchasePreference("purchaseDesignPackageBackground");

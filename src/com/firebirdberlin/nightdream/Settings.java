@@ -137,7 +137,7 @@ public class Settings {
     public String rssURL="";
     public String rssCharSet="";
     public int rssIntervalMode;
-    public boolean rssEnabled = false;
+    private boolean rssEnabled = false;
     public long rssTickerSpeed=10L;
     public float rssTextSize;
     public int gradientStartColor;
@@ -779,6 +779,11 @@ public class Settings {
         }
 
         return BACKGROUND_BLACK;
+    }
+
+    public boolean isRssEnabled() {
+        boolean purchased = purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS);
+        return purchased && rssEnabled;
     }
 
     public String getTimeFormat() {
