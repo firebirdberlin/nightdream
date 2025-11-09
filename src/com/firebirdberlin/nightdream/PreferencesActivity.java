@@ -31,7 +31,6 @@ public class PreferencesActivity extends BillingHelperActivity
     String rootKey = "";
     private OnBackPressedCallback onBackPressedCallback;
     private CharSequence currentTitle;
-    private boolean isAutostartDefaultOpened = false; // Flag to track default autostart opening
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PreferencesActivity.class);
@@ -92,11 +91,10 @@ public class PreferencesActivity extends BillingHelperActivity
             // Programmatically open the "autostart" preference in the detail pane on initial landscape launch
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Log.d(TAG, "onCreate: Landscape initial setup. Opening autostart.");
-                isAutostartDefaultOpened = true;
                 Preference autostartPref = new Preference(this);
                 autostartPref.setKey("autostart");
                 autostartPref.setTitle(getString(R.string.handle_power)); // Corrected string resource
-                onPreferenceStartFragment(null, autostartPref);
+                onPreferenceStartFragment(fragment, autostartPref);
             }
         } else {
             Log.d(TAG, "onCreate: savedInstanceState not null. Restoring state.");
@@ -147,17 +145,13 @@ public class PreferencesActivity extends BillingHelperActivity
                     detailFragment.setArguments(detailData);
                     fT.replace(R.id.details, detailFragment, FRAGMENT_TAG_2);
                     fragment2 = detailFragment; // Update reference
-                    isAutostartDefaultOpened = false; // Not default if a specific preference was open
                 } else { // If rootKey is empty (no sub-preference was active), open autostart by default
                     Log.d(TAG, "onCreate: Landscape restoration with empty rootKey. Opening autostart by default.");
-                    isAutostartDefaultOpened = true;
                     Preference autostartPref = new Preference(this);
                     autostartPref.setKey("autostart");
                     autostartPref.setTitle(getString(R.string.handle_power)); // Corrected string resource
-                    onPreferenceStartFragment(null, autostartPref);
+                    onPreferenceStartFragment(fragment, autostartPref);
                 }
-//                Log.d(TAG, "onCreate: Landscape restoration. Clearing back stack.");
-//                fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
 
             Log.d(TAG, "onCreate: Committing fragment transaction during restoration.");
@@ -255,14 +249,6 @@ public class PreferencesActivity extends BillingHelperActivity
         Log.d(TAG, "onResume");
     }
 
-    private void removeFragment(Fragment removeFragment) {
-        Log.d(TAG, "removeFragment()");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (removeFragment != null && fragmentManager.findFragmentById(removeFragment.getId()) != null) {
-            fragmentManager.beginTransaction().remove(removeFragment).commitAllowingStateLoss();
-        }
-    }
-
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         Log.d(TAG, "onConfigurationChanged()");
@@ -292,9 +278,7 @@ public class PreferencesActivity extends BillingHelperActivity
         Log.d(TAG, "onItemPurchased");
         super.onItemPurchased(sku);
         if (fragment != null) {
-            runOnUiThread(() -> {
-                fragment.onPurchasesInitialized();
-            });
+            runOnUiThread(() -> fragment.onPurchasesInitialized());
         }
     }
 
@@ -338,7 +322,7 @@ public class PreferencesActivity extends BillingHelperActivity
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
+    public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, Preference pref) {
         Log.d(TAG, "onPreferenceStartFragment: pref key = " + pref.getKey());
         Log.d(TAG, "onPreferenceStartFragment: current rootKey = " + rootKey);
 
