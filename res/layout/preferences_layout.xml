@@ -8,7 +8,6 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.firebirdberlin.nightdream.PreferencesFragment" />
+        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

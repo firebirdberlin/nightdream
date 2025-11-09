@@ -445,15 +445,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
                 default:
-                    if (getId() != R.id.right) {
-                        setPreferencesFromResource(R.xml.preferences, null);
-                    }
+                    setPreferencesFromResource(R.xml.preferences, null);
                     break;
             }
         } else {
-            if (getId() != R.id.right) {
-                setPreferencesFromResource(R.xml.preferences, null);
-            }
+            setPreferencesFromResource(R.xml.preferences, null);
         }
 
         initPurchasePreference("purchaseActions");
