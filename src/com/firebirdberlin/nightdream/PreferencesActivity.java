@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.activity.OnBackPressedCallback;
@@ -29,6 +31,7 @@ public class PreferencesActivity extends BillingHelperActivity
     String rootKey = "";
     private OnBackPressedCallback onBackPressedCallback;
     private CharSequence currentTitle;
+    private boolean isAutostartDefaultOpened = false; // Flag to track default autostart opening
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PreferencesActivity.class);
@@ -63,20 +66,8 @@ public class PreferencesActivity extends BillingHelperActivity
                 FragmentManager fm = getSupportFragmentManager();
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (!rootKey.isEmpty()) { // A sub-preference is active in landscape (detail pane)
-                        // Remove the current detail fragment
-                        if (fragment2 != null) {
-                            fm.beginTransaction().remove(fragment2).commitAllowingStateLoss();
-                            fragment2 = null;
-                        }
-                        rootKey = ""; // Clear the rootKey, showing no sub-preference
-                        currentTitle = getString(R.string.preferences); // Reset title to main preferences
-                        initTitleBar();
-                        setEnabled(false); // Disable callback as no sub-preference is active in detail pane
-                    } else {
-                        // No sub-preference in detail pane, perform default back action (exit activity)
-                        finish();
-                    }
+                    Log.d(TAG, "handleOnBackPressed: Landscape mode. Finishing activity.");
+                    finish();
                 } else { // Portrait mode
                     if (fm.getBackStackEntryCount() > 0) {
                         fm.popBackStack();
@@ -101,9 +92,10 @@ public class PreferencesActivity extends BillingHelperActivity
             // Programmatically open the "autostart" preference in the detail pane on initial landscape launch
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Log.d(TAG, "onCreate: Landscape initial setup. Opening autostart.");
+                isAutostartDefaultOpened = true;
                 Preference autostartPref = new Preference(this);
                 autostartPref.setKey("autostart");
-                autostartPref.setTitle(getString(R.string.handle_power));
+                autostartPref.setTitle(getString(R.string.handle_power)); // Corrected string resource
                 onPreferenceStartFragment(null, autostartPref);
             }
         } else {
@@ -115,7 +107,6 @@ public class PreferencesActivity extends BillingHelperActivity
 
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction fT = fm.beginTransaction();
-            boolean needCommit = false;
 
             Log.d(TAG, "onCreate: Handling restoration for orientation: " + (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? "PORTRAIT" : "LANDSCAPE"));
 
@@ -127,21 +118,25 @@ public class PreferencesActivity extends BillingHelperActivity
                 newFragment.setArguments(data);
                 fT.replace(R.id.main_frame, newFragment, FRAGMENT_TAG_1);
                 fragment = newFragment; // Update reference
-                needCommit = true;
 
-                // Clear back stack in portrait as landscape doesn't use it for detail
-                if (fm.getBackStackEntryCount() > 0) {
+                // ONLY add to back stack if a sub-preference was active
+                if (!rootKey.isEmpty()) {
+                    Log.d(TAG, "onCreate: Portrait restoration with active rootKey: " + rootKey + ". Adding to back stack.");
+                    fT.addToBackStack(null);
+                } else if (fm.getBackStackEntryCount() > 0) {
+                    // If rootKey is empty and there's a back stack, clear it.
+                    Log.d(TAG, "onCreate: Portrait restoration with empty rootKey. Clearing back stack.");
                     fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
+
             } else { // Landscape
                 // Always add/replace the master fragment to the left pane
                 PreferencesFragment masterFragment = new PreferencesFragment();
                 Bundle masterData = new Bundle();
                 masterData.putString("rootKey", ""); // Master fragment always has empty rootKey
                 masterFragment.setArguments(masterData);
-                fT.replace(R.id.right, masterFragment, FRAGMENT_TAG_1);
+                fT.replace(R.id.preferences_menu, masterFragment, FRAGMENT_TAG_1);
                 fragment = masterFragment; // Update reference
-                needCommit = true;
 
                 // If a detail pane was active, re-add it to R.id.details
                 if (!rootKey.isEmpty()) {
@@ -152,21 +147,22 @@ public class PreferencesActivity extends BillingHelperActivity
                     detailFragment.setArguments(detailData);
                     fT.replace(R.id.details, detailFragment, FRAGMENT_TAG_2);
                     fragment2 = detailFragment; // Update reference
-                    needCommit = true;
+                    isAutostartDefaultOpened = false; // Not default if a specific preference was open
                 } else { // If rootKey is empty (no sub-preference was active), open autostart by default
                     Log.d(TAG, "onCreate: Landscape restoration with empty rootKey. Opening autostart by default.");
+                    isAutostartDefaultOpened = true;
                     Preference autostartPref = new Preference(this);
                     autostartPref.setKey("autostart");
-                    autostartPref.setTitle(getString(R.string.autostart));
+                    autostartPref.setTitle(getString(R.string.handle_power)); // Corrected string resource
                     onPreferenceStartFragment(null, autostartPref);
                 }
+//                Log.d(TAG, "onCreate: Landscape restoration. Clearing back stack.");
+//                fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
 
-            if (needCommit) {
-                Log.d(TAG, "onCreate: Committing fragment transaction during restoration.");
-                fT.commitAllowingStateLoss();
-                getSupportFragmentManager().executePendingTransactions();
-            }
+            Log.d(TAG, "onCreate: Committing fragment transaction during restoration.");
+            fT.commitAllowingStateLoss();
+            getSupportFragmentManager().executePendingTransactions();
         }
 
         initTitleBar();
@@ -197,9 +193,9 @@ public class PreferencesActivity extends BillingHelperActivity
             Log.d(TAG, "setupInitialFragments: Portrait, replacing R.id.main_frame");
             fT.replace(R.id.main_frame, fragment, FRAGMENT_TAG_1);
         } else { // Landscape
-            Log.d(TAG, "setupInitialFragments: Landscape, replacing R.id.right");
+            Log.d(TAG, "setupInitialFragments: Landscape, replacing R.id.preferences_menu");
             // Only add the master fragment to the left pane
-            fT.replace(R.id.right, fragment, FRAGMENT_TAG_1);
+            fT.replace(R.id.preferences_menu, fragment, FRAGMENT_TAG_1);
             // The details pane (R.id.details) remains empty initially.
             // fragment2 will be null, and will be set when onPreferenceStartFragment is called.
         }
@@ -213,28 +209,42 @@ public class PreferencesActivity extends BillingHelperActivity
         FragmentManager fm = getSupportFragmentManager();
         int backStackEntryCount = fm.getBackStackEntryCount();
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // In landscape, back stack is not used for detail pane navigation,
-            // so we rely on rootKey to determine back button state.
-            if (rootKey.isEmpty()) {
-                onBackPressedCallback.setEnabled(false);
-                currentTitle = getString(R.string.preferences);
-            } else {
-                onBackPressedCallback.setEnabled(true);
-                // currentTitle is already set in onPreferenceStartFragment
-            }
-        }
-
-        else { // Portrait
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (backStackEntryCount == 0) {
                 rootKey = "";
                 currentTitle = getString(R.string.preferences);
                 onBackPressedCallback.setEnabled(false);
+
+                Log.d(TAG, "onBackStackChanged: Back stack empty. Scheduling root fragment recreation.");
+                // Use post to ensure this runs after the current transaction finishes
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Log.d(TAG, "Executing deferred fragment transaction for root.");
+                    // It's a good practice to re-check the back stack entry count here
+                    // because the state might have changed again by the time this runs.
+                    if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                        FragmentManager currentFm = getSupportFragmentManager(); // Get FM again to be safe
+                        FragmentTransaction fT = currentFm.beginTransaction();
+                        PreferencesFragment mainFragment = new PreferencesFragment();
+                        Bundle data = new Bundle();
+                        data.putString("rootKey", "");
+                        mainFragment.setArguments(data);
+
+                        fT.replace(R.id.main_frame, mainFragment, FRAGMENT_TAG_1);
+                        // No addToBackStack needed here as we are restoring the root
+                        fT.commitAllowingStateLoss(); // Use commitAllowingStateLoss as before
+                        currentFm.executePendingTransactions(); // Execute immediately after commit
+                        this.fragment = mainFragment; // Update the reference
+                    } else {
+                        Log.d(TAG, "Deferred fragment transaction skipped: back stack is no longer empty.");
+                    }
+                });
             } else {
                 // A sub-preference screen is active.
                 // We rely on onPreferenceStartFragment to set currentTitle.
                 onBackPressedCallback.setEnabled(true);
             }
+        } else { // landscape
+            finish();
         }
         initTitleBar(); // Update action bar with potentially new currentTitle
     }

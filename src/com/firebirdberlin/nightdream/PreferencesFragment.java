@@ -369,19 +369,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        Log.d(TAG, "onCreatePreferences rootKey: " + rootKey);
+        Log.d(TAG, "onCreatePreferences called. Initial rootKey: " + rootKey);
         handler.removeCallbacks(runnableNotificationAccessChanged);
-        this.rootKey = rootKey;
 
+        // Get rootKey from arguments bundle first, if available
         Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey("rootKey")) {
             rootKey = getArguments().getString("rootKey");
-            Log.d(TAG, "onCreatePreferences getArgument: " + rootKey);
+            Log.d(TAG, "onCreatePreferences: rootKey from arguments: " + rootKey);
         }
 
+        this.rootKey = rootKey; // Update fragment's internal rootKey
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
-        if (rootKey != null) {
+        if (rootKey != null && !rootKey.isEmpty()) {
+            Log.d(TAG, "onCreatePreferences: Handling specific rootKey: " + rootKey);
             switch (rootKey) {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
@@ -445,10 +447,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
                 default:
+                    Log.d(TAG, "onCreatePreferences: Unknown rootKey: " + rootKey + ". Loading main preferences.");
                     setPreferencesFromResource(R.xml.preferences, null);
                     break;
             }
         } else {
+            Log.d(TAG, "onCreatePreferences: rootKey is null or empty. Loading main preferences.");
             setPreferencesFromResource(R.xml.preferences, null);
         }
 

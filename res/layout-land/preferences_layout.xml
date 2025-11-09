@@ -26,7 +26,7 @@
 
     <!-- Master pane (now on the left) -->
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/right"
+        android:id="@+id/preferences_menu"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="?android:attr/detailsElementBackground"
