@@ -897,14 +897,6 @@ public class NightDreamActivity extends BillingHelperActivity
                 (now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS));
         Log.d(TAG, "screen is locked " + Utility.isScreenLocked(context));
 
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
-            return true;
-        }
-
-        if (mode > 0 && ScreenReceiver.shallActivateStandby(this, mySettings)) {
-            return true;
-        }
-
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
         if ( // keep screen on
                 now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS // 45 seconds after resume
@@ -917,15 +909,23 @@ public class NightDreamActivity extends BillingHelperActivity
 
         BatteryStats batteryStats = new BatteryStats(context);
         Log.i(TAG, "1 " + (isCharging || mySettings.isWithinAlwaysOnTime(batteryStats.reference.level)));
-        if (
-                (isCharging || mySettings.isWithinAlwaysOnTime(batteryStats.reference.level))
-                && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)
-        ) {
-            Log.d(TAG, "shallKeepScreenOn() 2 true");
+        if (isCharging && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (charging)");
+            return true;
+        }
+
+        if (mySettings.isWithinAlwaysOnTime(batteryStats.reference.level)) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (within always on time)");
+            return true;
+        }
+
+        if (mySettings.isWithinScheduledAutoStartTimeRange(isCharging)) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (within scheduled autostart time)");
             return true;
         }
 
         if (!isCharging && (now - resumeTime) / 60000  < mySettings.batteryTimeout) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (not charging, waiting for battery timeout)");
             return true;
         }
 
@@ -1009,17 +1009,6 @@ public class NightDreamActivity extends BillingHelperActivity
                 && mySettings.autostartTimeRangeStartInMinutes != mySettings.autostartTimeRangeEndInMinutes) {
             SimpleTime simpleEndTime = new SimpleTime(mySettings.autostartTimeRangeEndInMinutes);
             calendar = simpleEndTime.getCalendar();
-        }
-
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)
-                && mySettings.scheduledAutoStartTimeRangeStartInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes) {
-            SimpleTime simpleEndTime = new SimpleTime(mySettings.scheduledAutoStartTimeRangeEndInMinutes);
-            Calendar calendar2 = simpleEndTime.getCalendar();
-            if (calendar == null) {
-                calendar = calendar2;
-            } else if (calendar2.before(calendar)) {
-                calendar = calendar2;
-            }
         }
 
         scheduleShutdown(calendar);

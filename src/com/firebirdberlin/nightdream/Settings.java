@@ -1024,8 +1024,11 @@ public class Settings {
 
     public boolean isWithinAlwaysOnTime(int batteryLevel) {
         boolean isBatteryOk = (batteryLevel < 0) || (alwaysOnBatteryLevel <= batteryLevel); // Use -1 for unknown
-        if (isStandbyEnabledWhileDisconnected() && isBatteryOk
-        ) {
+        if (isStandbyEnabledWhileDisconnected() && isBatteryOk) {
+
+            if (Utility.isConfiguredAsDaydream(mContext)) return false;
+            if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
+
             Calendar now = Calendar.getInstance();
             if (!alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
                return false;
@@ -1040,6 +1043,35 @@ public class Settings {
                 isWithinAlwaysOnTime = (now.after(start) && now.before(end));
             }
             return isWithinAlwaysOnTime;
+        }
+
+        return false;
+    }
+
+    public boolean isWithinScheduledAutoStartTimeRange(boolean isCharging) {
+        if (isScheduledAutoStartEnabled()) {
+
+            if (Utility.isConfiguredAsDaydream(mContext)) return false;
+            if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
+
+            if (scheduledAutoStartChargerRequired && !isCharging) {
+                return false;
+            }
+
+            Calendar now = Calendar.getInstance();
+            if (!scheduledAutostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
+                return false;
+            }
+
+            Calendar start = new SimpleTime(scheduledAutoStartTimeRangeStartInMinutes).getCalendar();
+            Calendar end = new SimpleTime(scheduledAutoStartTimeRangeEndInMinutes).getCalendar();
+            boolean isWithinTime = true;
+            if (end.before(start)) {
+                isWithinTime = (now.after(start) || now.before(end));
+            } else if (!start.equals(end)) {
+                isWithinTime = (now.after(start) && now.before(end));
+            }
+            return isWithinTime;
         }
 
         return false;

@@ -340,7 +340,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="rss_url_error">Url nicht angegeben</string>
     <string name="scheduledAutoStart">Geplanter Autostart</string>
     <string name="scheduledAutoStartChargerRequired">Stromverbindung notwendig</string>
-    <string name="scheduledAutoStartEnabledDesc">Autostart zu einer bestimmten Uhrzeit planen.</string>
+    <string name="scheduledAutoStartEnabledDesc">Autostart zu einer bestimmten Uhrzeit planen. Innerhalb des geplanten Zeitraums wird das Display aktiv gehalten.</string>
     <string name="scheduledAutoStartEnabledTitle">Geplanter Autostart</string>
     <string name="scheduledAutoStartTimeRange">Zeitraum</string>
     <string name="screen">Bildschirm</string>
