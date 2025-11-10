@@ -4,6 +4,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 
@@ -96,9 +98,10 @@ public class WeatherEntry {
         return l;
     }
 
+    @NonNull
     public String toString() {
         return String.format(java.util.Locale.getDefault(),
-                "%2.2fK %2.2fm/s %d° %d %s",
+                "%.2fK %.2fm/s %d° %d %s",
                 temperature, windSpeed, windDirection, timestamp, description
         );
     }
