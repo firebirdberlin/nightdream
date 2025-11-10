@@ -72,9 +72,12 @@ public class PurchaseManager {
 
 
     public boolean isPurchased(String sku) {
-        if (Utility.isEmulator()) {
+        // Check if it's a debuggable build, if so, bypass the check and return true.
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Bypassing isPurchased check for debug build.");
             return true;
         }
+
         if (purchases != null) {
             switch (sku) {
                 case ITEM_DONATION:
