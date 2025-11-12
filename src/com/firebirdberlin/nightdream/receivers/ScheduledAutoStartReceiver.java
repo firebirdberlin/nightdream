@@ -98,11 +98,13 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
                     context.getSystemService(Context.SENSOR_SERVICE);
             if (mSensorManager == null) {
                 NightDreamActivity.start(context);
+                return;
             }
 
             Sensor mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
             if (mProximity == null) {
                 NightDreamActivity.start(context);
+                return;
             }
 
             mSensorManager.registerListener(new SensorEventListener() {

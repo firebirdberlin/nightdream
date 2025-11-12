@@ -34,7 +34,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartsFrom">Inicio alarma</string>
     <string name="alarmUpcoming">Próxima alarma</string>
     <string name="alarmVolume">Volumen de la alarma</string>
-    <string name="alarmVolumeReductionPercent">Bajar volumen en</string>
     <string name="allow_screen_off_summary">Apagar la pantalla durante la noche.</string>
     <string name="allow_screen_off">Apagar pantalla</string>
     <string name="always_on">Siempre encendido</string>

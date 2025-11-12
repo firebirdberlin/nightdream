@@ -16,23 +16,24 @@
             app:key="alarmVolume"
             app:title="@string/alarmVolume" />
 
-        <de.firebirdberlin.preference.InlineSeekBarPreference
-            app:defaultValue="0"
-            app:iconSpaceReserved="false"
-            app:key="alarmVolumeReductionPercent"
-            app:title="@string/alarmVolumeReductionPercent"
-            seekbar:interval="1"
-            seekbar:max="95"
-            seekbar:min="0"
-            seekbar:unitsLeft=""
-            seekbar:unitsRight="%"
-            xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
-
         <CheckBoxPreference
             app:iconSpaceReserved="false"
             app:defaultValue="true"
             app:key="alarmFadeIn"
             app:title="@string/alarmFadeIn" />
+
+        <de.firebirdberlin.preference.InlineSeekBarPreference
+            app:defaultValue="100"
+            app:iconSpaceReserved="false"
+            app:key="alarmFadeInMaxVolumePercent"
+            app:title="@string/alarmFadeInMaxVolumePercent"
+            app:dependency="alarmFadeIn"
+            seekbar:interval="1"
+            seekbar:max="100"
+            seekbar:min="0"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="%"
+            xmlns:seekbar="http://schemas.android.com/apk/lib/android"/>
 
         <de.firebirdberlin.preference.InlineSeekBarPreference
             app:defaultValue="15"
@@ -140,7 +141,6 @@
 
 
     <PreferenceCategory
-        app:layout="@layout/preferences_category"
         app:iconSpaceReserved="false"
         app:key="category_radio_stream"
         app:title="@string/radio_stream">

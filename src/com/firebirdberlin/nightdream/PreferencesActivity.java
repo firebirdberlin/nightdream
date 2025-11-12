@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.activity.OnBackPressedCallback;
@@ -21,11 +23,11 @@ public class PreferencesActivity extends BillingHelperActivity
     public static final String TAG = "PreferencesActivity";
     private static final String ROOT_KEY = "rootKey";
     private static final String KEY_TITLE = "title";
-    private static final String FRAGMENT_TAG_1 = "f1";
-    private static final String FRAGMENT_TAG_2 = "f2";
+    private static final String FRAGMENT_TAG_1 = "f1"; // For master/single pane fragment
+    private static final String FRAGMENT_TAG_2 = "f2"; // For detail pane fragment in landscape
 
-    PreferencesFragment fragment = null;
-    PreferencesFragment fragment2 = null;
+    PreferencesFragment fragment = null; // Master/single pane fragment
+    PreferencesFragment fragment2 = null; // Detail pane fragment in landscape
     String rootKey = "";
     private OnBackPressedCallback onBackPressedCallback;
     private CharSequence currentTitle;
@@ -49,71 +51,147 @@ public class PreferencesActivity extends BillingHelperActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
+        Log.d(TAG, "onCreate: savedInstanceState is " + (savedInstanceState == null ? "null" : "not null"));
         super.onCreate(savedInstanceState);
         setTheme(R.style.PreferencesTheme);
 
-        // Set the appropriate content view initially.
-        // The activity will be recreated on rotation, so setContentView will be called again then.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setContentView(R.layout.preferences_layout);
-        } else {
-            setContentView(R.layout.preferences_layout_land);
-        }
+        setContentView(R.layout.preferences_layout);
 
-        if (savedInstanceState != null) {
-            rootKey = savedInstanceState.getString(ROOT_KEY, "");
-            currentTitle = savedInstanceState.getCharSequence(KEY_TITLE);
-            // Fragments are automatically restored by FragmentManager, just retrieve references
-            fragment = (PreferencesFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_1);
-            fragment2 = (PreferencesFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_2);
-        } else {
-            currentTitle = getString(R.string.preferences);
-            // Only add fragments if it's the very first creation, not recreation after rotation
-            initRootFragments();
-        }
-
-        initTitleBar();
-
-        onBackPressedCallback = new OnBackPressedCallback(rootKey != null && !rootKey.isEmpty()) {
+        // Initialize onBackPressedCallback early
+        onBackPressedCallback = new OnBackPressedCallback(isBackEnabled()) {
             @Override
             public void handleOnBackPressed() {
                 Log.d(TAG, "handleOnBackPressed");
-
                 FragmentManager fm = getSupportFragmentManager();
-                if (fm.getBackStackEntryCount() > 0) {
-                    fm.popBackStack();
-                } else {
-                    rootKey = "";
-                    currentTitle = getString(R.string.preferences);
-                    initTitleBar();
-                    setEnabled(false);
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Log.d(TAG, "handleOnBackPressed: Landscape mode. Finishing activity.");
+                    finish();
+                } else { // Portrait mode
+                    if (fm.getBackStackEntryCount() > 0) {
+                        fm.popBackStack();
+                    } else {
+                        rootKey = "";
+                        currentTitle = getString(R.string.preferences);
+                        initTitleBar();
+                        setEnabled(false);
+                    }
                 }
             }
         };
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        Log.d(TAG, "onCreate: onBackPressedCallback initialized");
+
+        if (savedInstanceState == null) {
+            Log.d(TAG, "onCreate: savedInstanceState is null. Initial setup.");
+            // Activity is creating for the first time, not rotating
+            currentTitle = getString(R.string.preferences);
+            setupInitialFragments(); // Sets up the master fragment
+
+            // Programmatically open the "autostart" preference in the detail pane on initial landscape launch
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Log.d(TAG, "onCreate: Landscape initial setup. Opening autostart.");
+                Preference autostartPref = new Preference(this);
+                autostartPref.setKey("autostart");
+                autostartPref.setTitle(getString(R.string.handle_power)); // Corrected string resource
+                onPreferenceStartFragment(fragment, autostartPref);
+            }
+        } else {
+            Log.d(TAG, "onCreate: savedInstanceState not null. Restoring state.");
+            // Activity is being recreated (e.g., rotation)
+            rootKey = savedInstanceState.getString(ROOT_KEY, "");
+            currentTitle = savedInstanceState.getCharSequence(KEY_TITLE);
+            Log.d(TAG, "onCreate: Restored rootKey = " + rootKey + ", currentTitle = " + currentTitle);
+
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction fT = fm.beginTransaction();
+
+            Log.d(TAG, "onCreate: Handling restoration for orientation: " + (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? "PORTRAIT" : "LANDSCAPE"));
+
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                // In portrait, the main frame should display the active preference (or main if rootKey is empty)
+                PreferencesFragment newFragment = new PreferencesFragment();
+                Bundle data = new Bundle();
+                data.putString("rootKey", rootKey); // Use the restored rootKey for portrait
+                newFragment.setArguments(data);
+                fT.replace(R.id.main_frame, newFragment, FRAGMENT_TAG_1);
+                fragment = newFragment; // Update reference
+
+                // ONLY add to back stack if a sub-preference was active
+                if (!rootKey.isEmpty()) {
+                    Log.d(TAG, "onCreate: Portrait restoration with active rootKey: " + rootKey + ". Adding to back stack.");
+                    fT.addToBackStack(null);
+                } else if (fm.getBackStackEntryCount() > 0) {
+                    // If rootKey is empty and there's a back stack, clear it.
+                    Log.d(TAG, "onCreate: Portrait restoration with empty rootKey. Clearing back stack.");
+                    fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+            } else { // Landscape
+                // Always add/replace the master fragment to the left pane
+                PreferencesFragment masterFragment = new PreferencesFragment();
+                Bundle masterData = new Bundle();
+                masterData.putString("rootKey", ""); // Master fragment always has empty rootKey
+                masterFragment.setArguments(masterData);
+                fT.replace(R.id.preferences_menu, masterFragment, FRAGMENT_TAG_1);
+                fragment = masterFragment; // Update reference
+
+                // If a detail pane was active, re-add it to R.id.details
+                if (!rootKey.isEmpty()) {
+                    Log.d(TAG, "onCreate: Landscape restoration. Re-opening detail fragment with rootKey: " + rootKey);
+                    PreferencesFragment detailFragment = new PreferencesFragment();
+                    Bundle detailData = new Bundle();
+                    detailData.putString("rootKey", rootKey);
+                    detailFragment.setArguments(detailData);
+                    fT.replace(R.id.details, detailFragment, FRAGMENT_TAG_2);
+                    fragment2 = detailFragment; // Update reference
+                } else { // If rootKey is empty (no sub-preference was active), open autostart by default
+                    Log.d(TAG, "onCreate: Landscape restoration with empty rootKey. Opening autostart by default.");
+                    Preference autostartPref = new Preference(this);
+                    autostartPref.setKey("autostart");
+                    autostartPref.setTitle(getString(R.string.handle_power)); // Corrected string resource
+                    onPreferenceStartFragment(fragment, autostartPref);
+                }
+            }
+
+            Log.d(TAG, "onCreate: Committing fragment transaction during restoration.");
+            fT.commitAllowingStateLoss();
+            getSupportFragmentManager().executePendingTransactions();
+        }
+
+        initTitleBar();
 
         getSupportFragmentManager().addOnBackStackChangedListener(this::onBackStackChanged);
     }
 
-    // New method for initial fragment setup
-    private void initRootFragments() {
+    private boolean isBackEnabled() {
+        Log.d(TAG, "isBackEnabled: current orientation is " + (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? "PORTRAIT" : "LANDSCAPE"));
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            return getSupportFragmentManager().getBackStackEntryCount() > 0;
+        } else { // Landscape
+            return !rootKey.isEmpty();
+        }
+    }
+
+    private void setupInitialFragments() {
+        Log.d(TAG, "setupInitialFragments");
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fT = fm.beginTransaction();
 
-        // Initialize fragment (main or left pane)
         fragment = new PreferencesFragment();
         Bundle data = new Bundle();
-        data.putString("rootKey", rootKey);
+        data.putString("rootKey", ""); // rootKey will be "" for initial root preferences
         fragment.setArguments(data);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.d(TAG, "setupInitialFragments: Portrait, replacing R.id.main_frame");
             fT.replace(R.id.main_frame, fragment, FRAGMENT_TAG_1);
         } else { // Landscape
-            // Initialize fragment2 (right pane)
-            fragment2 = new PreferencesFragment();
-            fT.replace(R.id.right, fragment, FRAGMENT_TAG_1);
-            fT.replace(R.id.details, fragment2, FRAGMENT_TAG_2);
+            Log.d(TAG, "setupInitialFragments: Landscape, replacing R.id.preferences_menu");
+            // Only add the master fragment to the left pane
+            fT.replace(R.id.preferences_menu, fragment, FRAGMENT_TAG_1);
+            // The details pane (R.id.details) remains empty initially.
+            // fragment2 will be null, and will be set when onPreferenceStartFragment is called.
         }
         fT.commitAllowingStateLoss();
         fm.executePendingTransactions();
@@ -125,14 +203,42 @@ public class PreferencesActivity extends BillingHelperActivity
         FragmentManager fm = getSupportFragmentManager();
         int backStackEntryCount = fm.getBackStackEntryCount();
 
-        if (backStackEntryCount == 0) {
-            rootKey = "";
-            currentTitle = getString(R.string.preferences);
-            onBackPressedCallback.setEnabled(false);
-        } else {
-            // A sub-preference screen is active.
-            // We rely on onPreferenceStartFragment to set currentTitle.
-            onBackPressedCallback.setEnabled(true);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (backStackEntryCount == 0) {
+                rootKey = "";
+                currentTitle = getString(R.string.preferences);
+                onBackPressedCallback.setEnabled(false);
+
+                Log.d(TAG, "onBackStackChanged: Back stack empty. Scheduling root fragment recreation.");
+                // Use post to ensure this runs after the current transaction finishes
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Log.d(TAG, "Executing deferred fragment transaction for root.");
+                    // It's a good practice to re-check the back stack entry count here
+                    // because the state might have changed again by the time this runs.
+                    if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                        FragmentManager currentFm = getSupportFragmentManager(); // Get FM again to be safe
+                        FragmentTransaction fT = currentFm.beginTransaction();
+                        PreferencesFragment mainFragment = new PreferencesFragment();
+                        Bundle data = new Bundle();
+                        data.putString("rootKey", "");
+                        mainFragment.setArguments(data);
+
+                        fT.replace(R.id.main_frame, mainFragment, FRAGMENT_TAG_1);
+                        // No addToBackStack needed here as we are restoring the root
+                        fT.commitAllowingStateLoss(); // Use commitAllowingStateLoss as before
+                        currentFm.executePendingTransactions(); // Execute immediately after commit
+                        this.fragment = mainFragment; // Update the reference
+                    } else {
+                        Log.d(TAG, "Deferred fragment transaction skipped: back stack is no longer empty.");
+                    }
+                });
+            } else {
+                // A sub-preference screen is active.
+                // We rely on onPreferenceStartFragment to set currentTitle.
+                onBackPressedCallback.setEnabled(true);
+            }
+        } else { // landscape
+            finish();
         }
         initTitleBar(); // Update action bar with potentially new currentTitle
     }
@@ -141,39 +247,20 @@ public class PreferencesActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-        // No need to call initFragmentIfRequired() here as fragments are handled in onCreate and onPreferenceStartFragment
-        // and re-attached by the FragmentManager on activity recreation.
     }
-
-    // initFragmentIfRequired() is no longer needed in this form as fragments are handled differently.
-    // private void initFragmentIfRequired() { ... }
-
-    // removeFragment() is no longer directly called in initFragment() or initRootFragments(), keeping for now.
-    private void removeFragment(Fragment removeFragment) {
-        Log.d(TAG, "removeFragment()");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (removeFragment != null && fragmentManager.findFragmentById(removeFragment.getId()) != null) {
-            fragmentManager.beginTransaction().remove(removeFragment).commitAllowingStateLoss();
-        }
-    }
-
-    // initFragment() is replaced by initRootFragments() for initial setup and onPreferenceStartFragment for sub-screens.
-    // private void initFragment() { ... }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         Log.d(TAG, "onConfigurationChanged()");
         super.onConfigurationChanged(newConfig);
 
-        // DO NOT call setContentView() here. Let the system recreate the Activity.
-        // The new layout will be inflated by onCreate() on recreation.
-
-        // Fragments will be re-attached by FragmentManager.
-        // Just update action bar and back press callback state.
+        // The system recreates the Activity, so onCreate will be called.
+        // We don't need to do much here other than update UI elements if necessary.
+        // The fragments will be re-attached by the FragmentManager.
+        // We need to ensure the title bar is updated and the back callback is enabled/disabled correctly.
         initTitleBar();
         if (onBackPressedCallback != null) {
-            // Re-evaluate enabled state for back button based on new orientation
-            onBackPressedCallback.setEnabled(!rootKey.isEmpty() && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
+            onBackPressedCallback.setEnabled(isBackEnabled());
         }
     }
 
@@ -191,10 +278,7 @@ public class PreferencesActivity extends BillingHelperActivity
         Log.d(TAG, "onItemPurchased");
         super.onItemPurchased(sku);
         if (fragment != null) {
-            runOnUiThread(() -> {
-                fragment.onPurchasesInitialized();
-            }
-            );
+            runOnUiThread(() -> fragment.onPurchasesInitialized());
         }
     }
 
@@ -237,17 +321,10 @@ public class PreferencesActivity extends BillingHelperActivity
         savedInstanceState.putCharSequence(KEY_TITLE, currentTitle);
     }
 
-    // onRestoreInstanceState is generally not needed if state is handled in onCreate.
-    // @Override
-    // public void onRestoreInstanceState(Bundle savedInstanceState) { 
-    //     super.onRestoreInstanceState(savedInstanceState);
-    //     Log.d(TAG, "onRestoreInstanceState");
-    // }
-
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
-        Log.d(TAG, "onPreferenceStartFragment");
-        Log.d(TAG, "rootKey:" + pref.getKey());
+    public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller, Preference pref) {
+        Log.d(TAG, "onPreferenceStartFragment: pref key = " + pref.getKey());
+        Log.d(TAG, "onPreferenceStartFragment: current rootKey = " + rootKey);
 
         rootKey = pref.getKey();
         currentTitle = pref.getTitle();
@@ -261,16 +338,21 @@ public class PreferencesActivity extends BillingHelperActivity
         newFragment.setArguments(data);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.d(TAG, "onPreferenceStartFragment: Portrait. Replacing R.id.main_frame");
             fT.setCustomAnimations(R.anim.move_in_prefs_right, R.anim.move_out_prefs_left, R.anim.move_in_prefs_left, R.anim.move_out_prefs_right)
                     .replace(R.id.main_frame, newFragment, FRAGMENT_TAG_1)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
             onBackPressedCallback.setEnabled(true);
-        } else {
-            fT.replace(R.id.right, newFragment, FRAGMENT_TAG_1).commitAllowingStateLoss();
+            this.fragment = newFragment; // Update fragment reference for portrait
+        } else { // Landscape
+            Log.d(TAG, "onPreferenceStartFragment: Landscape. Replacing R.id.details");
+            // Replace the details pane (R.id.details) with the new sub-preference fragment
+            fT.replace(R.id.details, newFragment, FRAGMENT_TAG_2) // Use FRAGMENT_TAG_2 for the details pane
+                    .commitAllowingStateLoss();
+            this.fragment2 = newFragment; // Keep track of the current detail fragment
+            onBackPressedCallback.setEnabled(true); // Enable back button if detail pane has content
         }
-
-        this.fragment = newFragment;
 
         initTitleBar();
 

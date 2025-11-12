@@ -33,7 +33,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartDate">다음알람ON</string>
     <string name="alarmStartsFrom"> 시작</string>
     <string name="alarmVolume">볼륨</string>
-    <string name="alarmVolumeReductionPercent">볼륨줄이기비율</string>
     <string name="allow_screen_off_summary">야간화면끄기</string>
     <string name="allow_screen_off">화면끄기</string>
     <string name="always_on">Always On</string>

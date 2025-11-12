@@ -136,7 +136,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             setupNotificationAccessPermission(sharedPreferences, "activateDoNotDisturb");
                             break;
                         case "enableRSS":
-                            if (settings.rssEnabled) {
+                            if (settings.isRssEnabled()) {
                                 RSSViewModel.loadDataPeriodicFromWorker(mContext, (LifecycleOwner) mContext);
                             } else {
                                 RSSViewModel.stopWorker();
@@ -144,7 +144,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             break;
                         case "rssURL":
                         case "rssCharSetMode":
-                            if (settings.rssEnabled) {
+                            if (settings.isRssEnabled()) {
                                 RSSViewModel.refreshDataFromWorker(mContext);
                             }
                             break;
@@ -343,6 +343,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         enablePreference("speakTime", isPurchasedActions);
         enablePreference("useDeviceLock", isPurchasedActions);
         enablePreference("category_notifications", isPurchasedActions);
+        enablePreference("enableRSS", isPurchasedActions);
 
         boolean enableNightMode =
                 isPurchasedActions
@@ -355,6 +356,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("purchaseActions", !isPurchasedActions);
         showPreference("purchaseActions2", !isPurchasedActions);
         showPreference("purchaseActions3", !isPurchasedActions);
+        showPreference("purchaseProRss", !isPurchasedActions);
     }
 
     private void showPurchaseDialog() {
@@ -369,19 +371,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        Log.d(TAG, "onCreatePreferences rootKey: " + rootKey);
+        Log.d(TAG, "onCreatePreferences called. Initial rootKey: " + rootKey);
         handler.removeCallbacks(runnableNotificationAccessChanged);
-        this.rootKey = rootKey;
 
+        // Get rootKey from arguments bundle first, if available
         Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey("rootKey")) {
             rootKey = getArguments().getString("rootKey");
-            Log.d(TAG, "onCreatePreferences getArgument: " + rootKey);
+            Log.d(TAG, "onCreatePreferences: rootKey from arguments: " + rootKey);
         }
 
+        this.rootKey = rootKey; // Update fragment's internal rootKey
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
 
-        if (rootKey != null) {
+        if (rootKey != null && !rootKey.isEmpty()) {
+            Log.d(TAG, "onCreatePreferences: Handling specific rootKey: " + rootKey);
             switch (rootKey) {
                 case "autostart":
                     setPreferencesFromResource(R.xml.preferences_autostart, rootKey);
@@ -445,20 +449,19 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
                     break;
                 default:
-                    if (getId() != R.id.right) {
-                        setPreferencesFromResource(R.xml.preferences, null);
-                    }
+                    Log.d(TAG, "onCreatePreferences: Unknown rootKey: " + rootKey + ". Loading main preferences.");
+                    setPreferencesFromResource(R.xml.preferences, null);
                     break;
             }
         } else {
-            if (getId() != R.id.right) {
-                setPreferencesFromResource(R.xml.preferences, null);
-            }
+            Log.d(TAG, "onCreatePreferences: rootKey is null or empty. Loading main preferences.");
+            setPreferencesFromResource(R.xml.preferences, null);
         }
 
         initPurchasePreference("purchaseActions");
         initPurchasePreference("purchaseActions2");
         initPurchasePreference("purchaseActions3");
+        initPurchasePreference("purchaseProRss");
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseDesignPackage");
         initPurchasePreference("purchaseDesignPackageBackground");
@@ -490,10 +493,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final RecyclerView recyclerView = getListView();
-        if (recyclerView != null) {
-            recyclerView.setPadding(recyclerView.getPaddingLeft(), 0, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
-        }
+        view.post(() -> {
+            final RecyclerView recyclerView = getListView();
+            if (recyclerView != null) {
+                recyclerView.setPadding(recyclerView.getPaddingLeft(), 0, recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+            }
+        });
     }
 
     private void init() {

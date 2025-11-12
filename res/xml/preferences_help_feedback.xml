@@ -60,7 +60,6 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        android:layout="@layout/preferences_category"
         app:title="@string/contribute">
         <Preference
             app:iconSpaceReserved="false"

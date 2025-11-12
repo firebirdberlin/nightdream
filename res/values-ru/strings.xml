@@ -34,7 +34,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartsFrom">От</string>
     <string name="alarmUpcoming">Время будильника</string>
     <string name="alarmVolume">Громкость</string>
-    <string name="alarmVolumeReductionPercent">уменьшить громкость на</string>
     <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
     <string name="allow_screen_off">Выключить экран</string>
     <string name="always_on">Всегда выключено</string>

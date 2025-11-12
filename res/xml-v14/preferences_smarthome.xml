@@ -6,7 +6,6 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:key="cat_avmfritz"
         app:title="@string/smart_home_avm">
 
