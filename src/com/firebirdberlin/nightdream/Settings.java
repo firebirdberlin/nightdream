@@ -32,8 +32,6 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -62,7 +60,7 @@ public class Settings {
 
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
-    public boolean activateDoNotDisturb = false;
+    private boolean activateDoNotDisturb = false;
     public boolean activateDoNotDisturbAllowPriority = true;
     public boolean alwaysOnStartWithLockedUI = false;
     public boolean allow_screen_off = false;
@@ -72,7 +70,7 @@ public class Settings {
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
     public boolean doubleTapToFinish = false;
-    public boolean speakTime = false;
+    private boolean speakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
     public boolean handle_power_disconnection_at_time_range_end = true;
@@ -92,7 +90,7 @@ public class Settings {
     public boolean showTemperature = true;
     public boolean showWindSpeed = false;
     public boolean showPollen = false;
-    public boolean useDeviceLock = false;
+    private boolean useDeviceLock = false;
     public boolean stopAlarmOnTap = true;
     public boolean stopAlarmOnLongPress = false;
     public boolean useAlarmSwipeGesture = false;
@@ -118,6 +116,7 @@ public class Settings {
     public int alarmVolume = 3;
     public int alarmVolumeReductionPercent = 0;
     public int alarmFadeInDurationSeconds = 10;
+    private int alarmFadeInMaxVolumePercent = 100;
     public int slideshowStyle = 1;
     public int backgroundImageDuration = 4;
     public int clockBackgroundTransparency = 4;
@@ -138,7 +137,7 @@ public class Settings {
     public String rssURL="";
     public String rssCharSet="";
     public int rssIntervalMode;
-    public boolean rssEnabled = false;
+    private boolean rssEnabled = false;
     public long rssTickerSpeed=10L;
     public float rssTextSize;
     public int gradientStartColor;
@@ -184,8 +183,7 @@ public class Settings {
     SharedPreferences settings;
     private boolean radioStreamActivateWiFi = false;
     private int background_mode = BACKGROUND_BLACK;
-    private long nextAlwaysOnTime = 0L;
-    private Context mContext;
+    private final Context mContext;
     private boolean reactivate_screen_on_noise = false;
     private boolean ambientNoiseDetection;
     private String bgpath = "";
@@ -328,27 +326,30 @@ public class Settings {
 
     public static boolean showNotificationPreview(Context context) {
         Resources res = context.getResources();
-        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return false;
         }
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         return enabled && preferences.getBoolean("showNotificationPreview", false);
     }
 
     public static boolean showMediaStyleNotification(Context context) {
         Resources res = context.getResources();
-        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return false;
         }
+        boolean enabled = res.getBoolean(R.bool.use_NotificationListenerService);
         return enabled && preferences.getBoolean("showMediaStyleNotification", false);
     }
 
     public static boolean useNotificationStatusBar(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return true;
         }
         return preferences.getBoolean("showNotificationsInStatusBar", true);
@@ -360,7 +361,8 @@ public class Settings {
 
     public static int getMinNotificationImportance(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREFS_KEY, 0);
-        if (preferences == null) {
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(context);
+        if (preferences == null || !purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return 3;
         }
         String val = preferences.getString("minNotificationImportance", "3");
@@ -412,10 +414,11 @@ public class Settings {
         alwaysOnStartWithLockedUI = settings.getBoolean("alwaysOnStartWithLockedUI", false);
         reactivate_screen_on_noise = settings.getBoolean("reactivate_screen_on_noise", false);
         alarmVolume = settings.getInt("alarmVolume", 3);
-        alarmVolumeReductionPercent = settings.getInt("alarmVolumeReductionPercent", 0);
         alarmFadeIn = settings.getBoolean("alarmFadeIn", true);
         notifyForUpcomingAlarms = settings.getBoolean("notifyForUpcomingAlarms", false);
         alarmFadeInDurationSeconds = settings.getInt("alarmFadeInDurationSeconds", 10);
+        alarmVolumeReductionPercent = settings.getInt("alarmVolumeReductionPercent", 0);
+        alarmFadeInMaxVolumePercent = settings.getInt("alarmFadeInMaxVolumePercent", 100 - alarmVolumeReductionPercent);
         ambientNoiseDetection = settings.getBoolean("ambientNoiseDetection", false);
         autostartForNotifications = settings.getBoolean("autostartForNotifications", false);
         standbyEnabledWhileDisconnected = settings.getBoolean("standbyEnabledWhileDisconnected", false);
@@ -478,7 +481,6 @@ public class Settings {
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
-        nextAlwaysOnTime = settings.getLong("nextAlwaysOnTime", 0L);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
         final String defaultSecondaryColorString = "#C2C2C2";
@@ -559,6 +561,10 @@ public class Settings {
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
         }
+    }
+
+    public int getAlarmMaxVolumePercent() {
+        return (alarmFadeIn) ? alarmFadeInMaxVolumePercent : 100;
     }
 
     int getBatteryTimeoutMinutes() {
@@ -775,6 +781,11 @@ public class Settings {
         return BACKGROUND_BLACK;
     }
 
+    public boolean isRssEnabled() {
+        boolean purchased = purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS);
+        return purchased && rssEnabled;
+    }
+
     public String getTimeFormat() {
         return timeFormat;
     }
@@ -810,6 +821,27 @@ public class Settings {
         prefEditor.putBoolean("handle_power", false);
         prefEditor.putBoolean("standbyEnabledWhileDisconnected", false);
         prefEditor.apply();
+    }
+
+    public boolean shallUseDeviceLock() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return useDeviceLock;
+    }
+
+    public boolean shallActivateDoNotDisturb() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return activateDoNotDisturb;
+    }
+
+    public boolean isSpeakTimeEnabled() {
+        if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
+            return false;
+        }
+        return speakTime;
     }
 
     public boolean isStandbyEnabledWhileDisconnected() {
@@ -995,34 +1027,59 @@ public class Settings {
         EventBus.getDefault().post(new OnSleepTimeChanged(sleepTimeInMillis));
     }
 
-    public void updateNextAlwaysOnTime() {
-        long now = System.currentTimeMillis();
-        nextAlwaysOnTime = now;
-        nextAlwaysOnTime += Utility.getScreenOffTimeout(mContext);
-        nextAlwaysOnTime += 20000;
+    public boolean isWithinAlwaysOnTime(int batteryLevel) {
+        boolean isBatteryOk = (batteryLevel < 0) || (alwaysOnBatteryLevel <= batteryLevel); // Use -1 for unknown
+        if (isStandbyEnabledWhileDisconnected() && isBatteryOk) {
 
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.apply();
-    }
+            if (Utility.isConfiguredAsDaydream(mContext)) return false;
+            if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
 
-    public void deleteNextAlwaysOnTime() {
-        nextAlwaysOnTime = 0L;
+            Calendar now = Calendar.getInstance();
+            if (!alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
+               return false;
+            }
 
-        SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putLong("nextAlwaysOnTime", nextAlwaysOnTime);
-        prefEditor.apply();
-    }
-
-    public boolean isAlwaysOnAllowed() {
-        Calendar now = Calendar.getInstance();
-        boolean isAllowed = true;
-        if (batteryTimeout > 0 && nextAlwaysOnTime > 0L) {
-            Calendar alwaysOnTime = Calendar.getInstance();
-            alwaysOnTime.setTimeInMillis(nextAlwaysOnTime);
-            isAllowed = now.after(alwaysOnTime);
+            Calendar start = new SimpleTime(alwaysOnTimeRangeStartInMinutes).getCalendar();
+            Calendar end = new SimpleTime(alwaysOnTimeRangeEndInMinutes).getCalendar();
+            boolean isWithinAlwaysOnTime = true;
+            if (end.before(start)) {
+                isWithinAlwaysOnTime = (now.after(start) || now.before(end));
+            } else if (!start.equals(end)) {
+                isWithinAlwaysOnTime = (now.after(start) && now.before(end));
+            }
+            return isWithinAlwaysOnTime;
         }
-        return isAllowed;
+
+        return false;
+    }
+
+    public boolean isWithinScheduledAutoStartTimeRange(boolean isCharging) {
+        if (isScheduledAutoStartEnabled()) {
+
+            if (Utility.isConfiguredAsDaydream(mContext)) return false;
+            if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
+
+            if (scheduledAutoStartChargerRequired && !isCharging) {
+                return false;
+            }
+
+            Calendar now = Calendar.getInstance();
+            if (!scheduledAutostartWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
+                return false;
+            }
+
+            Calendar start = new SimpleTime(scheduledAutoStartTimeRangeStartInMinutes).getCalendar();
+            Calendar end = new SimpleTime(scheduledAutoStartTimeRangeEndInMinutes).getCalendar();
+            boolean isWithinTime = true;
+            if (end.before(start)) {
+                isWithinTime = (now.after(start) || now.before(end));
+            } else if (!start.equals(end)) {
+                isWithinTime = (now.after(start) && now.before(end));
+            }
+            return isWithinTime;
+        }
+
+        return false;
     }
 
     public void setPositionClock(float x, float y, int orientation) {
@@ -1133,7 +1190,7 @@ public class Settings {
         try {
             return Double.longBitsToDouble(settings.getLong(key, 0));
         }catch (Exception ex){
-            return (double) settings.getFloat(key, 0.f);
+            return settings.getFloat(key, 0.f);
         }
     }
 

@@ -308,7 +308,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         alarmTime = new SimpleTime(extras);
                         setAlarmVolume(settings.alarmVolume, settings.radioStreamMusicIsAllowedForAlarms);
 
-                        maxVolumePercent = (100 - settings.alarmVolumeReductionPercent);
+                        maxVolumePercent = settings.getAlarmMaxVolumePercent();
                         fadeInDelay = settings.alarmFadeInDurationSeconds * 1000L / maxVolumePercent;
 
                         radioStationIndex = alarmTime.radioStationIndex;

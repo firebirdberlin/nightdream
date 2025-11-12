@@ -14,7 +14,6 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:allowDividerBelow="true"
         app:title="@string/screen">
     >
@@ -45,7 +44,6 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:layout="@layout/preferences_category"
         app:allowDividerBelow="true"
         app:title="@string/battery">
         >

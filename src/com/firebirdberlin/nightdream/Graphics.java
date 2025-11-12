@@ -8,9 +8,11 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.util.Log;
 
 import androidx.renderscript.Allocation;
 import androidx.renderscript.Element;
+import androidx.renderscript.RSRuntimeException;
 import androidx.renderscript.RenderScript;
 import androidx.renderscript.ScriptIntrinsicBlur;
 
@@ -42,6 +44,11 @@ public class Graphics {
             theIntrinsic.setInput(tmpIn);
             theIntrinsic.forEach(tmpOut);
             tmpOut.copyTo(outputBitmap);
+        } catch (RSRuntimeException e) {
+            // Log the error for debugging, but don't crash the app
+            Log.e("Graphics.blur", "RenderScript failed to initialize, returning original bitmap.", e);
+            // Gracefully fail by returning the original, un-blurred bitmap
+            return bitmap;
         } finally {
             // Important to release resources to prevent memory leaks.
             if (rs != null) {

@@ -19,9 +19,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.TypedValue;
@@ -63,7 +61,6 @@ import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
-import com.firebirdberlin.nightdream.ui.AskForOverlayPermissionDialogFragment;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
@@ -111,7 +108,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private final Runnable finishApp = this::finish;
     private final Runnable runnableSetupNightMode = this::setupNightMode;
     public CastContext mCastContext;
-    protected PowerManager.WakeLock wakelock;
     Sensor lightSensor = null;
     mAudioManager AudioManage = null;
     private ImageView alarmClockIcon;
@@ -137,11 +133,7 @@ public class NightDreamActivity extends BillingHelperActivity
     GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public void onLongPress(@NonNull MotionEvent e) {
-            if (nightDreamUI.isLocked() || !isPurchased(PurchaseManager.ITEM_ACTIONS)) {
-                return;
-            }
-
-            if (!mySettings.speakTime) {
+            if (nightDreamUI.isLocked() || !mySettings.isSpeakTimeEnabled()) {
                 return;
             }
 
@@ -197,29 +189,22 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         @Override
-        public void onProviderEnabled(String s) {
+        public void onProviderEnabled(@NonNull String s) {
 
         }
 
         @Override
-        public void onProviderDisabled(String s) {
+        public void onProviderDisabled(@NonNull String s) {
 
         }
     };
     private final Runnable checkKeepScreenOn = () -> setKeepScreenOn(shallKeepScreenOn(mode));
-    private final Runnable alwaysOnTimeout = () -> {
-        if (Utility.isCharging(context) && mode > 0) return;
-
-        mySettings.updateNextAlwaysOnTime();
-        setKeepScreenOn(shallKeepScreenOn(mode));
-        triggerAlwaysOnTimeout();
-    };
     private boolean isChargingWireless = false;
     private DevicePolicyManager mgr = null;
     private ComponentName cn = null;
     private GestureDetector mGestureDetector = null;
     private final Runnable lockDevice = () -> {
-        if (mySettings.useDeviceLock && mgr.isAdminActive(cn) && !isLocked()) {
+        if (mySettings.shallUseDeviceLock() && mgr.isAdminActive(cn) && !isLocked()) {
             mgr.lockNow();
             Utility.turnScreenOn(context);
         }
@@ -335,13 +320,10 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
         Window window = getWindow();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-        } else {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             window.addFlags(
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                            WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
             );
         }
 
@@ -350,7 +332,6 @@ public class NightDreamActivity extends BillingHelperActivity
         mySettings = new Settings(this);
         setupCastListener();
 
-        setKeepScreenOn(true);
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
@@ -444,8 +425,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onStart()");
 
         setExcludeFromRecents();
-        setKeepScreenOn(true);
-
         Utility.registerEventBus(this);
         nightDreamUI.onStart();
 
@@ -510,12 +489,11 @@ public class NightDreamActivity extends BillingHelperActivity
             setupRadioStreamUI();
             setupAlarmClockIcon();
 
-            triggerAlwaysOnTimeout();
             showToastIfNotCharging();
 
             final Context context = this;
             clockLayoutContainer.post(() -> {
-                if (Build.VERSION.SDK_INT >= 18 && Settings.showNotification(this)) {
+                if (Settings.showNotification(this)) {
                     Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
                     i.putExtra("command", "list");
                     LocalBroadcastManager.getInstance(context).sendBroadcast(i);
@@ -561,10 +539,9 @@ public class NightDreamActivity extends BillingHelperActivity
         isRunning = true;
         resumeTime = System.currentTimeMillis();
         screenWasOn = false;
-        setKeepScreenOn(true);
         mySettings = new Settings(this);
         handler.postDelayed(lockDevice, Utility.getScreenOffTimeout(this));
-        if (mySettings.activateDoNotDisturb) {
+        if (mySettings.shallActivateDoNotDisturb()) {
             AudioManage.activateDnDMode(true, mySettings.activateDoNotDisturbAllowPriority);
         }
         ScreenWatcherService.conditionallyStart(this, mySettings);
@@ -582,18 +559,17 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         conditionallyShowSnackBar();
+        setKeepScreenOn(true);
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
     private void setExcludeFromRecents() {
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-            boolean isConfiguredAsDaydream = Utility.isConfiguredAsDaydream(this);
-            List<ActivityManager.AppTask> tasks = (am != null) ? am.getAppTasks() : null;
-            if (tasks != null) {
-                for (ActivityManager.AppTask task : tasks)
-                    task.setExcludeFromRecents(isConfiguredAsDaydream);
-            }
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        boolean isConfiguredAsDaydream = Utility.isConfiguredAsDaydream(this);
+        List<ActivityManager.AppTask> tasks = (am != null) ? am.getAppTasks() : null;
+        if (tasks != null) {
+            for (ActivityManager.AppTask task : tasks)
+                task.setExcludeFromRecents(isConfiguredAsDaydream);
         }
     }
 
@@ -654,7 +630,6 @@ public class NightDreamActivity extends BillingHelperActivity
         handler.removeCallbacks(finishApp);
         handler.removeCallbacks(runnableSetupNightMode);
         handler.removeCallbacks(lockDevice);
-        handler.removeCallbacks(alwaysOnTimeout);
         handler.removeCallbacks(checkKeepScreenOn);
 
         PowerConnectionReceiver.schedule(this);
@@ -664,7 +639,7 @@ public class NightDreamActivity extends BillingHelperActivity
         unregisterLocalReceiver(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
-        if (mySettings.activateDoNotDisturb) {
+        if (mySettings.shallActivateDoNotDisturb()) {
             AudioManage.activateDnDMode(false, mySettings.activateDoNotDisturbAllowPriority);
         }
 
@@ -813,12 +788,10 @@ public class NightDreamActivity extends BillingHelperActivity
 
     public void onNotificationListClick(View v) {
         if (nightDreamUI.isLocked()) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            int resId = Settings.getNotificationContainerResourceId(this);
-            FlexboxLayout notificationLayout = findViewById(resId);
-            if (notificationLayout != null && notificationLayout.getChildCount() > 0) {
-                NotificationListActivity.start(this);
-            }
+        int resId = Settings.getNotificationContainerResourceId(this);
+        FlexboxLayout notificationLayout = findViewById(resId);
+        if (notificationLayout != null && notificationLayout.getChildCount() > 0) {
+            NotificationListActivity.start(this);
         }
     }
 
@@ -845,7 +818,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void onChangeNightMode(int new_mode) {
         if (new_mode == MODE_NIGHT) {
-            triggerAlwaysOnTimeout();
         }
     }
 
@@ -896,8 +868,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void setMode(int new_mode) {
         nightDreamUI.setMode(new_mode, last_ambient);
-
-        setKeepScreenOn(shallKeepScreenOn(new_mode)); // allow the screen to go off
         if (
                 (mode != MODE_NIGHT && new_mode == MODE_NIGHT)
                         || (mode == MODE_NIGHT && new_mode != MODE_NIGHT)
@@ -925,14 +895,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "isCharging = " + isCharging);
         Log.d(TAG, "now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS = " +
                 (now - resumeTime < MINIMUM_APP_RUN_TIME_MILLIS));
-
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)) {
-            return true;
-        }
-
-        if (mode > 0 && ScreenReceiver.shallActivateStandby(this, mySettings)) {
-            return true;
-        }
+        Log.d(TAG, "screen is locked " + Utility.isScreenLocked(context));
 
         long nextAlarmTime = mySettings.getAlarmTime().getTimeInMillis();
         if ( // keep screen on
@@ -944,12 +907,27 @@ public class NightDreamActivity extends BillingHelperActivity
             return true;
         }
 
-        Log.i(TAG, "1 " + (isCharging || mySettings.isAlwaysOnAllowed()));
-        if ((isCharging || mySettings.isAlwaysOnAllowed()) && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)) {
-            Log.d(TAG, "shallKeepScreenOn() 2 true");
+        BatteryStats batteryStats = new BatteryStats(context);
+        Log.i(TAG, "1 " + (isCharging || mySettings.isWithinAlwaysOnTime(batteryStats.reference.level)));
+        if (isCharging && (mode > 0 || mode == 0 && !mySettings.allow_screen_off)) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (charging)");
             return true;
         }
 
+        if (mySettings.isWithinAlwaysOnTime(batteryStats.reference.level)) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (within always on time)");
+            return true;
+        }
+
+        if (mySettings.isWithinScheduledAutoStartTimeRange(isCharging)) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (within scheduled autostart time)");
+            return true;
+        }
+
+        if (!isCharging && (now - resumeTime) / 60000  < mySettings.batteryTimeout) {
+            Log.d(TAG, "shallKeepScreenOn() -> true (not charging, waiting for battery timeout)");
+            return true;
+        }
 
         Log.d(TAG, "shallKeepScreenOn() false");
         return false;
@@ -967,7 +945,6 @@ public class NightDreamActivity extends BillingHelperActivity
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + last_ambient + " lux.");
         handleBrightnessChange();
-        handler.postDelayed(checkKeepScreenOn, MINIMUM_APP_RUN_TIME_MILLIS);
     }
 
     @Subscribe
@@ -989,15 +966,35 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void setKeepScreenOn(boolean keepScreenOn) {
-        if (keepScreenOn) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        Log.i(TAG, "setKeepScreenOn(" + keepScreenOn + ") requested.");
+        Window window = getWindow();
+        int currentFlags = window.getAttributes().flags;
+        boolean isFlagCurrentlySet = (currentFlags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) != 0;
+
+        // Only act if the desired state is different from the current state
+        if (keepScreenOn && !isFlagCurrentlySet) {
+            Log.i(TAG, "Flag is not set. Adding FLAG_KEEP_SCREEN_ON.");
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            window.addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+        } else if (!keepScreenOn && isFlagCurrentlySet) {
+            Log.i(TAG, "Flag is set. Clearing FLAG_KEEP_SCREEN_ON.");
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            }
         } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            // Do nothing, the state is already correct. This prevents resetting the screen timeout.
+            Log.d(TAG, "setKeepScreenOn: State is already correct. No change needed.");
         }
+
+        // Continue to schedule the next check
+        handler.removeCallbacks(checkKeepScreenOn);
+        handler.postDelayed(checkKeepScreenOn, Utility.millisToTimeTick(MINIMUM_APP_RUN_TIME_MILLIS));
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
         Log.i(TAG, "new intent received");
@@ -1014,17 +1011,6 @@ public class NightDreamActivity extends BillingHelperActivity
             calendar = simpleEndTime.getCalendar();
         }
 
-        if (ScheduledAutoStartReceiver.shallAutostart(this, mySettings)
-                && mySettings.scheduledAutoStartTimeRangeStartInMinutes != mySettings.scheduledAutoStartTimeRangeEndInMinutes) {
-            SimpleTime simpleEndTime = new SimpleTime(mySettings.scheduledAutoStartTimeRangeEndInMinutes);
-            Calendar calendar2 = simpleEndTime.getCalendar();
-            if (calendar == null) {
-                calendar = calendar2;
-            } else if (calendar2.before(calendar)) {
-                calendar = calendar2;
-            }
-        }
-
         scheduleShutdown(calendar);
     }
 
@@ -1034,14 +1020,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (calendar == null) return;
         long deltaMillis = calendar.getTimeInMillis() - System.currentTimeMillis();
         handler.postDelayed(finishApp, deltaMillis);
-    }
-
-    private void triggerAlwaysOnTimeout() {
-        handler.removeCallbacks(alwaysOnTimeout);
-        boolean isCharging = Utility.isCharging(this);
-        if ((!isCharging && mySettings.batteryTimeout > 0) || (isCharging && mode == 0)) {
-            handler.postDelayed(alwaysOnTimeout, 60000L * mySettings.batteryTimeout);
-        }
     }
 
     @Override
@@ -1094,20 +1072,20 @@ public class NightDreamActivity extends BillingHelperActivity
             if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
                 scheduleShutdown();
                 nightDreamUI.onPowerDisconnected();
-                if (mySettings.handle_power_disconnection) {
+                if (
+                        mySettings.handle_power_disconnection
+                        &&  !mySettings.isWithinAlwaysOnTime(stats.reference.level)
+                ) {
                     handler.removeCallbacks(finishApp);
                     if (isChargingWireless) {
                         handler.postDelayed(finishApp, 5000);
                     } else {
                         finish();
                     }
-                } else {
-                    triggerAlwaysOnTimeout();
                 }
             } else if (Intent.ACTION_POWER_CONNECTED.equals(action)) {
                 scheduleShutdown();
                 handler.removeCallbacks(finishApp);
-                handler.removeCallbacks(alwaysOnTimeout);
                 nightDreamUI.onPowerConnected();
                 isChargingWireless = stats.reference.isChargingWireless;
             }

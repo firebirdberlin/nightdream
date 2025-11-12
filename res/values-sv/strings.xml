@@ -34,7 +34,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmStartsFrom">Från</string>
     <string name="alarmUpcoming">Kommande alarm</string>
     <string name="alarmVolume">Volym</string>
-    <string name="alarmVolumeReductionPercent">Minska volym med</string>
     <string name="allow_screen_off_summary">Släck skärm på natten.</string>
     <string name="allow_screen_off">Släck skärm</string>
     <string name="always_on">Alltid på</string>
