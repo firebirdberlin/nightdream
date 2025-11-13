@@ -26,7 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
-import com.prof.rssparser.Article;
+import com.prof18.rssparser.model.RssChannel;
+import com.prof18.rssparser.model.RssItem;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,7 +67,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
 
         RSSViewModel.observe(context, channel -> {
             if (channel != null) {
-                setHeadlines(channel.getArticles());
+                setHeadlines(channel.getItems());
             }
         });
 
@@ -87,14 +88,12 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         });
     }
 
-    public void setHeadlines(List<Article> articles) {
+    public void setHeadlines(List<RssItem> articles) {
         Log.i(TAG, "setHeadlines()");
         if (articles != null && !articles.isEmpty()) {
             this.headlines.clear();
             this.urls.clear();
-            this.headlines.addAll(headlines);
-            //this.urls.addAll(urls);
-            Log.d(TAG, "setHeadlines(List<String> headlines)");
+            Log.d(TAG, "setHeadlines(List<RssItem> articles)");
             for (int i = 0; i < Math.min(articles.size(), 10); i++) {
                 String title = articles.get(i).getTitle();
                 String link = articles.get(i).getLink();
@@ -234,7 +233,25 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
             count++;
         }
 
-        //make TextView
+        TextView tv = getTextView(animationsEnabled, headline);
+        if( Utility.areSystemAnimationsEnabled(context) ) {
+            removeNonAnimatedViews();
+            tv.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                // View\'s dimensions are available only after the layout pass.
+                // Now is the time to start animating it.
+                Log.i(TAG, "addOnLayoutChangeListener");
+                animationStart((TextView) v);
+            });
+        } else {
+            removeAllViews();
+            requestLayout();
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(this::launchNext, 10000);
+        }
+        addView(tv);
+    }
+
+    private TextView getTextView(boolean animationsEnabled, String headline) {
         TextView tv = new TextView(getContext());
         if (animationsEnabled) {
             tv.setGravity(Gravity.CENTER_VERTICAL);
@@ -255,21 +272,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         if (!headline.isEmpty()) {
             tv.setText(headline);
         }
-        if( Utility.areSystemAnimationsEnabled(context) ) {
-            removeNonAnimatedViews();
-            tv.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                // View's dimensions are available only after the layout pass.
-                // Now is the time to start animating it.
-                Log.i(TAG, "addOnLayoutChangeListener");
-                animationStart((TextView) v);
-            });
-        } else {
-            removeAllViews();
-            requestLayout();
-            handler.removeCallbacksAndMessages(null);
-            handler.postDelayed(this::launchNext, 10000);
-        }
-        addView(tv);
+        return tv;
     }
 
     void removeNonAnimatedViews() {
@@ -282,7 +285,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
 
     }
     private void animationStart(final TextView tv) {
-
         if (animatedViews.contains(tv)) {
             return;
         }
@@ -337,7 +339,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
 
                     @Override
                     public void onAnimationEnd(@NonNull Animator animation) {
-                        //Remove view
                         removeView(tv);
                         animators.remove(animation);
                         animatedViews.remove(tv);
