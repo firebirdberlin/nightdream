@@ -99,7 +99,7 @@ public class DownloadWeatherService extends Worker {
         switch (weatherProvider) {
             case OPEN_WEATHER_MAP:
             default:
-                entry = OpenWeatherMapApi.fetchWeatherData(
+                entry = OpenWeatherMapApi.fetchWeatherDataApi(
                         getApplicationContext(),
                         cityID,
                         (float) location.getLatitude(),

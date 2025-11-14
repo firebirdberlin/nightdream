@@ -7,9 +7,12 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.openweathermapapi.apimodels.ApiCity;
+import com.firebirdberlin.openweathermapapi.apimodels.ApiCoord;
 import com.firebirdberlin.openweathermapapi.apimodels.Clouds;
+import com.firebirdberlin.openweathermapapi.apimodels.CurrentSys;
 import com.firebirdberlin.openweathermapapi.apimodels.ListEntry;
 import com.firebirdberlin.openweathermapapi.apimodels.Main;
+import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapCurrentResponse;
 import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapForecastResponse;
 import com.firebirdberlin.openweathermapapi.apimodels.Rain;
 import com.firebirdberlin.openweathermapapi.apimodels.Snow;
@@ -81,16 +84,29 @@ public class OpenWeatherMapApi {
         return new String(bytes);
     }
 
-    public static WeatherEntry fetchWeatherData(
+    /**
+     * Fetches current weather data from OpenWeatherMap API using Gson for JSON parsing.
+     * Caching logic is similar to the original method.
+     *
+     * @param context The application context.
+     * @param cityID  The city ID (optional, if lat/lon are provided).
+     * @param lat     Latitude of the location (used if cityID is null or empty).
+     * @param lon     Longitude of the location (used if cityID is null or empty).
+     * @return A WeatherEntry object, or null if data fetching fails.
+     */
+    public static WeatherEntry fetchWeatherDataApi(
             Context context, String cityID, float lat, float lon
     ) {
-        int responseCode = 0;
-        String response = "";
         String responseText = "";
+        long requestTimestamp = System.currentTimeMillis();
 
         if (cityID != null && !cityID.isEmpty()) {
-            if (Integer.parseInt(cityID) < 0) {
-                cityID = null;
+            try {
+                if (Integer.parseInt(cityID) < 0) { // Check for invalid cityID, similar to original
+                    cityID = null;
+                }
+            } catch (NumberFormatException ignored) {
+                cityID = null; // Treat invalid cityID string as null
             }
         }
 
@@ -100,46 +116,157 @@ public class OpenWeatherMapApi {
                     (cityID != null && !cityID.isEmpty())
                             ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
                             : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_DATA, lat, lon);
-        } catch (NumberFormatException ignored) {}
-        Log.d(TAG, cacheFileName);
+        } catch (Exception ignored) {} // Catch potential formatting errors, keep default name
         File cacheFile = new File(context.getCacheDir(), cacheFileName);
-        long now = System.currentTimeMillis();
+        Log.d(TAG, "fetchWeatherDataApi Cache file: " + cacheFileName);
+
+        // --- Cache Reading Logic ---
         if (cacheFile.exists()) {
             Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
-            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
+            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > requestTimestamp - CACHE_VALIDITY_TIME));
         }
 
-        long requestTimestamp = now;
-        if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
+        if (cacheFile.exists() && cacheFile.lastModified() > requestTimestamp - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
-            requestTimestamp = cacheFile.lastModified();
+            requestTimestamp = cacheFile.lastModified(); // Use cache file's timestamp
+            Log.i(TAG, "fetchWeatherDataApi: Using cached response. Modified: " + requestTimestamp);
         } else {
+            // --- Network Request Logic ---
+            int responseCode = 0;
+            String responseMessage = "";
             try {
                 URL url = getUrlWeather(cityID, lat, lon);
-                Log.i(TAG, "requesting " + url.toString());
+                Log.i(TAG, "fetchWeatherDataApi: requesting " + url.toString());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                response = urlConnection.getResponseMessage();
+                urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+                urlConnection.setReadTimeout(READ_TIMEOUT);
+
+                responseMessage = urlConnection.getResponseMessage();
                 responseCode = urlConnection.getResponseCode();
+
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     responseText = getResponseText(urlConnection);
+                    storeCacheFile(cacheFile, responseText); // Store successful response to cache
+                } else {
+                    Log.w(TAG, "fetchWeatherDataApi: API responseCode " + responseCode + " - " + responseMessage);
                 }
                 urlConnection.disconnect();
+
+            } catch (SocketTimeoutException e) {
+                Log.e(TAG, "fetchWeatherDataApi: Http Timeout", e);
+                // Try to read from cache if network fails, even if expired
+                if (cacheFile.exists()) {
+                    responseText = readFromCacheFile(cacheFile);
+                    requestTimestamp = cacheFile.lastModified();
+                    Log.i(TAG, "fetchWeatherDataApi: Network timeout, attempting to use expired cache.");
+                } else {
+                    return null; // No network, no cache
+                }
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-                e.printStackTrace();
-            }
-            storeCacheFile(cacheFile, responseText);
-            Log.i(TAG, " >> response " + response);
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                Log.w(TAG, " >> responseCode " + responseCode);
-                return null;
+                Log.e(TAG, "fetchWeatherDataApi: Error fetching data", e);
+                // Try to read from cache if network fails, even if expired
+                if (cacheFile.exists()) {
+                    responseText = readFromCacheFile(cacheFile);
+                    requestTimestamp = cacheFile.lastModified();
+                    Log.i(TAG, "fetchWeatherDataApi: Network error, attempting to use expired cache.");
+                } else {
+                    return null; // No network, no cache
+                }
             }
         }
 
-        Log.i(TAG, " >> responseText " + responseText);
+        // --- Gson Parsing Logic ---
+        if (responseText == null || responseText.isEmpty()) {
+            Log.w(TAG, "fetchWeatherDataApi: No response text found (empty or null).");
+            return null;
+        }
 
-        JSONObject json = getJSONObject(responseText);
-        return getWeatherEntryFromJSONObject(json, requestTimestamp);
+        Gson gson = new Gson();
+        OpenWeatherMapCurrentResponse apiResponse;
+        try {
+            apiResponse = gson.fromJson(responseText, OpenWeatherMapCurrentResponse.class);
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, "fetchWeatherDataApi: Error parsing JSON with Gson", e);
+            // Optionally delete corrupt cache file here: cacheFile.delete();
+            return null;
+        }
+
+        if (apiResponse == null || apiResponse.getMain() == null || apiResponse.getCoord() == null) {
+            Log.w(TAG, "fetchWeatherDataApi: API response or essential objects (main, coord) are null after Gson parsing.");
+            return null;
+        }
+
+        // --- Conversion to WeatherEntry ---
+        WeatherEntry entry = new WeatherEntry();
+
+        entry.cityID = apiResponse.getId();
+        entry.cityName = apiResponse.getName();
+
+        ApiCoord apiCoord = apiResponse.getCoord();
+        if (apiCoord != null) {
+            entry.lat = (float) apiCoord.getLat();
+            entry.lon = (float) apiCoord.getLon();
+        } else {
+            entry.lat = lat; // Fallback to input lat/lon
+            entry.lon = lon; // Fallback to input lat/lon
+        }
+
+        Main apiMain = apiResponse.getMain();
+        if (apiMain != null) {
+            entry.temperature = apiMain.getTemp();
+            entry.apparentTemperature = apiMain.getFeelsLike();
+            entry.humidity = apiMain.getHumidity();
+        }
+
+        Clouds apiClouds = apiResponse.getClouds();
+        if (apiClouds != null) {
+            entry.clouds = apiClouds.getAll();
+        }
+
+        Wind apiWind = apiResponse.getWind();
+        if (apiWind != null) {
+            entry.windSpeed = apiWind.getSpeed();
+            entry.windDirection = apiWind.getDeg();
+        }
+
+        Rain apiRain = apiResponse.getRain();
+        if (apiRain != null && apiRain.getVolume1h() != null) {
+            entry.rain1h = apiRain.getVolume1h();
+        } else {
+            entry.rain1h = -1.0;
+        }
+        // Current weather only has 1h, so 3h remains default or -1.0
+        entry.rain3h = -1.0; // The 'Rain' model now supports both, but current weather only has 1h.
+
+        Snow apiSnow = apiResponse.getSnow();
+        if (apiSnow != null && apiSnow.getVolume1h() != null) {
+            // WeatherEntry does not have a specific snow volume field,
+            // you might want to add one or use a generic precipitation field
+            // For now, it's logged or ignored if not directly mapped.
+            // entry.snow1h = apiSnow.getVolume1h(); // If you add this field to WeatherEntry
+        }
+
+        List<Weather> apiWeatherList = apiResponse.getWeather();
+        if (apiWeatherList != null && !apiWeatherList.isEmpty()) {
+            Weather firstWeather = apiWeatherList.get(0);
+            entry.weatherIcon = firstWeather.getIcon();
+            entry.description = firstWeather.getDescription();
+            entry.weatherIconMeteoconsSymbol = iconToText(firstWeather.getIcon());
+        }
+
+        CurrentSys currentSys = apiResponse.getCurrentSys();
+        if (currentSys != null) {
+            entry.sunriseTime = currentSys.getSunrise();
+            entry.sunsetTime = currentSys.getSunset();
+        }
+
+        entry.timestamp = apiResponse.getDt();
+        entry.request_timestamp = requestTimestamp;
+
+        // Visibility (int) and timezone (long) are available in OpenWeatherMapCurrentResponse
+        // but not in WeatherEntry. Extend WeatherEntry if you need them.
+
+        return entry;
     }
 
     /**
@@ -327,50 +454,6 @@ public class OpenWeatherMapApi {
         return forecast;
     }
 
-    private static WeatherEntry getWeatherEntryFromJSONObject(
-            JSONObject json, long requestTimestamp
-    ) {
-        if (json == null) {
-            return null;
-        }
-        JSONObject jsonMain = getJSONObject(json, "main");
-        JSONObject jsonCoord = getJSONObject(json, "coord");
-        JSONObject jsonClouds = getJSONObject(json, "clouds");
-        JSONObject jsonRain = getJSONObject(json, "rain");
-        JSONObject jsonWind = getJSONObject(json, "wind");
-        JSONObject jsonSys = getJSONObject(json, "sys");
-        JSONArray jsonWeather = getJSONArray(json, "weather");
-
-        WeatherEntry entry = new WeatherEntry();
-        entry.cityID = getValue(json, "id", 0);
-        entry.lat = getValue(jsonCoord, "lat", -1.f);
-        entry.lon = getValue(jsonCoord, "lon", -1.f);
-        entry.cityName = getValue(json, "name", "");
-        entry.clouds = getValue(jsonClouds, "all", 0);
-        entry.timestamp = getValue(json, "dt", 0L);
-        entry.request_timestamp = requestTimestamp;
-        entry.humidity = getValue(jsonMain, "humidity", -1);
-        entry.temperature = getValue(jsonMain, "temp", 0.);
-        entry.apparentTemperature = getValue(jsonMain, "feels_like", entry.temperature);
-        entry.rain1h = getValue(jsonRain, "1h", -1.);
-        entry.rain3h = getValue(jsonRain, "3h", -1.);
-        entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);
-        entry.sunsetTime = getValue(jsonSys, "sunset", 0L);
-
-        entry.windSpeed = getValue(jsonWind, "speed", 0.);
-        entry.windDirection = getValue(jsonWind, "deg", -1);
-
-        entry.weatherIcon = "";
-        if (jsonWeather != null && jsonWeather.length() > 0) {
-            JSONObject weatherObj = getJSONObject(jsonWeather, 0);
-            entry.weatherIcon = getValue(weatherObj, "icon", "");
-            entry.description = getValue(weatherObj, "description", "");
-            entry.weatherIconMeteoconsSymbol = iconToText(entry.weatherIcon);
-        }
-
-        return entry;
-    }
-
     private static String iconToText(String code) {
         if (code == null) return "";
         // openweathermap
@@ -395,73 +478,11 @@ public class OpenWeatherMapApi {
 
         return "";
     }
-    private static JSONObject getJSONObject(String string_representation) {
-        try {
-            return new JSONObject(string_representation);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static JSONObject getJSONObject(JSONArray jsonArray, int index) {
-        try {
-            return jsonArray.getJSONObject(index);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static JSONObject getJSONObject(JSONObject json, String name) {
-        try {
-            return json.getJSONObject(name);
-        } catch (JSONException | NullPointerException e) {
-            return null;
-        }
-    }
-
-    private static JSONArray getJSONArray(JSONObject json, String name) {
-        try {
-            return json.getJSONArray(name);
-        } catch (JSONException | NullPointerException e) {
-            return null;
-        }
-    }
 
     private static double getValue(JSONObject json, String name, double defaultvalue) {
         if (json == null) return defaultvalue;
         try {
             return json.getDouble(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static float getValue(JSONObject json, String name, float defaultvalue) {
-        return (float) getValue(json, name, (double) defaultvalue);
-    }
-
-    private static int getValue(JSONObject json, String name, int defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getInt(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static String getValue(JSONObject json, String name, String defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getString(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static long getValue(JSONObject json, String name, long defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getLong(name);
         } catch (JSONException e) {
             return defaultvalue;
         }
