@@ -47,13 +47,10 @@ public class OpenWeatherMapApi {
 
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.openweathermap.org/data/2.5";
-    private static String TAG = "OpenWeatherMapApi";
-    private static String APPID = BuildConfig.API_KEY_OWM;
-    private static int READ_TIMEOUT = 60000;
-    private static int CONNECT_TIMEOUT = 60000;
-    private static String CACHE_FILE_FORECAST = "owm_forecast";
-    private static String CACHE_FILE_DATA = "owm_weather_data";
-    private static long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
+    private static final String TAG = "OpenWeatherMapApi";
+    private static final int READ_TIMEOUT = 60000;
+    private static final int CONNECT_TIMEOUT = 60000;
+    private static final long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
 
     private static void storeCacheFile(File cacheFile, String responseText) {
         try {
@@ -112,6 +109,7 @@ public class OpenWeatherMapApi {
 
         String cacheFileName = "weather_unknown.txt";
         try {
+            String CACHE_FILE_DATA = "owm_weather_data";
             cacheFileName =
                     (cityID != null && !cityID.isEmpty())
                             ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
@@ -290,6 +288,7 @@ public class OpenWeatherMapApi {
         float lat = (float) city.lat;
         float lon = (float) city.lon;
 
+        String CACHE_FILE_FORECAST = "owm_forecast";
         String cacheFileName =
                 (cityID != null)
                         ? String.format("%s_%s.txt", CACHE_FILE_FORECAST, cityID)
@@ -640,6 +639,7 @@ public class OpenWeatherMapApi {
     }
 
     private static Uri.Builder getPathBuilder(String endpoint) {
+        String APPID = BuildConfig.API_KEY_OWM;
         return Uri.parse(ENDPOINT).buildUpon()
                 .appendPath(endpoint)
                 .appendQueryParameter("appid", APPID);

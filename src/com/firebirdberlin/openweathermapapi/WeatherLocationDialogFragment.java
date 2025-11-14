@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,12 +27,12 @@ import androidx.fragment.app.DialogFragment;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.CityRequestManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherLocationDialogFragment extends DialogFragment
-                                           implements CityRequestTask.AsyncResponse {
+public class WeatherLocationDialogFragment extends DialogFragment {
 
     public static String TAG = "WeatherLocationDialogFragment";
     private Context context = null;
@@ -163,21 +162,30 @@ public class WeatherLocationDialogFragment extends DialogFragment
         spinner.show();
         cityListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
-        new CityRequestTask(this).execute(query);
 
+
+        CityRequestManager.findCities(query, new CityRequestManager.AsyncResponse() {
+            @Override
+            public void onRequestFinished(List<City> citiesList) {
+                cities.clear();
+                cities.addAll(citiesList);
+                ((ArrayAdapter<?>) cityListView.getAdapter()).notifyDataSetChanged();
+                spinner.hide();
+                cityListView.setVisibility((citiesList.isEmpty()) ? View.GONE : View.VISIBLE);
+                noResultsText.setVisibility((citiesList.isEmpty()) ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onRequestError(Exception exception) {
+                // This code runs on the main thread.
+                // Show an error message to the user.
+                Log.e("MyActivity", "City search failed: ", exception);
+                // Example: Toast.makeText(MyActivity.this, "Error: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
         InputMethodManager imm =
                 (InputMethodManager) queryText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
         searchButton.setEnabled(false);
-    }
-
-    @Override
-    public void onRequestFinished(List<City> cities){
-        this.cities.clear();
-        this.cities.addAll(cities);
-        ((ArrayAdapter) cityListView.getAdapter()).notifyDataSetChanged();
-        spinner.hide();
-        cityListView.setVisibility((cities.size() == 0) ? View.GONE : View.VISIBLE);
-        noResultsText.setVisibility((cities.size() == 0) ? View.VISIBLE : View.GONE);
     }
 }
