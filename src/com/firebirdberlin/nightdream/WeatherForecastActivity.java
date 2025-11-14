@@ -211,6 +211,11 @@ public class WeatherForecastActivity
 
     }
 
+    @Override
+    public void onRequestError(Exception exception) {
+        Log.e(TAG, "onRequestError", exception);
+    }
+
     private void actionBarSetup(String subtitle) {
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -348,14 +353,12 @@ public class WeatherForecastActivity
 
     @SuppressLint("MissingPermission")
     private void getWeatherForCurrentLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                requestPermissions(
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        PERMISSIONS_REQUEST_ACCESS_LOCATION
-                );
-                return;
-            }
+        if (!hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            requestPermissions(
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_LOCATION
+            );
+            return;
         }
         Log.i(TAG, "searching location");
         getLastKnownLocation();

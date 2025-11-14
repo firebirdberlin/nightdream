@@ -1,6 +1,7 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,7 +29,7 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
 
     public static void cancelUpdate() {
         if (requestTask != null) {
-            requestTask.cancel(true);
+//            requestTask.cancel(true);
             requestTask = null;
         }
     }
@@ -74,6 +75,11 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
                 pollenExposureLayout.setupFromObject(mContext.get(), pollen);
             }
         }
+    }
+
+    @Override
+    public void onRequestError(Exception exception) {
+        Log.e(TAG, "Request error: " + exception.getMessage());
     }
 
     private void clear() {

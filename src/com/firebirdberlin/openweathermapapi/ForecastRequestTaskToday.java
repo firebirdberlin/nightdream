@@ -1,20 +1,27 @@
 package com.firebirdberlin.openweathermapapi;
 
-
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
+public class ForecastRequestTaskToday {
 
-public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEntry> {
+    private static final String TAG = "ForecastRequestTask";
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    final static String TAG = "ForecastRequestTask";
-    Settings.WeatherProvider weatherProvider;
-    Context context;
     private final AsyncResponse delegate;
+    private final Settings.WeatherProvider weatherProvider;
+    private final Context context;
 
     public ForecastRequestTaskToday(AsyncResponse listener, Settings.WeatherProvider weatherProvider, Context mContext) {
         this.delegate = listener;
@@ -22,37 +29,59 @@ public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEnt
         this.context = mContext;
     }
 
-    @Override
-    protected WeatherEntry doInBackground(String... query) {
-        City city = null;
-        String cityJson = query[0];
-        if (cityJson != null && !cityJson.isEmpty()) {
-            city = City.fromJson(cityJson);
-        }
-        if (city == null) {
-            return null;
+    public void execute(String cityJson) {
+        if (cityJson == null || cityJson.isEmpty()) {
+            mainThreadHandler.post(() -> delegate.onRequestError(new IllegalArgumentException("City JSON cannot be null or empty.")));
+            return;
         }
 
-        switch (weatherProvider) {
-            case OPEN_WEATHER_MAP:
-            default:
-                return OpenWeatherMapApi.fetchWeatherDataApi(context, String.valueOf(city.id), (float) city.lat, (float) city.lon);
-            case DARK_SKY:
-                return DarkSkyApi.fetchCurrentWeatherData(context, city, (float) city.lat, (float) city.lon);
-            case BRIGHT_SKY:
-                return BrightSkyApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
-            case MET_NO:
-                return MetNoApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
-        }
-    }
+        try {
+            executorService.execute(() -> {
+                City city = City.fromJson(cityJson);
+                if (city == null) {
+                    mainThreadHandler.post(() -> delegate.onRequestError(new Exception("Failed to parse City JSON.")));
+                    return;
+                }
 
-    @Override
-    protected void onPostExecute(WeatherEntry entries) {
-        delegate.onRequestFinished(entries);
+                WeatherEntry weatherEntry;
+                try {
+                    switch (weatherProvider) {
+                        case DARK_SKY:
+                            weatherEntry = DarkSkyApi.fetchCurrentWeatherData(context, city, (float) city.lat, (float) city.lon);
+                            break;
+                        case BRIGHT_SKY:
+                            weatherEntry = BrightSkyApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
+                            break;
+                        case MET_NO:
+                            weatherEntry = MetNoApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
+                            break;
+                        case OPEN_WEATHER_MAP:
+                        default:
+                            weatherEntry = OpenWeatherMapApi.fetchWeatherDataApi(context, String.valueOf(city.id), (float) city.lat, (float) city.lon);
+                            break;
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error fetching weather data", e);
+                    mainThreadHandler.post(() -> delegate.onRequestError(e));
+                    return; // Ensure no further execution after an error
+                }
+
+                final WeatherEntry finalWeatherEntry = weatherEntry;
+                mainThreadHandler.post(() -> delegate.onRequestFinished(finalWeatherEntry));
+            });
+        } catch (RejectedExecutionException e) {
+            Log.e(TAG, "Task rejected: Executor service may be shutting down or overloaded.", e);
+            mainThreadHandler.post(() -> delegate.onRequestError(new Exception("Search task rejected. The service may be unavailable.")));
+        }
     }
 
     public interface AsyncResponse {
         void onRequestFinished(WeatherEntry entries);
+        void onRequestError(Exception exception);
+    }
+
+    public static void shutdownExecutor() {
+        Log.i(TAG, "Shutting down ExecutorService...");
+        executorService.shutdown();
     }
 }
-

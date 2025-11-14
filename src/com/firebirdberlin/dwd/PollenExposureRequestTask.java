@@ -1,53 +1,83 @@
 package com.firebirdberlin.dwd;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import com.firebirdberlin.HttpReader;
 import com.firebirdberlin.nightdream.PollenExposure;
 
-public class PollenExposureRequestTask extends AsyncTask<String, Void, PollenExposure> {
+public class PollenExposureRequestTask {
+
+    private static final String TAG = "PollenExposureRequestTask";
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private static final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
     private final AsyncResponse delegate;
-    HttpReader httpReader;
+    private final Context context;
 
-    public PollenExposureRequestTask(AsyncResponse listener, final Context context) {
+    public PollenExposureRequestTask(AsyncResponse listener, Context mContext) {
         this.delegate = listener;
-        httpReader = new HttpReader(context, "pollen.json");
+        this.context = mContext;
     }
 
-    @Override
-    protected PollenExposure doInBackground(String... postalCode) {
-        String postCode = postalCode[0];
-
-        String url = "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json";
-        PollenExposure pollen = new PollenExposure();
-        pollen.setPostCode(postCode);
-
-        // read data (either from the url or from the cache)
-        String result = httpReader.readUrl(url, false);
-        if (result != null && !result.isEmpty() && postCode.length() > 2) {
-            pollen.parse(result, postCode);
-
-            // check if there's an update pending
-            long nextUpdate = pollen.getNextUpdate();
-            long now = System.currentTimeMillis();
-            if (nextUpdate > -1L && nextUpdate < now) {
-                result = httpReader.readUrl(url, true);
-                if (result != null && !result.isEmpty() && postCode.length() > 2) {
-                    pollen.parse(result, postCode);
-                }
-            }
+    public void execute(String postalCode) {
+        if (postalCode == null || postalCode.isEmpty()) {
+            mainThreadHandler.post(() -> delegate.onRequestError(new IllegalArgumentException("Postal code cannot be null or empty.")));
+            return;
         }
-        return pollen;
-    }
 
-    @Override
-    protected void onPostExecute(PollenExposure result) {
-        delegate.onRequestFinished(result);
+        try {
+            executorService.execute(() -> {
+                HttpReader httpReader = new HttpReader(context, "pollen.json");
+                String url = "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json";
+                PollenExposure pollen = new PollenExposure();
+                pollen.setPostCode(postalCode);
+
+                String result = null;
+                try {
+                    // read data (either from the url or from the cache)
+                    result = httpReader.readUrl(url, false);
+                    if (result != null && !result.isEmpty() && postalCode.length() > 2) {
+                        pollen.parse(result, postalCode);
+
+                        // check if there's an update pending
+                        long nextUpdate = pollen.getNextUpdate();
+                        long now = System.currentTimeMillis();
+                        if (nextUpdate > -1L && nextUpdate < now) {
+                            result = httpReader.readUrl(url, true);
+                            if (result != null && !result.isEmpty() && postalCode.length() > 2) {
+                                pollen.parse(result, postalCode);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error fetching or parsing pollen data", e);
+                    mainThreadHandler.post(() -> delegate.onRequestError(e));
+                    return; // Ensure no further execution after an error
+                }
+
+                final PollenExposure finalPollen = pollen;
+                mainThreadHandler.post(() -> delegate.onRequestFinished(finalPollen));
+            });
+        } catch (RejectedExecutionException e) {
+            Log.e(TAG, "Task rejected: Executor service may be shutting down or overloaded.", e);
+            mainThreadHandler.post(() -> delegate.onRequestError(new Exception("Search task rejected. The service may be unavailable.")));
+        }
     }
 
     public interface AsyncResponse {
         void onRequestFinished(PollenExposure result);
+        void onRequestError(Exception exception);
+    }
+
+    public static void shutdownExecutor() {
+        Log.i(TAG, "Shutting down ExecutorService...");
+        executorService.shutdown();
     }
 }
