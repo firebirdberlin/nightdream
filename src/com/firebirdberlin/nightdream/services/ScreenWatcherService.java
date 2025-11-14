@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -51,15 +52,6 @@ public class ScreenWatcherService extends Service {
 
         mReceiver = ScreenReceiver.register(this);
         powerConnectionReceiver = PowerConnectionReceiver.register(this);
-    }
-
-    public static void updateNotification(Context context, Settings settings) {
-        WeatherEntry entry = settings.getWeatherEntry();
-        long diff = entry.ageMillis();
-        if (entry.timestamp == -1L || diff > 2 * 60 * 60 * 1000) { // handle outdated weather data
-            entry = null;
-        }
-        ScreenWatcherService.updateNotification(context, entry, settings.temperatureUnit);
     }
 
     public static void updateNotification(Context context, WeatherEntry weatherEntry, int temperatureUnit) {
@@ -105,10 +97,14 @@ public class ScreenWatcherService extends Service {
 
         PendingIntent stopPendingIntent = Utility.getImmutableBroadcast(context, 0, stopIntent);
 
+        // Create an Intent for NightDreamActivity
+        Intent activityIntent = new Intent(context, NightDreamActivity.class);
+        PendingIntent contentIntent = Utility.getImmutableActivity(context, 0, activityIntent);
         NotificationCompat.Builder noteBuilder =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
                         .setContentTitle(title)
                         .setContentText(text)
+                        .setContentIntent(contentIntent)
                         .setSmallIcon(iconID)
                         .setPriority(NotificationCompat.PRIORITY_MIN)
                         .setWhen(when)
@@ -139,12 +135,6 @@ public class ScreenWatcherService extends Service {
             ScreenWatcherService.stop(context);
         }
     }
-
-    public static void conditionallyStart(Context context) {
-        Settings settings = new Settings(context);
-        conditionallyStart(context, settings);
-    }
-
 
     public static void start(Context context) {
         if (ScreenWatcherService.isRunning) return;
