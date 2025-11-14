@@ -28,8 +28,7 @@ import com.firebirdberlin.openweathermapapi.models.City;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityIdDialogFragment extends PreferenceDialogFragmentCompat
-                                  implements CityRequestTask.AsyncResponse {
+public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
     private String TAG = getClass().getSimpleName();
 
     CityIDPreference preference;
@@ -135,23 +134,32 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat
         cityListView.setVisibility(View.GONE);
         noResultsText.setVisibility(View.GONE);
         String query = queryText.getText().toString().trim();
-        new CityRequestTask(this).execute(query);
+
+        CityRequestManager.findCities(query, new CityRequestManager.AsyncResponse() {
+            @Override
+            public void onRequestFinished(List<City> citiesList) {
+                cities.clear();
+                cities.addAll(citiesList);
+                ((ArrayAdapter<?>) cityListView.getAdapter()).notifyDataSetChanged();
+                spinner.hide();
+                cityListView.setVisibility((citiesList.isEmpty()) ? View.GONE : View.VISIBLE);
+                noResultsText.setVisibility((citiesList.isEmpty()) ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onRequestError(Exception exception) {
+                // This code runs on the main thread.
+                // Show an error message to the user.
+                Log.e("MyActivity", "City search failed: ", exception);
+                // Example: Toast.makeText(MyActivity.this, "Error: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         InputMethodManager imm =
                 (InputMethodManager) queryText.getContext()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(queryText.getWindowToken(), 0);
         searchButton.setEnabled(false);
-    }
-
-    @Override
-    public void onRequestFinished(List<City> cities){
-        this.cities.clear();
-        this.cities.addAll(cities);
-        ((ArrayAdapter) cityListView.getAdapter()).notifyDataSetChanged();
-        spinner.hide();
-        cityListView.setVisibility((cities.size() == 0) ? View.GONE : View.VISIBLE);
-        noResultsText.setVisibility((cities.size() == 0) ? View.VISIBLE : View.GONE);
     }
 
     @Override
