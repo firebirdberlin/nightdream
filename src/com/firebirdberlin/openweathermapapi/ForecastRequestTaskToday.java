@@ -36,7 +36,7 @@ public class ForecastRequestTaskToday extends AsyncTask<String, Void, WeatherEnt
         switch (weatherProvider) {
             case OPEN_WEATHER_MAP:
             default:
-                return OpenWeatherMapApi.fetchWeatherData(context, String.valueOf(city.id), (float) city.lat, (float) city.lon);
+                return OpenWeatherMapApi.fetchWeatherDataApi(context, String.valueOf(city.id), (float) city.lat, (float) city.lon);
             case DARK_SKY:
                 return DarkSkyApi.fetchCurrentWeatherData(context, city, (float) city.lat, (float) city.lon);
             case BRIGHT_SKY:
