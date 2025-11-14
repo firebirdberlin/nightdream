@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Locale;
 
 public class MetNoApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
@@ -66,7 +66,7 @@ public class MetNoApi {
 
         Log.d(TAG, "fetchWeatherData(" + lat + "," + lon + ")");
         String cacheFileName = String.format(
-                java.util.Locale.getDefault(), "%s_%3.2f_%3.2f.txt", CACHE_FILE, lat, lon
+                Locale.getDefault(), "%s_%3.2f_%3.2f.txt", CACHE_FILE, lat, lon
         );
 
         HttpReader httpReader = new HttpReader(context, cacheFileName);
@@ -104,14 +104,14 @@ public class MetNoApi {
         return new URL(url);
     }
 
-    public class Data {
+    public static class Data {
         Geometry geometry;
         Properties properties;
 
         boolean isValid() {
             return (
                     properties != null && properties.timeseries != null
-                            && properties.timeseries.size() > 0
+                            && !properties.timeseries.isEmpty()
             );
         }
 
@@ -140,20 +140,20 @@ public class MetNoApi {
         }
     }
 
-    class Geometry {
+    static class Geometry {
         String type;
         List<Float> coordinates;
     }
 
-    class Properties {
+    static class Properties {
         Meta meta;
         List<TimeSeries> timeseries;
 
-        class Meta {
+        static class Meta {
             String updated_at;
             Units units;
 
-            class Units {
+            static class Units {
                 String air_pressure_at_sea_level;
                 String air_temperature;
                 String cloud_area_fraction;
@@ -164,16 +164,16 @@ public class MetNoApi {
             }
         }
 
-        class TimeSeries {
+        static class TimeSeries {
             String time;
             Data data;
 
             long timestampToMillis() {
                 try {
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", java.util.Locale.getDefault());
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
                     Date result = df.parse(time.replace("Z", "+00:00"));
-                    Log.w(TAG, time + " => " + result.getTime());
-                    return result.getTime();
+                    Log.w(TAG, time + " => " + (result != null ? result.getTime() : 0));
+                    return result != null ? result.getTime() : -1L;
                 } catch (ParseException e) {
                     return -1L;
                 }
@@ -266,26 +266,36 @@ public class MetNoApi {
                 if (Utility.equalsAny(code, "snowshowers", "snowshowers_day")) return "U";
                 if (Utility.equalsAny(code, "snowshowersandthunder", "snowshowersandthunder_day", "snowshowersandthunder_night")) return "O";
 
-                if (code.equals("clearsky_night")) return "C";
-                if (code.equals("cloudy")) return "N";
-                if (code.equals("fair_night")) return "I";
-                if (code.equals("fog")) return "M";
-                if (code.equals("partlycloudy_night")) return "I";
-                if (code.equals("rain")) return "R";
-                if (code.equals("sleet")) return "X";
-                if (code.equals("snow")) return "W";
+                switch (code) {
+                    case "clearsky_night":
+                        return "C";
+                    case "cloudy":
+                        return "N";
+                    case "fair_night":
+                        return "I";
+                    case "fog":
+                        return "M";
+                    case "partlycloudy_night":
+                        return "I";
+                    case "rain":
+                        return "R";
+                    case "sleet":
+                        return "X";
+                    case "snow":
+                        return "W";
+                }
                 return "";
             }
 
-            class Data {
+            static class Data {
                 Instant instant;
                 Next_1_hours next_1_hours;
                 Next_6_hours next_6_hours;
 
-                class Instant {
+                static class Instant {
                     Details details;
 
-                    class Details {
+                    static class Details {
                         float air_pressure_at_sea_level;
                         float air_temperature;
                         float cloud_area_fraction;
@@ -295,16 +305,16 @@ public class MetNoApi {
                     }
                 }
 
-                class Next_1_hours {
+                static class Next_1_hours {
                     Summary summary;
                     Details details;
 
-                    class Summary {
+                    static class Summary {
                         String symbol_code;
 
                     }
 
-                    class Details {
+                    static class Details {
                         float precipitation_amount;
                         float precipitation_amount_max;
                         float precipitation_amount_min;
@@ -312,15 +322,15 @@ public class MetNoApi {
                         float probability_of_thunder;
                     }
                 }
-                class Next_6_hours {
+                static class Next_6_hours {
                     Summary summary;
                     Details details;
 
-                    class Summary {
+                    static class Summary {
                         String symbol_code;
                     }
 
-                    class Details {
+                    static class Details {
                         float precipitation_amount;
                         float precipitation_amount_max;
                         float precipitation_amount_min;

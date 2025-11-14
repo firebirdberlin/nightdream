@@ -40,15 +40,15 @@ public class ForecastRequestTask extends AsyncTask<String, Void, List<WeatherEnt
         }
 
         switch (weatherProvider) {
-            case OPEN_WEATHER_MAP:
-            default:
-                return OpenWeatherMapApi.fetchWeatherForecast(context.get(), city);
             case DARK_SKY:
                 return DarkSkyApi.fetchHourlyWeatherData(context.get(), city);
             case BRIGHT_SKY:
                 return BrightSkyApi.fetchHourlyWeatherData(context.get(), (float) city.lat, (float) city.lon);
             case MET_NO:
                 return MetNoApi.fetchHourlyWeatherData(context.get(), (float) city.lat, (float) city.lon);
+            case OPEN_WEATHER_MAP:
+            default:
+                return OpenWeatherMapApi.fetchWeatherForecastApi(context.get(), city);
         }
     }
 
