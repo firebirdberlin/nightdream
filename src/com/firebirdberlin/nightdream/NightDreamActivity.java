@@ -50,7 +50,6 @@ import com.firebirdberlin.nightdream.models.TimeRange;
 import com.firebirdberlin.nightdream.receivers.LocationUpdateReceiver;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.ScheduledAutoStartReceiver;
-import com.firebirdberlin.nightdream.receivers.ScreenReceiver;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 import com.firebirdberlin.nightdream.repositories.FlashlightProvider;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
@@ -359,15 +358,23 @@ public class NightDreamActivity extends BillingHelperActivity
             dismissSnackBar();
         }
     }
+
+
     private void conditionallyShowSnackBar() {
         Log.i(TAG, "conditionallyShowSnackBar");
-        if (!Utility.hasPermissionCanDrawOverlays(context)) {
+        long daysSinceInstall = Utility.getDaysSinceFirstInstall(context);
+        if (
+                !Utility.hasPermissionCanDrawOverlays(context)
+                && daysSinceInstall < 3
+                && !AlarmHandlerService.alarmIsRunning()
+        ) {
             View view = findViewById(android.R.id.content);
             snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
             int color = Utility.getRandomMaterialColor(context);
             int textColor = Utility.getContrastColor(color);
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(color);
+            snackbar.setDuration(2 * 60_000);
             snackbar.setActionTextColor(textColor);
 
             TextView tv = snackbarView.findViewById(R.id.snackbar_text);
@@ -406,17 +413,13 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     public void setupFlashlight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (flash == null) {
-                flash = new FlashlightProvider(this);
-            }
-            sidePanel.post(() -> {
-                sidePanel.setTorchIconVisibility(flash.hasCameraFlash());
-                sidePanel.setTorchIconActive(flash.isFlashlightOn());
-            });
-        } else {
-            sidePanel.setTorchIconVisibility(false);
+        if (flash == null) {
+            flash = new FlashlightProvider(this);
         }
+        sidePanel.post(() -> {
+            sidePanel.setTorchIconVisibility(flash.hasCameraFlash());
+            sidePanel.setTorchIconActive(flash.isFlashlightOn());
+        });
     }
 
     @Override
@@ -821,7 +824,6 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void onTorchClick(View v) {
         if (flash == null) return;
 
@@ -829,19 +831,10 @@ public class NightDreamActivity extends BillingHelperActivity
         setupFlashlight();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void onBulbClick(View v) {
         if (flash == null) return;
 
         SmartHomeActivity.start(this);
-        /*
-        AvmCredentials credentials = new AvmCredentials(
-                mySettings.getString("smart_home_avm_host"),
-                mySettings.getString("smart_home_avm_username"),
-                mySettings.getString("smart_home_avm_password")
-        );
-        new AvmAhaRequestTask(this, credentials).execute(AvmAhaRequestTask.TASK_LIST_DEVICES);
-         */
     }
 
     public void onAhaConnectionError(String message) {
