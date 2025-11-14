@@ -20,13 +20,13 @@ import androidx.work.Configuration;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AlarmNotificationService extends JobService {
     private static final String TAG = "AlarmNotifService";
 
@@ -35,16 +35,15 @@ public class AlarmNotificationService extends JobService {
         builder.setJobSchedulerJobIdRange(1000, 2000);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void scheduleJob(Context context, SimpleTime nextAlarmTime) {
         if (
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
-                        || ! Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS)
-                        || ! Settings.shallNotifyForUpcomingAlarms(context)
+                !Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS) || !Settings.shallNotifyForUpcomingAlarms(context)
         ) {
 
 
-            Log.i(TAG, "scheduleJob() -> notification allowed: " + Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Log.i(TAG, "scheduleJob() -> notification allowed: " + Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS));
+            }
             Log.i(TAG, "scheduleJob() -> enabled: " + Settings.shallNotifyForUpcomingAlarms(context));
             return;
         }
@@ -139,13 +138,17 @@ public class AlarmNotificationService extends JobService {
         String timeFormatted = Utility.formatTime(
                 settings.getFullTimeFormat(), nextAlarmTime.getCalendar());
 
+        Intent activityIntent = new Intent(context, NightDreamActivity.class);
+        PendingIntent contentIntent = Utility.getImmutableActivity(this, 0, activityIntent);
+
         NotificationCompat.Builder note =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_ALARMS)
                         .setContentTitle(context.getString(R.string.alarmUpcoming))
                         .setContentText(timeFormatted)
                         .setSmallIcon(R.drawable.ic_audio)
                         .setWhen(nextAlarmTime.getMillis())
-                        .setPriority(NotificationCompat.PRIORITY_MAX);
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(contentIntent);
 
         NotificationCompat.WearableExtender wearableExtender =
                 new NotificationCompat.WearableExtender().setHintHideIcon(true);

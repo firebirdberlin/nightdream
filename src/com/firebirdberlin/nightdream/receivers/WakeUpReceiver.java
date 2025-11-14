@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
@@ -127,25 +126,17 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
         pI = WakeUpReceiver.getPendingIntent(context, nextAlarmEntry, PendingIntent.FLAG_CANCEL_CURRENT);
         long nextAlarmTime = nextAlarmEntry.getMillis();
-        if (Build.VERSION.SDK_INT >= 21) {
-            PendingIntent pi = getShowIntent(context);
-            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(nextAlarmTime, pi);
-            am.setAlarmClock(info, pI);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            am.setExact(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);
-        } else {
-            am.set(AlarmManager.RTC_WAKEUP, nextAlarmTime, pI);
-        }
+        PendingIntent pi = getShowIntent(context);
+        AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(nextAlarmTime, pi);
+        am.setAlarmClock(info, pI);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Utility.logIntent(TAG, "onReceive()", intent);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmNotificationService.cancelNotification(context);
-            AlarmNotificationService.cancelJob(context);
-            AlarmWifiService.cancelJob(context);
-        }
+        AlarmNotificationService.cancelNotification(context);
+        AlarmNotificationService.cancelJob(context);
+        AlarmWifiService.cancelJob(context);
         deleteCurrentlyActiveAlarm(context, intent);
         AlarmHandlerService.start(context);
 
@@ -161,11 +152,15 @@ public class WakeUpReceiver extends BroadcastReceiver {
         SqliteIntentService.deleteAlarm(context, next);
     }
 
-    private Notification buildNotification(Context context) {
+    private void buildNotification(Context context) {
         Settings settings = new Settings(context);
         String text = dateAsString(settings.getTimeFormat());
         String textActionSnooze = context.getString(R.string.action_snooze);
         String textActionStop = context.getString(R.string.action_stop);
+
+        // Create an Intent for NightDreamActivity
+        Intent activityIntent = new Intent(context, NightDreamActivity.class);
+        PendingIntent contentIntent = Utility.getImmutableActivity(context, 0, activityIntent);
 
         NotificationCompat.Builder note =
                 Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_ALARMS)
@@ -173,7 +168,9 @@ public class WakeUpReceiver extends BroadcastReceiver {
                         .setContentTitle(context.getString(R.string.alarm))
                         .setContentText(text)
                         .setSmallIcon(R.drawable.ic_audio)
-                        .setPriority(NotificationCompat.PRIORITY_MAX);
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(contentIntent);
+
 
         NotificationCompat.WearableExtender wearableExtender =
                 new NotificationCompat.WearableExtender().setHintHideIcon(true);
@@ -203,15 +200,11 @@ public class WakeUpReceiver extends BroadcastReceiver {
         wearableExtender.addAction(stopAction);
         wearableExtender.addAction(snoozeAction);
 
-
         note.extend(wearableExtender);
-
         Notification notification = note.build();
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(Config.NOTIFICATION_ID_DISMISS_ALARMS, notification);
-
-        return notification;
     }
 
     private String dateAsString(String format) {
