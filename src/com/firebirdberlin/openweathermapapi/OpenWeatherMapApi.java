@@ -10,21 +10,21 @@ import com.firebirdberlin.openweathermapapi.apimodels.ApiCity;
 import com.firebirdberlin.openweathermapapi.apimodels.ApiCoord;
 import com.firebirdberlin.openweathermapapi.apimodels.Clouds;
 import com.firebirdberlin.openweathermapapi.apimodels.CurrentSys;
+import com.firebirdberlin.openweathermapapi.apimodels.FindCityEntry;
 import com.firebirdberlin.openweathermapapi.apimodels.ListEntry;
 import com.firebirdberlin.openweathermapapi.apimodels.Main;
 import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapCurrentResponse;
+import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapFindCityResponse;
 import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapForecastResponse;
 import com.firebirdberlin.openweathermapapi.apimodels.Rain;
 import com.firebirdberlin.openweathermapapi.apimodels.Snow;
 import com.firebirdberlin.openweathermapapi.apimodels.Sys;
 import com.firebirdberlin.openweathermapapi.apimodels.Weather;
 import com.firebirdberlin.openweathermapapi.apimodels.Wind;
-import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -499,55 +499,93 @@ public class OpenWeatherMapApi {
         return sb.toString();
     }
 
-    static List<City> findCity(String query) {
-
-        int responseCode = 0;
-        String response = "";
+    /**
+     * Finds cities based on a query string using the OpenWeatherMap API and Gson for JSON parsing.
+     *
+     * @param query The city name or part of it to search for.
+     * @return A list of City objects (your application's City model), or an empty list if no cities are found or an error occurs.
+     */
+    static List<com.firebirdberlin.openweathermapapi.models.City> findCityApi(String query) {
+        List<com.firebirdberlin.openweathermapapi.models.City> cities = new ArrayList<>();
         String responseText = "";
-
-        List<City> cities = new ArrayList<>();
 
         URL url;
         try {
             url = getUrlFindCity(query);
         } catch (MalformedURLException e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+            Log.e(TAG, "findCityApi: Malformed URL for query " + query, e);
             return cities;
         }
 
-        Log.i(TAG, "requesting " + url);
+        Log.i(TAG, "findCityApi: requesting " + url.toString());
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
             urlConnection.setReadTimeout(READ_TIMEOUT);
-            response = urlConnection.getResponseMessage();
-            responseCode = urlConnection.getResponseCode();
+
+            int responseCode = urlConnection.getResponseCode();
+            String responseMessage = urlConnection.getResponseMessage();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseText = getResponseText(urlConnection.getInputStream());
+            } else {
+                Log.w(TAG, "findCityApi: API responseCode " + responseCode + " - " + responseMessage);
             }
             urlConnection.disconnect();
+
         } catch (SocketTimeoutException e) {
-            Log.e(TAG, "Http Timeout");
+            Log.e(TAG, "findCityApi: Http Timeout", e);
             return cities;
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+            Log.e(TAG, "findCityApi: Error fetching data", e);
+            return cities;
         }
 
-        Log.i(TAG, " >> response " + response);
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            Log.i(TAG, " >> responseText " + responseText);
-            try {
-                cities = decodeCitiesJsonResponse(responseText);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                //TODO resilience (count errors and if error threshold is reached (API service broken), disable fetchCountries for some time to save api requests)
+        // --- Gson Parsing Logic ---
+        if (responseText.isEmpty()) {
+            Log.w(TAG, "findCityApi: No response text found (empty or null).");
+            return cities;
+        }
+
+        Gson gson = new Gson();
+        OpenWeatherMapFindCityResponse apiResponse;
+        try {
+            apiResponse = gson.fromJson(responseText, OpenWeatherMapFindCityResponse.class);
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, "findCityApi: Error parsing JSON with Gson", e);
+            return cities;
+        }
+
+        if (apiResponse == null || apiResponse.getList() == null) {
+            Log.w(TAG, "findCityApi: API response or list object is null after Gson parsing.");
+            return cities;
+        }
+
+        // --- Conversion to your application's City List ---
+        for (FindCityEntry apiCityEntry : apiResponse.getList()) {
+            com.firebirdberlin.openweathermapapi.models.City appCity =
+                    new com.firebirdberlin.openweathermapapi.models.City(); // Instantiate your app's City
+
+            appCity.id = apiCityEntry.getId();
+            appCity.name = apiCityEntry.getName();
+
+            if (apiCityEntry.getSys() != null) {
+                appCity.countryCode = apiCityEntry.getSys().getCountry();
+            } else {
+                appCity.countryCode = ""; // Default if country is missing
             }
 
-        } else {
-            Log.w(TAG, " >> responseCode " + responseCode);
+            if (apiCityEntry.getCoord() != null) {
+                appCity.lat = apiCityEntry.getCoord().getLat();
+                appCity.lon = apiCityEntry.getCoord().getLon();
+            } else {
+                appCity.lat = 0.0f; // Default if coords are missing
+                appCity.lon = 0.0f;
+            }
+
+            cities.add(appCity);
         }
+
         return cities;
     }
 
@@ -607,29 +645,6 @@ public class OpenWeatherMapApi {
                 .appendQueryParameter("appid", APPID);
     }
 
-
-    private static List<City> decodeCitiesJsonResponse(String responseText) throws JSONException {
-        List<City> cities = new ArrayList<>();
-
-        JSONObject json = new JSONObject(responseText);
-        JSONArray jsonArray = json.getJSONArray("list");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonCity = jsonArray.getJSONObject(i);
-            JSONObject jsonSys = jsonCity.getJSONObject("sys");
-            JSONObject jsonCoord = jsonCity.getJSONObject("coord");
-
-            City city = new City();
-            city.id = jsonCity.getInt("id");
-            city.name = jsonCity.getString("name");
-            city.countryCode = jsonSys.getString("country");
-            city.lat = jsonCoord.getDouble("lat");
-            city.lon = jsonCoord.getDouble("lon");
-
-            cities.add(city);
-        }
-
-        return cities;
-    }
 
     private static String getResponseText(InputStream inputStream) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));

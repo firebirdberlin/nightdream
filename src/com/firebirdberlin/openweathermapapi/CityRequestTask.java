@@ -22,7 +22,7 @@ public class CityRequestTask extends AsyncTask<String, Void, List<City> > {
     @Override
     protected List<City> doInBackground(String... query) {
         String q = query[0];
-        return OpenWeatherMapApi.findCity(q);
+        return OpenWeatherMapApi.findCityApi(q);
     }
 
     @Override
