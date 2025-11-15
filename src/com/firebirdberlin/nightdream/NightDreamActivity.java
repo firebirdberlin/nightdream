@@ -366,6 +366,7 @@ public class NightDreamActivity extends BillingHelperActivity
                 !Utility.hasPermissionCanDrawOverlays(context)
                 && daysSinceInstall < 3
                 && !AlarmHandlerService.alarmIsRunning()
+                && !Utility.isLowRamDevice(context)
         ) {
             View view = findViewById(android.R.id.content);
             snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);

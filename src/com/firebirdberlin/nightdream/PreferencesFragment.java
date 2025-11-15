@@ -18,7 +18,6 @@ import android.os.PowerManager;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1047,8 +1046,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void conditionallyShowSnackBar() {
         Log.i(TAG, "conditionallyShowSnackBar");
-        if (!Utility.hasPermissionCanDrawOverlays(mContext)) {
-            View view = getActivity().findViewById(android.R.id.content);
+        if (
+                !Utility.hasPermissionCanDrawOverlays(mContext)
+                        && !Utility.isLowRamDevice(mContext)
+        ) {
+            Activity activity = getActivity();
+            if (activity == null) return;
+            View view = activity.findViewById(android.R.id.content);
             snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
             int color = Utility.getRandomMaterialColor(mContext);
             int textColor = Utility.getContrastColor(color);
