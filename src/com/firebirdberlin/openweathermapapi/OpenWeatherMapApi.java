@@ -6,10 +6,25 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.BuildConfig;
-import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.apimodels.ApiCity;
+import com.firebirdberlin.openweathermapapi.apimodels.ApiCoord;
+import com.firebirdberlin.openweathermapapi.apimodels.Clouds;
+import com.firebirdberlin.openweathermapapi.apimodels.CurrentSys;
+import com.firebirdberlin.openweathermapapi.apimodels.FindCityEntry;
+import com.firebirdberlin.openweathermapapi.apimodels.ListEntry;
+import com.firebirdberlin.openweathermapapi.apimodels.Main;
+import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapCurrentResponse;
+import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapFindCityResponse;
+import com.firebirdberlin.openweathermapapi.apimodels.OpenWeatherMapForecastResponse;
+import com.firebirdberlin.openweathermapapi.apimodels.Rain;
+import com.firebirdberlin.openweathermapapi.apimodels.Snow;
+import com.firebirdberlin.openweathermapapi.apimodels.Sys;
+import com.firebirdberlin.openweathermapapi.apimodels.Weather;
+import com.firebirdberlin.openweathermapapi.apimodels.Wind;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,13 +47,10 @@ public class OpenWeatherMapApi {
 
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.openweathermap.org/data/2.5";
-    private static String TAG = "OpenWeatherMapApi";
-    private static String APPID = BuildConfig.API_KEY_OWM;
-    private static int READ_TIMEOUT = 60000;
-    private static int CONNECT_TIMEOUT = 60000;
-    private static String CACHE_FILE_FORECAST = "owm_forecast";
-    private static String CACHE_FILE_DATA = "owm_weather_data";
-    private static long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
+    private static final String TAG = "OpenWeatherMapApi";
+    private static final int READ_TIMEOUT = 60000;
+    private static final int CONNECT_TIMEOUT = 60000;
+    private static final long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
 
     private static void storeCacheFile(File cacheFile, String responseText) {
         try {
@@ -69,188 +81,376 @@ public class OpenWeatherMapApi {
         return new String(bytes);
     }
 
-    public static WeatherEntry fetchWeatherData(
+    /**
+     * Fetches current weather data from OpenWeatherMap API using Gson for JSON parsing.
+     * Caching logic is similar to the original method.
+     *
+     * @param context The application context.
+     * @param cityID  The city ID (optional, if lat/lon are provided).
+     * @param lat     Latitude of the location (used if cityID is null or empty).
+     * @param lon     Longitude of the location (used if cityID is null or empty).
+     * @return A WeatherEntry object, or null if data fetching fails.
+     */
+    public static WeatherEntry fetchWeatherDataApi(
             Context context, String cityID, float lat, float lon
     ) {
-        int responseCode = 0;
-        String response = "";
         String responseText = "";
+        long requestTimestamp = System.currentTimeMillis();
 
         if (cityID != null && !cityID.isEmpty()) {
-            if (Integer.parseInt(cityID) < 0) {
-                cityID = null;
+            try {
+                if (Integer.parseInt(cityID) < 0) { // Check for invalid cityID, similar to original
+                    cityID = null;
+                }
+            } catch (NumberFormatException ignored) {
+                cityID = null; // Treat invalid cityID string as null
             }
         }
 
         String cacheFileName = "weather_unknown.txt";
         try {
+            String CACHE_FILE_DATA = "owm_weather_data";
             cacheFileName =
                     (cityID != null && !cityID.isEmpty())
                             ? String.format("%s_%s.txt", CACHE_FILE_DATA, cityID)
                             : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_DATA, lat, lon);
-        } catch (NumberFormatException ignored) {}
-        Log.d(TAG, cacheFileName);
+        } catch (Exception ignored) {} // Catch potential formatting errors, keep default name
         File cacheFile = new File(context.getCacheDir(), cacheFileName);
-        long now = System.currentTimeMillis();
+        Log.d(TAG, "fetchWeatherDataApi Cache file: " + cacheFileName);
+
+        // --- Cache Reading Logic ---
         if (cacheFile.exists()) {
             Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
-            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
+            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > requestTimestamp - CACHE_VALIDITY_TIME));
         }
 
-        long requestTimestamp = now;
-        if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
+        if (cacheFile.exists() && cacheFile.lastModified() > requestTimestamp - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
-            requestTimestamp = cacheFile.lastModified();
+            requestTimestamp = cacheFile.lastModified(); // Use cache file's timestamp
+            Log.i(TAG, "fetchWeatherDataApi: Using cached response. Modified: " + requestTimestamp);
         } else {
+            // --- Network Request Logic ---
+            int responseCode = 0;
+            String responseMessage = "";
             try {
                 URL url = getUrlWeather(cityID, lat, lon);
-                Log.i(TAG, "requesting " + url.toString());
+                Log.i(TAG, "fetchWeatherDataApi: requesting " + url.toString());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                response = urlConnection.getResponseMessage();
+                urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
+                urlConnection.setReadTimeout(READ_TIMEOUT);
+
+                responseMessage = urlConnection.getResponseMessage();
                 responseCode = urlConnection.getResponseCode();
+
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     responseText = getResponseText(urlConnection);
+                    storeCacheFile(cacheFile, responseText); // Store successful response to cache
+                } else {
+                    Log.w(TAG, "fetchWeatherDataApi: API responseCode " + responseCode + " - " + responseMessage);
                 }
                 urlConnection.disconnect();
+
+            } catch (SocketTimeoutException e) {
+                Log.e(TAG, "fetchWeatherDataApi: Http Timeout", e);
+                // Try to read from cache if network fails, even if expired
+                if (cacheFile.exists()) {
+                    responseText = readFromCacheFile(cacheFile);
+                    requestTimestamp = cacheFile.lastModified();
+                    Log.i(TAG, "fetchWeatherDataApi: Network timeout, attempting to use expired cache.");
+                } else {
+                    return null; // No network, no cache
+                }
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-                e.printStackTrace();
-            }
-            storeCacheFile(cacheFile, responseText);
-            Log.i(TAG, " >> response " + response);
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                Log.w(TAG, " >> responseCode " + responseCode);
-                return null;
+                Log.e(TAG, "fetchWeatherDataApi: Error fetching data", e);
+                // Try to read from cache if network fails, even if expired
+                if (cacheFile.exists()) {
+                    responseText = readFromCacheFile(cacheFile);
+                    requestTimestamp = cacheFile.lastModified();
+                    Log.i(TAG, "fetchWeatherDataApi: Network error, attempting to use expired cache.");
+                } else {
+                    return null; // No network, no cache
+                }
             }
         }
 
-        Log.i(TAG, " >> responseText " + responseText);
-
-        JSONObject json = getJSONObject(responseText);
-        return getWeatherEntryFromJSONObject(json, requestTimestamp);
-    }
-
-    static List<WeatherEntry> fetchWeatherForecast(
-            Context context, City city
-    ) {
-        int responseCode = 0;
-        String response = "";
-        String responseText = "";
-
-        if (city == null) {
+        // --- Gson Parsing Logic ---
+        if (responseText == null || responseText.isEmpty()) {
+            Log.w(TAG, "fetchWeatherDataApi: No response text found (empty or null).");
             return null;
         }
-        List<WeatherEntry> forecast = new ArrayList<WeatherEntry>();
+
+        Gson gson = new Gson();
+        OpenWeatherMapCurrentResponse apiResponse;
+        try {
+            apiResponse = gson.fromJson(responseText, OpenWeatherMapCurrentResponse.class);
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, "fetchWeatherDataApi: Error parsing JSON with Gson", e);
+            // Optionally delete corrupt cache file here: cacheFile.delete();
+            return null;
+        }
+
+        if (apiResponse == null || apiResponse.getMain() == null || apiResponse.getCoord() == null) {
+            Log.w(TAG, "fetchWeatherDataApi: API response or essential objects (main, coord) are null after Gson parsing.");
+            return null;
+        }
+
+        // --- Conversion to WeatherEntry ---
+        WeatherEntry entry = new WeatherEntry();
+
+        entry.cityID = apiResponse.getId();
+        entry.cityName = apiResponse.getName();
+
+        ApiCoord apiCoord = apiResponse.getCoord();
+        if (apiCoord != null) {
+            entry.lat = (float) apiCoord.getLat();
+            entry.lon = (float) apiCoord.getLon();
+        } else {
+            entry.lat = lat; // Fallback to input lat/lon
+            entry.lon = lon; // Fallback to input lat/lon
+        }
+
+        Main apiMain = apiResponse.getMain();
+        if (apiMain != null) {
+            entry.temperature = apiMain.getTemp();
+            entry.apparentTemperature = apiMain.getFeelsLike();
+            entry.humidity = apiMain.getHumidity();
+        }
+
+        Clouds apiClouds = apiResponse.getClouds();
+        if (apiClouds != null) {
+            entry.clouds = apiClouds.getAll();
+        }
+
+        Wind apiWind = apiResponse.getWind();
+        if (apiWind != null) {
+            entry.windSpeed = apiWind.getSpeed();
+            entry.windDirection = apiWind.getDeg();
+        }
+
+        Rain apiRain = apiResponse.getRain();
+        if (apiRain != null && apiRain.getVolume1h() != null) {
+            entry.rain1h = apiRain.getVolume1h();
+        } else {
+            entry.rain1h = -1.0;
+        }
+        // Current weather only has 1h, so 3h remains default or -1.0
+        entry.rain3h = -1.0; // The 'Rain' model now supports both, but current weather only has 1h.
+
+        Snow apiSnow = apiResponse.getSnow();
+        if (apiSnow != null && apiSnow.getVolume1h() != null) {
+            // WeatherEntry does not have a specific snow volume field,
+            // you might want to add one or use a generic precipitation field
+            // For now, it's logged or ignored if not directly mapped.
+            // entry.snow1h = apiSnow.getVolume1h(); // If you add this field to WeatherEntry
+        }
+
+        List<Weather> apiWeatherList = apiResponse.getWeather();
+        if (apiWeatherList != null && !apiWeatherList.isEmpty()) {
+            Weather firstWeather = apiWeatherList.get(0);
+            entry.weatherIcon = firstWeather.getIcon();
+            entry.description = firstWeather.getDescription();
+            entry.weatherIconMeteoconsSymbol = iconToText(firstWeather.getIcon());
+        }
+
+        CurrentSys currentSys = apiResponse.getCurrentSys();
+        if (currentSys != null) {
+            entry.sunriseTime = currentSys.getSunrise();
+            entry.sunsetTime = currentSys.getSunset();
+        }
+
+        entry.timestamp = apiResponse.getDt();
+        entry.request_timestamp = requestTimestamp;
+
+        // Visibility (int) and timezone (long) are available in OpenWeatherMapCurrentResponse
+        // but not in WeatherEntry. Extend WeatherEntry if you need them.
+
+        return entry;
+    }
+
+    /**
+     * Fetches weather forecast data from OpenWeatherMap API using Gson for JSON parsing.
+     * Caching logic is similar to the original method.
+     *
+     * @param context The application context.
+     * @param city    The City object (your existing model) for which to fetch the forecast.
+     * @return A list of WeatherEntry objects, or an empty list if data fetching fails.
+     */
+    static List<WeatherEntry> fetchWeatherForecastApi(
+            Context context, com.firebirdberlin.openweathermapapi.models.City city
+    ) {
+        List<WeatherEntry> forecast = new ArrayList<>();
+
+        if (city == null) {
+            return forecast;
+        }
 
         String cityID = (city.id > 0) ? String.format("%d", city.id) : null;
         float lat = (float) city.lat;
         float lon = (float) city.lon;
+
+        String CACHE_FILE_FORECAST = "owm_forecast";
         String cacheFileName =
                 (cityID != null)
                         ? String.format("%s_%s.txt", CACHE_FILE_FORECAST, cityID)
                         : String.format("%s_%3.2f_%3.2f.txt", CACHE_FILE_FORECAST, lat, lon);
         File cacheFile = new File(context.getCacheDir(), cacheFileName);
-        Log.d(TAG, cacheFileName);
-        long now = System.currentTimeMillis();
-        if (cacheFile.exists()) {
-            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
-            Log.i(TAG, "new enough: " + (cacheFile.lastModified() > now - CACHE_VALIDITY_TIME));
-        }
-        long requestTimestamp = now;
-        if (cacheFile.exists() && cacheFile.lastModified() > now - CACHE_VALIDITY_TIME) {
+        Log.d(TAG, "fetchWeatherForecastApi Cache file: " + cacheFileName);
+
+        String responseText = "";
+        long requestTimestamp = System.currentTimeMillis();
+
+        // --- Cache Reading Logic ---
+        if (cacheFile.exists() && cacheFile.lastModified() > requestTimestamp - CACHE_VALIDITY_TIME) {
             responseText = readFromCacheFile(cacheFile);
-            requestTimestamp = cacheFile.lastModified();
-            Log.i(TAG, "response: " + responseText);
+            requestTimestamp = cacheFile.lastModified(); // Use cache file's timestamp
+            Log.i(TAG, "fetchWeatherForecastApi: Using cached response. Modified: " + requestTimestamp);
         } else {
+            // --- Network Request Logic ---
+            int responseCode = 0;
+            String responseMessage = ""; // Renamed from 'response' to avoid conflict with 'responseText'
             try {
                 URL url = getUrlForecast(cityID, lat, lon);
-                Log.i(TAG, "requesting " + url.toString());
+                Log.i(TAG, "fetchWeatherForecastApi: requesting " + url.toString());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                response = urlConnection.getResponseMessage();
+                urlConnection.setConnectTimeout(CONNECT_TIMEOUT); // Set timeouts
+                urlConnection.setReadTimeout(READ_TIMEOUT);      // Set timeouts
+
+                responseMessage = urlConnection.getResponseMessage();
                 responseCode = urlConnection.getResponseCode();
+
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     responseText = getResponseText(urlConnection);
+                    storeCacheFile(cacheFile, responseText); // Store successful response to cache
+                } else {
+                    Log.w(TAG, "fetchWeatherForecastApi: API responseCode " + responseCode + " - " + responseMessage);
                 }
                 urlConnection.disconnect();
-                storeCacheFile(cacheFile, responseText);
 
-                Log.i(TAG, " >> response " + response);
-                if (responseCode != HttpURLConnection.HTTP_OK) {
-                    Log.w(TAG, " >> responseCode " + responseCode);
-                    return forecast;
+            } catch (SocketTimeoutException e) {
+                Log.e(TAG, "fetchWeatherForecastApi: Http Timeout", e);
+                // Try to read from cache if network fails, even if expired
+                if (cacheFile.exists()) {
+                    responseText = readFromCacheFile(cacheFile);
+                    requestTimestamp = cacheFile.lastModified();
+                    Log.i(TAG, "fetchWeatherForecastApi: Network timeout, attempting to use expired cache.");
+                } else {
+                    return forecast; // No network, no cache
                 }
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-                e.printStackTrace();
+                Log.e(TAG, "fetchWeatherForecastApi: Error fetching data", e);
+                // Try to read from cache if network fails, even if expired
+                if (cacheFile.exists()) {
+                    responseText = readFromCacheFile(cacheFile);
+                    requestTimestamp = cacheFile.lastModified();
+                    Log.i(TAG, "fetchWeatherForecastApi: Network error, attempting to use expired cache.");
+                } else {
+                    return forecast; // No network, no cache
+                }
+            }
+        }
+
+        // --- Gson Parsing Logic ---
+        if (responseText == null || responseText.isEmpty()) {
+            Log.w(TAG, "fetchWeatherForecastApi: No response text found (empty or null).");
+            return forecast;
+        }
+
+        Gson gson = new Gson();
+        OpenWeatherMapForecastResponse apiResponse;
+        try {
+            apiResponse = gson.fromJson(responseText, OpenWeatherMapForecastResponse.class);
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, "fetchWeatherForecastApi: Error parsing JSON with Gson", e);
+            // Optionally delete corrupt cache file here: cacheFile.delete();
+            return forecast;
+        }
+
+        if (apiResponse == null || apiResponse.getList() == null || apiResponse.getCity() == null) {
+            Log.w(TAG, "fetchWeatherForecastApi: API response or list/city object is null after Gson parsing.");
+            return forecast;
+        }
+
+        // --- Conversion to WeatherEntry List ---
+        ApiCity apiCity = apiResponse.getCity(); // Get the API's city model
+
+        for (ListEntry apiListEntry : apiResponse.getList()) {
+            WeatherEntry entry = new WeatherEntry();
+
+            // City information (from the top-level city object in API response)
+            entry.cityID = apiCity.getId();
+            entry.cityName = apiCity.getName();
+            if (apiCity.getCoord() != null) {
+                entry.lat = (float) apiCity.getCoord().getLat();
+                entry.lon = (float) apiCity.getCoord().getLon();
+            } else {
+                entry.lat = lat; // Fallback to input lat/lon if city coord is missing
+                entry.lon = lon; // Fallback to input lat/lon if city coord is missing
             }
 
-            Log.i(TAG, " >> responseText " + responseText);
-        }
+            // Forecast entry specific data
+            Main apiMain = apiListEntry.getMain();
+            if (apiMain != null) {
+                entry.temperature = apiMain.getTemp();
+                entry.apparentTemperature = apiMain.getFeelsLike();
+                entry.humidity = apiMain.getHumidity();
+                // temp_min, temp_max, pressure, sea_level, grnd_level, temp_kf are not in WeatherEntry
+            }
 
-        if (responseText == null || responseText.isEmpty()) {
-            return forecast;
-        }
+            Clouds apiClouds = apiListEntry.getClouds();
+            if (apiClouds != null) {
+                entry.clouds = apiClouds.getAll();
+            }
 
-        JSONObject json = getJSONObject(responseText);
-        JSONObject jsonCity = getJSONObject(json, "city");
-        String cityName = getValue(jsonCity, "name", "");
-        int cityIDint = getValue(jsonCity, "id", 0);
-        JSONArray jsonList = getJSONArray(json, "list");
-        if (jsonList == null) {
-            return forecast;
-        }
-        for (int i = 0; i < jsonList.length(); i++) {
-            JSONObject jsonEntry = getJSONObject(jsonList, i);
-            WeatherEntry entry = getWeatherEntryFromJSONObject(jsonEntry, requestTimestamp);
-            entry.cityID = cityIDint;
-            entry.cityName = cityName;
+            Wind apiWind = apiListEntry.getWind();
+            if (apiWind != null) {
+                entry.windSpeed = apiWind.getSpeed();
+                entry.windDirection = apiWind.getDeg();
+                // wind.gust is not in WeatherEntry
+            }
+
+            Rain apiRain = apiListEntry.getRain();
+            if (apiRain != null) {
+                entry.rain3h = apiRain.getVolume3h();
+                entry.rain1h = -1.0; // Forecast only provides 3h, so set 1h to default/unknown
+            } else {
+                entry.rain3h = -1.0;
+                entry.rain1h = -1.0;
+            }
+
+            Snow apiSnow = apiListEntry.getSnow(); // Snow data, if available
+            if (apiSnow != null) {
+                // WeatherEntry does not have a specific snow volume field, you might need to add one
+                // or decide how to represent snow. For now, it's ignored or can be logged.
+            }
+
+            List<Weather> apiWeatherList = apiListEntry.getWeather();
+            if (apiWeatherList != null && !apiWeatherList.isEmpty()) {
+                Weather firstWeather = apiWeatherList.get(0);
+                entry.weatherIcon = firstWeather.getIcon();
+                entry.description = firstWeather.getDescription();
+                entry.weatherIconMeteoconsSymbol = iconToText(firstWeather.getIcon());
+            }
+
+            Sys apiSys = apiListEntry.getSys();
+            if (apiSys != null) {
+                // list.sys.pod is part of the day, not directly mapped to WeatherEntry for now
+            }
+
+            entry.timestamp = apiListEntry.getDt();
+            entry.request_timestamp = requestTimestamp; // From when the data was requested/cached
+
+            // Sunrise/Sunset times are per city, not per forecast entry,
+            // so they are the same for all entries in the forecast list
+            entry.sunriseTime = apiCity.getSunrise();
+            entry.sunsetTime = apiCity.getSunset();
+
+            // Visibility (int) and POP (double) are available in ListEntry, but not in WeatherEntry
+            // if you need them, you might extend WeatherEntry.
+
             forecast.add(entry);
         }
+
         return forecast;
-    }
-
-    private static WeatherEntry getWeatherEntryFromJSONObject(
-            JSONObject json, long requestTimestamp
-    ) {
-        if (json == null) {
-            return null;
-        }
-        JSONObject jsonMain = getJSONObject(json, "main");
-        JSONObject jsonCoord = getJSONObject(json, "coord");
-        JSONObject jsonClouds = getJSONObject(json, "clouds");
-        JSONObject jsonRain = getJSONObject(json, "rain");
-        JSONObject jsonWind = getJSONObject(json, "wind");
-        JSONObject jsonSys = getJSONObject(json, "sys");
-        JSONArray jsonWeather = getJSONArray(json, "weather");
-
-        WeatherEntry entry = new WeatherEntry();
-        entry.cityID = getValue(json, "id", 0);
-        entry.lat = getValue(jsonCoord, "lat", -1.f);
-        entry.lon = getValue(jsonCoord, "lon", -1.f);
-        entry.cityName = getValue(json, "name", "");
-        entry.clouds = getValue(jsonClouds, "all", 0);
-        entry.timestamp = getValue(json, "dt", 0L);
-        entry.request_timestamp = requestTimestamp;
-        entry.humidity = getValue(jsonMain, "humidity", -1);
-        entry.temperature = getValue(jsonMain, "temp", 0.);
-        entry.apparentTemperature = getValue(jsonMain, "feels_like", entry.temperature);
-        entry.rain1h = getValue(jsonRain, "1h", -1.);
-        entry.rain3h = getValue(jsonRain, "3h", -1.);
-        entry.sunriseTime = getValue(jsonSys, "sunrise", 0L);
-        entry.sunsetTime = getValue(jsonSys, "sunset", 0L);
-
-        entry.windSpeed = getValue(jsonWind, "speed", 0.);
-        entry.windDirection = getValue(jsonWind, "deg", -1);
-
-        entry.weatherIcon = "";
-        if (jsonWeather != null && jsonWeather.length() > 0) {
-            JSONObject weatherObj = getJSONObject(jsonWeather, 0);
-            entry.weatherIcon = getValue(weatherObj, "icon", "");
-            entry.description = getValue(weatherObj, "description", "");
-            entry.weatherIconMeteoconsSymbol = iconToText(entry.weatherIcon);
-        }
-
-        return entry;
     }
 
     private static String iconToText(String code) {
@@ -277,73 +477,11 @@ public class OpenWeatherMapApi {
 
         return "";
     }
-    private static JSONObject getJSONObject(String string_representation) {
-        try {
-            return new JSONObject(string_representation);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static JSONObject getJSONObject(JSONArray jsonArray, int index) {
-        try {
-            return jsonArray.getJSONObject(index);
-        } catch (JSONException e) {
-            return null;
-        }
-    }
-
-    private static JSONObject getJSONObject(JSONObject json, String name) {
-        try {
-            return json.getJSONObject(name);
-        } catch (JSONException | NullPointerException e) {
-            return null;
-        }
-    }
-
-    private static JSONArray getJSONArray(JSONObject json, String name) {
-        try {
-            return json.getJSONArray(name);
-        } catch (JSONException | NullPointerException e) {
-            return null;
-        }
-    }
 
     private static double getValue(JSONObject json, String name, double defaultvalue) {
         if (json == null) return defaultvalue;
         try {
             return json.getDouble(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static float getValue(JSONObject json, String name, float defaultvalue) {
-        return (float) getValue(json, name, (double) defaultvalue);
-    }
-
-    private static int getValue(JSONObject json, String name, int defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getInt(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static String getValue(JSONObject json, String name, String defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getString(name);
-        } catch (JSONException e) {
-            return defaultvalue;
-        }
-    }
-
-    private static long getValue(JSONObject json, String name, long defaultvalue) {
-        if (json == null) return defaultvalue;
-        try {
-            return json.getLong(name);
         } catch (JSONException e) {
             return defaultvalue;
         }
@@ -360,55 +498,93 @@ public class OpenWeatherMapApi {
         return sb.toString();
     }
 
-    static List<City> findCity(String query) {
-
-        int responseCode = 0;
-        String response = "";
+    /**
+     * Finds cities based on a query string using the OpenWeatherMap API and Gson for JSON parsing.
+     *
+     * @param query The city name or part of it to search for.
+     * @return A list of City objects (your application's City model), or an empty list if no cities are found or an error occurs.
+     */
+    static List<com.firebirdberlin.openweathermapapi.models.City> findCityApi(String query) {
+        List<com.firebirdberlin.openweathermapapi.models.City> cities = new ArrayList<>();
         String responseText = "";
-
-        List<City> cities = new ArrayList<>();
 
         URL url;
         try {
             url = getUrlFindCity(query);
         } catch (MalformedURLException e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+            Log.e(TAG, "findCityApi: Malformed URL for query " + query, e);
             return cities;
         }
 
-        Log.i(TAG, "requesting " + url.toString());
+        Log.i(TAG, "findCityApi: requesting " + url.toString());
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
             urlConnection.setReadTimeout(READ_TIMEOUT);
-            response = urlConnection.getResponseMessage();
-            responseCode = urlConnection.getResponseCode();
+
+            int responseCode = urlConnection.getResponseCode();
+            String responseMessage = urlConnection.getResponseMessage();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseText = getResponseText(urlConnection.getInputStream());
+            } else {
+                Log.w(TAG, "findCityApi: API responseCode " + responseCode + " - " + responseMessage);
             }
             urlConnection.disconnect();
+
         } catch (SocketTimeoutException e) {
-            Log.e(TAG, "Http Timeout");
+            Log.e(TAG, "findCityApi: Http Timeout", e);
             return cities;
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+            Log.e(TAG, "findCityApi: Error fetching data", e);
+            return cities;
         }
 
-        Log.i(TAG, " >> response " + response);
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            Log.i(TAG, " >> responseText " + responseText);
-            try {
-                cities = decodeCitiesJsonResponse(responseText);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                //TODO resilience (count errors and if error threshold is reached (API service broken), disable fetchCountries for some time to save api requests)
+        // --- Gson Parsing Logic ---
+        if (responseText.isEmpty()) {
+            Log.w(TAG, "findCityApi: No response text found (empty or null).");
+            return cities;
+        }
+
+        Gson gson = new Gson();
+        OpenWeatherMapFindCityResponse apiResponse;
+        try {
+            apiResponse = gson.fromJson(responseText, OpenWeatherMapFindCityResponse.class);
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, "findCityApi: Error parsing JSON with Gson", e);
+            return cities;
+        }
+
+        if (apiResponse == null || apiResponse.getList() == null) {
+            Log.w(TAG, "findCityApi: API response or list object is null after Gson parsing.");
+            return cities;
+        }
+
+        // --- Conversion to your application's City List ---
+        for (FindCityEntry apiCityEntry : apiResponse.getList()) {
+            com.firebirdberlin.openweathermapapi.models.City appCity =
+                    new com.firebirdberlin.openweathermapapi.models.City(); // Instantiate your app's City
+
+            appCity.id = apiCityEntry.getId();
+            appCity.name = apiCityEntry.getName();
+
+            if (apiCityEntry.getSys() != null) {
+                appCity.countryCode = apiCityEntry.getSys().getCountry();
+            } else {
+                appCity.countryCode = ""; // Default if country is missing
             }
 
-        } else {
-            Log.w(TAG, " >> responseCode " + responseCode);
+            if (apiCityEntry.getCoord() != null) {
+                appCity.lat = apiCityEntry.getCoord().getLat();
+                appCity.lon = apiCityEntry.getCoord().getLon();
+            } else {
+                appCity.lat = 0.0f; // Default if coords are missing
+                appCity.lon = 0.0f;
+            }
+
+            cities.add(appCity);
         }
+
         return cities;
     }
 
@@ -435,7 +611,7 @@ public class OpenWeatherMapApi {
         }
 
         String lang = getDefaultLanguage();
-        if (lang != null && !lang.isEmpty()) {
+        if (!lang.isEmpty()) {
             builder = builder.appendQueryParameter("lang", lang);
         }
 
@@ -454,7 +630,7 @@ public class OpenWeatherMapApi {
                     .appendQueryParameter("lon", String.valueOf(lon));
         }
         String lang = getDefaultLanguage();
-        if (lang != null && !lang.isEmpty()) {
+        if (!lang.isEmpty()) {
             builder = builder.appendQueryParameter("lang", lang);
         }
 
@@ -463,34 +639,12 @@ public class OpenWeatherMapApi {
     }
 
     private static Uri.Builder getPathBuilder(String endpoint) {
+        String APPID = BuildConfig.API_KEY_OWM;
         return Uri.parse(ENDPOINT).buildUpon()
                 .appendPath(endpoint)
                 .appendQueryParameter("appid", APPID);
     }
 
-
-    private static List<City> decodeCitiesJsonResponse(String responseText) throws JSONException {
-        List<City> cities = new ArrayList<>();
-
-        JSONObject json = new JSONObject(responseText);
-        JSONArray jsonArray = json.getJSONArray("list");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonCity = jsonArray.getJSONObject(i);
-            JSONObject jsonSys = jsonCity.getJSONObject("sys");
-            JSONObject jsonCoord = jsonCity.getJSONObject("coord");
-
-            City city = new City();
-            city.id = jsonCity.getInt("id");
-            city.name = jsonCity.getString("name");
-            city.countryCode = jsonSys.getString("country");
-            city.lat = jsonCoord.getDouble("lat");
-            city.lon = jsonCoord.getDouble("lon");
-
-            cities.add(city);
-        }
-
-        return cities;
-    }
 
     private static String getResponseText(InputStream inputStream) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));

@@ -9,6 +9,9 @@ import android.util.Log;
 import androidx.multidex.MultiDex;
 
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
+import com.firebirdberlin.openweathermapapi.CityRequestManager;
+import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
+import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
 
 /**
  * A global Application instance which notifies widgets to update its content on orientation
@@ -40,4 +43,12 @@ public class NightDreamApplication extends Application {
         // update all widget instances via intent
         ClockWidgetProvider.updateAllWidgets(this);
     }
+
+     @Override
+     public void onTerminate() {
+         super.onTerminate();
+         CityRequestManager.shutdownExecutor();
+         ForecastRequestTask.shutdownExecutor();
+         ForecastRequestTaskToday.shutdownExecutor();
+     }
 }

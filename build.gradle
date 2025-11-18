@@ -1,10 +1,12 @@
 buildscript {
+    ext.kotlin_version = '2.2.20'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.13.0'
+        classpath 'com.android.tools.build:gradle:8.13.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -17,42 +19,42 @@ allprojects {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 dependencies {
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4"
-    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.13.0'
-    implementation 'com.android.billingclient:billing:8.0.0'
-    implementation 'androidx.fragment:fragment:1.8.9'
+    implementation 'com.android.billingclient:billing:8.1.0'
+    implementation 'androidx.fragment:fragment-ktx:1.8.9'
 
-    // implementation 'uk.co.samuelwall:material-tap-target-prompt:3.0.0'
-    // implementation project(':externals:ShowcaseView:library')
-    // implementation 'com.xenione.libs:tab-digit:1.0.2'
     implementation project(':externals:android-preferences')
     implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
-    implementation 'androidx.palette:palette:1.0.0'
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.3.0"
     implementation 'androidx.mediarouter:mediarouter:1.8.1'
-    implementation 'com.google.android.gms:play-services-cast-framework:21.3.0'
-    implementation 'androidx.activity:activity:1.10.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:22.2.0'
+    implementation 'androidx.activity:activity-ktx:1.11.0'
     testImplementation 'junit:junit:4.13.2'
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
-    implementation 'androidx.work:work-runtime-ktx:2.10.5'
-    implementation 'androidx.work:work-multiprocess:2.10.5'
-    implementation 'com.prof18.rssparser:rssparser:4.0.2'
+    implementation 'androidx.work:work-runtime-ktx:2.11.0'
+    implementation 'androidx.work:work-multiprocess:2.11.0'
+    implementation 'com.prof18.rssparser:rssparser:6.1.1'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
 
     // https://developer.android.com/studio/build/multidex
     def multidex_version = "2.0.1"
@@ -75,12 +77,16 @@ def getApiKeyDarkSky() {
 
 android {
     namespace 'com.firebirdberlin.nightdream'
-    compileSdk 35
+    compileSdk 36
 
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility 1.8
         targetCompatibility 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 
     sourceSets {
@@ -127,10 +133,10 @@ android {
         unitTests.returnDefaultValues = true
     }
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
-        targetSdk 35
+        targetSdk 36
         renderscriptTargetApi 21
         renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true

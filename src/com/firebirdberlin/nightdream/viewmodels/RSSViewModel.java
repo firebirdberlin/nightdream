@@ -19,7 +19,7 @@ import androidx.work.WorkManager;
 
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.services.RSSParserService;
-import com.prof.rssparser.Channel;
+import com.prof18.rssparser.model.RssChannel;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ public class RSSViewModel extends ViewModel {
     private static final String TAG = "TickerViewModel";
     private static WeakReference<Context> weakContext;
 
-    private static final MutableLiveData<Channel> myLiveData = new MutableLiveData<>();
+    private static final MutableLiveData<RssChannel> myLiveData = new MutableLiveData<>();
     private static final MutableLiveData<Long> tickerAnimationSpeed = new MutableLiveData<>();
     private static final MutableLiveData<Integer> intervalMode = new MutableLiveData<>();
     private static final MutableLiveData<Float> textSize = new MutableLiveData<>();
@@ -86,24 +86,23 @@ public class RSSViewModel extends ViewModel {
                         .build();
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                TAG, ExistingPeriodicWorkPolicy.REPLACE, downloadRSSWork
+                TAG, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, downloadRSSWork
         );
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadRSSWork.getId())
-                .observe((LifecycleOwner) context, info -> {
-                    RSSParserService.articleListLive.observe(lifecycleOwner,
-                            entry -> {
-                                //EDIT: Remove the observer of the worker otherwise
-                                //before execution of your below code, the observation might switch
-                                Log.d(TAG, "onChanged");
-                                WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadRSSWork.getId()).removeObservers(lifecycleOwner);
-                                myLiveData.setValue(entry);
-                            }
-                    );
-                });
+                .observe((LifecycleOwner) context, info -> RSSParserService.articleListLive.observe(
+                        lifecycleOwner,
+                        entry -> {
+                            //EDIT: Remove the observer of the worker otherwise
+                            //before execution of your below code, the observation might switch
+                            Log.d(TAG, "onChanged");
+                            WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadRSSWork.getId()).removeObservers(lifecycleOwner);
+                            myLiveData.setValue(entry);
+                        }
+                ));
     }
 
-    public MutableLiveData<Channel> getData() {
+    public MutableLiveData<RssChannel> getData() {
         return myLiveData;
     }
 
@@ -119,7 +118,7 @@ public class RSSViewModel extends ViewModel {
         return textSize;
     }
 
-    public static void observe(Context context, @NonNull Observer<Channel> observer) {
+    public static void observe(Context context, @NonNull Observer<RssChannel> observer) {
         RSSViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(RSSViewModel.class);
         RSSViewModel.loadDataPeriodicFromWorker(context, (LifecycleOwner) context);
         model.getData().observe((LifecycleOwner) context, observer);

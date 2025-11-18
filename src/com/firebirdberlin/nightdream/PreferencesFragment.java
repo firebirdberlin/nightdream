@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1047,8 +1049,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void conditionallyShowSnackBar() {
         Log.i(TAG, "conditionallyShowSnackBar");
-        if (!Utility.hasPermissionCanDrawOverlays(mContext)) {
-            View view = getActivity().findViewById(android.R.id.content);
+        if (
+                !Utility.hasPermissionCanDrawOverlays(mContext)
+                        && !Utility.isLowRamDevice(mContext)
+        ) {
+            Activity activity = getActivity();
+            if (activity == null) return;
+            View view = activity.findViewById(android.R.id.content);
             snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
             int color = Utility.getRandomMaterialColor(mContext);
             int textColor = Utility.getContrastColor(color);
@@ -1058,6 +1065,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
             TextView tv = snackbarView.findViewById(R.id.snackbar_text);
             tv.setTextColor(textColor);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16.0f);
+            tv.setSingleLine(false);
+
+            // Adjust the bottom margin of the Snackbar's view.
+            // This will push the Snackbar up, revealing the content below it.
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+            if (params != null) {
+                params.bottomMargin = 75; // Example value, adjust as needed
+                snackbarView.setLayoutParams(params);
+            }
 
             snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
             snackbar.show();
@@ -1076,7 +1093,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (
                 (snackbar != null && snackbar.isShown())
                         || Utility.isAirplaneModeOn(mContext)
-                        || isPurchased(PurchaseManager.ITEM_DONATION) || isPurchased(PurchaseManager.ITEM_PRO)
+                        || isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)
+                        || isPurchased(PurchaseManager.ITEM_DONATION)
+                        || isPurchased(PurchaseManager.ITEM_PRO)
                         || (isPurchased(PurchaseManager.ITEM_WEB_RADIO) && isPurchased(PurchaseManager.ITEM_WEATHER_DATA))
                         || daysInstalled < 4
                         || timeSinceShown < 60000 * 60 * 12 // 12 hours
@@ -1089,10 +1108,21 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         int textColor = Utility.getContrastColor(color);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(color);
+
+        // Adjust the bottom margin of the Snackbar's view.
+        // This will push the Snackbar up, revealing the content below it.
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+        if (params != null) {
+            params.bottomMargin = 75; // Example value, adjust as needed
+            snackbarView.setLayoutParams(params);
+        }
+
         snackbar.setActionTextColor(textColor);
 
         TextView tv = snackbarView.findViewById(R.id.snackbar_text);
         tv.setTextColor(textColor);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16.0f);
+        tv.setSingleLine(false);
 
         snackbar.setAction(android.R.string.ok, new BuyUpgradeListener());
         snackbar.setDuration(10000);
