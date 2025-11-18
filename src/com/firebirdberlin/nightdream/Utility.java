@@ -997,11 +997,8 @@ public class Utility {
     }
 
     public static boolean hasPermission(Context context, String permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return (ContextCompat.checkSelfPermission(context, permission)
-                    == PackageManager.PERMISSION_GRANTED);
-        }
-        return true;
+        return (ContextCompat.checkSelfPermission(context, permission)
+                == PackageManager.PERMISSION_GRANTED);
     }
 
     public static boolean hasPermissionCanDrawOverlays(Context context) {
@@ -1010,12 +1007,11 @@ public class Utility {
         }
         return true;
     }
+
     public static void requestPermissionCanDrawOverlays(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setData(Uri.parse("package:" + context.getPackageName()));
-            context.startActivity(intent);
-        }
+        Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+        intent.setData(Uri.parse("package:" + context.getPackageName()));
+        context.startActivity(intent);
     }
 
     @SuppressLint("MissingPermission")

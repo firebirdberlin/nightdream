@@ -10,81 +10,74 @@ import androidx.work.WorkerParameters;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.prof18.rssparser.RssParser;
+import com.prof18.rssparser.RssParserBuilder;
+import com.prof18.rssparser.model.RssChannel;
+import com.prof18.rssparser.model.RssItem;
 
-import com.prof.rssparser.Article;
-import com.prof.rssparser.Channel;
-import com.prof.rssparser.OnTaskCompleted;
-import com.prof.rssparser.Parser;
-
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class RSSParserService extends Worker {
     private static final String TAG = "RSSParserService";
     private String urlString = "https://www.tagesschau.de/xml/rss2/";
-    public static MutableLiveData<Channel> articleListLive = new MutableLiveData<>();
+    public static MutableLiveData<RssChannel> articleListLive = new MutableLiveData<>();
 
     public RSSParserService(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
+
     @NonNull
     @Override
     public Result doWork() {
         Log.d(TAG, "doWork()");
 
         Settings settings = new Settings(getApplicationContext());
-        String urlString = settings.rssURL;
+        String url = settings.rssURL;
 
-        List<Article> articles = new ArrayList<Article>();
-
-        Log.d(TAG, "Url: " + urlString);
-
-        if (!urlString.isEmpty()) {
-            Parser parser = new Parser.Builder()
-                    // To provide a custom charset (the default is utf-8):
-                    .charset(Charset.forName(settings.rssCharSet))
-                    // .cacheExpirationMillis() and .context() not called because on Java side, caching is NOT supported
-                    .build();
-
-            parser.onFinish(new OnTaskCompleted() {
-                //what to do when the parsing is done
-                @Override
-                public void onTaskCompleted(@NonNull Channel channel) {
-                    articleListLive.postValue(channel);
-                }
-
-                //what to do in case of error
-                @Override
-                public void onError(@NonNull Exception e) {
-                    Article article = new Article(
-                            "",
-                            getApplicationContext().getResources().getString(R.string.rss_data_error),
-                            "","","","","","","","","","",
-                            new ArrayList<String>(),
-                            null
-                    );
-                    articles.add(article);
-                    articleListLive.postValue(new Channel(null, null, null, null, null, null, articles, null));
-                    e.printStackTrace();
-                    Log.d(TAG, "An error has occurred. Please try again");
-                }
-            });
-            parser.execute(urlString);
-        }
-        else {
-            Article article = new Article(
+        if (url.isEmpty()) {
+            List<RssItem> rssItems = new ArrayList<>();
+            RssItem rssItem = new RssItem(
                     "",
                     getApplicationContext().getResources().getString(R.string.rss_url_error),
                     "","","","","","","","","","",
-                    new ArrayList<String>(),
-                    null
+                    new ArrayList<>(),
+                    null, null, null, null
             );
-            articles.add(article);
-            articleListLive.postValue(new Channel(null, null, null, null, null, null, articles, null));
+            rssItems.add(rssItem);
+            articleListLive.postValue(new RssChannel(null, null, null, null, null, null, rssItems, null, null));
+            return Result.success();
         }
 
+        RssParser parser = new RssParserBuilder()
+                .build();
+
+        CompletableFuture<RssChannel> future = CoroutineBridge.INSTANCE.parseFeed(parser, url);
+
+        future.whenComplete((channel, e) -> {
+            if (e != null) {
+                Log.e(TAG, "Error parsing RSS feed", e);
+                List<RssItem> rssItems = new ArrayList<>();
+                RssItem rssItem = new RssItem(
+                        "",
+                        getApplicationContext().getResources().getString(R.string.rss_data_error),
+                        "","","","","","","","","","",
+                        new ArrayList<String>(),
+                        null, null, null, null
+                );
+                rssItems.add(rssItem);
+                articleListLive.postValue(new RssChannel(null, null, null, null, null, null, rssItems, null, null));
+            } else if (channel != null) {
+                articleListLive.postValue(channel);
+            }
+        });
+
+        // We must return success here, as the parsing happens asynchronously.
+        // The WorkManager will complete its work when the future is done, or run indefinitely if it\'s not.
+        // However, since we are not observing the completion of the future here, it will just return success.
+        // If you need to wait for the future to complete, you would need to use a different approach,
+        // possibly involving custom WorkManager logic or a different execution context.
         return Result.success();
     }
-
 }

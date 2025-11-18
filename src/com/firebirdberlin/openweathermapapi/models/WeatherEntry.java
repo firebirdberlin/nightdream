@@ -2,7 +2,6 @@ package com.firebirdberlin.openweathermapapi.models;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -10,8 +9,6 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 
 import org.shredzone.commons.suncalc.SunTimes;
-
-import java.util.Date;
 
 public class WeatherEntry {
     public static final int CELSIUS = 1;
@@ -127,7 +124,7 @@ public class WeatherEntry {
     public String formatTemperatureText(int temperatureUnit, double temp) {
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
-                return String.format(java.util.Locale.getDefault(), "%d°C", Math.round(toDegreesCelcius(temp)));
+                return String.format(java.util.Locale.getDefault(), "%d°C", Math.round(toDegreesCelsius(temp)));
             case WeatherEntry.FAHRENHEIT:
                 return String.format(java.util.Locale.getDefault(), "%d°F", Math.round(toDegreesFahrenheit(temp)));
             default:
@@ -140,7 +137,7 @@ public class WeatherEntry {
         return String.format(java.util.Locale.getDefault(), "%d %%", humidity);
     }
 
-    private double toDegreesCelcius(double kelvin) {
+    private double toDegreesCelsius(double kelvin) {
         return kelvin - 273.15;
     }
 
@@ -241,10 +238,7 @@ public class WeatherEntry {
                 identifier = "weather_cloudy";
                 break;
         }
-        if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !widget
-        ) {
+        if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED && !widget) {
             identifier += "_avd";
         }
 
