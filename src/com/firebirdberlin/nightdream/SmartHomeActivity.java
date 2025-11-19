@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -160,7 +161,7 @@ public class SmartHomeActivity
             if (layout != null) {
                 layout.update(device);
             }
-            showPurchaseDialog();
+            showSubscriptionDialog();
         }
     }
 
@@ -201,6 +202,12 @@ public class SmartHomeActivity
             snackbarView.setBackgroundColor(color);
             snackbar.setActionTextColor(textColor);
 
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+            if (params != null) {
+                params.bottomMargin = 75;
+                snackbarView.setLayoutParams(params);
+            }
+
             TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
             tv.setTextColor(textColor);
 
@@ -214,7 +221,7 @@ public class SmartHomeActivity
     public class RequestPurchaseListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            showPurchaseDialog();
+            showSubscriptionDialog();
         }
     }
     void dismissSnackBar() {

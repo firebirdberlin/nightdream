@@ -116,6 +116,7 @@ OR
     <string name="bug_summary">Please let us know if something went wrong.</string>
     <string name="buy">Buy</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
+    <string name="subscribe">Subscribe</string>
     <string name="category_handle_power">… and when connected to</string>
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="category_night_mode_display_management">Display management</string>
@@ -449,4 +450,21 @@ OR
     <string name="width">Width</string>
     <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
     <string name="product_name_subscription">one-year subscription</string>
+    <!-- Subscription related strings -->
+    <string name="subscription_free_trial_description">%s free for trial.</string>
+    <string name="subscription_prefix_after_period">Then</string>
+    <string name="subscription_prefix_subsequently">Subsequently</string>
+    <string name="subscription_price_per_period">%s per %s.</string>
+    <string name="subscription_offer_price_for_period">%s for %s.</string>
+    <string name="subscription_renewal_info">Auto-renews. Cancel anytime.</string>
+
+    <!-- Units for subscription periods -->
+    <string name="unit_day">Day</string>
+    <string name="unit_days">Days</string>
+    <string name="unit_week">Week</string>
+    <string name="unit_weeks">Weeks</string>
+    <string name="unit_month">Month</string>
+    <string name="unit_months">Months</string>
+    <string name="unit_year">Year</string>
+    <string name="unit_years">Years</string>
 </resources>

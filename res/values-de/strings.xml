@@ -450,4 +450,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="width">Breite</string>
     <string name="snoozeUsingVolumeButtons">Lautstärketasten verwenden</string>
     <string name="product_name_subscription">Jahresabo</string>
+
+    <string name="subscription_free_trial_description">%s kostenlos testen.</string>
+    <string name="subscription_prefix_after_period">Danach </string>
+    <string name="subscription_prefix_subsequently">Anschließend </string>
+    <string name="subscription_price_per_period">%s pro %s.</string>
+    <string name="subscription_offer_price_for_period">%s für %s.</string>
+    <string name="subscription_renewal_info">Automatische Verlängerung. Jederzeit kündbar.</string>
+
+    <!-- Units for subscription periods -->
+    <string name="unit_day">Tag</string>
+    <string name="unit_days">Tage</string>
+    <string name="unit_week">Woche</string>
+    <string name="unit_weeks">Wochen</string>
+    <string name="unit_month">Monat</string>
+    <string name="unit_months">Monate</string>
+    <string name="unit_year">Jahr</string>
+    <string name="unit_years">Jahre</string>
 </resources>

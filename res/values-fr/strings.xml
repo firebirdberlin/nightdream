@@ -449,4 +449,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="width">Largeur</string>
     <string name="snoozeUsingVolumeButtons">Répétition avec les boutons de volume</string>
     <string name="product_name_subscription">abonnement annuel</string>
+
+    <string name="subscription_free_trial_description">%s essai gratuit.</string>
+    <string name="subscription_prefix_after_period">Ensuite </string>
+    <string name="subscription_prefix_subsequently">Par la suite </string>
+    <string name="subscription_price_per_period">%s par %s.</string>
+    <string name="subscription_offer_price_for_period">%s pour %s.</string>
+    <string name="subscription_renewal_info">Renouvellement automatique. Annulation à tout moment.</string>
+
+    <!-- Units for subscription periods -->
+    <string name="unit_day">Jour</string>
+    <string name="unit_days">Jours</string>
+    <string name="unit_week">Semaine</string>
+    <string name="unit_weeks">Semaines</string>
+    <string name="unit_month">Mois</string>
+    <string name="unit_months">Mois</string>
+    <string name="unit_year">An</string>
+    <string name="unit_years">Ans</string>
 </resources>

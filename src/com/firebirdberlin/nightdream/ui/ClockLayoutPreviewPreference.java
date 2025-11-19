@@ -163,7 +163,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
                             @Override
                             public void onPurchaseRequested() {
-                                ((PreferencesActivity) context).showPurchaseDialog();
+                                ((PreferencesActivity) context).showSubscriptionDialog();
                             }
                         }
                 );
@@ -182,7 +182,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
                             @Override
                             public void onPurchaseRequested() {
-                                ((PreferencesActivity) context).showPurchaseDialog();
+                                ((PreferencesActivity) context).showSubscriptionDialog();
                             }
                         }
                 );
@@ -200,7 +200,7 @@ public class ClockLayoutPreviewPreference extends Preference {
 
                             @Override
                             public void onPurchaseRequested() {
-                                ((PreferencesActivity) context).showPurchaseDialog();
+                                ((PreferencesActivity) context).showSubscriptionDialog();
                             }
                         }
                 );
@@ -209,10 +209,6 @@ public class ClockLayoutPreviewPreference extends Preference {
             case ClockLayout.LAYOUT_ID_ANALOG2:
             case ClockLayout.LAYOUT_ID_ANALOG3:
             case ClockLayout.LAYOUT_ID_ANALOG4:
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    // the view is not drawn correctly. We have issues with invalidation.
-                    return;
-                }
                 AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
                 CustomAnalogClockPreferencesLayout prefs_analog =
                         new CustomAnalogClockPreferencesLayout(context, preset, getActivity());
