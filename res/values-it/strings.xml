@@ -372,4 +372,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informazioni</string>
     <string name="weekdays">Giorni della settimana</string>
     <string name="width">Larghezza</string>
+
+    <string name="subscription_free_trial_description">%s prova gratuita.</string>
+    <string name="subscription_prefix_after_period">Poi </string>
+    <string name="subscription_prefix_subsequently">Successivamente </string>
+    <string name="subscription_price_per_period">%s per %s.</string>
+    <string name="subscription_offer_price_for_period">%s per %s.</string>
+    <string name="subscription_renewal_info">Si rinnova automaticamente. Annullabile in qualsiasi momento.</string>
+
+    <!-- Units for subscription periods -->
+    <string name="unit_day">Giorno</string>
+    <string name="unit_days">Giorni</string>
+    <string name="unit_week">Settimana</string>
+    <string name="unit_weeks">Settimane</string>
+    <string name="unit_month">Mese</string>
+    <string name="unit_months">Mesi</string>
+    <string name="unit_year">Anno</string>
+    <string name="unit_years">Anni</string>
 </resources>

@@ -748,7 +748,7 @@ public class NightDreamActivity extends BillingHelperActivity
             AlarmHandlerService.stop(this);
         }
         if (!isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
-            showPurchaseDialog();
+            showSubscriptionDialog();
             return;
         }
 

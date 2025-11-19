@@ -248,7 +248,7 @@ public class AlarmClockLayout extends LinearLayout {
                 @Override
                 public void onPurchaseRequested() {
                     Log.w(TAG, "purchase requested");
-                    ((BillingHelperActivity) context).showPurchaseDialog();
+                    ((BillingHelperActivity) context).showSubscriptionDialog();
                 }
 
             });
@@ -277,7 +277,7 @@ public class AlarmClockLayout extends LinearLayout {
 
             BillingHelperActivity billingHelperActivity = (BillingHelperActivity) context;
             if (!billingHelperActivity.isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
-                billingHelperActivity.showPurchaseDialog();
+                billingHelperActivity.showSubscriptionDialog();
             } else {
                 FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                 SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
