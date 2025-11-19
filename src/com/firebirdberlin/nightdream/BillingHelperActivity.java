@@ -91,9 +91,16 @@ public abstract class BillingHelperActivity
         purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
         if (!purchased_subscription) {
             if (!purchased_pro) {
-//                TODO Switch to subscription model in a later step
-                  entries.add(getProductWithPrice(R.string.product_name_subscription, PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION));
-                  values.add(PurchaseManager.PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
+                String description = getDetailedSubscriptionDescription(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+                if (description != null) {
+                    entries.add(description);
+                    values.add(PurchaseManager.PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
+                } else {
+                    entries.add(getProductWithPrice(R.string.product_name_subscription, PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION));
+                    values.add(PurchaseManager.PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
+                }
+                // entries.add(getProductWithPrice(R.string.product_name_subscription, PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION));
+                // values.add(PurchaseManager.PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
 //                entries.add(getProductWithPrice(R.string.product_name_pro, PurchaseManager.ITEM_PRO));
 //                values.add(PurchaseManager.PRODUCT_ID_PRO);
             }
@@ -128,7 +135,68 @@ public abstract class BillingHelperActivity
         );
     }
 
-    private String getProductWithPrice(int resId, String sku) {
+    // In Ihrer BillingHelperActivity
+    private String getDetailedSubscriptionDescription(String sku) {
+        ProductDetails details = getProductDetails(sku); // Ihre Methode, um die Details zu bekommen
+        if (details == null || !details.getProductType().equals(BillingClient.ProductType.SUBS)) {
+            return null; // Kein Abo-Produkt oder Details nicht gefunden
+        }
+
+        // Annahme: Sie verwenden das erste (oft das einzige) Basisangebot
+        List<ProductDetails.SubscriptionOfferDetails> offerDetailsList = details.getSubscriptionOfferDetails();
+        if (offerDetailsList == null || offerDetailsList.isEmpty()) {
+            return null; // Kein Angebot gefunden
+        }
+        ProductDetails.SubscriptionOfferDetails offerDetails = offerDetailsList.get(0);
+
+        // Der Name des Produkts selbst (z.B. "Premium-Mitgliedschaft")
+        String productName = details.getName();
+        StringBuilder descriptionBuilder = new StringBuilder();
+        descriptionBuilder.append(productName).append(":\n\n");
+
+        // Durchlaufen Sie alle Preisstufen des Angebots
+        for (ProductDetails.PricingPhase phase : offerDetails.getPricingPhases().getPricingPhaseList()) {
+            String formattedPrice = phase.getFormattedPrice();
+            String billingPeriod = phase.getBillingPeriod(); // z.B. "P7D", "P1M", "P1Y"
+            int billingCycleCount = phase.getBillingCycleCount();
+
+            // Wandeln Sie den ISO-8601-Zeitraum in eine lesbare Form um (Sie benötigen hierfür ggf. eine Hilfsfunktion)
+            String readablePeriod = convertPeriodToReadableString(billingPeriod, billingCycleCount);
+
+            // Gratis-Testphase
+            if (phase.getPriceAmountMicros() == 0) {
+                descriptionBuilder.append(String.format("• Zuerst: %s kostenlos testen.\n", readablePeriod));
+            } else {
+                // Bezahlte Phase (Einführungspreis oder regulärer Preis)
+                if (billingCycleCount > 0) {
+                    // Dies ist eine zeitlich begrenzte Phase (z.B. ein Einführungsrabatt)
+                    descriptionBuilder.append(String.format("• Danach: %s für %s.\n", readablePeriod, formattedPrice));
+                } else {
+                    // Dies ist die unbegrenzte, reguläre Phase
+                    descriptionBuilder.append(String.format("• Anschließend: %s pro %s.\n", formattedPrice, convertPeriodToReadableString(billingPeriod, 1)));
+                }
+            }
+        }
+        descriptionBuilder.append("\nJederzeit kündbar.");
+
+        return descriptionBuilder.toString();
+    }
+
+    private String convertPeriodToReadableString(String period, int cycleCount) {
+        // Diese Funktion müssten Sie robuster implementieren, um alle ISO-8601-Formate zu behandeln.
+        if (period.equalsIgnoreCase("P7D")) {
+            return "7 Tage";
+        } else if (period.equalsIgnoreCase("P1M")) {
+            if (cycleCount > 1) return cycleCount + " Monate";
+            return "Monat";
+        } else if (period.equalsIgnoreCase("P1Y")) {
+            return "Jahr";
+        }
+        return period; // Fallback
+    }
+
+
+private String getProductWithPrice(int resId, String sku) {
         String price = PurchaseManager.getPrice(sku);
         if (price != null) {
             return String.format("%s (%s)", getResources().getString(resId), price);
@@ -549,9 +617,6 @@ public abstract class BillingHelperActivity
     }
 
     public boolean hasPermission(String permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED);
-        }
-        return true;
+        return (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED);
     }
 }
