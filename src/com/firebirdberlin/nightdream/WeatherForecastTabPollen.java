@@ -97,9 +97,7 @@ public class WeatherForecastTabPollen extends Fragment {
                     try {
                         field = resString.getField(pollenKey);
                         pollenKeyId = field.getInt(null);
-                    } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
                     Log.d(TAG, "pollenKeyId: " + pollenKeyId);
