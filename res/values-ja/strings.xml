@@ -32,6 +32,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">画面をオフにする</string>
     <string name="always_on">常にオンにする</string>
     <string name="alwaysOnBatteryLevel">常にバッテリー残量を表示する</string>
+    <string name="ambient_noise">周囲ノイズを検出する</string>
+    <string name="ambient_noise_summary">周囲の騒音によって夜間モードが有効にならないようにしますか？</string>
     <string name="appearance">外観</string>
     <string name="app_name">夜の時計</string>
     <string name="auto_brightness">明るさ自動</string>
@@ -45,6 +47,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image">画像</string>
     <string name="background_image_select">画像を選択</string>
     <string name="backgroundServiceDialogTitle">バックグラウンドサービスを停止する</string>
+    <string name="backgroundServiceNotificationTextLocation">現在地のアップデート中です。</string>
+    <string name="backgroundServiceNotificationTextNightMode">ナイトモード起動中です。</string>
     <string name="batteryTimeout1min">1分</string>
     <string name="batteryTimeout2min">2分</string>
     <string name="batteryTimeout5min">5分</string>
@@ -57,10 +61,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">明るさオフセット</string>
     <string name="buy">購入する</string>
     <string name="buy_upgrade_summary">プロフェッショナルバージョンを購入する</string>
+    <string name="category_handle_power">充電方法</string>
     <string name="category_handle_power_autostart_time">アプリを作動させたい時間</string>
+    <string name="category_night_mode_display_management">画面管理</string>
     <string name="choose_alarm_sound">アラーム音</string>
     <string name="choose_primary_color">アクセントの色</string>
     <string name="choose_secondary_color">テキストの色</string>
+    <string name="clear">クリア</string>
     <string name="clock_layout_analog">アナログ</string>
     <string name="clock_layout_calendar">カレンダー付きデジタル時計</string>
     <string name="clock_layout_digital">デジタル</string>
@@ -121,6 +128,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">終了時間</string>
     <string name="night_mode_timerange_label_start">開始時間</string>
     <string name="night_mode_timerange_title">夜間を設定</string>
+    <string name="noise_sensitivity">マイク感度</string>
     <string name="notification_channel_name_alarms">アラーム</string>
     <string name="notification_channel_name_radio">ラジオ</string>
     <string name="notification_channel_desc_alarms">アラーム中も通知を表示する</string>
@@ -166,6 +174,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">逆横置</string>
     <string name="screen_orientation_reverse_portrait">逆縦置</string>
     <string name="screenOrientation">画面の向き</string>
+    <string name="set_alarm">アラームセット</string>
     <string name="showBatteryWarningSummary">電池使用時に作動した場合警告が出ます</string>
     <string name="showBatteryWarningTitle">電池使用時の警告</string>
     <string name="show_date">日付を表示する</string>

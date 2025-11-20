@@ -27,6 +27,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">音量</string>
     <string name="allow_screen_off_summary">夜晚關閉螢幕</string>
     <string name="allow_screen_off">關閉螢幕</string>
+    <string name="ambient_noise">環境雜訊偵測</string>
+    <string name="ambient_noise_summary">偵測雜訊以防止啟用夜間模式</string>
     <string name="appearance">样式</string>
     <string name="app_name">夜鐘</string>
     <string name="auto_brightness">自動調節螢幕亮度</string>
@@ -42,10 +44,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">螢幕亮度</string>
     <string name="brightness_offset">螢幕亮度偏移</string>
     <string name="buy">購買</string>
+    <string name="category_handle_power">連接以下時自動開啟</string>
     <string name="category_handle_power_autostart_time">在設定範圍內開始</string>
     <string name="choose_alarm_sound">鬧鐘鈴聲</string>
     <string name="choose_primary_color">高亮顏色</string>
     <string name="choose_secondary_color">文字顏色</string>
+    <string name="clear">清晰</string>
     <string name="clock_layout_analog">簡約類比時鐘</string>
     <string name="clock_layout_digital">數位時鐘</string>
     <string name="clock_layout_elegant_analog">優雅類比時鐘</string>
@@ -97,6 +101,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">結束時間</string>
     <string name="night_mode_timerange_label_start">開始時間</string>
     <string name="night_mode_timerange_title">夜間時間</string>
+    <string name="noise_sensitivity">麥克風靈敏感</string>
     <string name="other_apps">其他應用</string>
     <string name="other_apps_tinytimetracker_summary">追蹤你的日常工作時間。</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -130,6 +135,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">橫向反轉</string>
     <string name="screen_orientation_reverse_portrait">直向反轉</string>
     <string name="screenOrientation">螢幕方向</string>
+    <string name="set_alarm">設定鬧鐘</string>
     <string name="show_date">顯示日期</string>
     <string name="show_temperature">顯示溫度</string>
     <string name="show_weather">顯示本地天氣</string>

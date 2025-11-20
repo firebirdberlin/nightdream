@@ -28,6 +28,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Ένταση</string>
     <string name="allow_screen_off_summary">Απενεργοποίηση της οθόνης κατά την διάρκεια της νύχτας</string>
     <string name="allow_screen_off">Απενεργοποίηση οθόνης</string>
+    <string name="ambient_noise">Εντοπισμός ήχου στο περιβάλλον.</string>
+    <string name="ambient_noise_summary">Ο ήχος περιβάλλοντος να μην επιτρέπει την νυχτερινή λειτουργία να ενεργοποιηθεί</string>
     <string name="appearance">Εμφάνιση </string>
     <string name="app_name">Νυχτερινό ρολόι</string>
     <string name="auto_brightness">Αυτόματη φωτεινότητα </string>
@@ -43,10 +45,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Φωτεινότητα</string>
     <string name="brightness_offset">Αντιστάθμιση φωτεινότητας</string>
     <string name="buy">Αγοράστε την εφαρμογή</string>
+    <string name="category_handle_power">Και όταν είναι συνδεδεμένο με</string>
     <string name="category_handle_power_autostart_time">Ξεκινήσε εντός του χρονικού διαστήματος</string>
     <string name="choose_alarm_sound">Ήχος ξυπνητηριού</string>
     <string name="choose_primary_color">Χρώμα έμφασης</string>
     <string name="choose_secondary_color">Χρώμα κειμένου</string>
+    <string name="clear">Καθαρισμός</string>
     <string name="clock_layout_analog">Αναλογικό ρολόι</string>
     <string name="clock_layout_digital">Ψηφιακό ρολόι</string>
     <string name="clock_layout_elegant_analog">Κομψό αναλογικό ρολόι</string>
@@ -98,6 +102,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Ώρα λήξης</string>
     <string name="night_mode_timerange_label_start">Ώρα έναρξης</string>
     <string name="night_mode_timerange_title">Νυχτερινή ώρα</string>
+    <string name="noise_sensitivity">Ευαισθησία μικροφώνου</string>
     <string name="other_apps">Άλλες εφαρμογές</string>
     <string name="other_apps_tinytimetracker_summary">Παρακολούθηση καθημερινής ώρας εργασίας</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -131,6 +136,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Οριζόντια αντίθετη</string>
     <string name="screen_orientation_reverse_portrait">Κάθετη αντίθετη</string>
     <string name="screenOrientation">Περιστροφή οθόνης</string>
+    <string name="set_alarm">Ορισμός ξυπνητηριού</string>
     <string name="show_date">Εμφάνιση Ημερομηνίας</string>
     <string name="show_temperature">Εμφάνιση θερμοκρασίας</string>
     <string name="show_weather">Εμφάνιση καιρού στην τοποθεσία σας</string>

@@ -34,6 +34,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Pimennä näyttö</string>
     <string name="always_on">Aina käytössä</string>
     <string name="alwaysOnBatteryLevel">Akun varaus on enemmän kuin</string>
+    <string name="ambient_noise">Taustamelun tunnistus</string>
+    <string name="ambient_noise_summary">Estääkö taustamelu yötilan aktivoinnin?</string>
     <string name="appearance">Ulkoasu</string>
     <string name="app_name">Night Clock</string>
     <string name="auto_brightness">Automaattinen kirkkaus</string>
@@ -48,6 +50,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">valitse kuva</string>
     <string name="backgroundServiceDialogTitle">Pysäytä tausta palvelut</string>
     <string name="backgroundServiceNotificationText">Tausta palvelu käytössä</string>
+    <string name="backgroundServiceNotificationTextLocation">Sijainnin päivittäminen käynnissä</string>
     <string name="batteryTimeoutNever">Ei käytössä</string>
     <string name="batteryTimeout1min">1 min</string>
     <string name="batteryTimeout2min">2 min</string>
@@ -60,10 +63,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_night_mode">Kirkkaus yö asetuksella</string>
     <string name="brightness_offset">Kirkkauden korjaus</string>
     <string name="buy">Osta</string>
+    <string name="category_handle_power">kun on kytkettynä</string>
     <string name="category_handle_power_autostart_time">aloita aikavälillä</string>
     <string name="choose_alarm_sound">herätysääni</string>
     <string name="choose_primary_color">väri</string>
     <string name="choose_secondary_color">tekstin väri</string>
+    <string name="clear">poista</string>
     <string name="clock_hands">Viisarit</string>
     <string name="clock_layout_analog">analogi</string>
     <string name="clock_layout_digital">digitaali</string>
@@ -121,6 +126,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">loppuaika</string>
     <string name="night_mode_timerange_label_start">alkuaika</string>
     <string name="night_mode_timerange_title">yöaika</string>
+    <string name="noise_sensitivity">mikrofonin herkkyys</string>
     <string name="notification_channel_name_alarms">Hälytykset</string>
     <string name="notification_channel_name_devmsg">Viestit</string>
     <string name="notification_channel_name_radio">Radio</string>

@@ -42,6 +42,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Niveau batterie supérieur à</string>
     <string name="alwaysOnStartWithLockedUI">Verrouiller interface utilisateur</string>
     <string name="alwaysOnStartWithLockedUIDesc">Verrouiller interface utilisateur au démarrage. Pression longue sur icone verrou pour dévérouiller</string>
+    <string name="ambient_noise">Détection du bruit ambiant</string>
+    <string name="ambient_noise_summary">Le bruit ambiant devrait-il prévenir l\'activation du mode nuit ?</string>
     <string name="appearance">Apparence</string>
     <string name="app_name">Horloge nocturne</string>
     <string name="auto_brightness">Luminosité automatique</string>
@@ -88,6 +90,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Arrêter le service d\'arrière-plan</string>
     <string name="backgroundServiceDialogMessage">L\'arrêt du service d\'arrière-plan désactive les modes de démarrage automatique et de veille, ainsi que la prédiction de la batterie. Procéder?</string>
     <string name="backgroundServiceNotificationText">Service d\'arrière plan en cours</string>
+    <string name="backgroundServiceNotificationTextLocation">Le service de localisation est en cours</string>
+    <string name="backgroundServiceNotificationTextNightMode">Mode nuit activé</string>
     <string name="battery">Batterie</string>
     <string name="batteryTimeoutDescription">Arrêt sur batterie</string>
     <string name="batteryTimeoutNever">Jamais</string>
@@ -101,14 +105,24 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Luminosité</string>
     <string name="brightness_night_mode">Luminosité en mode nuit</string>
     <string name="brightness_offset">Compensation de la luminosité</string>
+    <string name="brightsky_conditions_dry">sec</string>
+    <string name="brightsky_conditions_fog">brouillard</string>
+    <string name="brightsky_conditions_hail">grêle</string>
+    <string name="brightsky_conditions_rain">pluie</string>
+    <string name="brightsky_conditions_sleet">grésil</string>
+    <string name="brightsky_conditions_snow">neige</string>
+    <string name="brightsky_conditions_thunderstorm">orage</string>
     <string name="bug">Rapporter un bug</string>
     <string name="bug_summary">Nous monter un problème</string>
     <string name="buy">Acheter</string>
     <string name="buy_upgrade_summary">Passez à la version pro maintenant</string>
+    <string name="category_handle_power">…et lorsque connecté à</string>
     <string name="category_handle_power_autostart_time">Démarrer dans la plage horaire</string>
+    <string name="category_night_mode_display_management">Gestion d\'affichage</string>
     <string name="choose_alarm_sound">Tonalité d\'alarme</string>
     <string name="choose_primary_color">Couleur principale</string>
     <string name="choose_secondary_color">Couleur du texte</string>
+    <string name="clear">Effacer</string>
     <string name="clock">Horloge</string>
     <string name="clock_hands">Aiguilles</string>
     <string name="clock_layout_analog">Analogique</string>
@@ -155,6 +169,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Faire un don</string>
     <string name="doubleTapToFinishSummary">Fermer l\'application en double cliquant</string>
     <string name="doubleTapToFinishTitle">Double taper pour fermer</string>
+    <string name="gift_for_donors">Cadeau pour votre don</string>
     <string name="flashlight">lampe de poche</string>
     <string name="forecast">Prévisions météo sur 5 jours</string>
     <string name="frequently_asked_questions">Questions fréquemment posées</string>
@@ -201,6 +216,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Heure de début</string>
     <string name="night_mode_timerange_title">Nuit</string>
     <string name="no_alarm_set">pas d\'alarme réglée</string>
+    <string name="noise_sensitivity">Sensibilité du micro</string>
     <string name="notification_channel_name_alarms">Alarmes</string>
     <string name="notification_channel_name_devmsg">Messages</string>
     <string name="notification_channel_name_radio">Radio</string>
@@ -252,6 +268,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_storage">L\'autorisation d\'accès au stockage n\'a pas été accordée.</string>
     <string name="persistent_battery_value_while_charging">État de la batterie en permanence</string>
     <string name="persistent_battery_value_while_charging_summary">Afficher l\'état de la batterie en permanence lors de la charge.</string>
+    <string name="pollen_hazelnut">Noisetier</string>
+    <string name="pollen_birch">Bouleau</string>
+    <string name="pollen_ambrosia">Ambroisie</string>
+    <string name="pollen_grass">Graminées</string>
+    <string name="pollen_ash">Frêne</string>
+    <string name="pollen_mugwort">Armoise</string>
+    <string name="pollen_alder">Aulne</string>
+    <string name="pollen_rye">Seigle</string>
     <string name="power_source">Source électrique</string>
     <string name="preferences">Préférences</string>
     <string name="prev">Précédent</string>
@@ -329,6 +353,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Paysage inversé</string>
     <string name="screen_orientation_reverse_portrait">Portrait inversé</string>
     <string name="screenOrientation">Orientation de l\'écran</string>
+    <string name="set_alarm">Régler l\'alarme</string>
     <string name="showAlarmsPersistently">Montrez constamment</string>
     <string name="showAlarmsPersistentlySummary">Afficher la prochaine heure d\'alarme en permanence sur l\'écran.</string>
     <string name="showBattery">Afficher batterie</string>
@@ -341,6 +366,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_divider">Montrer séparations</string>
     <string name="showPollen">Indice de risque pollinique</string>
     <string name="showPollenIndex">Niveau de stress</string>
+    <string name="showPollenIndex0">aucun</string>
+    <string name="showPollenIndex1">aucun à faible</string>
+    <string name="showPollenIndex2">faible</string>
+    <string name="showPollenIndex3">faible à modéré</string>
+    <string name="showPollenIndex4">modéré</string>
+    <string name="showPollenIndex5">modéré à élevé</string>
+    <string name="showPollenIndex6">élevé</string>
     <string name="showPollenNoData">Aucune donnée pour cette zone. L\'indice de risque pollinique n\'est disponible que pour les localités allemandes.</string>
     <string name="showPollenSummary">disponible uniquement pour les sites allemands</string>
     <string name="show_temperature">Afficher la température</string>
@@ -350,6 +382,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Vitesse du vent</string>
     <string name="slideshow_center_crop">Réduire les bordures</string>
     <string name="slideshow_center_inside">Ajouter des bordures</string>
+    <string name="slideshow_center_animated">animé</string>
     <string name="slideshow_style">Style</string>
     <string name="sleep_time_dialog_title">Mode veille</string>
     <string name="smart_home">Maison connectée</string>
@@ -415,6 +448,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weekdays">jours de la semaine</string>
     <string name="width">Largeur</string>
     <string name="snoozeUsingVolumeButtons">Répétition avec les boutons de volume</string>
+    <string name="product_name_subscription">abonnement annuel</string>
 
     <string name="subscription_free_trial_description">%s essai gratuit.</string>
     <string name="subscription_prefix_after_period">Ensuite </string>

@@ -30,6 +30,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">ווליום</string>
     <string name="allow_screen_off_summary">כבה מסך במהלך הלילה</string>
     <string name="allow_screen_off">כבה מסך</string>
+    <string name="ambient_noise">זיהוי קול עמום</string>
+    <string name="ambient_noise_summary">האם קול עמום אמור למנוע את מצב לילה </string>
     <string name="appearance">מראה</string>
     <string name="app_name">שעון לילה</string>
     <string name="auto_brightness">בהירות אוטומטית</string>
@@ -45,10 +47,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">בהירות </string>
     <string name="brightness_offset">דרגת בהירות</string>
     <string name="buy">קנה</string>
+    <string name="category_handle_power">וכאשר מחובר ל... </string>
     <string name="category_handle_power_autostart_time">התחל בטווח הזמנים</string>
     <string name="choose_alarm_sound">סוג צלצול </string>
     <string name="choose_primary_color">צבע ראשי</string>
     <string name="choose_secondary_color">צבע משני של טקסט </string>
+    <string name="clear">נקה</string>
     <string name="clock_layout_analog">אנלוגי</string>
     <string name="clock_layout_digital">דיגיטלי</string>
     <string name="clock_layout">עיצוב</string>
@@ -92,6 +96,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">זמן סיום</string>
     <string name="night_mode_timerange_label_start">זמן התחלה</string>
     <string name="night_mode_timerange_title">לילה</string>
+    <string name="noise_sensitivity">רגישות מיקרופון</string>
     <string name="other_apps">אפליקציות אחרות</string>
     <string name="other_apps_tinytimetracker_summary">עקוב אחר שעות העבודה היומיות שלך</string>
     <string name="other_apps_tinytimetracker">עוקב זמן זעיר</string>
@@ -116,6 +121,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">לרוחב הפוך</string>
     <string name="screen_orientation_reverse_portrait">לאורך הפוך</string>
     <string name="screenOrientation">סיבוב מסך</string>
+    <string name="set_alarm">כוון שעון מעורר</string>
     <string name="show_date">הצג תאריך</string>
     <string name="show_temperature">הצג טמפרטורה</string>
     <string name="show_weather">הצג מזג אויר מקומי</string>

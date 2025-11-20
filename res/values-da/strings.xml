@@ -39,6 +39,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Batteri niveau øverst</string>
     <string name="alwaysOnStartWithLockedUI">Lås bruger interface</string>
     <string name="alwaysOnStartWithLockedUIDesc">Når appen startes, låses bruger interface automatisk. langt tryk på Lås-ikonen for at låse op</string>
+    <string name="ambient_noise"> Detektion af omgivelsesstøj</string>
+    <string name="ambient_noise_summary">Skal omgivelsesstøj forhindre aktivering af Night mode</string>
     <string name="appearance">Udseende</string>
     <string name="app_name">Night Clock</string>
     <string name="auto_brightness">Auto lysstyrke</string>
@@ -58,6 +60,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Stop baggrundstjeneste</string>
     <string name="backgroundServiceDialogMessage"> Hvis du stopper baggrundstjenesten, deaktiveres autostart og standbytilstand samt batteri-forudsigelse. Widgets kan ikke opdateres mere. Fortsæt?</string>
     <string name="backgroundServiceNotificationText">Baggrundstjeneste kører</string>
+    <string name="backgroundServiceNotificationTextLocation">Lokations opdatering igang</string>
+    <string name="backgroundServiceNotificationTextNightMode">Night mode service kører</string>
     <string name="batteryTimeoutDescription">Ved batteritimeout</string>
     <string name="batteryTimeoutNever">Aldrig</string>
     <string name="batteryTimeout1min">1 min</string>
@@ -72,10 +76,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Lysstyrke offset</string>
     <string name="buy">Køb</string>
     <string name="buy_upgrade_summary">Opgrader til professional version nu</string>
+    <string name="category_handle_power">… og når forbundet til</string>
     <string name="category_handle_power_autostart_time">Start i tidsrummet</string>
+    <string name="category_night_mode_display_management">Vis indstillinger</string>
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color"> Accentfarve</string>
     <string name="choose_secondary_color">Tekstfarve</string>
+    <string name="clear">fjern</string>
     <string name="clock_hands">Visere</string>
     <string name="clock_layout_analog">Analogt ur</string>
     <string name="clock_layout_calendar">Digitalt ur med kalender</string>
@@ -115,6 +122,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Donér</string>
     <string name="doubleTapToFinishSummary">Luk appen ved at dobbelt tappe på skræmen</string>
     <string name="doubleTapToFinishTitle">Dobbelt tap for af afslutte</string>
+    <string name="gift_for_donors">Gave som tak for donationen</string>
     <string name="flashlight">Blitz</string>
     <string name="forecast">5 dages vejrudsigt</string>
     <string name="hand_shape_arc">Bue</string>
@@ -155,6 +163,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Slut tidspunkt</string>
     <string name="night_mode_timerange_label_start">Start tidspunkt</string>
     <string name="night_mode_timerange_title">Natte tid</string>
+    <string name="noise_sensitivity">Mikrofon følsomhed</string>
     <string name="notification_channel_name_alarms">Alarmer</string>
     <string name="notification_channel_name_devmsg">Beskder</string>
     <string name="notification_channel_name_radio">Radio</string>
@@ -240,6 +249,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Spejlvendt liggende</string>
     <string name="screen_orientation_reverse_portrait">Spejlvendt stående</string>
     <string name="screenOrientation">Skærm orientering</string>
+    <string name="set_alarm">Indstil alarm</string>
     <string name="showAlarmsPersistently">Vis konstant</string>
     <string name="showAlarmsPersistentlySummary">Vis konstand næste alarmtidspunkt på skærmen</string>
     <string name="showBatteryWarningSummary">Vis en advarsel under opstart, hvis enheden er på batteri</string>
@@ -253,6 +263,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Vis vindhastighed</string>
     <string name="slideshow_center_crop">beskær linjer</string>
     <string name="slideshow_center_inside">tilføj linjer</string>
+    <string name="slideshow_center_animated">Animeret</string>
     <string name="slideshow_style">Stil</string>
     <string name="sleep_time_dialog_title">Timer</string>
     <string name="snoozeTime">Snooze tid</string>

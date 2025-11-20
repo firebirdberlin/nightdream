@@ -24,6 +24,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">صدا</string>
     <string name="allow_screen_off_summary">هنگام شب صفحه نمایش را خاموش کنید</string>
     <string name="allow_screen_off">صفحه نمایش را خاموش کنید</string>
+    <string name="ambient_noise">آشکارسازی صدای نابهنجار محیط</string>
+    <string name="ambient_noise_summary">آیا صدای زمینه نابهنجار از فعالیت حالت شبانه جلوگیری میکند</string>
     <string name="appearance">رخ نما</string>
     <string name="app_name">ساعت شبانه</string>
     <string name="auto_brightness">روشنایی خودکار</string>
@@ -37,10 +39,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_image_select">انتخاب تصویر</string>
     <string name="behaviour">رفتار</string>
     <string name="brightness">روشنایی</string>
+    <string name="category_handle_power">...و هنگامی که متصل میشود</string>
     <string name="category_handle_power_autostart_time">آغاز میان دوره زمانی:</string>
     <string name="choose_alarm_sound">زنگ هشدار</string>
     <string name="choose_primary_color">تشدید رنگ</string>
     <string name="choose_secondary_color">رنگ متن</string>
+    <string name="clear">آشکار</string>
     <string name="clock_layout_analog">آنالوگ</string>
     <string name="clock_layout_digital">دیجیتال</string>
     <string name="clock_layout">زمینه</string>
@@ -84,6 +88,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">زمان اتمام</string>
     <string name="night_mode_timerange_label_start">زمان شروع</string>
     <string name="night_mode_timerange_title">زمان شبانگاهی</string>
+    <string name="noise_sensitivity">حساسیت میکروفون</string>
     <string name="other_apps">برنامه های دیگر</string>
     <string name="other_apps_tinytimetracker_summary">زمان فعالیت روزانه ی خود را پیگیری کن.</string>
     <string name="other_apps_tinytimetracker">پیگیری کننده ی زمان کوچک</string>
@@ -101,6 +106,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screenProtectionMove">ساعت را در اطراف حرکت دهید</string>
     <string name="review_request">لطفا به این برنامه امتیاز دهید.ممنون !</string>
     <string name="screen_orientation_automatic">اتوماتیک</string>
+    <string name="set_alarm">انتخاب آلارم</string>
     <string name="show_date">نمایش تاریخ</string>
     <string name="show_temperature">نمایش دما</string>
     <string name="show_weather">نمایش آب و هوای محلی</string>

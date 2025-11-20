@@ -37,6 +37,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Skjerm på ved batterinivå over</string>
     <string name="alwaysOnStartWithLockedUI">Lås GUI</string>
     <string name="alwaysOnStartWithLockedUIDesc">Lås automatisk GUI når appen starter. Press lenge for å låse opp GUI.</string>
+    <string name="ambient_noise">Oppfang bakgrunsstøy</string>
+    <string name="ambient_noise_summary">Skal bakgrunnsstøy forhindre nattmodus?</string>
     <string name="appearance">Utseende</string>
     <string name="app_name">Nattklokke</string>
     <string name="auto_brightness">Automatisk lysnivå</string>
@@ -53,6 +55,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Stopp bakgrunnstjeneste</string>
     <string name="backgroundServiceDialogMessage">Stopping av bakgrunnstjenesten vil stoppe autostart/standby-modus, samt batteriprediksjon. Widgets vil heller ikke bli oppdatert. Fortsette?</string>
     <string name="backgroundServiceNotificationText">Bakgrunnstjeneste kjører.</string>
+    <string name="backgroundServiceNotificationTextLocation">Plassering under oppdatering.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Nattmodustjeneste kjører.</string>
     <string name="batteryTimeoutDescription">Lavt batterinivå</string>
     <string name="batteryTimeoutNever">Aldri</string>
     <string name="batteryTimeout1min">1 min.</string>
@@ -67,10 +71,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Offsett i skarphet</string>
     <string name="buy">Kjøp</string>
     <string name="buy_upgrade_summary">Oppgrader til profesjonell utgave</string>
+    <string name="category_handle_power">... og når du er tilkoblet</string>
     <string name="category_handle_power_autostart_time">Start i tidsrommet</string>
+    <string name="category_night_mode_display_management">Skjerminstillinger</string>
     <string name="choose_alarm_sound">Alarmlyd</string>
     <string name="choose_primary_color">Primærfarge</string>
     <string name="choose_secondary_color">Tekstfarge</string>
+    <string name="clear">Fjern</string>
     <string name="clock_hands">Klokkehender</string>
     <string name="clock_layout_analog">Analog klokke</string>
     <string name="clock_layout_calendar">Digital klokke med kalender</string>
@@ -110,6 +117,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Doner</string>
     <string name="doubleTapToFinishSummary">Avslutt programmet ved å dobbeltklikke på skjermen</string>
     <string name="doubleTapToFinishTitle">Dobbeltklikk for å avslutte</string>
+    <string name="gift_for_donors">Donasjon</string>
     <string name="flashlight">Lommelykt</string>
     <string name="forecast">5-dagers værmelding</string>
     <string name="hand_shape_arc">Bue</string>
@@ -150,6 +158,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Sluttid</string>
     <string name="night_mode_timerange_label_start">Starttid</string>
     <string name="night_mode_timerange_title">Nattid</string>
+    <string name="noise_sensitivity">Mikrofonsensitivivet</string>
     <string name="notification_channel_name_alarms">Alarmer</string>
     <string name="notification_channel_name_devmsg">Beskjeder</string>
     <string name="notification_channel_name_radio">Radio</string>
@@ -229,6 +238,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Revers landskap</string>
     <string name="screen_orientation_reverse_portrait">Revers portrett</string>
     <string name="screenOrientation">Orientering</string>
+    <string name="set_alarm">Sett alarm</string>
     <string name="showAlarmsPersistently">Vis permanent</string>
     <string name="showAlarmsPersistentlySummary">Vis alltid neste alarm på skjermen</string>
     <string name="showBatteryWarningSummary">Vis en oppstartsadvarsel ved lite batteri</string>

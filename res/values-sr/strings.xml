@@ -27,6 +27,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Jачина звука</string>
     <string name="allow_screen_off_summary">Угаси екран током ноћи</string>
     <string name="allow_screen_off">Дозволи гашење екрана</string>
+    <string name="ambient_noise">Бука околине</string>
+    <string name="ambient_noise_summary">Да ли бука околине спречава активирање ноћног начина рада</string>
     <string name="appearance">Izgled</string>
     <string name="app_name">Noćni sat</string>
     <string name="auto_brightness">Automatsko osvetljenje</string>
@@ -41,10 +43,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Ponašanje</string>
     <string name="brightness">Osvetljenje</string>
     <string name="brightness_offset">Ofset osvetljenja</string>
+    <string name="category_handle_power">... kada je priključen na</string>
     <string name="category_handle_power_autostart_time">Započeti u vremenskom okviru</string>
     <string name="choose_alarm_sound">Zvuk alarma</string>
     <string name="choose_primary_color">Boja istaknutog teksta</string>
     <string name="choose_secondary_color">Boja teksta</string>
+    <string name="clear">Obrisati</string>
     <string name="clock_layout_analog">Klasičan</string>
     <string name="clock_layout_digital">Digitalni</string>
     <string name="clock_layout">Izgled</string>
@@ -87,6 +91,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Vreme zavrsetka</string>
     <string name="night_mode_timerange_label_start">Pocetno vreme</string>
     <string name="night_mode_timerange_title">Period noci</string>
+    <string name="noise_sensitivity">Osetljivost mikrofona</string>
     <string name="other_apps">Ostale aplikacije</string>
     <string name="other_apps_tinytimetracker_summary">Pratite svoje dnevno radno vreme.</string>
     <string name="other_apps_tinytimetracker">Mini praćenje vremena</string>
@@ -111,6 +116,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">obrnuto horizontalno</string>
     <string name="screen_orientation_reverse_portrait">obrnuto vertikalno</string>
     <string name="screenOrientation">Orijentacija ekrana</string>
+    <string name="set_alarm">podesite alarm</string>
     <string name="show_date">Prikazati datum</string>
     <string name="show_temperature">Prikazati temperaturu</string>
     <string name="show_weather">Prikazati lokalne vremenske prilike</string>
