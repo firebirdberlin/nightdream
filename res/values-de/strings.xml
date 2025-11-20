@@ -42,8 +42,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnStartWithLockedUI">Gegen Berührungen sperren</string>
     <string name="alwaysOnStartWithLockedUIDesc">Beim automatischen Start die App gegen Berührungen sperren. Ein langer Druck auf das Schloss-Symbol entsperrt die App wieder.</string>
     <string name="always_on">Always on</string>
-    <string name="ambient_noise">Umgebungslautstärke messen</string>
-    <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
     <string name="app_name">Nachtuhr</string>
     <string name="appearance">Aussehen</string>
     <string name="auto_brightness">Automatische Helligkeit</string>
@@ -56,8 +54,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart und Standby-Modus ausgeschaltet. Fortfahren?</string>
     <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
     <string name="backgroundServiceNotificationText">Der Hintergrundservice ist aktiv.</string>
-    <string name="backgroundServiceNotificationTextLocation">Der Standort wird bestimmt.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Der Nachtmodus ist aktiv.</string>
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
     <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
     <string name="background_black">Schwarz</string>
@@ -102,24 +98,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Helligkeit</string>
     <string name="brightness_night_mode">Helligkeit im Nachtmodus</string>
     <string name="brightness_offset">Helligkeits-Richtwert</string>
-    <string name="brightsky_conditions_dry">trocken</string>
-    <string name="brightsky_conditions_fog">Nebel</string>
-    <string name="brightsky_conditions_hail">Hagel</string>
-    <string name="brightsky_conditions_rain">Regen</string>
-    <string name="brightsky_conditions_sleet">Schneeregen</string>
-    <string name="brightsky_conditions_snow">Schnee</string>
-    <string name="brightsky_conditions_thunderstorm">Gewitter</string>
     <string name="bug">Fehler melden</string>
     <string name="bug_summary">Bitte lassen Sie uns wissen, wenn etwas schief gelaufen ist.</string>
     <string name="buy">Kaufen</string>
-    <string name="buy_upgrade_summary">Jetzt auf die Pro-Version upgraden!</string>
-    <string name="category_handle_power">… und wenn verbunden mit</string>
+    <string name="buy_upgrade_summary">Jetzt Pro-Features freischalten!</string>
     <string name="category_handle_power_autostart_time">Starte im Zeitraum</string>
-    <string name="category_night_mode_display_management">Display Management</string>
     <string name="choose_alarm_sound">Weckton</string>
     <string name="choose_primary_color">Akzentfarbe</string>
     <string name="choose_secondary_color">Textfarbe</string>
-    <string name="clear">löschen</string>
     <string name="clock">Uhr</string>
     <string name="clockBackgroundTransparency">Transparenz des Hintergrundes</string>
     <string name="clock_hands">Zeiger</string>
@@ -170,7 +156,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="flashlight">Taschenlampe</string>
     <string name="forecast">Vorhersage</string>
     <string name="frequently_asked_questions">Häufig gestellte Fragen</string>
-    <string name="gift_for_donors">Geschenk für Ihre Spende</string>
     <string name="hand_shape_arc">Bogen</string>
     <string name="hand_shape_bar">Balken</string>
     <string name="hand_shape_triangle">Dreieck</string>
@@ -214,7 +199,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_start">Startzeit</string>
     <string name="night_mode_timerange_title">Nachtzeit</string>
     <string name="no_alarm_set">kein Wecker</string>
-    <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
     <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
     <string name="notifyForUpcomingAlarmsSummary">Rechtzeitig vor dem Alarm eine Benachrichtigung senden.</string>
     <string name="notifyForUpcomingAlarmsTitle">Vorher benachrichtigen</string>
@@ -262,14 +246,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="permission_request_storage">Berechtigung für Medien wurde nicht erteilt.</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
-    <string name="pollen_alder">Erle</string>
-    <string name="pollen_ambrosia">Ambrosia</string>
-    <string name="pollen_ash">Esche</string>
-    <string name="pollen_birch">Birke</string>
-    <string name="pollen_grass">Gräser</string>
-    <string name="pollen_hazelnut">Haselnuss</string>
-    <string name="pollen_mugwort">Beifuss</string>
-    <string name="pollen_rye">Roggen</string>
     <string name="power_source">Stromquelle</string>
     <string name="preferences">Einstellungen</string>
     <string name="prev">vorheriges</string>
@@ -354,7 +330,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_portrait">Hochformat</string>
     <string name="screen_orientation_reverse_landscape">Querformat (gedreht)</string>
     <string name="screen_orientation_reverse_portrait">Hochformat (gedreht)</string>
-    <string name="set_alarm">Alarm einstellen</string>
     <string name="showAlarmsPersistently">Dauerhaft anzeigen</string>
     <string name="showAlarmsPersistentlySummary">Die nächste Weckzeit wird dauerhaft angezeigt und nicht ausgeblendet.</string>
     <string name="showBattery">Akkustand anzeigen</string>
@@ -363,13 +338,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningTitle">Akkuwarnung</string>
     <string name="showPollen">Pollenflug-Gefahrenindex</string>
     <string name="showPollenIndex">Belastungsintensität</string>
-    <string name="showPollenIndex0">keine</string>
-    <string name="showPollenIndex1">keine bis gering</string>
-    <string name="showPollenIndex2">gering</string>
-    <string name="showPollenIndex3">gering bis mittel</string>
-    <string name="showPollenIndex4">mittel</string>
-    <string name="showPollenIndex5">mittel bis hoch</string>
-    <string name="showPollenIndex6">hoch</string>
     <string name="showPollenNoData">Keine Daten für dieses Gebiet verfügbar. Der Pollenflug-Gefahrenindex ist nur für Deutschland verfügbar.</string>
     <string name="showPollenSummary">Datenquelle: Deutscher Wetterdienst</string>
     <string name="show_alarm">Wecker anzeigen</string>
@@ -382,7 +350,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_weather">Wetter anzeigen</string>
     <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
     <string name="sleep_time_dialog_title">Sleep Timer</string>
-    <string name="slideshow_center_animated">animiert</string>
     <string name="slideshow_center_crop">Bild beschneiden</string>
     <string name="slideshow_center_inside">Ränder einfügen</string>
     <string name="slideshow_style">Stil</string>
@@ -392,7 +359,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="smart_home_avm_host_summary">Addresse der Fritz!Box, z.B. http://fritz.box</string>
     <string name="smart_home_avm_password">Passwort</string>
     <string name="smart_home_avm_username">Username</string>
-    <string name="smart_home_purchase_request">AVM Geräte schalten mit der Pro Version</string>
+    <string name="smart_home_purchase_request">AVM Geräte schalten mit dem Pro Upgrade</string>
     <string name="snoozeAfter">Automatisch schlummern nach</string>
     <string name="snoozeCycles">Maximale Wiederholungen der Schlummerfunktion vor Auto-Stopp</string>
     <string name="snoozeTime">Schlummerzeit</string>
@@ -449,5 +416,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
     <string name="snoozeUsingVolumeButtons">Lautstärketasten verwenden</string>
-    <string name="product_name_subscription">Jahresabo</string>
+
+    <string name="subscription_free_trial_description">%s kostenlos testen.\n</string>
+    <string name="subscription_prefix_after_period">Danach </string>
+    <string name="subscription_prefix_subsequently">Anschließend </string>
+    <string name="subscription_price_per_period">%s pro %s.\n</string>
+    <string name="subscription_offer_price_for_period">%s für %s.\n</string>
+    <string name="subscription_renewal_info">Automatische Verlängerung.\n Jederzeit kündbar.</string>
+
+    <!-- Units for subscription periods -->
+    <string name="unit_day">Tag</string>
+    <string name="unit_days">Tage</string>
+    <string name="unit_week">Woche</string>
+    <string name="unit_weeks">Wochen</string>
+    <string name="unit_month">Monat</string>
+    <string name="unit_months">Monate</string>
+    <string name="unit_year">Jahr</string>
+    <string name="unit_years">Jahre</string>
 </resources>

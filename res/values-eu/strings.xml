@@ -27,9 +27,7 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="alarmVolume">Bolumena</string>
 <string name="allow_screen_off_summary">Pantaila gauean amatatu</string>
 <string name="allow_screen_off">Pantaila itzali</string>
-<string name="ambient_noise">Inguruko zarata detektatu</string>
-<string name="ambient_noise_summary">Inguruan zarata edo soinurik egonez gero, gaueko modua ekidin?</string>
-<string name="appearance">Itxura</string>
+    <string name="appearance">Itxura</string>
 <string name="app_name">Gaueko erlojua</string>
 <string name="auto_brightness">Distira automatikoa</string>
 <string name="autostart_message_disabled">Mesedez, pantaila-babeslea desaktibatu (Daydream) automatikoki pizteko aukerak aktibatzeko</string>
@@ -44,13 +42,11 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="brightness">Distira</string>
 <string name="brightness_offset">Distira orekatu</string>
     <string name="buy">Erosi</string>
-<string name="category_handle_power">eta ..... -n konektatzen denean</string>
-<string name="category_handle_power_autostart_time">Ordu tarte honetan piztu</string>
+    <string name="category_handle_power_autostart_time">Ordu tarte honetan piztu</string>
 <string name="choose_alarm_sound">Alarma doinua</string>
 <string name="choose_primary_color">Kolore kutsua</string>
 <string name="choose_secondary_color">Testuaren kolorea</string>
-<string name="clear">Ezabatu</string>
-<string name="clock_layout_analog">Erloju analogikoa</string>
+    <string name="clock_layout_analog">Erloju analogikoa</string>
 <string name="clock_layout_digital">Erloju digitala</string>
 <string name="clock_layout_elegant_analog">Erloju analogiko dotorea</string>
 <string name="clock_layout_digit_analog">Erloju analogikoa zenbakiekin</string>
@@ -101,7 +97,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="night_mode_timerange_label_end">Amaiera ordua</string>
 <string name="night_mode_timerange_label_start">Hasiera ordua</string>
 <string name="night_mode_timerange_title">Gaueko modua</string>
-<string name="noise_sensitivity">Mikrofonoaren sentsibilitatea</string>
     <string name="other_apps">Beste app batzuk</string>
 <string name="other_apps_tinytimetracker_summary">Zure eguneko lan orduak jarraitu</string>
 <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -135,7 +130,6 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="screen_orientation_reverse_landscape">paisaia inbertitu</string>
 <string name="screen_orientation_reverse_portrait">erretratua inbertitu</string>
 <string name="screenOrientation">Pantailaren orientazioa</string>
-    <string name="set_alarm">alarma zehaztu</string>
     <string name="show_date">Data erakutsi</string>
 <string name="show_temperature">Temperatura erakutsi</string>
 <string name="show_weather">Lokalizazioaren eguraldia erakutsi</string>

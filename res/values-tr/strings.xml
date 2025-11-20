@@ -40,8 +40,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Pil seviyesi üstünde</string>
     <string name="alwaysOnStartWithLockedUI">Kullanıcı arayüzünü kilitle</string>
     <string name="alwaysOnStartWithLockedUIDesc">Uygulamayı başlatırken otomatik olarak kullanıcı arayüzünü kilitle. Açmak için kilit tuşuna uzun bas.</string>
-    <string name="ambient_noise">Ortam sesi algılama</string>
-    <string name="ambient_noise_summary">Ortam sesi, gece modunun devreye girmesini önlesin mi?</string>
     <string name="appearance">Görünüm</string>
     <string name="app_name">Gece Saati</string>
     <string name="auto_brightness">Otomatik parlaklık</string>
@@ -62,12 +60,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Parlaklık</string>
     <string name="brightness_offset">Parlaklık adımları</string>
     <string name="buy">Satın al</string>
-    <string name="category_handle_power">... bağlandığında</string>
     <string name="category_handle_power_autostart_time">Belirtilen zaman aralığında çalış</string>
     <string name="choose_alarm_sound">Alarm sesi</string>
     <string name="choose_primary_color">Saat rengi</string>
     <string name="choose_secondary_color">yazı rengi</string>
-    <string name="clear">temizle</string>
     <string name="clock_hands">Akrep ve yelkovan</string>
     <string name="clock_layout_analog">Kadranlı saat</string>
     <string name="clock_layout_digital">Dijital saat</string>
@@ -127,7 +123,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Bitiş saati</string>
     <string name="night_mode_timerange_label_start">Başlama saati</string>
     <string name="night_mode_timerange_title">Gece zamanı</string>
-    <string name="noise_sensitivity">Mikrofon hassasiyeti</string>
     <string name="numbers">Rakamlar</string>
     <string name="numberStyleArabic">Arap</string>
     <string name="numberStyleRoman">Roma</string>
@@ -166,7 +161,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Yatay ters</string>
     <string name="screen_orientation_reverse_portrait">Dikey ters</string>
     <string name="screenOrientation">Ekran yönlendirme</string>
-    <string name="set_alarm">Alarm kur</string>
     <string name="show_date">Tarihi göster</string>
     <string name="show_divider">Sperarörü göster</string>
     <string name="show_temperature">Sıcaklığı göster</string>

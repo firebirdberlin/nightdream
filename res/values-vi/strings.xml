@@ -24,8 +24,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Âm lượng</string>
     <string name="allow_screen_off_summary">Tắt màn hình vào ban đêm</string>
     <string name="allow_screen_off">Tắt màn hình</string>
-    <string name="ambient_noise">Dò tiếng ồn</string>
-    <string name="ambient_noise_summary">Tiếng ồn xung quanh sẽ ngăn không cho chế độ ban đêm được kích hoạt?</string>
     <string name="appearance">Hiển thị</string>
     <string name="app_name">Đồng hồ ban đêm</string>
     <string name="auto_brightness">Độ sáng tự động</string>
@@ -41,12 +39,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Độ sáng</string>
     <string name="brightness_offset">Độ sáng offset</string>
     <string name="buy">Mua</string>
-    <string name="category_handle_power">... và rồi kết nối tới</string>
     <string name="category_handle_power_autostart_time">Bắt đầu trong khoảng thời gian</string>
     <string name="choose_alarm_sound">Chuông báo thức</string>
     <string name="choose_primary_color">Accent màu</string>
     <string name="choose_secondary_color">Màu chữ số</string>
-    <string name="clear">Xoá</string>
     <string name="clock_layout_analog">Đồng hồ kim</string>
     <string name="clock_layout_digital">Đồng hồ số</string>
     <string name="clock_layout_elegant_analog">đồng hồ thanh lịch</string>
@@ -98,7 +94,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Thời gian kết thúc</string>
     <string name="night_mode_timerange_label_start">Thời gian bắt đầu</string>
     <string name="night_mode_timerange_title">Ban đêm</string>
-    <string name="noise_sensitivity">Độ nhạy micro</string>
     <string name="other_apps">Ứng dụng khác</string>
     <string name="other_apps_tinytimetracker_summary">Theo dõi thời gian làm việc hàng ngày của bạn.</string>
     <string name="other_apps_tinytimetracker">Thời gian theo dõi nhỏ nhất</string>
@@ -132,7 +127,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Hướng ngang 180°</string>
     <string name="screen_orientation_reverse_portrait">Hướng dọc 180°</string>
     <string name="screenOrientation">Định hướng màn hình</string>
-    <string name="set_alarm">Cài đặt báo thức</string>
     <string name="show_date">Hiển thị ngày</string>
     <string name="show_temperature">Hiển thị nhiệt độ</string>
     <string name="show_weather">Hiển thị thời tiết địa phương</string>

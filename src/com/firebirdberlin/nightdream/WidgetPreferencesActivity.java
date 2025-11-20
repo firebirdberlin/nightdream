@@ -117,10 +117,10 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         private Map<String, Object> backupValues = null;
         Preference.OnPreferenceClickListener purchasePreferenceClickListener =
                 preference -> {
-                    Log.d(TAG, "showPurchaseDialog");
                     WidgetPreferencesActivity activity = (WidgetPreferencesActivity) getActivity();
                     if (activity != null) {
-                        activity.showPurchaseDialog();
+                        Log.d(TAG, "showSubscriptionDialog()");
+                        activity.showSubscriptionDialog();
                     }
                     return true;
                 };
