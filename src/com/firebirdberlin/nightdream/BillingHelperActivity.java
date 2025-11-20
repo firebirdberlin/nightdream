@@ -88,20 +88,20 @@ public abstract class BillingHelperActivity
         Log.i(TAG, String.format("purchased_subscription = %s", purchased_subscription));
 
 
-        purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
-        if (!purchased_subscription) {
-            if (!purchased_pro) {
-//                TODO Switch to subscription model in a later step
-                  entries.add(getProductWithPrice(R.string.product_name_subscription, PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION));
-                  values.add(PurchaseManager.PRODUCT_ID_ONE_YEAR_SUBSCRIPTION);
+//        purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
+//        if (!purchased_subscription) {
+//            if (!purchased_pro) {
 //                entries.add(getProductWithPrice(R.string.product_name_pro, PurchaseManager.ITEM_PRO));
 //                values.add(PurchaseManager.PRODUCT_ID_PRO);
-            }
-        }
+//            }
+//        }
 
         if (!purchased_donation) {
             entries.add(getProductWithPrice(R.string.product_name_donation, PurchaseManager.ITEM_DONATION));
             values.add(PurchaseManager.PRODUCT_ID_DONATION);
+        }
+        if (entries.isEmpty()) {
+            return;
         }
 
         runOnUiThread(() -> new AlertDialog.Builder(this, R.style.DialogTheme)
@@ -128,7 +128,122 @@ public abstract class BillingHelperActivity
         );
     }
 
-    private String getProductWithPrice(int resId, String sku) {
+    public void showSubscriptionDialog() {
+        Log.i(TAG, "showSubscriptionDialog()");
+        // if (isPurchased(PurchaseManager.ITEM_DONATION)) return;
+        boolean purchased_weather_data = isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
+        boolean purchased_web_radio = isPurchased(PurchaseManager.ITEM_WEB_RADIO);
+        boolean purchased_actions = isPurchased(PurchaseManager.ITEM_ACTIONS);
+        boolean purchased_pro = isPurchased(PurchaseManager.ITEM_PRO);
+        boolean purchased_subscription = isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+        Log.i(TAG, String.format("purchased_subscription = %s", purchased_subscription));
+
+
+        String description = getDetailedSubscriptionDescription(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+        purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
+        if (purchased_subscription || purchased_pro || description == null) {
+            return;
+        }
+
+        runOnUiThread(() -> new AlertDialog.Builder(this, R.style.DialogTheme)
+                .setTitle(getResources().getString(R.string.subscribe))
+                .setMessage(description)
+                .setNeutralButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok,
+                        (dialogInterface, which) -> {
+                            Log.i(TAG, String.format("selected %d", which));
+                            launchBillingFlow(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+                        }
+                )
+                .show()
+        );
+    }
+
+    private String getDetailedSubscriptionDescription(String sku) {
+        ProductDetails details = getProductDetails(sku);
+        if (details == null || !details.getProductType().equals(BillingClient.ProductType.SUBS)) {
+            return null;
+        }
+
+        List<ProductDetails.SubscriptionOfferDetails> offerDetailsList = details.getSubscriptionOfferDetails();
+        if (offerDetailsList == null || offerDetailsList.isEmpty()) {
+            return null;
+        }
+        ProductDetails.SubscriptionOfferDetails offerDetails = offerDetailsList.get(0);
+        String productName = details.getName();
+
+        StringBuilder descriptionBuilder = new StringBuilder();
+        descriptionBuilder.append(productName).append(":\n\n");
+
+        List<ProductDetails.PricingPhase> pricingPhases = offerDetails.getPricingPhases().getPricingPhaseList();
+        int totalPhases = pricingPhases.size();
+
+        for (int i = 0; i < totalPhases; i++) {
+            ProductDetails.PricingPhase phase = pricingPhases.get(i);
+            String formattedPrice = phase.getFormattedPrice();
+            String billingPeriod = phase.getBillingPeriod(); // e.g. "P7D", "P1M", "P1Y"
+            int billingCycleCount = phase.getBillingCycleCount();
+
+            String readablePeriod = convertPeriodToReadableString(billingPeriod, billingCycleCount, false);
+            String perPeriod = convertPeriodToReadableString(billingPeriod, 1, true);
+            String formattedPricePerPeriod = getString(R.string.subscription_price_per_period, formattedPrice, perPeriod);
+
+            descriptionBuilder.append("\t• ");
+
+            // trial phase
+            if (phase.getPriceAmountMicros() == 0) {
+                String trialDescription = getString(R.string.subscription_free_trial_description, readablePeriod);
+                descriptionBuilder.append(trialDescription).append("\n");
+            } else {
+                // paid phase
+                if (billingCycleCount > 0) {
+                    if (i > 0) {
+                        descriptionBuilder.append(getString(R.string.subscription_prefix_after_period));
+                    }
+                    String formattedOfferString = getString(R.string.subscription_offer_price_for_period, formattedPricePerPeriod, readablePeriod);
+                    descriptionBuilder.append(formattedOfferString).append("\n");
+                } else {
+                    if (i > 0) {
+                        descriptionBuilder.append(getString(R.string.subscription_prefix_subsequently)).append(" ");
+                    }
+                    descriptionBuilder.append(formattedPricePerPeriod).append("\n");
+                }
+            }
+        }
+        descriptionBuilder.append("\n").append(getString(R.string.subscription_renewal_info));
+
+        return descriptionBuilder.toString();
+    }
+    private String convertPeriodToReadableString(String period, int cycleCount, boolean onlyUnit) {
+        String unit;
+        // extract the first character
+        char periodChar = period.toUpperCase().charAt(period.length() - 1);
+
+        switch (periodChar) {
+            case 'D': // days
+                unit = (cycleCount == 1) ? getString(R.string.unit_day) : getString(R.string.unit_days);
+                break;
+            case 'W': // weeks
+                unit = (cycleCount == 1) ? getString(R.string.unit_week) : getString(R.string.unit_weeks);
+                break;
+            case 'M': // months
+                unit = (cycleCount == 1) ? getString(R.string.unit_month) : getString(R.string.unit_months);
+                break;
+            case 'Y': // years
+                unit = (cycleCount == 1) ? getString(R.string.unit_year) : getString(R.string.unit_years);
+                break;
+            default:
+                return period;
+        }
+
+        if (onlyUnit){
+            return unit;
+        } else {
+            return String.format("%d %s", cycleCount, unit);
+        }
+    }
+
+private String getProductWithPrice(int resId, String sku) {
         String price = PurchaseManager.getPrice(sku);
         if (price != null) {
             return String.format("%s (%s)", getResources().getString(resId), price);
@@ -549,9 +664,6 @@ public abstract class BillingHelperActivity
     }
 
     public boolean hasPermission(String permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED);
-        }
-        return true;
+        return (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED);
     }
 }

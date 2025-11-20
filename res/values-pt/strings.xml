@@ -40,8 +40,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Nível de bateria</string>
     <string name="alwaysOnStartWithLockedUI">Bloquear inteface de sistema</string>
     <string name="alwaysOnStartWithLockedUIDesc">Ao iniciar a aplicação, automaticamente bloquear a interface de utilizador. Pressione e mantenha o ícone do cadeado para desbloquear.</string>
-    <string name="ambient_noise">Deteção de som ambiente</string>
-    <string name="ambient_noise_summary">O som ambiente impedirá a ativação do modo noturno?</string>
     <string name="appearance">Aparência</string>
     <string name="app_name">Relógio Noturno</string>
     <string name="auto_brightness">Ajuste de brilho automático</string>
@@ -86,8 +84,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Parar serviço em segundo plano</string>
     <string name="backgroundServiceDialogMessage">Para o serviço em segundo plano irá desativar o arranque automático e o modo de espera, bem como a percentagem da bateria. Widgets não vão ser atualizados novamente. Continuar?</string>
     <string name="backgroundServiceNotificationText">Serviço em segundo plano está em execução.</string>
-    <string name="backgroundServiceNotificationTextLocation">A atualização da localização está em andamento.</string>
-    <string name="backgroundServiceNotificationTextNightMode">O serviço de modo noturno está em execução.</string>
     <string name="batteryTimeoutDescription">no tempo limite da bateria</string>
     <string name="batteryTimeoutNever">nunca</string>
     <string name="batteryTimeout1min">1 min.</string>
@@ -104,13 +100,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="bug_summary">Informe-nos se algo der errado</string>
     <string name="buy">comprar</string>
     <string name="buy_upgrade_summary">Atualizar para a versão  profissional agora.</string>
-    <string name="category_handle_power">… e quando conectado a</string>
     <string name="category_handle_power_autostart_time">Início dentro do período de tempo</string>
-    <string name="category_night_mode_display_management">Gerenciador de exibição</string>
     <string name="choose_alarm_sound">Som de alarme</string>
     <string name="choose_primary_color">Cor de destaque</string>
     <string name="choose_secondary_color">Cor do texto</string>
-    <string name="clear">Limpar</string>
     <string name="clock">relógio</string>
     <string name="clock_hands">Mãos</string>
     <string name="clock_layout_analog">Analógico</string>
@@ -156,7 +149,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Faça uma doação</string>
     <string name="doubleTapToFinishSummary">Faça duplo toque no ecrã para fechar a Aplicação</string>
     <string name="doubleTapToFinishTitle">Duplo toque para terminar</string>
-    <string name="gift_for_donors">Presente pela sua doação</string>
     <string name="flashlight">Lanterna</string>
     <string name="forecast">Previsão do tempo para 5 dias</string>
     <string name="frequently_asked_questions">perguntas frequentes</string>
@@ -200,7 +192,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Hora de fim</string>
     <string name="night_mode_timerange_label_start">Hora de início</string>
     <string name="night_mode_timerange_title">Horário nocturno</string>
-    <string name="noise_sensitivity">Sensibilidade do microfone</string>
     <string name="notification_channel_name_alarms">Alarmes</string>
     <string name="notification_channel_name_devmsg">Mensagens</string>
     <string name="notification_channel_name_radio">Rádio</string>
@@ -303,7 +294,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Paisagem invertida</string>
     <string name="screen_orientation_reverse_portrait">retrato invertido</string>
     <string name="screenOrientation">Orientação do ecrã</string>
-    <string name="set_alarm">definir o alarme</string>
     <string name="showAlarmsPersistently">Mostrar sempre</string>
     <string name="showAlarmsPersistentlySummary">Mostrar sempre o próximo alarme no ecrã.</string>
     <string name="showBatteryWarningSummary">Mostrar um aviso ao abrir quando estiver ligado á beteria.</string>
@@ -321,7 +311,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Mostrar a velocidade do vento</string>
     <string name="slideshow_center_crop">fronteiras</string>
     <string name="slideshow_center_inside">Adicionar fronteiras</string>
-    <string name="slideshow_center_animated">animado</string>
     <string name="slideshow_style">Estilo</string>
     <string name="sleep_time_dialog_title">Tempo de sono</string>
     <string name="snoozeTime">Tempo de snooze</string>

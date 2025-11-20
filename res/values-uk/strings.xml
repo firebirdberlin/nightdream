@@ -36,8 +36,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Вимикати екран</string>
     <string name="always_on">Завжди включено</string>
     <string name="alwaysOnStartWithLockedUI">Включати з блокуванням екрану</string>
-    <string name="ambient_noise">Виявлення стороннього шуму</string>
-    <string name="ambient_noise_summary">Вимикати нічний режим при наявності стороннього шуму?</string>
     <string name="appearance">Вигляд</string>
     <string name="app_name">Нічний годинник</string>
     <string name="auto_brightness">Автояскравість</string>
@@ -57,12 +55,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Зміщення яскравості</string>
     <string name="buy">Купити</string>
     <string name="buy_upgrade_summary">Оновити до PRO версії</string>
-    <string name="category_handle_power">... і коли приєднані</string>
     <string name="category_handle_power_autostart_time">Вмикати у зазначеному інтервалі</string>
     <string name="choose_alarm_sound">Звук будильника</string>
     <string name="choose_primary_color">Основний колір</string>
     <string name="choose_secondary_color">Колір тексту</string>
-    <string name="clear">очистити</string>
     <string name="clock_hands">Годинникові стрілки</string>
     <string name="clock_layout_analog">аналоговий</string>
     <string name="clock_layout_digital">цифровий</string>
@@ -129,7 +125,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Час завершення</string>
     <string name="night_mode_timerange_label_start">Час початку</string>
     <string name="night_mode_timerange_title">Нічний час</string>
-    <string name="noise_sensitivity">Чутливість мікрофону </string>
     <string name="numbers">Цифри</string>
     <string name="numberStyleArabic">Арабський</string>
     <string name="numberStyleRoman">Римський</string>
@@ -171,7 +166,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">горизонтальна 180 град.</string>
     <string name="screen_orientation_reverse_portrait">вертикальна 180 град.</string>
     <string name="screenOrientation">Орієнтація екрану</string>
-    <string name="set_alarm">встановити будильник</string>
     <string name="show_date">Відображати дату</string>
     <string name="show_divider">Показати розділювач</string>
     <string name="show_temperature">Відображати температуру</string>

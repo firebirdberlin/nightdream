@@ -66,7 +66,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private Context mContext = null;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
             preference -> {
-                showPurchaseDialog();
+                String key = preference.getKey();
+                Log.i(TAG, "open billing dialog for " + key);
+                PreferencesActivity activity = ((PreferencesActivity) mContext);
+                if ("donation_play".equals(key)){
+                    activity.showPurchaseDialog();
+                } else {
+                    activity.showSubscriptionDialog();
+                }
                 return true;
             };
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
@@ -359,11 +366,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("purchaseActions2", !isPurchasedActions);
         showPreference("purchaseActions3", !isPurchasedActions);
         showPreference("purchaseProRss", !isPurchasedActions);
-    }
-
-    private void showPurchaseDialog() {
-        PreferencesActivity activity = ((PreferencesActivity) mContext);
-        activity.showPurchaseDialog();
     }
 
     private boolean isPurchased(String sku) {
@@ -1072,7 +1074,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             // This will push the Snackbar up, revealing the content below it.
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
             if (params != null) {
-                params.bottomMargin = 75; // Example value, adjust as needed
+                params.bottomMargin = 75;
                 snackbarView.setLayoutParams(params);
             }
 
@@ -1172,7 +1174,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         public void onClick(View v) {
             if (isAdded()) {
                 PreferencesActivity activity = ((PreferencesActivity) mContext);
-                activity.launchBillingFlow(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+                activity.showSubscriptionDialog();
 
             }
         }

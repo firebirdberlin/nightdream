@@ -50,8 +50,8 @@ public class WeatherForecastTabPreview extends Fragment {
         View.OnClickListener purchaseListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((WeatherForecastActivity) getActivity()).showPurchaseDialog();
-                Log.d(TAG, "onclick showPurchaseDialog");
+                ((WeatherForecastActivity) getActivity()).showSubscriptionDialog();
+                Log.d(TAG, "onclick showSubscriptionDialog");
             }
         };
 
@@ -63,12 +63,10 @@ public class WeatherForecastTabPreview extends Fragment {
         title.setBackgroundColor(color);
         title.setOnClickListener(purchaseListener);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_googleplay);
-            if (icon != null) {
-                icon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
-                title.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, icon, null);
-            }
+        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_googleplay);
+        if (icon != null) {
+            icon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
+            title.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, icon, null);
         }
 
         TextView upgradeNow = view.findViewById(R.id.upgrade_now);

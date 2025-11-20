@@ -29,8 +29,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Hlasitosť</string>
     <string name="allow_screen_off_summary">Vypnúť obrazovku v noci</string>
     <string name="allow_screen_off">Vypnúť obrazovku</string>
-    <string name="ambient_noise">Detekcia zvukov v okolí</string>
-    <string name="ambient_noise_summary">Chcete aby zvuky z okolia zariadenia zabránili zapnutiu nočného režimu?</string>
     <string name="appearance">Vzhľad</string>
     <string name="app_name">Nočné hodiny</string>
     <string name="auto_brightness">Automatický jas</string>
@@ -46,12 +44,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Jas</string>
     <string name="brightness_offset">Posun jasu</string>
     <string name="buy">Kúpiť</string>
-    <string name="category_handle_power">... a keď je pripojené k</string>
     <string name="category_handle_power_autostart_time">Spusť v časovom rozsahu</string>
     <string name="choose_alarm_sound">Zvuk budíka</string>
     <string name="choose_primary_color">Farba času</string>
     <string name="choose_secondary_color">Farba textu</string>
-    <string name="clear">Vynulovať</string>
     <string name="clock_layout_analog">Analógové hodiny</string>
     <string name="clock_layout_digital">Digitálne hodiny</string>
     <string name="clock_layout_elegant_analog">Elegantné analógové hodiny</string>
@@ -102,7 +98,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Koniec noci</string>
     <string name="night_mode_timerange_label_start">Začína noc</string>
     <string name="night_mode_timerange_title">Nočný čas</string>
-    <string name="noise_sensitivity">Citlivosť mikrofónu</string>
     <string name="other_apps">Ostatné aplikácie</string>
     <string name="other_apps_tinytimetracker_summary">Sleduje váš denný pracovný režim</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -137,7 +132,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Orientácia obrazovky na ležato obrátene</string>
     <string name="screen_orientation_reverse_portrait">Orientácia obrazovky na výšku obrátene</string>
     <string name="screenOrientation">Orientácia obrazovky</string>
-    <string name="set_alarm">nastaviť budík</string>
     <string name="show_date">Zobraziť dátum</string>
     <string name="show_temperature">Zobraziť teplotu</string>
     <string name="show_weather">Zobraziť miestne počasie</string>
