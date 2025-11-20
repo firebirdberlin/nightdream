@@ -40,6 +40,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Уровень заряда АКБ более</string>
     <string name="alwaysOnStartWithLockedUI">Заблокировать пользовательский интерфейс</string>
     <string name="alwaysOnStartWithLockedUIDesc">При запуске приложение автоматически блокирует пользовательский интерфейс. Длительное нажатие на значок блокировки разблокирует опцию.</string>
+    <string name="ambient_noise">Определение шума</string>
+    <string name="ambient_noise_summary">Должен ли внешний шум предотвращать переход в ночной режим?</string>
     <string name="appearance">Внешний вид</string>
     <string name="app_name">Ночные часы</string>
     <string name="auto_brightness">Авторегулировка яркости</string>
@@ -75,6 +77,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
     <string name="backgroundServiceDialogMessage">Прекращение работы в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
     <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
+    <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
+    <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
     <string name="batteryTimeoutDescription">Время ожидания батареи</string>
     <string name="batteryTimeoutNever">Никогда</string>
     <string name="batteryTimeout1min">1 мин</string>
@@ -89,10 +93,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Предел яркости</string>
     <string name="buy">Купить</string>
     <string name="buy_upgrade_summary">Обновите до профессиональной версии сейчас.</string>
+    <string name="category_handle_power">… и когда подключен к</string>
     <string name="category_handle_power_autostart_time">Запуск в промежуток времени</string>
+    <string name="category_night_mode_display_management">Управление экраном</string>
     <string name="choose_alarm_sound">Мелодия будильника</string>
     <string name="choose_primary_color">Основной цвет</string>
     <string name="choose_secondary_color">Цвет текста</string>
+    <string name="clear">Очистить</string>
     <string name="clock_hands">Стрелки</string>
     <string name="clock_layout_analog">Аналоговые часы</string>
     <string name="clock_layout_calendar">Цифровые часы с календарём</string>
@@ -135,6 +142,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Поддержать</string>
     <string name="doubleTapToFinishSummary">Завершить работу приложения двойным касанием по экрану</string>
     <string name="doubleTapToFinishTitle">Для завершения, дважды коснитесь экрана</string>
+    <string name="gift_for_donors">Подарок за ваше пожертвование</string>
     <string name="flashlight">Фонарик</string>
     <string name="forecast">Прогноз погоды на 5 дней</string>
     <string name="hand_shape_arc">Обводка</string>
@@ -175,6 +183,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Время окончания</string>
     <string name="night_mode_timerange_label_start">Время начала</string>
     <string name="night_mode_timerange_title">Ночные часы</string>
+    <string name="noise_sensitivity">Чувствительность микрофона</string>
     <string name="notification_channel_name_alarms">Будильники</string>
     <string name="notification_channel_name_devmsg">Сообщения</string>
     <string name="notification_channel_name_radio">Радио</string>
@@ -271,6 +280,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">перевёрнутый ландшафт</string>
     <string name="screen_orientation_reverse_portrait">перевёрнутый портрет</string>
     <string name="screenOrientation">Ориентация экрана</string>
+    <string name="set_alarm">Уст. будильник</string>
     <string name="showAlarmsPersistently">Постоянно показывать</string>
     <string name="showAlarmsPersistentlySummary">Показывать время следующего будильника постоянно на экране.</string>
     <string name="showBatteryWarningSummary">Предупреждать о работе от батареи</string>
@@ -286,6 +296,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Показывать скорость ветра</string>
     <string name="slideshow_center_crop">Обрезать границы</string>
     <string name="slideshow_center_inside">Добавить границы</string>
+    <string name="slideshow_center_animated">Анимация</string>
     <string name="slideshow_style">Стиль</string>
     <string name="sleep_time_dialog_title">Таймер сна</string>
     <string name="snoozeTime">Время повтора</string>

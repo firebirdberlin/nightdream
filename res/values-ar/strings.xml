@@ -35,6 +35,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">قفل الشاشة</string>
     <string name="always_on">مفعل دائماً</string>
     <string name="alwaysOnBatteryLevel">مستوى البطارية في الأعلي</string>
+    <string name="ambient_noise">الكشف عن الضوضاء المحيطة</string>
+    <string name="ambient_noise_summary">هل تريد منع تفعيل الوضع الليلي بواسطة الضوضاء المحيطة؟</string>
     <string name="appearance">المظهر</string>
     <string name="app_name">الساعة الليلية</string>
     <string name="auto_brightness">سطوع تلقائي</string>
@@ -51,6 +53,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">وقف خدمة الخلفية</string>
     <string name="backgroundServiceDialogMessage">سيؤدي إيقاف خدمة الخلفية إلى تعطيل وضع التشغيل التلقائي ووضع الاستعداد وكذلك التنبؤ بالبطارية.  لا يمكن تحديث الحاجيات بعد الآن.  تقدم؟</string>
     <string name="backgroundServiceNotificationText">خدمة الخلفية قيد التشغيل</string>
+    <string name="backgroundServiceNotificationTextLocation">تحديث الموقع قيد التقدم</string>
+    <string name="backgroundServiceNotificationTextNightMode">خدمة الوضع الليلي قيد التشغيل</string>
     <string name="batteryTimeoutDescription">نفذ وقت البطارية</string>
     <string name="batteryTimeoutNever">أبداً</string>
     <string name="batteryTimeout1min">1 د</string>
@@ -65,10 +69,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">تعويض السطوع</string>
     <string name="buy">إشتري</string>
     <string name="buy_upgrade_summary">الترقية إلى الإصدار المحترف الآن</string>
+    <string name="category_handle_power">وعند الاتصال بـ ...</string>
     <string name="category_handle_power_autostart_time">إبدأ ضمن النطاق الزمني</string>
+    <string name="category_night_mode_display_management">إدارة العرض</string>
     <string name="choose_alarm_sound">نغمة المنبه</string>
     <string name="choose_primary_color">لون اللهجة</string>
     <string name="choose_secondary_color">لون النص</string>
+    <string name="clear">واضح</string>
     <string name="clock_hands">عقارب</string>
     <string name="clock_layout_analog">ساعة عقارب</string>
     <string name="clock_layout_calendar">ساعة رقمية مع التقويم</string>
@@ -108,6 +115,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">تبرع</string>
     <string name="doubleTapToFinishSummary">إنهاء التطبيق عن طريق النقر المزدوج على الشاشة</string>
     <string name="doubleTapToFinishTitle">اضغط مرتين لإنهاء</string>
+    <string name="gift_for_donors">هدية لتبرعك</string>
     <string name="flashlight">مصباح يدوي</string>
     <string name="forecast">توقعات الطقس لمدة 5 أيام</string>
     <string name="hand_shape_arc">قوس</string>
@@ -148,6 +156,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">وقت النهاية</string>
     <string name="night_mode_timerange_label_start">وقت البدء</string>
     <string name="night_mode_timerange_title">وقت الليل</string>
+    <string name="noise_sensitivity">حساسية الميكروفون</string>
     <string name="notification_channel_name_alarms">تنبيهات</string>
     <string name="notification_channel_name_devmsg">رسائل</string>
     <string name="notification_channel_name_radio">راديو</string>
@@ -226,6 +235,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">مشهد طبيعي عكسي</string>
     <string name="screen_orientation_reverse_portrait">صورة عكسية</string>
     <string name="screenOrientation">تدوير الشاشة</string>
+    <string name="set_alarm">ضبط المنبه</string>
     <string name="showAlarmsPersistently">إظهار بإستمرار</string>
     <string name="showAlarmsPersistentlySummary">عرض وقت التنبيه التالي بإستمرار علي الشاشة</string>
     <string name="showBatteryWarningSummary">إظهار التنبيه عند بدء التشغيل عاي البطارية</string>

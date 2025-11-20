@@ -33,6 +33,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Izklopi ekran</string>
     <string name="always_on">Vedno vklopljeno</string>
     <string name="alwaysOnBatteryLevel">Napolnjenost baterije nad</string>
+    <string name="ambient_noise">Zaznavanje zvoka ozadja</string>
+    <string name="ambient_noise_summary">Ali naj zvok v ozadju prepreči izvajanje v night mode?</string>
     <string name="appearance">Izgled</string>
     <string name="app_name">Nočna ura</string>
     <string name="auto_brightness">Avtomatska osvetlitev</string>
@@ -45,16 +47,19 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_gradient">Stopnjevanje barve ozadja</string>
     <string name="background_image">Slika</string>
     <string name="background_image_select">Izberi sliko</string>
+    <string name="backgroundServiceNotificationTextLocation">Pridobivanje lokacije</string>
     <string name="batteryTimeoutNever">nikoli</string>
     <string name="behaviour">Obnašanje</string>
     <string name="brightness">Svetlost</string>
     <string name="brightness_night_mode">Svetlost v nočnem načinu</string>
     <string name="brightness_offset">Ofset svetlosti</string>
     <string name="buy">Kupi</string>
+    <string name="category_handle_power">... in ko je povezava z</string>
     <string name="category_handle_power_autostart_time">Začni v dolocenem casu</string>
     <string name="choose_alarm_sound">Ton alarma</string>
     <string name="choose_primary_color">Barva prikaza</string>
     <string name="choose_secondary_color">Barva teksta</string>
+    <string name="clear">Počisti</string>
     <string name="clock_layout_analog">Analogna ura</string>
     <string name="clock_layout_digital">Digitalna ura</string>
     <string name="clock_layout_elegant_analog">Elegantna analogna ura</string>
@@ -112,6 +117,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Končni cas</string>
     <string name="night_mode_timerange_label_start">Začetni cas</string>
     <string name="night_mode_timerange_title">Nočni cas</string>
+    <string name="noise_sensitivity">Občutljivost mikrofona</string>
     <string name="notification_channel_name_alarms">Alarmi</string>
     <string name="notification_channel_name_devmsg">Sporočila</string>
     <string name="numbers">Številke</string>
@@ -155,6 +161,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Obratno lezece</string>
     <string name="screen_orientation_reverse_portrait">Obratno pokoncno</string>
     <string name="screenOrientation">Zasuk ekrana</string>
+    <string name="set_alarm">Nastavi alarm</string>
     <string name="show_date">Prikazi datum</string>
     <string name="show_temperature">Prikazi temperaturo</string>
     <string name="show_weather">Prikazi lokalno vreme</string>

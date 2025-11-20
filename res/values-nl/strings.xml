@@ -40,6 +40,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Batterijniveau is hoger dan</string>
     <string name="alwaysOnStartWithLockedUI">Vergrendel het bedieningsscherm</string>
     <string name="alwaysOnStartWithLockedUIDesc">Vergrendel het bedieninsscherm bij het automatisch opstarten van de app. Druk lang op het ontsluitingsicoon om te ontgrendelen.</string>
+    <string name="ambient_noise">Omgevingsgeluiddetectie</string>
+    <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmodus verhinderen?</string>
     <string name="appearance">Uiterlijk</string>
     <string name="app_name">Nachtklok</string>
     <string name="auto_brightness">Automatische helderheid</string>
@@ -84,6 +86,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
     <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
     <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
+    <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
+    <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
     <string name="batteryTimeoutDescription">Tijdslimiet batterij</string>
     <string name="batteryTimeoutNever">Nooit</string>
     <string name="batteryTimeout1min">1 min</string>
@@ -100,10 +104,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="bug_summary">Laat het ons weten als er iets mis is gegaan</string>
     <string name="buy">Kopen</string>
     <string name="buy_upgrade_summary">Verkrijg versie met alle opties</string>
+    <string name="category_handle_power">… en als je verbonden bent met</string>
     <string name="category_handle_power_autostart_time">Starten binnen tijdsbereik</string>
+    <string name="category_night_mode_display_management">Scherminstellingen</string>
     <string name="choose_alarm_sound">Alarmtoon</string>
     <string name="choose_primary_color">Accentkleur</string>
     <string name="choose_secondary_color">Tekstkleur</string>
+    <string name="clear">wissen</string>
     <string name="clock">Klok</string>
     <string name="clock_hands">Wijzers</string>
     <string name="clock_layout_analog">analoge klok</string>
@@ -149,6 +156,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Doneren</string>
     <string name="doubleTapToFinishSummary">Dubbeltik op het scherm om de app te sluiten.</string>
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>
+    <string name="gift_for_donors">Donatie</string>
     <string name="flashlight">Zaklamp</string>
     <string name="forecast">Weersvoorspelling voor vijf dagen</string>
     <string name="frequently_asked_questions">Vaak gestelde vragen</string>
@@ -192,6 +200,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Eindtijd</string>
     <string name="night_mode_timerange_label_start">Begintijd</string>
     <string name="night_mode_timerange_title">Nachttijd</string>
+    <string name="noise_sensitivity">Gevoeligheid van microfoon</string>
     <string name="notification_channel_name_alarms">Alarmen</string>
     <string name="notification_channel_name_devmsg">Berichten</string>
     <string name="notification_channel_name_radio">Radio</string>
@@ -295,6 +304,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">omgekeerd landschap</string>
     <string name="screen_orientation_reverse_portrait">omgekeerd portret</string>
     <string name="screenOrientation">Schermoriëntatie</string>
+    <string name="set_alarm">alarm instellen</string>
     <string name="showAlarmsPersistently">Aanhoudend tonen</string>
     <string name="showAlarmsPersistentlySummary">Toon het volgende alarm aanhoudend op het scherm</string>
     <string name="showBatteryWarningSummary">Laat een waarschuwing zien bij opstarten als batterij gebruikt wordt.</string>
@@ -312,6 +322,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Windsnelheid tonen</string>
     <string name="slideshow_center_crop">snij randen bij</string>
     <string name="slideshow_center_inside">voeg rand toe</string>
+    <string name="slideshow_center_animated">geanimeerd</string>
     <string name="slideshow_style">Stijl</string>
     <string name="sleep_time_dialog_title">Bedtijd</string>
     <string name="snoozeTime">Sluimertijd</string>

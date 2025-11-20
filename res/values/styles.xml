@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="customBackgroundColor">#000000</color>
 
     <style name="ActivityTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>
