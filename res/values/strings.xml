@@ -42,8 +42,6 @@ OR
     <string name="alwaysOnBatteryLevel">Battery level is above</string>
     <string name="alwaysOnStartWithLockedUI">Lock user interface</string>
     <string name="alwaysOnStartWithLockedUIDesc">When starting the app automatically lock the user interface. Long press the lock icon to unlock.</string>
-    <string name="ambient_noise">Ambient noise detection</string>
-    <string name="ambient_noise_summary">Shall ambient noise prevent the night mode to be activated?</string>
     <string name="appearance">Appearance</string>
     <string name="app_name">Night Clock</string>
     <string name="auto_brightness">Auto brightness</string>
@@ -90,8 +88,6 @@ OR
     <string name="backgroundServiceDialogTitle">Stop background service</string>
     <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode. Proceed?</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
-    <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="battery">Battery</string>
     <string name="batteryTimeoutDescription">on battery timeout</string>
     <string name="batteryTimeoutNever">never</string>
@@ -105,25 +101,15 @@ OR
     <string name="brightness">Brightness</string>
     <string name="brightness_night_mode">Brightness in night mode</string>
     <string name="brightness_offset">Brightness offset</string>
-    <string name="brightsky_conditions_dry">dry</string>
-    <string name="brightsky_conditions_fog">fog</string>
-    <string name="brightsky_conditions_hail">hail</string>
-    <string name="brightsky_conditions_rain">rain</string>
-    <string name="brightsky_conditions_sleet">sleet</string>
-    <string name="brightsky_conditions_snow">snow</string>
-    <string name="brightsky_conditions_thunderstorm">thunderstorm</string>
     <string name="bug">Report a bug</string>
     <string name="bug_summary">Please let us know if something went wrong.</string>
     <string name="buy">Buy</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
     <string name="subscribe">Subscribe</string>
-    <string name="category_handle_power">… and when connected to</string>
     <string name="category_handle_power_autostart_time">Start within the time range</string>
-    <string name="category_night_mode_display_management">Display management</string>
     <string name="choose_alarm_sound">Alarm tone</string>
     <string name="choose_primary_color">Accent color</string>
     <string name="choose_secondary_color">Text color</string>
-    <string name="clear">clear</string>
     <string name="clock">Clock</string>
     <string name="clock_hands">Hands</string>
     <string name="clock_layout_analog">analog clock</string>
@@ -170,7 +156,6 @@ OR
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
-    <string name="gift_for_donors">Gift for your donation</string>
     <string name="flashlight">Flashlight</string>
     <string name="forecast">Weather Forecast</string>
     <string name="frequently_asked_questions">frequently asked questions</string>
@@ -217,7 +202,6 @@ OR
     <string name="night_mode_timerange_label_start">Start time</string>
     <string name="night_mode_timerange_title">Night time</string>
     <string name="no_alarm_set">no alarm set</string>
-    <string name="noise_sensitivity">Microphone sensitivity</string>
     <string name="notification_channel_name_alarms">Alarms</string>
     <string name="notification_channel_name_devmsg">Messages</string>
     <string name="notification_channel_name_radio">Radio</string>
@@ -269,14 +253,6 @@ OR
     <string name="permission_request_storage">The permission for storage access was not granted.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
-    <string name="pollen_hazelnut">Hazelnut</string>
-    <string name="pollen_birch">Birch</string>
-    <string name="pollen_ambrosia">Ambrosia</string>
-    <string name="pollen_grass">Grass</string>
-    <string name="pollen_ash">Ash</string>
-    <string name="pollen_mugwort">Mugwort</string>
-    <string name="pollen_alder">Alder</string>
-    <string name="pollen_rye">Rye</string>
     <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
@@ -354,7 +330,6 @@ OR
     <string name="screen_orientation_reverse_landscape">reverse landscape</string>
     <string name="screen_orientation_reverse_portrait">reverse portrait</string>
     <string name="screenOrientation">Screen orientation</string>
-    <string name="set_alarm">set alarm</string>
     <string name="showAlarmsPersistently">Show persistently</string>
     <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
     <string name="showBattery">Show battery</string>
@@ -367,13 +342,6 @@ OR
     <string name="show_divider">Show divider</string>
     <string name="showPollen">Pollen risk index</string>
     <string name="showPollenIndex">Stress level</string>
-    <string name="showPollenIndex0">none</string>
-    <string name="showPollenIndex1">none to low</string>
-    <string name="showPollenIndex2">low</string>
-    <string name="showPollenIndex3">low to moderate</string>
-    <string name="showPollenIndex4">moderate</string>
-    <string name="showPollenIndex5">moderate to high</string>
-    <string name="showPollenIndex6">high</string>
     <string name="showPollenNoData">No data for this area. Pollen risk index only available for German locations.</string>
     <string name="showPollenSummary">only available for German locations</string>
     <string name="show_temperature">Show temperature</string>
@@ -383,7 +351,6 @@ OR
     <string name="show_wind_speed">Show wind speed</string>
     <string name="slideshow_center_crop">crop borders</string>
     <string name="slideshow_center_inside">add borders</string>
-    <string name="slideshow_center_animated">animated</string>
     <string name="slideshow_style">Style</string>
     <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="smart_home">Smart Home</string>
@@ -392,7 +359,7 @@ OR
     <string name="smart_home_avm_host_summary">Address of your Fritz!Box, e.g. http://fritz.box</string>
     <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_avm_password">Password</string>
-    <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
+    <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro upgrade</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="snoozeAfter">Auto snooze after</string>
     <string name="snoozeCycles">Auto snooze cycles before auto stop</string>
@@ -449,7 +416,6 @@ OR
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
     <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
-    <string name="product_name_subscription">one-year subscription</string>
     <!-- Subscription related strings -->
     <string name="subscription_free_trial_description">%s free for trial.</string>
     <string name="subscription_prefix_after_period">Then</string>

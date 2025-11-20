@@ -27,8 +27,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Hangerő</string>
     <string name="allow_screen_off_summary">Kijelző kikapcsolása éjszaka</string>
     <string name="allow_screen_off">Kijelző kikapcsolása</string>
-    <string name="ambient_noise">Környezeti zaj észlelése</string>
-    <string name="ambient_noise_summary">Akadályozza meg a környezeti zaj az éjszakai üzemmód aktiválódását?</string>
     <string name="appearance">Kinézet</string>
     <string name="app_name">Éjszakai óra</string>
     <string name="auto_brightness">Automatikus fényerő</string>
@@ -44,12 +42,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Fényerő</string>
     <string name="brightness_offset">Fényerő kiegyenlítése</string>
     <string name="buy">Vásárlás.</string>
-    <string name="category_handle_power">... és amikor csatlakoztatva a(z)</string>
     <string name="category_handle_power_autostart_time">Indítás az adott időtartományban</string>
     <string name="choose_alarm_sound">Ébresztő hang</string>
     <string name="choose_primary_color">Hangsúly színe</string>
     <string name="choose_secondary_color">Szöveg színe</string>
-    <string name="clear">Tiszta</string>
     <string name="clock_layout_analog">Analóg óra</string>
     <string name="clock_layout_digital">Digitális óra</string>
     <string name="clock_layout_elegant_analog">Elegáns analóg óra</string>
@@ -101,7 +97,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Befejező időpont</string>
     <string name="night_mode_timerange_label_start">Kezdő időpont</string>
     <string name="night_mode_timerange_title">Éjjel</string>
-    <string name="noise_sensitivity">Mikrofon érzékenység</string>
     <string name="other_apps">További alkalmazások</string>
     <string name="other_apps_tinytimetracker_summary">Kövesd nyomon a napi munkaidődet.</string>
     <string name="other_apps_tinytimetracker">ApróIdőNyomonkövető</string>
@@ -136,7 +131,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Fordított tájkép</string>
     <string name="screen_orientation_reverse_portrait">Fordított portré</string>
     <string name="screenOrientation">Képernyő tájolása</string>
-    <string name="set_alarm">Ébresztő beállítása</string>
     <string name="show_date">Mutassa a dátumot</string>
     <string name="show_temperature">Mutassa a hőmérsékletet</string>
     <string name="show_weather">Mutassa a helyi időjárást</string>
