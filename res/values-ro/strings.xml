@@ -28,8 +28,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmVolume">Volum</string>
     <string name="allow_screen_off_summary">Inchide ecranul pe timpul noptii</string>
     <string name="allow_screen_off">Inchide ecran</string>
-    <string name="ambient_noise">Detectare zgomot de fond</string>
-    <string name="ambient_noise_summary">Ar trebui ca zgomotul de fond sa previna ca modul de noapte sa fie activat?</string>
     <string name="appearance">Înfățișare</string>
     <string name="app_name">Ceas de noapte</string>
     <string name="auto_brightness">Iluminare automată</string>
@@ -44,12 +42,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Iluminare</string>
     <string name="brightness_offset">Limita de iluminare</string>
     <string name="buy">Cumpara</string>
-    <string name="category_handle_power">... Și când este conectat la</string>
     <string name="category_handle_power_autostart_time">Începe în intervalul de timp</string>
     <string name="choose_alarm_sound">Ton de alarma</string>
     <string name="choose_primary_color">Culoare de accent</string>
     <string name="choose_secondary_color">Culoarea textului</string>
-    <string name="clear">Clar</string>
     <string name="clock_layout_analog">Ceas analog</string>
     <string name="clock_layout_digital">Ceas digital</string>
     <string name="clock_layout_elegant_analog">Ceas analog elegant</string>
@@ -88,7 +84,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_activation_auto">Automat</string>
     <string name="night_mode_activation_mode">Modul Activare</string>
     <string name="night_mode">Mod noapte</string>
-    <string name="noise_sensitivity">Sensibilitate microfon</string>
     <string name="other_apps">Alte aplicații</string>
     <string name="other_apps_tinytimetracker_summary">Înregistrează timpul de lucru zilnic</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
@@ -111,7 +106,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Mod Oglinda</string>
     <string name="screen_orientation_reverse_portrait">Portret inversat</string>
     <string name="screenOrientation">Orientarea ecranului</string>
-    <string name="set_alarm">Setează alarma</string>
     <string name="show_date">Arata data</string>
     <string name="show_temperature">Temperatura</string>
     <string name="show_weather">Arata vremea locala</string>

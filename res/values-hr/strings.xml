@@ -40,8 +40,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">Uvijek uključeno</string>
     <string name="alwaysOnStartWithLockedUI">Prilikom pokretanja aplikacije automatski se zaključava korisničkog sučelja korisničkog sučelja baterije je iznad</string>
     <string name="alwaysOnStartWithLockedUIDesc">Dugo pritisnite ikonu brave je.</string>
-    <string name="ambient_noise">Detektiranje pozadinske buke</string>
-    <string name="ambient_noise_summary">Kada je omogućeno pozadinska buka sprječava noćni način rada?</string>
     <string name="appearance">Izgled</string>
     <string name="app_name">Noćni sat</string>
     <string name="auto_brightness">Automatska svjetlina</string>
@@ -86,12 +84,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="behaviour">Ponašanje</string>
     <string name="brightness">Svjetlina</string>
     <string name="brightness_offset">Ofset svjetline</string>
-    <string name="category_handle_power">... i kada si spojen na</string>
     <string name="category_handle_power_autostart_time">Započni u vremenskom razdoblju</string>
     <string name="choose_alarm_sound">Zvuk alarma</string>
     <string name="choose_primary_color">Boja isticanja</string>
     <string name="choose_secondary_color">Boja teksta</string>
-    <string name="clear">Ukloni</string>
     <string name="clock_layout_analog">Analogni</string>
     <string name="clock_layout_digital">Digitalni</string>
     <string name="colors">Boje</string>
@@ -119,7 +115,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="location_time">lokalno vrijeme</string>
     <string name="mute_ringer">Utišaj budilicu</string>
     <string name="night_mode">Noćni način rada</string>
-    <string name="noise_sensitivity">Osjetljivost mikrofona</string>
     <string name="other_apps">Druge aplikacije</string>
     <string name="other_apps_tinytimetracker_summary">Prati svoje dnevno radno vrijeme.</string>
     <string name="other_apps_tinytimetracker">Mini zapisnik vremena</string>
@@ -135,7 +130,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="review_request">Ocijeni ovu aplikaciju. Hvala!</string>
     <string name="screen_orientation_reverse_landscape">Hrvatska</string>
     <string name="screenOrientation">Orijentacija zaslona</string>
-    <string name="set_alarm">postavi alarm</string>
     <string name="show_date">Prikaži datum</string>
     <string name="show_temperature">Temperatura</string>
     <string name="show_weather">Prikaži lokalnu vremensku prognozu</string>

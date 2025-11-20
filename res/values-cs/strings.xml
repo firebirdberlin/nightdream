@@ -35,8 +35,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="allow_screen_off">Vypnout obrazovku</string>
     <string name="always_on">Vždy zapnuto</string>
     <string name="alwaysOnBatteryLevel">Stav baterie nad</string>
-    <string name="ambient_noise">Detekce zvuků v okolí</string>
-    <string name="ambient_noise_summary">Chcete aby zvuky z okolí zařízení zabránili zapnutí nočního režimu?</string>
     <string name="appearance">Vzhled</string>
     <string name="app_name">Noční hodiny</string>
     <string name="auto_brightness">Automatický jas</string>
@@ -53,8 +51,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Zastavit službu na pozadí</string>
     <string name="backgroundServiceDialogMessage">Zastavení služby na pozadí zakáže automatické spouštění, stand-by režim a odhady výdrže na baterii. Widgety nebudou nadále aktualizovány. Pokračovat?</string>
     <string name="backgroundServiceNotificationText">Služba na pozadí běží.</string>
-    <string name="backgroundServiceNotificationTextLocation">Probíhá aktualizace polohy.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Služba nočního režimu běží.</string>
     <string name="batteryTimeoutDescription">vypršení času na baterii</string>
     <string name="batteryTimeoutNever">nikdy</string>
     <string name="batteryTimeout1min">1 minuta</string>
@@ -69,13 +65,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness_offset">Úprava jasu</string>
     <string name="buy">koupit</string>
     <string name="buy_upgrade_summary">Upgradovat na profesionální verzi.</string>
-    <string name="category_handle_power">... a pokud je připojeno k</string>
     <string name="category_handle_power_autostart_time">Spusť v časovém rozsahu</string>
-    <string name="category_night_mode_display_management">Správa displaye</string>
     <string name="choose_alarm_sound">Zvuk budíku</string>
     <string name="choose_primary_color">Barva času</string>
     <string name="choose_secondary_color">Barva textu</string>
-    <string name="clear">vyčistit</string>
     <string name="clock_hands">ručičkové</string>
     <string name="clock_layout_analog">analogové</string>
     <string name="clock_layout_calendar">digitální s kalendářem</string>
@@ -115,7 +108,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="donate">Darovat</string>
     <string name="doubleTapToFinishSummary">Ukončit aplikaci dvojitým kliknutím</string>
     <string name="doubleTapToFinishTitle">Pokliknutím dokončíte</string>
-    <string name="gift_for_donors">Dárek za podporu</string>
     <string name="flashlight">Svítilna</string>
     <string name="forecast">5 denní předpověď počasí</string>
     <string name="hand_shape_arc">Oblouk</string>
@@ -156,7 +148,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Koncový čas</string>
     <string name="night_mode_timerange_label_start">Počáteční čas</string>
     <string name="night_mode_timerange_title">Noční čas</string>
-    <string name="noise_sensitivity">Citlivost mikrofonu</string>
     <string name="notification_channel_name_alarms">Budíky</string>
     <string name="notification_channel_name_devmsg">Zprávy</string>
     <string name="notification_channel_name_radio">Rádio</string>
@@ -217,7 +208,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">obráceně na šířku</string>
     <string name="screen_orientation_reverse_portrait">obráceně na výšku</string>
     <string name="screenOrientation">Orientace obrazovky</string>
-    <string name="set_alarm">nastavit budík</string>
     <string name="showBatteryWarningTitle">Varování: baterie.</string>
     <string name="showBatteryWarningMessage">Varování: není připojen zdroj.</string>
     <string name="show_date">Zobrazit datum</string>
