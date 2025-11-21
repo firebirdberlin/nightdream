@@ -18,8 +18,8 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.models.RssFeedItem;
 import com.firebirdberlin.nightdream.services.RSSParserService;
-import com.prof18.rssparser.model.RssItem;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -29,7 +29,7 @@ public class RSSViewModel extends ViewModel {
     private static final String TAG = "TickerViewModel";
     private static WeakReference<Context> weakContext;
 
-    private static final MutableLiveData<List<RssItem>> myLiveData = new MutableLiveData<>();
+    private static final MutableLiveData<List<RssFeedItem>> myLiveData = new MutableLiveData<>();
     private static final MutableLiveData<Long> tickerAnimationSpeed = new MutableLiveData<>();
     private static final MutableLiveData<Integer> intervalMode = new MutableLiveData<>();
     private static final MutableLiveData<Float> textSize = new MutableLiveData<>();
@@ -105,7 +105,7 @@ public class RSSViewModel extends ViewModel {
                 ));
     }
 
-    public MutableLiveData<List<RssItem>> getData() {
+    public MutableLiveData<List<RssFeedItem>> getData() {
         return myLiveData;
     }
 
@@ -121,7 +121,7 @@ public class RSSViewModel extends ViewModel {
         return textSize;
     }
 
-    public static void observe(Context context, @NonNull Observer<List<RssItem>> observer) {
+    public static void observe(Context context, @NonNull Observer<List<RssFeedItem>> observer) {
         RSSViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(RSSViewModel.class);
         RSSViewModel.loadDataPeriodicFromWorker(context, (LifecycleOwner) context);
         model.getData().observe((LifecycleOwner) context, observer);
