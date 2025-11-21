@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 public class RSSParserService extends Worker {
     private static final String TAG = "RSSParserService";
     private String urlString = "https://www.tagesschau.de/xml/rss2/";
-    public static MutableLiveData<RssChannel> articleListLive = new MutableLiveData<>();
+    public static MutableLiveData<List<RssItem>> articleListLive = new MutableLiveData<>();
 
     public RSSParserService(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -41,12 +41,12 @@ public class RSSParserService extends Worker {
             RssItem rssItem = new RssItem(
                     "",
                     getApplicationContext().getResources().getString(R.string.rss_url_error),
-                    "","","","","","","","","","",
+                    "", "", "", "", "", "", "", "", "", "",
                     new ArrayList<>(),
                     null, null, null, null
             );
             rssItems.add(rssItem);
-            articleListLive.postValue(new RssChannel(null, null, null, null, null, null, rssItems, null, null));
+            articleListLive.postValue(rssItems);
             return Result.success();
         }
 
@@ -62,14 +62,14 @@ public class RSSParserService extends Worker {
                 RssItem rssItem = new RssItem(
                         "",
                         getApplicationContext().getResources().getString(R.string.rss_data_error),
-                        "","","","","","","","","","",
+                        "", "", "", "", "", "", "", "", "", "",
                         new ArrayList<String>(),
                         null, null, null, null
                 );
                 rssItems.add(rssItem);
-                articleListLive.postValue(new RssChannel(null, null, null, null, null, null, rssItems, null, null));
+                articleListLive.postValue(rssItems);
             } else if (channel != null) {
-                articleListLive.postValue(channel);
+                articleListLive.postValue(channel.getItems());
             }
         });
 
