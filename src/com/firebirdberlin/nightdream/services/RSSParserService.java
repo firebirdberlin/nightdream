@@ -10,6 +10,7 @@ import androidx.work.WorkerParameters;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.models.RssFeedItem;
 import com.prof18.rssparser.RssParser;
 import com.prof18.rssparser.RssParserBuilder;
 import com.prof18.rssparser.model.RssChannel;
@@ -22,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 public class RSSParserService extends Worker {
     private static final String TAG = "RSSParserService";
     private String urlString = "https://www.tagesschau.de/xml/rss2/";
-    public static MutableLiveData<List<RssItem>> articleListLive = new MutableLiveData<>();
+    public static MutableLiveData<List<RssFeedItem>> articleListLive = new MutableLiveData<>();
 
     public RSSParserService(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -37,13 +38,11 @@ public class RSSParserService extends Worker {
         String url = settings.rssURL;
 
         if (url.isEmpty()) {
-            List<RssItem> rssItems = new ArrayList<>();
-            RssItem rssItem = new RssItem(
-                    "",
+            List<RssFeedItem> rssItems = new ArrayList<>();
+            RssFeedItem rssItem = new RssFeedItem(
                     getApplicationContext().getResources().getString(R.string.rss_url_error),
-                    "", "", "", "", "", "", "", "", "", "",
-                    new ArrayList<>(),
-                    null, null, null, null
+                    "",
+                    ""
             );
             rssItems.add(rssItem);
             articleListLive.postValue(rssItems);
@@ -55,24 +54,26 @@ public class RSSParserService extends Worker {
         return Result.success();
     }
 
-    private List<RssItem> fetchRssItems(String url) {
+    private List<RssFeedItem> fetchRssItems(String url) {
         RssParser parser = new RssParserBuilder().build();
         CompletableFuture<RssChannel> future = CoroutineBridge.INSTANCE.parseFeed(parser, url);
 
         try {
             RssChannel channel = future.get();
             if (channel != null) {
-                return channel.getItems();
+                List<RssFeedItem> feedItems = new ArrayList<>();
+                for (RssItem item : channel.getItems()) {
+                    feedItems.add(new RssFeedItem(item.getTitle(), item.getLink(), item.getPubDate()));
+                }
+                return feedItems;
             }
         } catch (Exception e) {
             Log.e(TAG, "Error parsing RSS feed", e);
-            List<RssItem> rssItems = new ArrayList<>();
-            RssItem rssItem = new RssItem(
-                    "",
+            List<RssFeedItem> rssItems = new ArrayList<>();
+            RssFeedItem rssItem = new RssFeedItem(
                     getApplicationContext().getResources().getString(R.string.rss_data_error),
-                    "", "", "", "", "", "", "", "", "", "",
-                    new ArrayList<String>(),
-                    null, null, null, null
+                    "",
+                    ""
             );
             rssItems.add(rssItem);
             return rssItems;
