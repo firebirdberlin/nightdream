@@ -50,34 +50,33 @@ public class RSSParserService extends Worker {
             return Result.success();
         }
 
-        RssParser parser = new RssParserBuilder()
-                .build();
+        articleListLive.postValue(fetchRssItems(url));
 
+        return Result.success();
+    }
+
+    private List<RssItem> fetchRssItems(String url) {
+        RssParser parser = new RssParserBuilder().build();
         CompletableFuture<RssChannel> future = CoroutineBridge.INSTANCE.parseFeed(parser, url);
 
-        future.whenComplete((channel, e) -> {
-            if (e != null) {
-                Log.e(TAG, "Error parsing RSS feed", e);
-                List<RssItem> rssItems = new ArrayList<>();
-                RssItem rssItem = new RssItem(
-                        "",
-                        getApplicationContext().getResources().getString(R.string.rss_data_error),
-                        "", "", "", "", "", "", "", "", "", "",
-                        new ArrayList<String>(),
-                        null, null, null, null
-                );
-                rssItems.add(rssItem);
-                articleListLive.postValue(rssItems);
-            } else if (channel != null) {
-                articleListLive.postValue(channel.getItems());
+        try {
+            RssChannel channel = future.get();
+            if (channel != null) {
+                return channel.getItems();
             }
-        });
-
-        // We must return success here, as the parsing happens asynchronously.
-        // The WorkManager will complete its work when the future is done, or run indefinitely if it\'s not.
-        // However, since we are not observing the completion of the future here, it will just return success.
-        // If you need to wait for the future to complete, you would need to use a different approach,
-        // possibly involving custom WorkManager logic or a different execution context.
-        return Result.success();
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing RSS feed", e);
+            List<RssItem> rssItems = new ArrayList<>();
+            RssItem rssItem = new RssItem(
+                    "",
+                    getApplicationContext().getResources().getString(R.string.rss_data_error),
+                    "", "", "", "", "", "", "", "", "", "",
+                    new ArrayList<String>(),
+                    null, null, null, null
+            );
+            rssItems.add(rssItem);
+            return rssItems;
+        }
+        return new ArrayList<>();
     }
 }
