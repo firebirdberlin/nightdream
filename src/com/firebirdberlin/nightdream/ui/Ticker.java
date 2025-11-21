@@ -25,9 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.RssFeedItem;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
-import com.prof18.rssparser.model.RssChannel;
-import com.prof18.rssparser.model.RssItem;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,9 +64,9 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         );
         setLayoutParams(params);
 
-        RSSViewModel.observe(context, channel -> {
-            if (channel != null) {
-                setHeadlines(channel.getItems());
+        RSSViewModel.observe(context, items -> {
+            if (items != null) {
+                setHeadlines(items);
             }
         });
 
@@ -88,21 +87,25 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         });
     }
 
-    public void setHeadlines(List<RssItem> articles) {
+    public void setHeadlines(List<RssFeedItem> items) {
         Log.i(TAG, "setHeadlines()");
-        if (articles != null && !articles.isEmpty()) {
+        if (items != null && !items.isEmpty()) {
             this.headlines.clear();
             this.urls.clear();
-            Log.d(TAG, "setHeadlines(List<RssItem> articles)");
-            for (int i = 0; i < Math.min(articles.size(), 10); i++) {
-                String title = articles.get(i).getTitle();
-                String link = articles.get(i).getLink();
-                String time = articles.get(i).getPubDate();
+            Log.d(TAG, "setHeadlines(List<RssFeedItem> articles)");
+            int count = 0;
+            for (RssFeedItem item : items) {
+                String title = item.getTitle();
+                String link = item.getLink();
+                String time = item.getPubDate();
                 Log.d(TAG, "rss Date: " + time);
                 Log.d(TAG, "rss Title: " + title);
                 Log.d(TAG, "rss Link: " + link);
                 headlines.add(title);
                 urls.add(link);
+                if (++count >= 15) { // only up to 15 messages
+                    break;
+                }
             }
             restart();
         }
