@@ -714,9 +714,8 @@ public class NightDreamUI {
                                     RenderEffect blurEffect = RenderEffect.createBlurEffect(blurRadius, blurRadius, Shader.TileMode.CLAMP);
                                     targetImageView.setRenderEffect(blurEffect);
                                 } else {
-                                    targetImageView.setImageBitmap(
-                                            Graphics.blur(mContext, bitmap)
-                                    );
+                                    // not blurred
+                                    targetImageView.setImageBitmap(bitmap);
                                 }
 
                             }
@@ -1709,7 +1708,9 @@ public class NightDreamUI {
                 return Graphics.sketch(bitmap);
             case 7:
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
-                    return Graphics.blur(mContext, bitmap);
+                    // blur has bin mirgrated away from renderscript
+                    // older android versions no longer support blurring the image
+                    return bitmap;
                 }
         }
 

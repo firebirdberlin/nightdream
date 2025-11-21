@@ -18,17 +18,18 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.models.RssFeedItem;
 import com.firebirdberlin.nightdream.services.RSSParserService;
-import com.prof18.rssparser.model.RssChannel;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class RSSViewModel extends ViewModel {
     private static final String TAG = "TickerViewModel";
     private static WeakReference<Context> weakContext;
 
-    private static final MutableLiveData<RssChannel> myLiveData = new MutableLiveData<>();
+    private static final MutableLiveData<List<RssFeedItem>> myLiveData = new MutableLiveData<>();
     private static final MutableLiveData<Long> tickerAnimationSpeed = new MutableLiveData<>();
     private static final MutableLiveData<Integer> intervalMode = new MutableLiveData<>();
     private static final MutableLiveData<Float> textSize = new MutableLiveData<>();
@@ -92,17 +93,19 @@ public class RSSViewModel extends ViewModel {
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadRSSWork.getId())
                 .observe((LifecycleOwner) context, info -> RSSParserService.articleListLive.observe(
                         lifecycleOwner,
-                        entry -> {
+                        rssItems -> {
                             //EDIT: Remove the observer of the worker otherwise
                             //before execution of your below code, the observation might switch
                             Log.d(TAG, "onChanged");
                             WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadRSSWork.getId()).removeObservers(lifecycleOwner);
-                            myLiveData.setValue(entry);
+                            if (rssItems != null) {
+                                myLiveData.setValue(rssItems);
+                            }
                         }
                 ));
     }
 
-    public MutableLiveData<RssChannel> getData() {
+    public MutableLiveData<List<RssFeedItem>> getData() {
         return myLiveData;
     }
 
@@ -118,7 +121,7 @@ public class RSSViewModel extends ViewModel {
         return textSize;
     }
 
-    public static void observe(Context context, @NonNull Observer<RssChannel> observer) {
+    public static void observe(Context context, @NonNull Observer<List<RssFeedItem>> observer) {
         RSSViewModel model = new ViewModelProvider((ViewModelStoreOwner) context).get(RSSViewModel.class);
         RSSViewModel.loadDataPeriodicFromWorker(context, (LifecycleOwner) context);
         model.getData().observe((LifecycleOwner) context, observer);
