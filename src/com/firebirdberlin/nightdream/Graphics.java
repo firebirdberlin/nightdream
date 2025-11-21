@@ -10,54 +10,8 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.util.Log;
 
-import androidx.renderscript.Allocation;
-import androidx.renderscript.Element;
-import androidx.renderscript.RSRuntimeException;
-import androidx.renderscript.RenderScript;
-import androidx.renderscript.ScriptIntrinsicBlur;
-
-
 
 public class Graphics {
-
-
-
-    public static Bitmap blur(Context context, Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
-
-        // The radius should be between 1 and 25.
-        float blurRadius = 15f;
-        Bitmap outputBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-
-        // Use the support library's ScriptIntrinsicBlur. This is the universally compatible method.
-        RenderScript rs = null;
-        try {
-            rs = RenderScript.create(context);
-            ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-
-            Allocation tmpIn = Allocation.createFromBitmap(rs, bitmap);
-            Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
-
-            theIntrinsic.setRadius(blurRadius);
-            theIntrinsic.setInput(tmpIn);
-            theIntrinsic.forEach(tmpOut);
-            tmpOut.copyTo(outputBitmap);
-        } catch (RSRuntimeException e) {
-            // Log the error for debugging, but don't crash the app
-            Log.e("Graphics.blur", "RenderScript failed to initialize, returning original bitmap.", e);
-            // Gracefully fail by returning the original, un-blurred bitmap
-            return bitmap;
-        } finally {
-            // Important to release resources to prevent memory leaks.
-            if (rs != null) {
-                rs.destroy();
-            }
-        }
-
-        return outputBitmap;
-    }
 
     public static Bitmap sketch(final Bitmap bitmap) {
         if (bitmap == null) {
