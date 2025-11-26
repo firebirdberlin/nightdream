@@ -368,8 +368,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private boolean isPurchased(String sku) {
-        PreferencesActivity activity = ((PreferencesActivity) mContext);
-        return activity.isPurchased(sku);
+        PurchaseManager purchaseManager = PurchaseManager.getInstance(mContext);
+        return purchaseManager.isPurchased(sku);
     }
 
     @Override

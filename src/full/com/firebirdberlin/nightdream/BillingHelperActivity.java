@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,12 +26,9 @@ import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public abstract class BillingHelperActivity
-        extends AppCompatActivity
-{
+public abstract class BillingHelperActivity extends AppCompatActivity {
     static final String TAG = "BillingHelperActivity";
     List<ProductDetails> productDetails;
     private BillingClient mBillingClient;
