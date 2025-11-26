@@ -5,14 +5,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
-
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.openweathermapapi.models.City;
-import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class ForecastRequestTask {
 
@@ -47,9 +47,6 @@ public class ForecastRequestTask {
                 List<WeatherEntry> weatherEntries = null;
                 try {
                     switch (weatherProvider) {
-                        case DARK_SKY:
-                            weatherEntries = DarkSkyApi.fetchHourlyWeatherData(context, city);
-                            break;
                         case BRIGHT_SKY:
                             weatherEntries = BrightSkyApi.fetchHourlyWeatherData(context, (float) city.lat, (float) city.lon);
                             break;

@@ -41,7 +41,6 @@ dependencies {
     implementation 'androidx.mediarouter:mediarouter:1.8.1'
     implementation 'com.google.android.gms:play-services-cast-framework:22.2.0'
     implementation 'androidx.activity:activity-ktx:1.12.0'
-    testImplementation 'junit:junit:4.13.2'
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
@@ -49,12 +48,12 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.11.0'
     implementation 'androidx.work:work-multiprocess:2.11.0'
     implementation 'com.github.firebirdberlin:android-preferences:36.0.5'
-    implementation 'com.github.firebirdberlin.tab-digit:digit:36.0.1'
+    implementation 'com.github.firebirdberlin.tab-digit:digit:36.0.2'
 
     // https://developer.android.com/studio/build/multidex
     implementation "androidx.multidex:multidex:2.0.1"
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 def getApiKeyOWM() {
@@ -63,18 +62,11 @@ def getApiKeyOWM() {
     return properties.getProperty("apikey.owm")
 }
 
-def getApiKeyDarkSky() {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty("apikey.darksky")
-}
-
 android {
     namespace 'com.firebirdberlin.nightdream'
     compileSdk 36
 
     compileOptions {
-        coreLibraryDesugaringEnabled = true
         sourceCompatibility =  1.8
         targetCompatibility = 1.8
     }
@@ -124,7 +116,6 @@ android {
     defaultConfig {
         minSdkVersion 24
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
-        buildConfigField "String", "API_KEY_DARK_SKY", "\""+getApiKeyDarkSky()+"\""
         targetSdk 36
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true

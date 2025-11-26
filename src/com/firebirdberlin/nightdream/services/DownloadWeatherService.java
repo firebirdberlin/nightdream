@@ -17,7 +17,6 @@ import androidx.work.WorkerParameters;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.BrightSkyApi;
-import com.firebirdberlin.openweathermapapi.DarkSkyApi;
 import com.firebirdberlin.openweathermapapi.MetNoApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -102,14 +101,6 @@ public class DownloadWeatherService extends Worker {
                 entry = OpenWeatherMapApi.fetchWeatherDataApi(
                         getApplicationContext(),
                         cityID,
-                        (float) location.getLatitude(),
-                        (float) location.getLongitude()
-                );
-                break;
-            case DARK_SKY:
-                entry = DarkSkyApi.fetchCurrentWeatherData(
-                        getApplicationContext(),
-                        city,
                         (float) location.getLatitude(),
                         (float) location.getLongitude()
                 );

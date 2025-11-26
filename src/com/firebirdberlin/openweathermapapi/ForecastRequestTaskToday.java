@@ -46,9 +46,6 @@ public class ForecastRequestTaskToday {
                 WeatherEntry weatherEntry;
                 try {
                     switch (weatherProvider) {
-                        case DARK_SKY:
-                            weatherEntry = DarkSkyApi.fetchCurrentWeatherData(context, city, (float) city.lat, (float) city.lon);
-                            break;
                         case BRIGHT_SKY:
                             weatherEntry = BrightSkyApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
                             break;
