@@ -38,7 +38,7 @@
             <action android:name="android.intent.action.MAIN" />
         </intent>
         <intent>
-            <action android:name="android.intent.action.CATEGORY_LAUNCHER" />
+            <action android:name="android.intent.category.LAUNCHER" />
         </intent>
     </queries>
 
@@ -51,7 +51,7 @@
         android:roundIcon="@mipmap/ic_launcher_round">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="nightdream"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

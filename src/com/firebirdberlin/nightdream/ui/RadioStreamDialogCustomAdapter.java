@@ -51,8 +51,8 @@ public class RadioStreamDialogCustomAdapter extends ArrayAdapter<RadioStreamDial
         }
 
         holder.imageView.setContentDescription(item.getName());
-        holder.imageView.setDefaultImageResId(R.drawable.ic_audiotrack_dark);
-        holder.imageView.setErrorImageResId(R.drawable.ic_audiotrack_dark);
+        holder.imageView.setDefaultImageResId(R.drawable.ic_music_note_24dp);
+        holder.imageView.setErrorImageResId(R.drawable.ic_music_note_24dp);
 
         return convertView;
     }

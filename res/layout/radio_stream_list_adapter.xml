@@ -12,7 +12,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_audiotrack_dark"
+        android:src="@drawable/ic_music_note_24dp"
         android:contentDescription="RadioIcon"
         tools:ignore="HardcodedText"/>
 

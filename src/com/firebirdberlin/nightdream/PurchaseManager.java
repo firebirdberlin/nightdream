@@ -73,6 +73,9 @@ public class PurchaseManager {
 
     public boolean isPurchased(String sku) {
         // Check if it's a debuggable build, if so, bypass the check and return true.
+        if (BuildConfig.FLAVOR == "noGms") {
+            return true;
+        }
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "Bypassing isPurchased check for debug build.");
             return true;
