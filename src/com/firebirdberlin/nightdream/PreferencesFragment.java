@@ -51,7 +51,6 @@ import com.rarepebble.colorpicker.ColorPreference;
 
 import java.io.File;
 import java.util.Vector;
-
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {

@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
     }
@@ -10,6 +11,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
         maven { url = 'https://jitpack.io' }
@@ -30,8 +32,6 @@ dependencies {
     implementation 'com.android.billingclient:billing:8.1.0'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
 
-    implementation project(':externals:android-preferences')
-    implementation project(':externals:tab-digit:digit')
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
     implementation 'androidx.palette:palette-ktx:1.0.0'
@@ -48,10 +48,11 @@ dependencies {
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.11.0'
     implementation 'androidx.work:work-multiprocess:2.11.0'
+    implementation 'com.github.firebirdberlin:android-preferences:36.0.5'
+    implementation 'com.github.firebirdberlin.tab-digit:digit:36.0.1'
 
     // https://developer.android.com/studio/build/multidex
-    def multidex_version = "2.0.1"
-    implementation "androidx.multidex:multidex:$multidex_version"
+    implementation "androidx.multidex:multidex:2.0.1"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
