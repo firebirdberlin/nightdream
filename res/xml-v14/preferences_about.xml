@@ -293,17 +293,6 @@ vi - Phong Nguyen"/>
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="about_rss_parser"
-            app:summary="by prof18"
-            app:title="RSS Parser">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/prof18/RSS-Parser"
-                />
-        </Preference>
-
-        <Preference
-            app:iconSpaceReserved="false"
             app:key="about_color_picker"
             app:summary="by martin-stone"
             app:title="HSV-Alpha Color Picker">
