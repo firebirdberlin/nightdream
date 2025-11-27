@@ -27,6 +27,7 @@ import com.firebirdberlin.dwd.PollenExposureRequestTask;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -401,8 +402,9 @@ public class WeatherForecastActivity
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
 
             if (settings.showPollen) {
-                Utility.GeoCoder geoCoder = new Utility.GeoCoder(this, city.lat, city.lon);
-                String postCode = geoCoder.getPostalCode();
+                City geocodedCity = GeocoderApi.findCityByCoordinates(this, city.lat, city.lon);
+                if (geocodedCity == null) return;
+                String postCode = geocodedCity.postalCode;
                 new PollenExposureRequestTask(this, this).execute(postCode);
             }
         }

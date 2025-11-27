@@ -1,5 +1,6 @@
 package com.firebirdberlin.openweathermapapi; // Or your preferred package
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -46,7 +47,7 @@ public class CityRequestManager {
      * @param query            The search query string (e.g., city name).
      * @param responseListener The callback interface to receive the results or errors.
      */
-    public static void findCities(String query, AsyncResponse responseListener) {
+    public static void findCities(Context context, String query, AsyncResponse responseListener) {
         if (query == null || query.trim().isEmpty()) {
             // Immediately call error on main thread for invalid input
             mainThreadHandler.post(() -> responseListener.onRequestError(new IllegalArgumentException("Search query cannot be empty.")));
@@ -67,7 +68,8 @@ public class CityRequestManager {
                 Exception error = null;
 
                 try {
-                    cities = OpenWeatherMapApi.findCityApi(query);
+                    //cities = OpenWeatherMapApi.findCityApi(query);
+                    cities = GeocoderApi.findCitiesByName(context, query);
                     if (cities == null) {
                         error = new Exception("API returned null for city search.");
                     }

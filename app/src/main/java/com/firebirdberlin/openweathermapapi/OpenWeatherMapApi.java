@@ -639,10 +639,10 @@ public class OpenWeatherMapApi {
     }
 
     private static Uri.Builder getPathBuilder(String endpoint) {
-        String APPID = BuildConfig.API_KEY_OWM;
+        String APP_ID = BuildConfig.API_KEY_OWM;
         return Uri.parse(ENDPOINT).buildUpon()
                 .appendPath(endpoint)
-                .appendQueryParameter("appid", APPID);
+                .appendQueryParameter("appid", APP_ID);
     }
 
 

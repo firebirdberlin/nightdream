@@ -2,11 +2,15 @@ package com.firebirdberlin.openweathermapapi.models;
 
 import com.google.gson.Gson;
 
+import java.util.Objects;
+
 public class City {
 
     public int id = -1;
     public String name;
     public String countryCode;
+    public String countryName;
+    public String postalCode;
     public double lat = 0.0f;
     public double lon = 0.0f;
 
@@ -31,11 +35,11 @@ public class City {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         City city = (City) o;
-        return id == city.id;
+        return id == city.id && Objects.equals(name, city.name);
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(id, name);
     }
 }

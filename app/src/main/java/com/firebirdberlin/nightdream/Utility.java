@@ -1076,56 +1076,6 @@ public class Utility {
                 system_brightness_mode);
     }
 
-    public static class GeoCoder {
-        private final Context context;
-        private final double lat;
-        private final double lon;
-        private final Address address;
-
-        public GeoCoder(Context context, double lat, double lon) {
-            this.context = context;
-            this.lat = lat;
-            this.lon = lon;
-            this.address = this.getFromLocation();
-        }
-
-        private Address getFromLocation() {
-            try {
-                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-                List<Address> addressList = geocoder.getFromLocation(lat, lon, 1);
-                if (addressList != null && addressList.size() > 0) {
-                    return addressList.get(0);
-                }
-            } catch (IOException ignored) {
-            }
-            return null;
-        }
-
-        public String getLocality() {
-            if (address == null) return "";
-            String locality = address.getLocality();
-            if (locality == null) return "";
-            return locality;
-        }
-
-        public String getCountryName() {
-            if (address == null) return "";
-            String countryName = address.getCountryName();
-            return (countryName == null) ? "" : countryName;
-        }
-
-        public String getCountryCode() {
-            if (address == null) return "";
-            String countryCode = address.getCountryCode();
-            return (countryCode == null) ? "" : countryCode;
-        }
-
-        public String getPostalCode() {
-            if (address == null) return "";
-            String postalCode = address.getPostalCode();
-            return (postalCode == null) ? "" : postalCode;
-        }
-    }
     public static boolean areSystemAnimationsEnabled(Context context) {
         float duration = android.provider.Settings.Global.getFloat(
                 context.getContentResolver(),
