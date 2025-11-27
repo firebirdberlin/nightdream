@@ -135,7 +135,7 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
         noResultsText.setVisibility(View.GONE);
         String query = queryText.getText().toString().trim();
 
-        CityRequestManager.findCities(query, new CityRequestManager.AsyncResponse() {
+        CityRequestManager.findCities(getContext(), query, new CityRequestManager.AsyncResponse() {
             @Override
             public void onRequestFinished(List<City> citiesList) {
                 cities.clear();

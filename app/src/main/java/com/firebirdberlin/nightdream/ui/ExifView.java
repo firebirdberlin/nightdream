@@ -9,6 +9,8 @@ import androidx.exifinterface.media.ExifInterface;
 
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.ExifViewBinding;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
+import com.firebirdberlin.openweathermapapi.models.City;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,10 +60,11 @@ public class ExifView {
                 String[] separatedLong = tagGpsLongitude.split(",");
                 double lat = convertArcMinToDegrees(separatedLat);
                 double lon = convertArcMinToDegrees(separatedLong);
-
-                Utility.GeoCoder geoCoder = new Utility.GeoCoder(mContext, lat, lon);
-                exifCity = geoCoder.getLocality();
-                exifCountry = geoCoder.getCountryName();
+                City city = GeocoderApi.findCityByCoordinates(mContext, lat, lon);
+                if (city != null) {
+                    exifCity = city.name;
+                    exifCountry = city.countryName;
+                }
             }
 
             exifBinding.setExifDate(exifDate);

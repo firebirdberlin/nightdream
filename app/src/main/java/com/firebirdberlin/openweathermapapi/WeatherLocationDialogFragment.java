@@ -142,7 +142,7 @@ public class WeatherLocationDialogFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String query = queryText.getText().toString().trim();
-                if ( query.length() > 0 ) {
+                if (!query.isEmpty()) {
                     searchButton.setEnabled(lastQuery == null || !lastQuery.equals(query));
                 }
             }
@@ -164,7 +164,7 @@ public class WeatherLocationDialogFragment extends DialogFragment {
         noResultsText.setVisibility(View.GONE);
 
 
-        CityRequestManager.findCities(query, new CityRequestManager.AsyncResponse() {
+        CityRequestManager.findCities(getContext(), query, new CityRequestManager.AsyncResponse() {
             @Override
             public void onRequestFinished(List<City> citiesList) {
                 cities.clear();

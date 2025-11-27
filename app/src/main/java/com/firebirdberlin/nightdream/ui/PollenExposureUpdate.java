@@ -11,6 +11,8 @@ import com.firebirdberlin.dwd.PollenExposureRequestTask;
 import com.firebirdberlin.nightdream.PollenExposure;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.PollenExposureBinding;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
+import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.lang.ref.WeakReference;
@@ -29,7 +31,6 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
 
     public static void cancelUpdate() {
         if (requestTask != null) {
-//            requestTask.cancel(true);
             requestTask = null;
         }
     }
@@ -40,18 +41,14 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
         if (weatherEntry == null || !weatherEntry.isValid()) {
             return;
         }
-        Utility.GeoCoder geoCoder = new Utility.GeoCoder(
-                mContext.get(), weatherEntry.lat, weatherEntry.lon
-        );
-        String countryCode = geoCoder.getCountryCode();
-        String postCode = geoCoder.getPostalCode();
-        if (!"DE".equals(countryCode) || postCode.isEmpty()) {
+        City city = GeocoderApi.findCityByCoordinates(mContext.get(), weatherEntry.lat, weatherEntry.lon);
+        if (city == null || !"DE".equals(city.countryCode) || city.postalCode.isEmpty()) {
             clear();
             return;
         }
 
         requestTask = new PollenExposureRequestTask(this, mContext.get());
-        requestTask.execute(postCode);
+        requestTask.execute(city.postalCode);
     }
 
     @Override

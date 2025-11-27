@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.firebirdberlin.nightdream.ui.PollenForecastLayout;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 
 import java.lang.reflect.Field;
@@ -61,9 +62,13 @@ public class WeatherForecastTabPollen extends Fragment {
             Log.d(TAG, "addPollen: city = null -> return");
             return;
         }
-        Utility.GeoCoder geoCoder = new Utility.GeoCoder(context, city.lat, city.lon);
-        String countryCode = geoCoder.getCountryCode();
-        String postCode = geoCoder.getPostalCode();
+        City geocodedCity = GeocoderApi.findCityByCoordinates(context, city.lat, city.lon);
+        if (geocodedCity == null) {
+            Log.d(TAG, "addPollen: geocodedCity = null -> return");
+            return;
+        }
+        String countryCode = geocodedCity.countryCode;
+        String postCode = geocodedCity.postalCode;
         if (!"DE".equals(countryCode) || postCode.isEmpty()) {
             Log.d(TAG, "addPollen - countryCode/postCode return");
             Log.d(TAG, "addPollen - countryCode: "+countryCode);

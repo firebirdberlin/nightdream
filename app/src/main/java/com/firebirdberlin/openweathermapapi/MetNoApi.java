@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.firebirdberlin.HttpReader;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -201,8 +202,8 @@ public class MetNoApi {
                 entry.apparentTemperature = -273.15;
 
                 if (mContext != null && mContext.get() != null) {
-                    Utility.GeoCoder geoCoder = new Utility.GeoCoder(mContext.get(), lat, lon);
-                    if (!Utility.isEmpty(geoCoder.getLocality())) entry.cityName = geoCoder.getLocality();
+                    City city = GeocoderApi.findCityByCoordinates(mContext.get(), lat, lon);
+                    if (city != null && !Utility.isEmpty(city.name)) entry.cityName = city.name;
                 }
 
                 entry.clouds = Math.round(data.instant.details.cloud_area_fraction);
