@@ -49,3 +49,5 @@
 -keep class * {
     public private *;
 }
+
+-keep class edu.umd.cs.findbugs.annotations.Nullable { *; }

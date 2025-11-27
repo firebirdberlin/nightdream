@@ -1,0 +1,10 @@
+- Welcome Nightdream to F-Droid! This is the first official release of our open-source desk clock and screensaver app.
+- Dynamic digital clock with automatic brightness adjustment for day and night.
+- Extensive customization options for colors, fonts, and analog watch faces.
+- Full screensaver (Daydream) functionality for Android 4.2+.
+- Quick alarms and integrated internet radio feature.
+- Displays battery status, date, and new notifications.
+- Optional current weather conditions and 5-day forecast from various open providers.
+- Fully open-source and privacy-respecting.
+- Includes optional Device Administrator permission for screen locking.
+- Various performance improvements and bug fixes.
