@@ -2,6 +2,7 @@ package com.firebirdberlin.openweathermapapi;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
@@ -48,6 +49,7 @@ public class OpenWeatherMapApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.openweathermap.org/data/2.5";
     private static final String TAG = "OpenWeatherMapApi";
+    private static final String PREFS_KEY = "NightDream preferences"; // Added PREFS_KEY
     private static final int READ_TIMEOUT = 60000;
     private static final int CONNECT_TIMEOUT = 60000;
     private static final long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
@@ -133,7 +135,10 @@ public class OpenWeatherMapApi {
             int responseCode = 0;
             String responseMessage = "";
             try {
-                URL url = getUrlWeather(cityID, lat, lon);
+                URL url = getUrlWeather(context, cityID, lat, lon); // Pass context
+                if (url == null) {
+                    return null;
+                }
                 Log.i(TAG, "fetchWeatherDataApi: requesting " + url.toString());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
@@ -309,7 +314,10 @@ public class OpenWeatherMapApi {
             int responseCode = 0;
             String responseMessage = ""; // Renamed from 'response' to avoid conflict with 'responseText'
             try {
-                URL url = getUrlForecast(cityID, lat, lon);
+                URL url = getUrlForecast(context, cityID, lat, lon); // Pass context
+                if (url == null) {
+                    return forecast;
+                }
                 Log.i(TAG, "fetchWeatherForecastApi: requesting " + url.toString());
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setConnectTimeout(CONNECT_TIMEOUT); // Set timeouts
@@ -504,19 +512,22 @@ public class OpenWeatherMapApi {
      * @param query The city name or part of it to search for.
      * @return A list of City objects (your application's City model), or an empty list if no cities are found or an error occurs.
      */
-    static List<com.firebirdberlin.openweathermapapi.models.City> findCityApi(String query) {
+    static List<com.firebirdberlin.openweathermapapi.models.City> findCityApi(Context context, String query) { // Added context
         List<com.firebirdberlin.openweathermapapi.models.City> cities = new ArrayList<>();
         String responseText = "";
 
         URL url;
         try {
-            url = getUrlFindCity(query);
+            url = getUrlFindCity(context, query); // Pass context
         } catch (MalformedURLException e) {
             Log.e(TAG, "findCityApi: Malformed URL for query " + query, e);
             return cities;
         }
+        if (url == null) {
+            return cities;
+        }
 
-        Log.i(TAG, "findCityApi: requesting " + url.toString());
+        Log.i(TAG, "findCityApi: requesting " + url);
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
@@ -588,8 +599,11 @@ public class OpenWeatherMapApi {
         return cities;
     }
 
-    private static URL getUrlFindCity(String query) throws MalformedURLException {
-        Uri.Builder builder = getPathBuilder("find");
+    private static URL getUrlFindCity(Context context, String query) throws MalformedURLException { // Added context
+        Uri.Builder builder = getPathBuilder(context, "find"); // Pass context
+        if (builder == null) {
+            return null;
+        }
         String url = builder
                 .appendQueryParameter("q", query)
                 .appendQueryParameter("type", "like")
@@ -599,8 +613,11 @@ public class OpenWeatherMapApi {
         return new URL(url);
     }
 
-    private static URL getUrlWeather(String cityId, float lat, float lon) throws MalformedURLException {
-        Uri.Builder builder = getPathBuilder("weather");
+    private static URL getUrlWeather(Context context, String cityId, float lat, float lon) throws MalformedURLException { // Added context
+        Uri.Builder builder = getPathBuilder(context, "weather"); // Pass context
+        if (builder == null) {
+            return null;
+        }
 
         if (cityId != null && !cityId.isEmpty()) {
             builder = builder.appendQueryParameter("id", cityId);
@@ -619,8 +636,11 @@ public class OpenWeatherMapApi {
         return new URL(url);
     }
 
-    private static URL getUrlForecast(String cityId, float lat, float lon) throws MalformedURLException {
-        Uri.Builder builder = getPathBuilder("forecast");
+    private static URL getUrlForecast(Context context, String cityId, float lat, float lon) throws MalformedURLException { // Added context
+        Uri.Builder builder = getPathBuilder(context, "forecast"); // Pass context
+        if (builder == null) {
+            return null;
+        }
 
         if (cityId != null && !cityId.isEmpty()) {
             builder = builder.appendQueryParameter("id", cityId);
@@ -638,8 +658,17 @@ public class OpenWeatherMapApi {
         return new URL(url);
     }
 
-    private static Uri.Builder getPathBuilder(String endpoint) {
-        String APP_ID = BuildConfig.API_KEY_OWM;
+    private static Uri.Builder getPathBuilder(Context context, String endpoint) { // Added context parameter
+        String APP_ID;
+        if ("noGms".equals(BuildConfig.FLAVOR)) {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+            APP_ID = prefs.getString("openWeatherMapApiKey", "");
+        } else {
+            APP_ID = BuildConfig.API_KEY_OWM;
+        }
+        if (APP_ID == null || APP_ID.isEmpty()) {
+            return null;
+        }
         return Uri.parse(ENDPOINT).buildUpon()
                 .appendPath(endpoint)
                 .appendQueryParameter("appid", APP_ID);
