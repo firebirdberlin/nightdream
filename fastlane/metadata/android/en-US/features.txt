@@ -1,0 +1,4 @@
+Dynamic Day/Night clock
+Real-time Weather Visualization
+Multiple customizable layouts
+Radio alarm clock

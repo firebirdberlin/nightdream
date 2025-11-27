@@ -46,7 +46,7 @@ android {
                 disable 'MissingTranslation'
                 abortOnError false
             }
-            proguardFile '/home/stefan/android/projects/nightdream/proguard-project.txt'
+            proguardFile 'proguard-project.txt'
             minifyEnabled true
             shrinkResources true
         }
