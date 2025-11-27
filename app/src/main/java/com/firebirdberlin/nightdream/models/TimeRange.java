@@ -50,7 +50,9 @@ public class TimeRange {
     }
 
     public Calendar getNextEvent() {
-        if (start.before(end)) {
+
+        Calendar now = Calendar.getInstance();
+        if (start.after(now) && start.before(end)) {
             return start;
         }
         return end;
