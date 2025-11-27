@@ -87,6 +87,16 @@
         app:key="weatherProvider"
         app:title="@string/weatherProvider" />
 
+    <EditTextPreference
+        app:iconSpaceReserved="false"
+        app:dependency="weatherProvider"
+        app:defaultValue=""
+        app:key="openWeatherMapApiKey"
+        app:title="@string/open_weather_map_api_key"
+        app:summary="@string/open_weather_map_api_key_summary"
+        app:singleLineTitle="false"
+        app:useSimpleSummaryProvider="true" />
+
     <Preference
         app:key="weatherProviderAttribution"
         app:dependency="showWeather"
@@ -100,4 +110,3 @@
         app:title="@string/weather_info_title" />
 
 </PreferenceScreen>
-

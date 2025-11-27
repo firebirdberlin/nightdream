@@ -436,6 +436,8 @@ OR
     <string name="useDeviceLock">Lock device</string>
     <string name="weather">Weather</string>
     <string name="weatherProvider">Weather Provider</string>
+    <string name="open_weather_map_api_key">OpenWeatherMap API Key</string>
+    <string name="open_weather_map_api_key_summary">Enter your API key for OpenWeatherMap. Get one at openweathermap.org</string>
     <string name="weather_calculation_time">weather calculation time</string>
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_current_location">Current location</string>

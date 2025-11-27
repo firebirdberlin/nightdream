@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
     public static final String PREFS_KEY = "NightDream preferences";
+    public static final String TAG = "WeatherPreferenceFragment";
 
     Settings settings = null;
 
@@ -24,6 +27,7 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
             (sharedPreferences, key) -> {
                 if ("weatherProvider".equals(key)) {
                     setupWeatherProviderPreference();
+                    updateOpenWeatherMapApiKeyVisibility(sharedPreferences);
                 }
             };
 
@@ -59,6 +63,7 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
         setupWeatherProviderPreference();
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        updateOpenWeatherMapApiKeyVisibility(prefs);
     }
 
     private void setupWeatherProviderPreference() {
@@ -94,4 +99,31 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
         }
     }
 
+    private void updateOpenWeatherMapApiKeyVisibility(SharedPreferences sharedPreferences) {
+        if (!isAdded()) {
+            return;
+        }
+
+        Preference openWeatherMapApiKeyPref = findPreference("openWeatherMapApiKey");
+        ListPreference weatherProviderPref = findPreference("weatherProvider");
+
+        if (openWeatherMapApiKeyPref == null || weatherProviderPref == null) {
+            return;
+        }
+
+        String currentProvider = sharedPreferences.getString("weatherProvider", "0"); // "0" is default value from XML
+        boolean showApiKeyInput = "0".equals(currentProvider) && "noGms".equals(BuildConfig.FLAVOR);
+
+        showPreference("openWeatherMapApiKey", showApiKeyInput);
+    }
+
+    private void showPreference(String key, boolean visible) {
+        Preference preference = findPreference(key);
+        if (preference != null) {
+            preference.setVisible(visible);
+            Log.i(TAG, "Preference " + key + " visibility set to " + visible + ". Current isVisible: " + preference.isVisible());
+        } else {
+            Log.w(TAG, "WARNING: preference " + key + " not found.");
+        }
+    }
 }
