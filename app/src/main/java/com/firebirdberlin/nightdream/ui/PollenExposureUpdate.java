@@ -67,8 +67,8 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
                 pollenExposureBinding.invalidateAll();
             } else {
                 clear();
-                PollenExposureLayout pollenExposureLayout = new PollenExposureLayout(pollenContainer.get());
-                pollenContainer.get().addView(pollenExposureLayout.getView());
+                PollenExposureLayout pollenExposureLayout = new PollenExposureLayout(container);
+                container.addView(pollenExposureLayout.getView());
                 pollenExposureLayout.setupFromObject(mContext.get(), pollen);
             }
         }
@@ -80,6 +80,9 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
     }
 
     private void clear() {
-        pollenContainer.get().removeAllViews();
+        ConstraintLayout container = pollenContainer.get();
+        if (container != null) {
+            container.removeAllViews();
+        }
     }
 }

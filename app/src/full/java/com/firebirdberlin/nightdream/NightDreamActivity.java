@@ -917,7 +917,11 @@ public class NightDreamActivity extends BillingHelperActivity
             return true;
         }
 
-        if (!isCharging && (now - resumeTime) / 60000  < mySettings.batteryTimeout) {
+        if (!isCharging && (
+                mySettings.batteryTimeout == -1
+                        || (now - resumeTime) / 60000 < mySettings.batteryTimeout
+        )
+        ) {
             Log.d(TAG, "shallKeepScreenOn() -> true (not charging, waiting for battery timeout)");
             return true;
         }
