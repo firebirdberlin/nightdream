@@ -30,13 +30,15 @@ android {
 
     defaultConfig {
         applicationId "com.firebirdberlin.nightdream"
-        minSdk 21
+        minSdk 24
         targetSdk 36
-        versionCode 328
-        versionName "2.11.6"
+        versionCode 329
+        versionName "2.11.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -57,13 +59,6 @@ android {
 
     testOptions {
         unitTests.returnDefaultValues = true
-    }
-    defaultConfig {
-        minSdkVersion 24
-        buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
-        targetSdk 36
-        vectorDrawables.useSupportLibrary = true
-        multiDexEnabled true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -100,7 +95,7 @@ dependencies {
     // Third-party Libraries
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.firebirdberlin:android-preferences:36.0.5'
-    implementation 'com.github.firebirdberlin.tab-digit:digit:36.0.2'
+    implementation 'com.github.firebirdberlin:tab-digit:36.0.2'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
     implementation 'org.greenrobot:eventbus:3.3.1'

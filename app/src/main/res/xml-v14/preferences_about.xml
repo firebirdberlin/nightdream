@@ -88,7 +88,7 @@
             app:enabled="true"
             app:key="credits"
             app:selectable="false"
-            app:title="Stefan Fruhner (2022)"
+            app:title="Stefan Fruhner (2025)"
             app:enableCopying="true"/>
 
         <Preference

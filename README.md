@@ -13,6 +13,4 @@ https://developer.android.com/studio/index.html
 ```shell
 $ git clone https://github.com/firebirdberlin/nightdream.git
 $ cd nightdream
-$ git submodule init
-$ git submodule update
 ```
