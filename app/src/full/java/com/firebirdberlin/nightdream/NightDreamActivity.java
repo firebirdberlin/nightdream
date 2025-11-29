@@ -3,10 +3,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.KeyguardManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -65,6 +62,7 @@ import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.SidePanel;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
+import com.firebirdberlin.nightdream.util.DevicePolicyWrapper;
 import com.firebirdberlin.nightdream.viewmodels.BatteryReferenceViewModel;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -198,13 +196,11 @@ public class NightDreamActivity extends BillingHelperActivity
     };
     private final Runnable checkKeepScreenOn = () -> setKeepScreenOn(shallKeepScreenOn(mode));
     private boolean isChargingWireless = false;
-    private DevicePolicyManager mgr = null;
-    private ComponentName cn = null;
+    private DevicePolicyWrapper devicePolicyWrapper;
     private GestureDetector mGestureDetector = null;
     private final Runnable lockDevice = () -> {
-        if (mySettings.shallUseDeviceLock() && mgr.isAdminActive(cn) && !isLocked()) {
-            mgr.lockNow();
-            Utility.turnScreenOn(context);
+        if (devicePolicyWrapper != null) {
+            devicePolicyWrapper.lockDeviceIfNeeded(mySettings);
         }
     };
     private LocationManager locationManager = null;
@@ -338,8 +334,7 @@ public class NightDreamActivity extends BillingHelperActivity
         ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
 
-        mgr = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
-        cn = new ComponentName(this, AdminReceiver.class);
+        devicePolicyWrapper = new DevicePolicyWrapper(this);
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -868,14 +863,6 @@ public class NightDreamActivity extends BillingHelperActivity
             onChangeNightMode(new_mode);
         }
         mode = new_mode;
-    }
-
-    private boolean isLocked() {
-        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        if (keyguardManager == null) {
-            return false;
-        }
-        return keyguardManager.inKeyguardRestrictedInputMode();
     }
 
     private boolean shallKeepScreenOn(int mode) {

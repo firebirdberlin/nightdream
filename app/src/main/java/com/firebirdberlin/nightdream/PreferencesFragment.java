@@ -2,7 +2,6 @@ package com.firebirdberlin.nightdream;
 
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,6 +42,7 @@ import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
+import com.firebirdberlin.nightdream.util.DevicePolicyWrapper;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.google.android.material.snackbar.Snackbar;
@@ -51,6 +50,7 @@ import com.rarepebble.colorpicker.ColorPreference;
 
 import java.io.File;
 import java.util.Vector;
+
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
@@ -63,6 +63,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     DaydreamSettingsObserver daydreamSettingsObserver = null;
     private Settings settings = null;
     private Context mContext = null;
+    private DevicePolicyWrapper devicePolicyWrapper;
     Preference.OnPreferenceClickListener purchasePreferenceClickListener =
             preference -> {
                 String key = preference.getKey();
@@ -252,12 +253,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     boolean isNotificationAccessDenied() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NotificationManager n = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            return !n.isNotificationPolicyAccessGranted();
-        } else {
-            return !mNotificationListener.running;
-        }
+        NotificationManager n = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        return !n.isNotificationPolicyAccessGranted();
     }
 
     @SuppressWarnings("deprecation")
@@ -265,12 +262,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onAttach(@NonNull Activity activity) {
         super.onAttach(activity);
         mContext = activity;
+        devicePolicyWrapper = new DevicePolicyWrapper(activity);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
+        devicePolicyWrapper = new DevicePolicyWrapper(context);
     }
 
     @Override
@@ -565,7 +564,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setupLightSensorPreferences();
         } else if ("behaviour".equals(rootKey)) {
             initUseDeviceLockPreference();
-            setupDoNotDisturbPreference();
         } else if ("nightmode".equals(rootKey)) {
             setupLightSensorPreferences();
             setupNightModePreferences(prefs);
@@ -712,12 +710,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         startActivity(Intent.createChooser(sharingIntent, description));
     }
 
-    private void setupDoNotDisturbPreference() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            removePreference("activateDoNotDisturb");
-        }
-    }
-
     private void setupBrightnessControls(SharedPreferences prefs) {
         if (!isAdded()) return;
         Preference brightnessOffset = findPreference("brightness_offset");
@@ -842,9 +834,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             return;
         }
 
-        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
-        if (pref.isChecked() && !mgr.isAdminActive(cn)) {
+        if ("noGms".equals(BuildConfig.FLAVOR)) {
+            pref.setVisible(false);
+        }
+
+        if (pref.isChecked() && !devicePolicyWrapper.isAdminActive()) {
             pref.setChecked(false);
         }
     }
@@ -886,19 +880,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private boolean isIgnoringBatteryOptimization() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-            return (powerManager.isIgnoringBatteryOptimizations(mContext.getPackageName()));
-        }
+        PowerManager powerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        return (powerManager.isIgnoringBatteryOptimizations(mContext.getPackageName()));
 
-        return true;
     }
 
     private void setupNotificationAccessPermission(SharedPreferences sharedPreferences, String preferenceKey) {
         if (!isAdded()) return;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return;
-        }
         boolean on = sharedPreferences.getBoolean(preferenceKey, false);
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -912,39 +900,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setupDeviceAdministratorPermissions(SharedPreferences sharedPreferences) {
-        if (!isAdded()) return;
-        boolean on = sharedPreferences.getBoolean("useDeviceLock", false);
-        if (on) {
-            DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
-            ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
-            if (!mgr.isAdminActive(cn)) {
-                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, cn);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                        getString(R.string.useDeviceLockExplanation));
-                startActivity(intent);
-            }
-
-        } else {
-            removeActiveAdmin();
+        if (isAdded()) {
+            boolean shallUseDeviceLock = sharedPreferences.getBoolean("useDeviceLock", false);
+            devicePolicyWrapper.setupDeviceAdministratorPermissions(shallUseDeviceLock);
         }
-    }
-
-    private void removeActiveAdmin() {
-        DevicePolicyManager mgr = (DevicePolicyManager) mContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        ComponentName cn = new ComponentName(mContext, AdminReceiver.class);
-        if (mgr.isAdminActive(cn)) {
-            mgr.removeActiveAdmin(cn);
-        }
-
     }
 
     private void uninstallApplication() {
-        removeActiveAdmin();
+        devicePolicyWrapper.removeActiveAdmin();
         Uri packageURI = Uri.parse("package:" + NightDreamActivity.class.getPackage().getName());
         Intent intent = new Intent(Intent.ACTION_DELETE, packageURI);
         startActivity(intent);
-
     }
 
     private void resetScaleFactor(SharedPreferences sharedPreferences) {

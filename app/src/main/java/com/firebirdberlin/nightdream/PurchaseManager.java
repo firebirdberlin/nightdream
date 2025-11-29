@@ -77,7 +77,6 @@ public class PurchaseManager {
             return true;
         }
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Bypassing isPurchased check for debug build.");
             return true;
         }
 
