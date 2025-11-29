@@ -5,20 +5,29 @@ Nightdream is an open-source desk clock and screensaver app, perfect for both da
 **Customizable Design**
 The design can be extensively adapted to your needs. You can adjust colors and fonts, and even personalize analog watch faces. The size of the clock can also be changed using a two-finger zoom gesture.
 
+**Widgets**
+Place a stylish clock widget on your home screen for quick access to the time and your alarms.
+
 **Screensaver (formerly Daydream)**
 This app can be used as a screensaver (known as Daydream on older Android versions) from Android 4.2 and above. To automatically turn off the screen at night, you might need to ensure Daydreams are deactivated in your Android settings (e.g., "Settings > Display > Screensaver"). The clock will reactivate with sufficient light or when the ambient noise level in the room exceeds a certain threshold.
 
 **Quick Alarms & Radio Feature**
-Set a quick alarm with a swipe from the left edge of the screen. Alarms can be deleted by tapping the lower right corner. Additionally, Nightdream allows you to listen to your favorite internet radio stations and even use them as an alarm sound.
+Set a quick alarm with a swipe from the left edge of the screen. Alarms can be deleted by tapping the lower right corner. Additionally, Nightdream allows you to listen to your favorite internet radio stations and even use them as an alarm sound. The app can also manage your Wi-Fi connection to ensure your radio alarm streams without interruption.
+
+**Smart Home Integration**
+Connect Nightdream to your AVM smart home environment.
 
 **Battery Status**
 When your device is charging, the app provides an estimated time until the battery is fully charged.
 
 **Notifications**
-Nightdream can display notifications for missed phone calls, GMail, WhatsApp, and Twitter. To enable this, you will need to grant "Notification access" (often found under "Settings > Security") or "Accessibility" access (on older Android versions) to Nightdream in your device's settings.
+Nightdream can display notifications from your favorite apps. To enable this, you will need to grant "Notification access" to Nightdream in your device's settings.
 
 **Weather Conditions**
-Optionally, current weather conditions and a 5-day forecast can be displayed. Nightdream supports various open weather providers, including OpenWeatherMap, Bright Sky, and Met.no.
+Optionally, current weather conditions and a 5-day forecast can be displayed. Nightdream supports various weather providers, including OpenWeatherMap, Bright Sky, and Met.no.
+
+**Extra Features**
+- Use the built-in flashlight when you need a quick light source.
 
 **Open Source & Donations**
 Nightdream is completely free and open-source software. Its full source code is available for review and contribution. If you appreciate this project and wish to support its continued development, you can find donation options through the project's repository.
@@ -27,9 +36,15 @@ Nightdream is completely free and open-source software. Its full source code is 
 
 *   `android.permission.FOREGROUND_SERVICE`: Allows the app to play radio and wake with a radio stream even when not in the foreground.
 *   `android.permission.MODIFY_AUDIO_SETTINGS`: Allows the app to modify audio settings, such as silencing the device during night mode.
-*   `android.permission.RECORD_AUDIO`: Used during night mode to reactivate the screen if a certain ambient noise level is detected. The app continuously records audio for this purpose but **does not store any audio data**.
 *   `android.permission.WAKE_LOCK`: Permits the app to wake the device from sleep (e.g., to turn on the display) and keep it on.
 *   `android.permission.READ_EXTERNAL_STORAGE`: This permission is necessary to read background images from external storage.
-
-**Device Administrator Permission (Optional):**
-This app can optionally utilize the Device Administrator permission to lock the screen at runtime. This can be considered useful for certain use cases. Before uninstalling the app, this permission must be manually revoked in the system settings (often found under "Security" > "Device administrators").
+*   `android.permission.INTERNET` & `android.permission.ACCESS_NETWORK_STATE`: Required to download weather data, play internet radio streams, and for crash reporting.
+*   `android.permission.RECEIVE_BOOT_COMPLETED`: Ensures that your alarms are automatically rescheduled after you restart your device.
+*   `android.permission.VIBRATE`: Allows the app to use your device's vibration for alarms.
+*   `com.android.alarm.permission.SET_ALARM`, `android.permission.USE_EXACT_ALARM`, & `android.permission.SCHEDULE_EXACT_ALARM`: These permissions are essential for the app to set and manage alarms.
+*   `android.permission.ACCESS_COARSE_LOCATION`: Used to automatically fetch weather data for your current location.
+*   `android.permission.POST_NOTIFICATIONS`: Enables the app to display notifications, for example, for upcoming alarms.
+*   `android.permission.READ_MEDIA_AUDIO`: Lets you choose your own sound files to be used as alarm ringtones.
+*   `android.permission.SYSTEM_ALERT_WINDOW`: This permission is used to display the clock screen on top of other apps when activated.
+*   `android.permission.FLASHLIGHT`: Permits the use of the device's flashlight.
+*   `android.permission.ACCESS_NOTIFICATION_POLICY`: Allows the app to control Do Not Disturb settings, for example, to mute the device during the night.
