@@ -1234,7 +1234,7 @@ public class NightDreamUI {
     }
 
     private void setupScreenAnimation() {
-        if (Utility.isCharging(mContext)) {
+        if (Utility.isPlugged(mContext)) {
             screen_alpha_animation_duration = 3000;
             screen_transition_animation_duration = 10000;
         } else {
@@ -1405,7 +1405,7 @@ public class NightDreamUI {
 
     private float getMaxAllowedBrightness() {
         float maxBrightness = settings.autoBrightness ? Math.min(settings.maxBrightness, 1.f) : 1.f;
-        if (!Utility.isCharging(mContext)) {
+        if (!Utility.isPlugged(mContext)) {
             return Math.min(settings.maxBrightnessBattery, maxBrightness);
         }
         return maxBrightness;

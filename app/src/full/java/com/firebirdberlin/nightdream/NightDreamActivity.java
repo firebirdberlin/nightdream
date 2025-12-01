@@ -590,7 +590,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void showToastIfNotCharging() {
-        if (mySettings.showBatteryWarning && !Utility.isCharging(this)) {
+        if (mySettings.showBatteryWarning && !Utility.isPlugged(this)) {
             Toast.makeText(this,
                     R.string.showBatteryWarningMessage, Toast.LENGTH_LONG).show();
         }
@@ -885,7 +885,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private boolean shallKeepScreenOn(int mode) {
         screenWasOn = screenWasOn || Utility.isScreenOn(this);
-        boolean isCharging = Utility.isCharging(this);
+        boolean isCharging = Utility.isPlugged(this);
         long now = Calendar.getInstance().getTimeInMillis();
 
         Log.d(TAG, "screenWasOn = " + screenWasOn);
