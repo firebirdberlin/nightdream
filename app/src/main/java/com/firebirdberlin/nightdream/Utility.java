@@ -49,8 +49,6 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
@@ -484,13 +482,25 @@ public class Utility {
         return dialogTheme;
     }
 
-    public static boolean isCharging(Context context) {
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+    public static boolean isPlugged(Context context) {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         try {
-            Intent batteryStatus = context.registerReceiver(null, ifilter);
-            int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-            return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                    status == BatteryManager.BATTERY_STATUS_FULL);
+            Intent batteryStatus = context.registerReceiver(null, filter);
+            int plugged = 0;
+            if (batteryStatus != null) {
+                plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+            }
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && plugged == BatteryManager.BATTERY_PLUGGED_DOCK
+            ) {
+                return true;
+            }
+            return (
+                plugged == BatteryManager.BATTERY_PLUGGED_AC
+                || plugged == BatteryManager.BATTERY_PLUGGED_USB
+                || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
+            );
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return false;

@@ -70,7 +70,7 @@ public class BatteryStats {
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
         int chargingMethod = batteryIntent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         BatteryValue value = new BatteryValue(level, scale, status, chargingMethod);
-        value.isCharging = isCharging(status);
+        value.isCharging = isCharging(chargingMethod);
         value.isChargingAC = isChargingAC(chargingMethod);
         value.isChargingUSB = isChargingUSB(chargingMethod);
         value.isChargingWireless = isChargingWireless(chargingMethod);
@@ -113,9 +113,18 @@ public class BatteryStats {
                 dockState == Intent.EXTRA_DOCK_STATE_HE_DESK);
     }
 
-    private boolean isCharging(int status) {
-        return (status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL);
+    private boolean isCharging(int plugged) {
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    && plugged == BatteryManager.BATTERY_PLUGGED_DOCK
+        ) {
+            return true;
+        }
+        return (
+            plugged == BatteryManager.BATTERY_PLUGGED_AC
+                    || plugged == BatteryManager.BATTERY_PLUGGED_USB
+                    || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
+        );
     }
 
     private boolean isChargingAC(int chargingMethod) {
