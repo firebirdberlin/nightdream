@@ -9,8 +9,8 @@ def getApiKeyOWM() {
 }
 
 android {
-    namespace 'com.firebirdberlin.nightdream'
-    compileSdk 36
+    namespace = 'com.firebirdberlin.nightdream'
+    compileSdk = 36
 
     flavorDimensions "version"
 
@@ -32,11 +32,11 @@ android {
         applicationId "com.firebirdberlin.nightdream"
         minSdk 24
         targetSdk 36
-        versionCode 331
-        versionName "2.11.9"
+        versionCode 332
+        versionName "2.11.10"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+        multiDexEnabled = true
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         vectorDrawables.useSupportLibrary = true
     }
@@ -44,13 +44,13 @@ android {
     buildTypes {
         release {
             lintOptions {
-                checkReleaseBuilds false
+                checkReleaseBuilds = false
                 disable 'MissingTranslation'
-                abortOnError false
+                abortOnError = false
             }
             proguardFile 'proguard-project.txt'
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
         }
         debug {
             proguardFiles 'proguard-project.txt'
@@ -65,9 +65,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
-        dataBinding true
-        renderScript false
-        aidl true
+        buildConfig = true
+        dataBinding = true
+        renderScript = false
+        aidl = true
     }
 }
 
