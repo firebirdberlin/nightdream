@@ -77,6 +77,10 @@
             app:iconSpaceReserved="false"
             app:summary="@string/other_apps_tinytimetracker_summary"
             app:title="@string/other_apps_tinytimetracker">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://firebirdberlin.github.io/tinytimetracker"
+                />
         </Preference>
     </PreferenceCategory>
 

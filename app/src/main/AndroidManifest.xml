@@ -16,7 +16,7 @@
     <!-- Foreground Service Permissions -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <!-- Dangerous and Special Permissions: Require runtime user approval -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -128,9 +128,11 @@
         </service>
         <service
             android:name=".services.ScreenWatcherService"
-            android:foregroundServiceType="systemExempted"
+            android:foregroundServiceType="specialUse"
             android:enabled="true" >
-
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="To monitor the device's state and start the app's main functionality." />
         </service>
 
         <activity

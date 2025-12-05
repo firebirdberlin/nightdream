@@ -588,16 +588,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         } else if ("about".equals(rootKey)) {
 
-            Preference tinytimetracker = findPreference("tinytimetracker");
-            if (tinytimetracker != null){
-                tinytimetracker.setOnPreferenceClickListener(preference -> {
-                    Uri marketUri = Uri.parse("market://details?id=com.firebirdberlin.tinytimetracker");
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
-                    startActivity(Intent.createChooser(marketIntent, "dialogTitle"));
-                    return true;
-                });
-            }
-
             Preference recommendApp = findPreference("recommendApp");
             if (recommendApp != null) {
                 recommendApp.setOnPreferenceClickListener(preference -> {
@@ -718,7 +708,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void recommendApp() {
-        String body = "https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream";
+        String body = "https://firebirdberlin.github.io/nightdream/";
         String subject = getResources().getString(R.string.recommend_app_subject);
         String description = getResources().getString(R.string.recommend_app_desc);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
