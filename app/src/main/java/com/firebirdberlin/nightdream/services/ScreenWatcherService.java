@@ -62,7 +62,7 @@ public class ScreenWatcherService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(
                     Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             );
         } else {
             startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
