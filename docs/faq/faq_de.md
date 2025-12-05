@@ -14,13 +14,6 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
 ## Inhaltsverzeichnis
   * [Werbung](#werbung)
      * [Wie kann ich die Werbung abschalten ?](#wie-kann-ich-die-werbung-abschalten-)
-  * [In-App Käufe](#in-app-käufe)
-     * [Welche Pakete kann ich kaufen ?](#welche-pakete-kann-ich-kaufen-)
-        * [Vollversion](#vollversion)
-        * [Wetter- und Designpaket](#wetter--und-designpaket)
-        * [Internetradio](#internetradio)
-        * [Fähigkeiten](#fähigkeiten)
-        * [Spende](#spende)
   * [Benutzeroberfläche](#benutzeroberfläche)
      * [Wie kann ich die Größe der Uhr ändern ?](#wie-kann-ich-die-größe-der-uhr-ändern-)
      * [Wie kann ich die Position der Uhr ändern ?](#wie-kann-ich-die-position-der-uhr-ändern-)
@@ -45,6 +38,8 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
   * [Wecker](#wecker)
      * [Warum funktioniert die Aktivierung des WLANs für den Radiowecker nicht ?](#warum-funktioniert-die-aktivierung-des-wlans-für-den-radiowecker-nicht-)
      * [Ich bin vor dem Wecker aufgewacht und möchte heute nicht mehr geweckt werden.](#ich-bin-vor-dem-wecker-aufgewacht-und-möchte-heute-nicht-mehr-geweckt-werden)
+     * [Wie stoppe oder snoozee ich einen Wecker ?](#wie-stoppe-oder-snoozee-ich-einen-wecker-)
+  * [Benutzerdefinierter MP3-Alarmton](#benutzerdefinierter-mp3-alarmton)
   * [Nachtmodus](#nachtmodus)
   * [Helligkeitseinstellungen](#helligkeitseinstellungen)
      * [Manueller Helligkeitsmodus](#manueller-helligkeitsmodus)
@@ -81,43 +76,6 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
 Nachtuhr zeigt keine Werbung - weder in der kostenlosen noch in der kostenpflichtigen Version.
 Falls Sie irgendwelche Werbung sehen, überprüfen Sie bitte andere Apps auf Ihrem Gerät.
 Ich möchte nicht zu einer Welt beitragen, die in allen möglichen Lebenssituationen voll mit Werbung ist.
-
-## In-App Käufe
-
-### Welche Pakete kann ich kaufen ?
-
-#### Vollversion
-
-Schaltet alle bezahlten Funktionen auf einmal frei. Die Vollversion ist
-verfügbar, solange kein Einzelpaket erworben wurde.
-
-#### Wetter- und Designpaket
-
-Fügt Wetterinformationen hinzu (als Statuszeile und als Wettervorschau)
-
-Nur ein analoges und ein digitales Uhrendesign sind in der freien Version
-verfügbar. Das Wetter- und Designpaket schaltet weitere analoge Designs frei,
-die über einen eingebauten Editor kreativ verändert werden können.
-
-#### Internetradio
-
-Diese Paket erlaubt das Abspielen von Radiostreams. Ebenso können eigene Töne
-oder Radiostreams zum Wecken verwendet werden.
-
-#### Fähigkeiten
-
-Fügt zusätzliche Fähigkeiten hinzu:
- - Always On: Start der App ohne eine angeschlossene Stromquelle.
- - Programmierter Autostart: Start der App zu einer voreingestellten Uhrzeit
-   (ohne einen Alarm stellen zu müssen)
- - Autostart bei neuen Benachrichtigungen
-
-#### Spende
-
-Um Ihre Anerkennung für diese App zu zeigen und zusätzlich zu unterstützen,
-können Sie eine Spende hinterlassen.
-Damit werden die bezahlten Features ebenfalls freigeschaltet. Als besondere
-Aufmerksamkeit gibt es eine exklusive Überraschung: ein Retro-Flipkarten Design.
 
 [nach oben](#inhaltsverzeichnis)
 
@@ -316,6 +274,20 @@ angezeigt. Um einen wiederholenden Wecker einmalig zu deaktivieren, können
 Sie in dieser Benachrichtigung AUSLASSEN auswählen. Damit wird die nächste
 Weckzeit übersprungen und der Wecker bleibt für den folgenden Wecktag aktiv.
 
+### Wie stoppe oder snoozee ich einen Wecker ?
+
+Ein Wecker wird durch Tippen auf die untere rechte Ecke gestoppt. Snooze ist durch Tippen auf eine beliebige andere Stelle aktiviert.
+Die Snooze-Zeit ist in den Einstellungen > Wecker einstellbar.
+
+Bevorstehende Wecker können aus dem Benachrichtigungsbereich gestoppt werden. Die Benachrichtigung wird
+ungefähr eine Stunde vor der Weckzeit angezeigt.
+
+## Benutzerdefinierter MP3-Alarmton
+
+Im Dialog zum Einstellen des Alarmtons können Sie Ihre benutzerdefinierte MP3-Datei auswählen, am unteren Rand des
+Dialogs. Navigieren Sie einfach zu Ihrem Musikordner und wählen Sie die gewünschte Datei aus. Mit der nächsten Version wird dieser
+Dialog in die Weckerübersicht verschoben, sodass Sie verschiedene Alarmtöne pro Wecker einstellen können.
+
 [nach oben](#inhaltsverzeichnis)
 
 ## Nachtmodus
@@ -481,3 +453,5 @@ Steuerung unterhalb der Uhr angezeigt.
 
 Es gibt einige Apps, die nicht auf die Android Standardschnittstellen zur Musiksteuerung zurückgreifen.
 Diese Apps können leider nicht über die Mediensteuerung angezeigt und gesteuert werden.
+
+[nach oben](#inhaltsverzeichnis)

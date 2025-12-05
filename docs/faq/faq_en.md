@@ -13,13 +13,6 @@ If your question is not listed here, please try to post it to the
 ## Table of Contents
   * [Ads](#ads)
      * [How do I remove the ads ?](#how-do-i-remove-the-ads-)
-  * [In-App payments](#in-app-payments)
-     * [Which payment options do I have ?](#which-payment-options-do-i-have-)
-        * [Full version](#full-version)
-        * [Weather and design package](#weather-and-design-package)
-        * [Web radio package](#web-radio-package)
-        * [Abilities](#abilities)
-        * [Donation](#donation)
   * [User Interface](#user-interface)
      * [How can I change the clock size ?](#how-can-i-change-the-clock-size-)
      * [How can I change the position of the clock ?](#how-can-i-change-the-position-of-the-clock-)
@@ -38,9 +31,13 @@ If your question is not listed here, please try to post it to the
      * [How to play a radio stream](#how-to-play-a-radio-stream)
      * [How to remove or edit a radio station button](#how-to-remove-or-edit-a-radio-station-button)
   * [Alarms](#alarms)
+     * [Why does activating Wi-Fi for the radio alarm not work?](#why-does-activating-wi-fi-for-the-radio-alarm-not-work)
+     * [I woke up before the alarm and don't want to be woken up today.](#i-woke-up-before-the-alarm-and-dont-want-to-be-woken-up-today)
      * [How do I stop or snooze an alarm ?](#how-do-i-stop-or-snooze-an-alarm-)
   * [Custom mp3 as alarm tone](#custom-mp3-as-alarm-tone)
-  * [Autostart](#autostart)
+  * [Autostart](#autostart-1)
+     * [Autostart](#autostart-1)
+     * [Always On](#always-on)
   * [Night mode](#night-mode)
   * [Brightness settings](#brightness-settings)
      * [Manual brightness mode](#manual-brightness-mode)
@@ -77,50 +74,6 @@ If your question is not listed here, please try to post it to the
 Night Clock does not show any advertisements, neither in the free version nor in the paid versions.
 If you observe any ads check the other apps on your device. I don't want to contribute to a world
 which is full of ads in all possible situations of life.
-
-[Top](#table-of-contents)
-
-## In-App payments
-
-### Which payment options do I have ?
-
-There a different packages available.
-
-#### Full version
-
-Gives access to all paid features which are described below.
-The full version is only available as long as you didn't purchase one
-of the packages.
-
-#### Weather and design package
-
-Adds weather information as a status line below the clock and a 5-day weather
-forecast (cf. [weather](#weather))
-
-Only one digital clock layout and one analog clock layout can be accessed
-in the free version. The package adds new clock faces. The preview and the clock
-designer interface are fully functional in the free version.
-
-#### Web radio package
-
-Adds the ability to play web radio streams from the main interface.
-Custom sounds or radio streams can be used as alarm clock.
-
-#### Abilities
-
-Adds additional abilities to the app.
-- Always On: Start the app automatically without connecting a power
-  source.
-- Scheduled Autostart: Start the app at a certain time (without
-  having to setup an alarm)
-- Notifications: start the app when new notifications show up.
-- Turn the screen off in night mode.
-
-#### Donation
-
-If you like to send a special appreciation for the app you can choose a
-donation. I will grant access to the paid features. As a special gift
-the donation unlocks a calendar view.
 
 [Top](#table-of-contents)
 
@@ -252,6 +205,14 @@ configuration window. There you can alter the radio stream for that button or re
 
 ## Alarms
 
+### Why does activating Wi-Fi for the radio alarm not work?
+
+Unfortunately, newer versions of Android prohibit automatically activating Wi-Fi when the device is in airplane mode. If you want to use the internet radio as an alarm clock, the only option is to do without airplane mode. Instead, you could manually deactivate Bluetooth, Wi-Fi and data connections.
+
+### I woke up before the alarm and don't want to be woken up today.
+
+A notification is displayed about an hour before the actual alarm time. To deactivate a repeating alarm once, you can select SKIP in this notification. This will skip the next alarm time and the alarm will remain active for the next alarm day.
+
 ### How do I stop or snooze an alarm ?
 
 An alarm is stopped by tapping the lower right corner. Snooze is enabled by tapping anywhere else.
@@ -270,11 +231,15 @@ dialog will move to the alarm overview allowing you to set different alarm tones
 
 ## Autostart
 
-The app has different options for auto starting. If you enable the autostart it starts as soon as
-it gets connected to a power source. If the app is interupted it waits until the device goes back
-into standby, i.e. the screen turns off and restarts the night clock. The "always on" feature is
-starting the app while the device is not charging. In order to save some battery I advise to stop
-the app after some minutes (Preferences > Autostart > Stop automatically > on battery timeout).
+There are two options for autostart: Autostart and Always On
+
+### Autostart
+
+The autostart becomes active when the device is connected to a previously defined power source (charger, USB, wireless, charger or dock). If the night clock is interrupted, it restarts as soon as the device goes into standby mode, e.g. when the screen turns off. The period in which the autostart is active can be defined. If all conditions are met at the start time, the night clock is then started. At the end of the period, the app is closed accordingly if the corresponding option is activated (Automatic shutdown > at the end of the autostart period).
+
+### Always On
+
+Always on supplements the autostart in the event that no power source is connected. The app is then started when the device goes into standby. A period can be defined in which the function is active. Below an adjustable battery charge level, the function is switched off so as not to discharge the battery too quickly. If the "screen up" function is activated, the device must be lying on a table for the "Always On" function to be activated. I also recommend using the Automatically exit > After timeout (in battery mode) function, because an activated display drains the battery quickly.
 
 [Top](#table-of-contents)
 
