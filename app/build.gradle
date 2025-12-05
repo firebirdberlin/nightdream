@@ -88,7 +88,9 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.11.0'
 
     // Google Libraries
-    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+    implementation 'androidx.media3:media3-exoplayer:1.3.1'
+    implementation 'androidx.media3:media3-ui:1.3.1'
+    implementation 'androidx.media3:media3-session:1.3.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'com.google.code.gson:gson:2.13.2'
@@ -105,7 +107,7 @@ dependencies {
     // Full flavor specific dependencies
     fullImplementation 'com.android.billingclient:billing:8.1.0'
     fullImplementation 'com.google.android.gms:play-services-cast-framework:22.2.0'
-    fullImplementation 'androidx.mediarouter:mediarouter:1.8.1'
+    fullImplementation 'androidx.media3:media3-cast:1.3.1'
 
     // Multidex support
     // https://developer.android.com/studio/build/multidex
