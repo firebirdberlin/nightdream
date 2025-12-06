@@ -79,15 +79,6 @@
                 android:data="https://github.com/firebirdberlin/nightdream" />
 
         </Preference>
-
-        <Preference
-            app:iconSpaceReserved="false"
-            app:icon="@drawable/ic_github"
-            app:title="@string/contribute_translation">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://firebirdberlin.github.io/nightdream/translation.html" />
-        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>
