@@ -86,7 +86,7 @@ public class RadioBrowserApi {
             // this should escape the queryString properly and guarantee a valid json string
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", queryString);
-            jsonObject.put("is_https", "true");
+//            jsonObject.put("is_https", "true");
             jsonObject.put("limit", MAX_NUM_RESULTS);
             if (countryCode != null && !countryCode.isEmpty()) {
                 jsonObject.put("countrycode", countryCode);
