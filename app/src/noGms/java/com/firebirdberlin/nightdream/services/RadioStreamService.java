@@ -33,7 +33,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
@@ -47,6 +46,15 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.MediaMetadata;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.Player;
+import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.hls.HlsMediaSource;
+import androidx.media3.exoplayer.source.MediaSource;
+import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -66,11 +74,6 @@ import com.firebirdberlin.radiostreamapi.PlaylistRequestTask;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.metadata.Metadata;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -141,7 +144,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
     };
     private PlaybackStateCompat.Builder stateBuilder;
-    private com.google.android.exoplayer2.MediaMetadata mediaMetaData = null;
+    private MediaMetadata mediaMetaData = null;
     private Bitmap iconRadio;
 
     public static void start(Context context, SimpleTime alarmTime) {
@@ -228,9 +231,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public void onCreate() {
         Log.d(TAG, "onCreate() called.");
         vibrator = new VibrationHandler(this);
-
-        //todo changing Radio Titles
-        Log.d(TAG, "Init chromecast");
 
         startForeground();
         Utility.registerEventBus(this);
@@ -415,7 +415,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
         streamURL = "";
-        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_radio);
+        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_audiotrack_dark);
 
         if (radioStationIndex > -1) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
@@ -545,9 +545,18 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         if (exoPlayer == null) {
             Log.d(TAG, "init exoPlayer");
+            DefaultHttpDataSource.Factory httpDataSourceFactory = new DefaultHttpDataSource.Factory();
+            MediaSource mediaSource;
+            if (streamURL.endsWith("m3u8")) {
+                mediaSource = new HlsMediaSource.Factory(httpDataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(streamURL));
+            } else {
+                mediaSource = new ProgressiveMediaSource.Factory(httpDataSourceFactory)
+                        .createMediaSource(MediaItem.fromUri(streamURL));
+            }
 
             exoPlayer = new ExoPlayer.Builder(getApplicationContext()).build();
-            exoPlayer.setMediaItem(MediaItem.fromUri(streamURL));
+            exoPlayer.setMediaSource(mediaSource);
             exoPlayer.prepare();
 
             exoPlayer.addListener(new Player.Listener() {
@@ -598,13 +607,9 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                     }
                 }
 
-                @Override
-                public void onMetadata(@NonNull Metadata metadata) {
-                    Log.i(TAG, "onMetaData:" + metadata);
-                }
 
                 @Override
-                public void onMediaMetadataChanged(@NonNull com.google.android.exoplayer2.MediaMetadata metadata) {
+                public void onMediaMetadataChanged(@NonNull MediaMetadata metadata) {
                     Log.i(TAG, "onMediaMetadataChanged:" + metadata.title);
                     mediaMetaData = metadata;
                     if (metadata.title != null) {
@@ -784,14 +789,14 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         if (stateBuilder.build().getState() == PlaybackStateCompat.STATE_PLAYING) {
             return new NotificationCompat.Action(
-                    R.drawable.exo_controls_pause, getString(R.string.radio_pause),
+                    R.drawable.media3_notification_pause, getString(R.string.radio_pause),
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                             this, PlaybackStateCompat.ACTION_PAUSE
                     )
             );
         } else {
             return new NotificationCompat.Action(
-                    R.drawable.exo_controls_play, getString(R.string.radio_play),
+                    R.drawable.media3_notification_play, getString(R.string.radio_play),
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                             this, PlaybackStateCompat.ACTION_PLAY
                     )
@@ -801,7 +806,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
     private NotificationCompat.Action notificationNextStationAction() {
         return new NotificationCompat.Action(
-                R.drawable.exo_controls_next, getString(R.string.radio_next),
+                R.drawable.media3_notification_seek_to_next, getString(R.string.radio_next),
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                         this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT
                 )
@@ -810,7 +815,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
     private NotificationCompat.Action notificationPreviousStationAction() {
         return new NotificationCompat.Action(
-                R.drawable.exo_controls_previous, getString(R.string.radio_previous),
+                R.drawable.media3_notification_seek_to_previous, getString(R.string.radio_previous),
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                         this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                 )
@@ -935,12 +940,4 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             skipToNextStation();
         }
     }
-
-
-
-
-
-
-
-
 }
