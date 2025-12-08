@@ -25,7 +25,6 @@ import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -85,12 +84,14 @@ public class WeatherLayout extends LinearLayout {
     public WeatherLayout(Context context) {
         super(context);
         this.context = context;
+        Log.d(TAG, "WeatherLayout(Context)");
         init();
     }
 
     public WeatherLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        Log.d(TAG, "WeatherLayout(Context, AttributeSet)");
         String content = getAttributeStringValue(attrs, NAMESPACE, "content", "icon|temperature|wind");
         String orientation = getAttributeStringValue(attrs, NAMESPACE, "orientation", "horizontal");
         cycle = attrs.getAttributeBooleanValue(NAMESPACE, "cycle", false);
@@ -115,20 +116,24 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWeatherIconMode(int weatherIconMode) {
+        Log.d(TAG, "setWeatherIconMode(int)");
         this.weatherIconMode = weatherIconMode;
     }
 
     @Override
     public void setOrientation(int orientation) {
+        Log.d(TAG, "setOrientation(int)");
         isVertical = orientation == LinearLayout.VERTICAL;
         setViewVisibility();
     }
 
     public void setIconSizeFactor(int iconSizeFactor) {
+        Log.d(TAG, "setIconSizeFactor(int)");
         this.iconSizeFactor = iconSizeFactor;
     }
 
     public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
+        Log.d(TAG, "setTemperature(boolean, boolean, int)");
         on = content.contains("temperature") && on;
         this.showTemperature = on;
         this.showApparentTemperature = showApparentTemperature;
@@ -141,6 +146,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWindSpeed(boolean on, int unit) {
+        Log.d(TAG, "setWindSpeed(boolean, int)");
         on = content.contains("wind") && on;
         this.showWindSpeed = on;
         this.speedUnit = unit;
@@ -152,10 +158,12 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setIcon(boolean on) {
+        Log.d(TAG, "setIcon(boolean)");
         showIcon = content.contains("icon") && on;
     }
 
     public void setLocation(boolean on) {
+        Log.d(TAG, "setLocation(boolean)");
         on = content.contains("location") && on;
         showLocation = on;
         locationText.setVisibility((on) ? View.VISIBLE : View.GONE);
@@ -167,6 +175,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void init() {
+        Log.d(TAG, "init()");
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View child = inflater.inflate(R.layout.weather_layout, null);
@@ -189,14 +198,17 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setMaxWidth(int width) {
+        Log.d(TAG, "setMaxWidth(int)");
         this.maxWidth = width;
     }
 
     public void setMaxHeight(int height) {
+        Log.d(TAG, "setMaxHeight(int)");
         this.maxHeight = height;
     }
 
     public void setViewVisibility() {
+        Log.d(TAG, "setViewVisibility()");
         container.setOrientation(isVertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
         if (cycle) {
             ArrayList<String> items = new ArrayList<>(cycleItems);
@@ -247,6 +259,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void clear() {
+        Log.d(TAG, "clear()");
         iconText.setText("");
         iconImage.setImageDrawable(null);
         iconWind.setText("");
@@ -267,17 +280,20 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTypeface(Typeface typeface) {
+        Log.d(TAG, "setTypeface(Typeface)");
         temperatureText.setTypeface(typeface);
         windText.setTypeface(typeface);
         locationText.setTypeface(typeface);
     }
 
     public void setMaxFontSizesInSp(float minSize, float maxSize) {
+        Log.d(TAG, "setMaxFontSizesInSp(float, float)");
         this.minFontSizePx = Utility.spToPx(context, minSize);
         this.maxFontSizePx = Utility.spToPx(context, maxSize);
     }
 
     public void setColor(int color) {
+        Log.d(TAG, "setColor(int)");
         if (iconText != null) {
             iconText.setTextColor(color);
         }
@@ -310,9 +326,7 @@ public class WeatherLayout extends LinearLayout {
                 Drawable d = getIconImage(entry);
                 iconImage.setImageDrawable(d);
 
-                if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED
-                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        && d instanceof AnimatedVectorDrawable) {
+                if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED && d instanceof AnimatedVectorDrawable) {
                     ((AnimatedVectorDrawable) d).start();
                 }
             }
@@ -329,6 +343,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public Drawable getIconImage(WeatherEntry entry) {
+        Log.d(TAG, "getIconImage(WeatherEntry)");
         String identifier = entry.getWeatherIconIdentifier(weatherIconMode, widget);
 
         int imageID = getResources().getIdentifier(
@@ -336,12 +351,12 @@ public class WeatherLayout extends LinearLayout {
         );
         if (imageID > 0) {
             return ContextCompat.getDrawable(context, imageID);
-        } else {
-            return null;
         }
+        return null;
     }
 
     public void setTextSizePx(int size) {
+        Log.d(TAG, "setTextSizePx(int)");
         int unit = TypedValue.COMPLEX_UNIT_PX;
 
         iconText.setTextSize(unit, iconSizeFactor * size);
@@ -359,10 +374,22 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public float getTextSize() {
+        Log.d(TAG, "getTextSize()");
         return temperatureText.getTextSize();
     }
 
+    public WeatherEntry getWeatherEntry() {
+        Log.d(TAG, "getWeatherEntry()");
+        return this.weatherEntry;
+    }
+    public CharSequence getLocationText() {
+        Log.i(TAG, "getLocationText() -> " + this.locationText.getText());
+        return this.locationText.getText();
+    }
+
     public void update() {
+        boolean isValid = weatherEntry != null;
+        Log.d(TAG, "update() -> " + isValid);
         setViewVisibility();
         adjustTextSize();
         temperatureText.invalidate();
@@ -375,6 +402,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void adjustTextSize() {
+        Log.d(TAG, "adjustTextSize()");
         if (maxWidth == -1) return;
         if (maxFontSizePx == -1 || minFontSizePx == -1) return;
         for (int size = minFontSizePx; size <= maxFontSizePx; size++) {
@@ -387,14 +415,17 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public int getIconHeight() {
+        Log.d(TAG, "getIconHeight()");
         return Utility.getHeightOfView(iconText);
     }
 
     public void setIconHeight(int height) {
+        Log.d(TAG, "setIconHeight(int)");
         this.iconHeight = height;
     }
 
     private void fixIconWindDirectionSize() {
+        Log.d(TAG, "fixIconWindDirectionSize()");
         int height = Utility.getHeightOfView(temperatureText);
         if (iconHeight > 0) height = iconHeight;
         LayoutParams layoutParams = (LayoutParams) iconWindDirection.getLayoutParams();
@@ -406,14 +437,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public int measureText() {
+        Log.d(TAG, "measureText()");
         int textSize = 0;
-        textSize += isVisible(iconText) ? measureText(iconText) : 0;
-        textSize += isVisible(temperatureText) ? measureText(temperatureText) : 0;
-        textSize += isVisible(locationText) ? measureText(locationText) : 0;
-        textSize += isVisible(windText) ? measureText(windText) : 0;
-        textSize += isVisible(iconWind) ? measureText(iconWind) : 0;
-
-        textSize += isVisible(iconWindDirection) ? measureText(temperatureText) : 0;
+        textSize += isVisible(iconText) ? (int) measureText(iconText) : 0;
+        textSize += isVisible(temperatureText) ? (int) measureText(temperatureText) : 0;
+        textSize += isVisible(locationText) ? (int) measureText(locationText) : 0;
+        textSize += isVisible(windText) ? (int) measureText(windText) : 0;
+        textSize += isVisible(iconWind) ? (int) measureText(iconWind) : 0;
+        textSize += isVisible(iconWindDirection) ? (int) measureText(temperatureText) : 0;
         // temperatureText is used to determine the line height
 
         // add 10% for padding
@@ -426,6 +457,7 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public boolean shallBeVisible() {
+        Log.d(TAG, "shallBeVisible()");
         if (weatherEntry == null) return false;
         return weatherEntry.isValid();
     }
@@ -442,21 +474,25 @@ public class WeatherLayout extends LinearLayout {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        Log.d(TAG, "onAttachedToWindow()");
         setTimeTick();
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        Log.d(TAG, "onDetachedFromWindow()");
         unsetTimeTick();
     }
 
     void setTimeTick() {
+        Log.d(TAG, "setTimeTick()");
         timeReceiver = new TimeReceiver();
         context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
 
     void unsetTimeTick() {
+        Log.d(TAG, "unsetTimeTick()");
         if (timeReceiver != null) {
             try {
                 context.unregisterReceiver(timeReceiver);
@@ -468,12 +504,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWidget(boolean widget) {
+        Log.d(TAG, "setWidget(boolean)");
         this.widget = widget;
     }
 
     class TimeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent arg1) {
+            Log.d(TAG, "TimeReceiver.onReceive()");
             if (!cycle) unsetTimeTick();
             update();
         }

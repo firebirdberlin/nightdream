@@ -55,7 +55,7 @@ public class DownloadWeatherModel extends ViewModel {
                 ).addTag(TAG).setConstraints(constraints).build();
 
         WorkManager manager = WorkManager.getInstance(context);
-        manager.enqueueUniquePeriodicWork("DownloadWeather", ExistingPeriodicWorkPolicy.REPLACE, downloadWeatherWork);
+        manager.enqueueUniquePeriodicWork("DownloadWeather", ExistingPeriodicWorkPolicy.KEEP, downloadWeatherWork);
 
         manager.getWorkInfoByIdLiveData(downloadWeatherWork.getId())
                 .observe((LifecycleOwner) context, info -> DownloadWeatherService.outputObservable.observe(
