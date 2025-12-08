@@ -185,7 +185,7 @@ public class WeatherForecastActivity
                 getWeatherForCurrentLocation();
             } else {
                 selectedCity = settings.getCityForWeather();
-                if (selectedCity != null && selectedCity.id > 0) {
+                if (selectedCity != null) {
                     Log.i(TAG, "starting with " + selectedCity.toJson());
                     addToFavoriteCities(selectedCity);
                     requestWeather(selectedCity);
@@ -420,9 +420,12 @@ public class WeatherForecastActivity
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
 
             if (settings.showPollen) {
-                City geocodedCity = GeocoderApi.findCityByCoordinates(this, city.lat, city.lon);
-                if (geocodedCity == null) return;
-                String postCode = geocodedCity.postalCode;
+                String postCode = city.postalCode;
+                if (Utility.isEmpty(postCode)) {
+                    City geocodedCity = GeocoderApi.findCityByCoordinates(this, city.lat, city.lon);
+                    if (geocodedCity == null) return;
+                    postCode = geocodedCity.postalCode;
+                }
                 new PollenExposureRequestTask(this, this).execute(postCode);
             }
         }
@@ -466,13 +469,14 @@ public class WeatherForecastActivity
         init();
         invalidateOptionsMenu();
         City city = settings.getCityForWeather();
-        if (!autoLocationEnabled && (city == null || city.id == 0)) {
+        if (!autoLocationEnabled && city == null) {
             showWeatherLocationDialog();
         }
     }
 
     @Override
     protected void onPurchasesInitialized() {
+        Log.i(TAG, "onPurchasesInitialized");
         super.onPurchasesInitialized();
         init();
         invalidateOptionsMenu();

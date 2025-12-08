@@ -187,7 +187,6 @@ public class Settings {
     public String dateFormat;
     public String timeFormat;
     public WeatherEntry weatherEntry;
-    public String weatherCityID;
     public Set<Integer> autostartWeekdays;
     public Set<Integer> alwaysOnWeekdays;
     public Set<Integer> scheduledAutostartWeekdays;
@@ -541,7 +540,6 @@ public class Settings {
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
-        weatherCityID = settings.getString("weatherCityID", "");
         weather_icon = Integer.parseInt(settings.getString("weatherIconMode", "1"));
         batteryTimeout = getBatteryTimeoutMinutes();
 
@@ -1235,7 +1233,7 @@ public class Settings {
     void initWeatherAutoLocationEnabled() {
         if (!settings.contains("weatherAutoLocationEnabled") && showWeather) {
             City city = getCityForWeather();
-            boolean on = (city == null || city.id == 0);
+            boolean on = (city == null);
             setWeatherAutoLocationEnabled(on);
         }
     }
@@ -1253,11 +1251,9 @@ public class Settings {
     void setWeatherLocation(City city) {
         SharedPreferences.Editor prefEditor = settings.edit();
         if (city != null) {
-            prefEditor.putString("weatherCityID", String.valueOf(city.id));
             prefEditor.putString("weatherCityID_name", city.name);
             prefEditor.putString("weatherCityID_json", city.toJson());
         } else {
-            prefEditor.putString("weatherCityID", "");
             prefEditor.putString("weatherCityID_name", "");
             prefEditor.putString("weatherCityID_json", "");
         }
@@ -1277,7 +1273,6 @@ public class Settings {
             this.weatherEntry.weatherIconMeteoconsSymbol = settings.getString("weather_icon_meteocons_symbol", this.weatherEntry.weatherIconMeteoconsSymbol);
             this.weatherEntry.description = settings.getString("weather_description", this.weatherEntry.description);
             this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
-            this.weatherEntry.cityID = settings.getInt("weather_city_id", this.weatherEntry.cityID);
             this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
             this.weatherEntry.apparentTemperature = settings.getFloat("weather_felt_temperature", (float) this.weatherEntry.apparentTemperature);
             this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
@@ -1299,7 +1294,6 @@ public class Settings {
         prefEditor.putString("weather_icon_meteocons_symbol", entry.weatherIconMeteoconsSymbol);
         prefEditor.putString("weather_city_name", entry.cityName);
         prefEditor.putString("weather_description", entry.description);
-        prefEditor.putInt("weather_city_id", entry.cityID);
         prefEditor.putFloat("weather_temperature", (float) entry.temperature);
         prefEditor.putFloat("weather_felt_temperature", (float) entry.apparentTemperature);
         prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
