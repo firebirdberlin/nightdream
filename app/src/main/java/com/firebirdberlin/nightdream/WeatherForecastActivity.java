@@ -185,7 +185,7 @@ public class WeatherForecastActivity
                 getWeatherForCurrentLocation();
             } else {
                 selectedCity = settings.getCityForWeather();
-                if (selectedCity != null && selectedCity.id > 0) {
+                if (selectedCity != null) {
                     Log.i(TAG, "starting with " + selectedCity.toJson());
                     addToFavoriteCities(selectedCity);
                     requestWeather(selectedCity);
@@ -466,13 +466,14 @@ public class WeatherForecastActivity
         init();
         invalidateOptionsMenu();
         City city = settings.getCityForWeather();
-        if (!autoLocationEnabled && (city == null || city.id == 0)) {
+        if (!autoLocationEnabled && city == null) {
             showWeatherLocationDialog();
         }
     }
 
     @Override
     protected void onPurchasesInitialized() {
+        Log.i(TAG, "onPurchasesInitialized");
         super.onPurchasesInitialized();
         init();
         invalidateOptionsMenu();

@@ -423,6 +423,10 @@ private String getProductWithPrice(int resId, String sku) {
             @Override
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 Log.i(TAG, "onBillingSetupFinished");
+                if (BuildConfig.DEBUG) {
+                    onPurchasesInitialized();
+                    return;
+                }
                 try {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         // The BillingClient is ready. You can query purchases here.

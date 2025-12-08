@@ -1235,7 +1235,7 @@ public class Settings {
     void initWeatherAutoLocationEnabled() {
         if (!settings.contains("weatherAutoLocationEnabled") && showWeather) {
             City city = getCityForWeather();
-            boolean on = (city == null || city.id == 0);
+            boolean on = (city == null);
             setWeatherAutoLocationEnabled(on);
         }
     }
