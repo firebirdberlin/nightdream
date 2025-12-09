@@ -585,7 +585,6 @@ public class ClockLayout extends LinearLayout {
             date.invalidate();
         }
 
-
         if (weatherLayout != null && clock != null) {
             float textSize = (float) Utility.pixelsToDp(context, clock.getTextSize());
             weatherLayout.setMaxWidth((int) (maxWidth));
@@ -599,10 +598,13 @@ public class ClockLayout extends LinearLayout {
                 float textSize = (float) Utility.pixelsToDp(context, date.getTextSize());
                 layout.setLocation(true);
                 layout.setMaxWidth((int) maxWidth);
+                TextView v = (TextView) findViewById(R.id.locationText);
+                v.setTextSize(date.getTextSize());
                 layout.setMaxFontSizesInSp(10.f, textSize);
                 layout.update();
             }
         }
+
 
         if (displayInWidget) {
             setDividerHeight(Utility.getHeightOfView(this));

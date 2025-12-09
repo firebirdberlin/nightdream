@@ -8,26 +8,27 @@
     android:padding="6dp"
     android:orientation="vertical">
 
-    <GridLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/grid_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:rowCount="2"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <!--
                 time
         -->
         <LinearLayout
             android:id="@+id/time_layout"
-            android:layout_width="wrap_content"
-            android:layout_columnWeight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:gravity="center"
             android:orientation="horizontal"
-            >
+            app:layout_constraintBottom_toTopOf="@+id/date"
+            app:layout_constraintEnd_toStartOf="@+id/divider2"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_chainStyle="packed">
 
             <com.firebirdberlin.nightdream.CustomDigitalClock
                 xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -47,7 +48,8 @@
                 custom:format12Hr="h:mm"
                 custom:format24Hr="HH:mm" />
 
-            <com.firebirdberlin.nightdream.CustomDigitalClock xmlns:custom="http://schemas.android.com/apk/res-auto"
+            <com.firebirdberlin.nightdream.CustomDigitalClock
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/clock_ampm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,13 +72,16 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
             android:ellipsize="none"
             android:singleLine="true"
             android:text="Sun, 30. October 2016"
             android:textColor="#C2C2C2"
             android:textStyle="bold"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/time_layout"
+            app:layout_constraintStart_toStartOf="@id/time_layout"
+            app:layout_constraintTop_toBottomOf="@+id/time_layout"
             custom:capitalize="true"
             custom:fontPath="fonts/roboto_light.ttf"
             custom:format12Hr="dd. MMMM yyyy"
@@ -87,30 +92,33 @@
             android:id="@+id/divider2"
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_margin="6dp"
-            android:layout_marginBottom="0dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginHorizontal="6dp"
             android:background="#C2C2C2"
-            android:layout_gravity="fill_vertical"
-            android:layout_rowSpan="2"
             android:tag="divider"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/weather_container"
+            app:layout_constraintStart_toEndOf="@+id/time_layout"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/weather_container"
-            android:layout_width="wrap_content"
-            android:layout_columnWeight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/weatherLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/divider2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_chainStyle="packed">
+
             <com.firebirdberlin.nightdream.ui.WeatherLayout
                 xmlns:weather="weather"
                 android:id="@+id/weatherLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_flexBasisPercent="15%"
                 weather:content="icon|temperature|wind"
                 weather:cycle="true"
                 weather:indicateEmpty="true"
@@ -120,14 +128,16 @@
         <com.firebirdberlin.nightdream.ui.WeatherLayout
             xmlns:weather="weather"
             android:id="@+id/weatherLayout2"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/weather_container"
+            app:layout_constraintStart_toStartOf="@id/weather_container"
+            app:layout_constraintTop_toBottomOf="@+id/weather_container"
             weather:content="location"
-            weather:indicateEmpty="true"
-            />
-    </GridLayout>
+            weather:indicateEmpty="true" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pollen_container"
