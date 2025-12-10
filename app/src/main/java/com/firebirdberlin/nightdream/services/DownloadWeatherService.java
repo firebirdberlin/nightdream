@@ -81,14 +81,15 @@ public class DownloadWeatherService extends Worker {
                         ? weatherLocation.distanceTo(gpsLocation) : -1.f;
 
         Log.d(TAG, String.format("Weather: data age %d => %b", age, age > maxAge));
-        if (settings.weatherCityID.isEmpty()) {
+        if (settings.getWeatherAutoLocationEnabled()) {
             Log.d(TAG, "GPS distance " + gpsDistance + " m ");
         }
 
         boolean result = (
                 Utility.hasNetworkConnection(context) && (
-                        age < 0L || age > maxAge
-                                || (settings.weatherCityID.isEmpty() && gpsDistance > 10000.f)
+                        age < 0L
+                        || age > maxAge
+                        || (settings.getWeatherAutoLocationEnabled() && gpsDistance > 10000.f)
                 )
         );
 
@@ -108,7 +109,6 @@ public class DownloadWeatherService extends Worker {
 
         City city = settings.getCityForWeather();
         Location location = settings.getLocation();
-        String cityID = settings.weatherCityID;
         Settings.WeatherProvider weatherProvider = settings.getWeatherProvider();
         WeatherEntry entry;
 
@@ -116,12 +116,22 @@ public class DownloadWeatherService extends Worker {
         switch (weatherProvider) {
             case OPEN_WEATHER_MAP:
             default:
-                entry = OpenWeatherMapApi.fetchWeatherDataApi(
-                        getApplicationContext(),
-                        cityID,
-                        (float) location.getLatitude(),
-                        (float) location.getLongitude()
-                );
+                if (city != null) {
+                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
+                            getApplicationContext(),
+                            String.valueOf(city.id),
+                            (float) city.lat,
+                            (float) city.lon
+                    );
+                } else {
+                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
+                            getApplicationContext(),
+                            null,
+                            (float) location.getLatitude(),
+                            (float) location.getLongitude()
+                    );
+
+                }
                 break;
             case BRIGHT_SKY:
                 if (city != null) {

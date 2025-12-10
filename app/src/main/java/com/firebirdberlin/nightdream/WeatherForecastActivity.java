@@ -420,9 +420,12 @@ public class WeatherForecastActivity
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
 
             if (settings.showPollen) {
-                City geocodedCity = GeocoderApi.findCityByCoordinates(this, city.lat, city.lon);
-                if (geocodedCity == null) return;
-                String postCode = geocodedCity.postalCode;
+                String postCode = city.postalCode;
+                if (Utility.isEmpty(postCode)) {
+                    City geocodedCity = GeocoderApi.findCityByCoordinates(this, city.lat, city.lon);
+                    if (geocodedCity == null) return;
+                    postCode = geocodedCity.postalCode;
+                }
                 new PollenExposureRequestTask(this, this).execute(postCode);
             }
         }
