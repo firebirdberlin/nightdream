@@ -428,10 +428,7 @@ public class ClockLayout extends LinearLayout {
     private void updateLayout(
             int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
     ) {
-        if (
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                        && notificationLayout != null
-        ) {
+        if (notificationLayout != null) {
             notificationLayout.setVisibility(
                     mNotificationListener.running
                             && showNotifications
@@ -560,7 +557,7 @@ public class ClockLayout extends LinearLayout {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        {
+        { //todo still necessary?
             View v = findViewById(R.id.time_layout);
             v.getLayoutParams().width = (int) maxWidth;
             v.requestLayout();
@@ -592,16 +589,18 @@ public class ClockLayout extends LinearLayout {
             weatherLayout.setMaxFontSizesInSp(10.f, textSize);
             weatherLayout.update();
         }
-        for (int i = 1; i < weatherLayouts.length; i++) {
-            WeatherLayout layout = weatherLayouts[i];
-            if (layout != null) {
-                float textSize = (float) Utility.pixelsToDp(context, date.getTextSize());
-                layout.setLocation(true);
-                layout.setMaxWidth((int) maxWidth);
-                TextView v = (TextView) findViewById(R.id.locationText);
-                v.setTextSize(date.getTextSize());
-                layout.setMaxFontSizesInSp(10.f, textSize);
-                layout.update();
+
+
+        if (weatherLayout != null && date != null) {
+            int textSize = date.getCurrentTextSizeSp();
+            Log.i(TAG, "textSize=" + textSize);
+            TextView v = findViewById(R.id.weatherLocationText);
+            v.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+            WeatherEntry weatherEntry = weatherLayout.getWeatherEntry();
+            if (weatherEntry != null) {
+                v.setText(weatherEntry.cityName);
+            } else {
+                v.setText("...");
             }
         }
 
@@ -947,6 +946,8 @@ public class ClockLayout extends LinearLayout {
 
     public void update(WeatherEntry entry, boolean displayInWidget) {
         Log.i(TAG, "update(WeatherEntry) " + entry.cityName);
+        weatherLayout.setWidget(displayInWidget);
+        weatherLayout.update(entry);
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null) {
                 layout.setWidget(displayInWidget);

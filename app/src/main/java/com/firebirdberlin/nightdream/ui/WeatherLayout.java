@@ -310,9 +310,7 @@ public class WeatherLayout extends LinearLayout {
                 Drawable d = getIconImage(entry);
                 iconImage.setImageDrawable(d);
 
-                if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED
-                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        && d instanceof AnimatedVectorDrawable) {
+                if (weatherIconMode == Settings.WEATHER_ICON_MODE_ANIMATED && d instanceof AnimatedVectorDrawable) {
                     ((AnimatedVectorDrawable) d).start();
                 }
             }
@@ -360,6 +358,10 @@ public class WeatherLayout extends LinearLayout {
 
     public float getTextSize() {
         return temperatureText.getTextSize();
+    }
+
+    public WeatherEntry getWeatherEntry() {
+        return this.weatherEntry;
     }
 
     public void update() {
