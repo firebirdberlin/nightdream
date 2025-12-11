@@ -114,25 +114,6 @@ public class DownloadWeatherService extends Worker {
 
         Log.d(TAG, "fetchWeatherData");
         switch (weatherProvider) {
-            case OPEN_WEATHER_MAP:
-            default:
-                if (city != null) {
-                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
-                            getApplicationContext(),
-                            String.valueOf(city.id),
-                            (float) city.lat,
-                            (float) city.lon
-                    );
-                } else {
-                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
-                            getApplicationContext(),
-                            null,
-                            (float) location.getLatitude(),
-                            (float) location.getLongitude()
-                    );
-
-                }
-                break;
             case BRIGHT_SKY:
                 if (city != null) {
                     entry = BrightSkyApi.fetchCurrentWeatherData(
@@ -163,10 +144,28 @@ public class DownloadWeatherService extends Worker {
                     );
                 }
                 break;
+            case OPEN_WEATHER_MAP:
+            default:
+                if (city != null) {
+                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
+                            getApplicationContext(),
+                            String.valueOf(city.id),
+                            (float) city.lat,
+                            (float) city.lon
+                    );
+                } else {
+                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
+                            getApplicationContext(),
+                            null,
+                            (float) location.getLatitude(),
+                            (float) location.getLongitude()
+                    );
+
+                }
+                break;
         }
 
-        if ((entry != null) &&
-                (entry.timestamp > WeatherEntry.INVALID)) {
+        if (entry != null && entry.timestamp > WeatherEntry.INVALID) {
             settings.setWeatherEntry(entry);
             ScreenWatcherService.updateNotification(getApplicationContext(), entry, settings.temperatureUnit);
             Log.d(TAG, "Download finished.");

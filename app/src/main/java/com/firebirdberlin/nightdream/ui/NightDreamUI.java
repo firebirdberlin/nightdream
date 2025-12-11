@@ -829,9 +829,9 @@ public class NightDreamUI {
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
         Configuration config = getConfiguration();
+        clockLayout.update(settings.weatherEntry, false);
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
-        clockLayout.update(settings.weatherEntry, false);
         updatePollenExposure(settings.weatherEntry);
         setClockPosition(config);
     }
@@ -1225,7 +1225,7 @@ public class NightDreamUI {
         };
 
         clockLayout.removeCallbacks(fixConfig);
-        clockLayout.postDelayed(fixConfig, 500);
+        clockLayout.postDelayed(fixConfig, 200);
     }
 
     private void postDelayed(Runnable runnable, long delayMillis) {

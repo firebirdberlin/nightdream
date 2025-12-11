@@ -535,7 +535,8 @@ public class ClockLayout extends LinearLayout {
             if (dateTextSize > 0) {
                 layout.setTypeface(date.getTypeface());
                 layout.setTextSizePx(dateTextSize);
-            } else {
+            }
+            else {
                 int sizePx = Utility.spToPx(context, maxFontSize);
                 layout.setTextSizePx(sizePx);
             }
@@ -557,12 +558,6 @@ public class ClockLayout extends LinearLayout {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        { //todo still necessary?
-            View v = findViewById(R.id.time_layout);
-            v.getLayoutParams().width = (int) maxWidth;
-            v.requestLayout();
-        }
-
         {
             View v = findViewById(R.id.weather_container);
             v.getLayoutParams().width = showWeather ? (int) maxWidth : 0;
@@ -571,14 +566,35 @@ public class ClockLayout extends LinearLayout {
             divider.setVisibility(showWeather ? View.VISIBLE : View.GONE);
         }
 
+        LinearLayout timeLayout = findViewById(R.id.time_layout);
+        if (timeLayout != null) {
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) timeLayout.getLayoutParams();
+            if (!showWeather) {
+                // Center time_layout in parent
+                params.width = LayoutParams.MATCH_PARENT;
+                params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+                params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+                params.rightToLeft = ConstraintLayout.LayoutParams.UNSET; // Remove constraint to divider2
+                params.horizontalChainStyle = 0; // CHAIN_NONE
+            } else {
+                // Restore original constraints
+                params.width = 0; // Match constraint (0dp)
+                params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+                params.rightToLeft = R.id.divider2;
+                params.rightToRight = ConstraintLayout.LayoutParams.UNSET;
+                params.horizontalChainStyle = ConstraintLayout.LayoutParams.CHAIN_SPREAD; // Restore spread chain style
+            }
+            timeLayout.setLayoutParams(params);
+        }
+
         if (clock != null) {
             clock.setMaxWidth((int) maxWidth);
-            clock.setMaxFontSizesInSp(10.f, 50.f);
+            clock.setMaxFontSizesInSp(8.f, 50.f);
             clock.invalidate();
         }
         if (date != null) {
             date.setMaxWidth((int) maxWidth);
-            date.setMaxFontSizesInSp(10.f, 20.f);
+            date.setMaxFontSizesInSp(6.f, 20.f);
             date.invalidate();
         }
 
@@ -592,35 +608,15 @@ public class ClockLayout extends LinearLayout {
 
 
         if (weatherLayout != null && date != null) {
+            Log.i(TAG, "updateLocation -> "+ weatherLayout.getLocationText());
             int textSize = date.getCurrentTextSizeSp();
-            Log.i(TAG, "textSize=" + textSize);
             TextView v = findViewById(R.id.weatherLocationText);
+            v.setVisibility(showWeather ? View.VISIBLE : View.GONE);
             v.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-            WeatherEntry weatherEntry = weatherLayout.getWeatherEntry();
-            if (weatherEntry != null) {
-                v.setText(weatherEntry.cityName);
-            } else {
-                v.setText("...");
-            }
+            v.setText(weatherLayout.getLocationText());
         }
 
-
-        if (displayInWidget) {
-            setDividerHeight(Utility.getHeightOfView(this));
-        } else {
-            final View container = findViewById(R.id.grid_layout);
-            container.post(() -> setDividerHeight((int) (.9f * container.getHeight())));
-        }
         requestLayout();
-    }
-
-    void setDividerHeight(int height) {
-        if (!showWeather) {
-            return;
-        }
-        View divider = findViewWithTag("divider");
-        divider.getLayoutParams().height = height;
-        divider.invalidate();
     }
 
     void updateDigitalClockInWidget(int parentWidth, int parentHeight) {
@@ -947,7 +943,6 @@ public class ClockLayout extends LinearLayout {
     public void update(WeatherEntry entry, boolean displayInWidget) {
         Log.i(TAG, "update(WeatherEntry) " + entry.cityName);
         weatherLayout.setWidget(displayInWidget);
-        weatherLayout.update(entry);
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null) {
                 layout.setWidget(displayInWidget);
