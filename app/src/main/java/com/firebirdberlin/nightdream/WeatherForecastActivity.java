@@ -42,6 +42,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
@@ -218,6 +219,7 @@ public class WeatherForecastActivity
         todayView.addView(layout);
 
         settings.setWeatherEntry(entry);
+        ScreenWatcherService.updateNotification(getApplicationContext(), entry, settings.temperatureUnit);
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {

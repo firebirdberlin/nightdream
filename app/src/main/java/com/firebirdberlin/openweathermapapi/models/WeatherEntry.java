@@ -20,11 +20,13 @@ package com.firebirdberlin.openweathermapapi.models;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
+import com.google.gson.Gson;
 
 import org.shredzone.commons.suncalc.SunTimes;
 
@@ -58,17 +60,27 @@ public class WeatherEntry {
     public float lon = 0.0f;
     public double windSpeed = 0.;
     public int windDirection = -1;
-    public WeatherEntry() {
+    public WeatherEntry() {}
 
+
+    public static WeatherEntry fromJson(String json) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, WeatherEntry.class);
     }
 
-    public long getSunriseTime() {        if (sunriseTime > 0L) {
-        return sunriseTime * 1000;
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
+
+    public long getSunriseTime() {
+        if (sunriseTime > 0L) {
+            return sunriseTime * 1000;
+        }
         SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
         // The library now returns a ZonedDateTime object
         java.time.ZonedDateTime rise = sunTime.getRise();
-        if (rise != null) {
+        if (rise != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Convert ZonedDateTime to milliseconds since epoch
             return rise.toInstant().toEpochMilli();
         }
@@ -82,7 +94,7 @@ public class WeatherEntry {
         SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
         // The library now returns a ZonedDateTime object
         java.time.ZonedDateTime set = sunTime.getSet();
-        if (set != null) {
+        if (set != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Convert ZonedDateTime to milliseconds since epoch
             return set.toInstant().toEpochMilli();
         }

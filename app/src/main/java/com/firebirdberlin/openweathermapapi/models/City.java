@@ -18,6 +18,8 @@
 
 package com.firebirdberlin.openweathermapapi.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -33,6 +35,7 @@ public class City {
     public double lon = 0.0f;
 
 
+    @NonNull
     @Override
     public String toString() {
         return String.format(java.util.Locale.getDefault(),"%s (%s)\n%1.3f°; %1.3f°", name, countryCode, lat, lon);
