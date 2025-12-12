@@ -1225,7 +1225,7 @@ public class NightDreamUI {
         };
 
         clockLayout.removeCallbacks(fixConfig);
-        clockLayout.postDelayed(fixConfig, 200);
+        clockLayout.postDelayed(fixConfig, 500);
     }
 
     private void postDelayed(Runnable runnable, long delayMillis) {

@@ -1262,9 +1262,13 @@ public class Settings {
 
     public WeatherEntry getWeatherEntry() {
         this.weatherEntry = new WeatherEntry();
+
         this.weatherEntry.timestamp = settings.getLong("weather_time", -1L);
         this.weatherEntry.request_timestamp = settings.getLong("weather_request_time", -1L);
-        if (this.weatherEntry.timestamp > -1L) {
+        String json = settings.getString("weather_json", null);
+        if (json != null && this.weatherEntry.timestamp > -1L) {
+            this.weatherEntry = WeatherEntry.fromJson(json);
+        } else if (this.weatherEntry.timestamp > -1L) {
             this.weatherEntry.lon = settings.getFloat("weather_lon", this.weatherEntry.lon);
             this.weatherEntry.lat = settings.getFloat("weather_lat", this.weatherEntry.lat);
             this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
@@ -1284,6 +1288,7 @@ public class Settings {
     public void setWeatherEntry(WeatherEntry entry) {
         this.weatherEntry = entry;
         SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString("weather_json", entry.toJson());
         prefEditor.putFloat("weather_lon", entry.lon);
         prefEditor.putFloat("weather_lat", entry.lat);
         prefEditor.putLong("weather_time", entry.timestamp);
