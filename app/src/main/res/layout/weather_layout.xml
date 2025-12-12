@@ -86,13 +86,13 @@
 
 
         <TextView
-            android:ellipsize="none"
+            android:ellipsize="end"
             android:id="@+id/locationText"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:paddingStart="5sp"
+            android:paddingStart="1sp"
             android:singleLine="true"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="RtlSymmetry" />
 </LinearLayout>

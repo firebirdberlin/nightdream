@@ -39,6 +39,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
     private int maxWidth = -1;
     private int maxHeight = -1;
 
+    private int currentFontSizeSp = -1;
     private int maxFontSizeSp = -1;
     private int minFontSizeSp = -1;
 
@@ -88,12 +89,17 @@ public class AutoAdjustTextView extends AppCompatTextView {
             int size = getAdjustedTextSize();
             if (size > 0) {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
+                this.currentFontSizeSp = size;
             }
         } catch (NullPointerException e) {
             Log.e(TAG, "Could not adjust the text size");
             e.printStackTrace();
         }
         super.invalidate();
+    }
+
+    public int getCurrentTextSizeSp() {
+        return currentFontSizeSp;
     }
 
     private int getAdjustedTextSize() {
