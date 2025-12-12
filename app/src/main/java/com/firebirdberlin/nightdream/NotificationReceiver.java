@@ -236,7 +236,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         );
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setupNotificationPreview(Context context, Intent intent) {
         if (!Settings.showNotificationPreview(context) || activity == null) {
             return;

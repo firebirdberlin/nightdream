@@ -119,11 +119,11 @@ public class OpenWeatherMapApi {
 
         if (cityID != null && !cityID.isEmpty()) {
             try {
-                if (Integer.parseInt(cityID) < 0) { // Check for invalid cityID, similar to original
+                if (Integer.parseInt(cityID) <= 0) {
                     cityID = null;
                 }
             } catch (NumberFormatException ignored) {
-                cityID = null; // Treat invalid cityID string as null
+                cityID = null;
             }
         }
 
