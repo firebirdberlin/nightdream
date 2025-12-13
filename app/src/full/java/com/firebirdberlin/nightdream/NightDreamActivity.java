@@ -418,7 +418,12 @@ public class NightDreamActivity extends BillingHelperActivity
     void initTextToSpeech() {
         textToSpeech = new TextToSpeech(context, status -> {
             if (status != TextToSpeech.ERROR && textToSpeech != null) {
-                textToSpeech.setLanguage(Locale.getDefault());
+                try {
+                    textToSpeech.setLanguage(Locale.getDefault());
+                } catch (OutOfMemoryError e) {
+                    Log.e(TAG, "OutOfMemoryError setting TextToSpeech language", e);
+                    textToSpeech = null; // Mark TTS as unusable
+                }
             } else {
                 textToSpeech = null;
             }
