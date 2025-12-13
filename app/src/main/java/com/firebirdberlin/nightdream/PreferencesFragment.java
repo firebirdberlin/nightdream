@@ -600,7 +600,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if (exportPreferences != null) {
                 exportPreferences.setOnPreferenceClickListener(preference -> {
                     ExportPreferences export = new ExportPreferences(getActivity());
-                    export.execute();
+                    export.executeExport();
                     return true;
                 });
             }
