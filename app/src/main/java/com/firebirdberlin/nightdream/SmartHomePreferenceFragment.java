@@ -46,10 +46,7 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
     Settings settings = null;
 
     SharedPreferences.OnSharedPreferenceChangeListener prefChangedListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-                @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                }
+            (sharedPreferences, key) -> {
             };
 
 
@@ -86,23 +83,15 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
 
         EditTextPreference passwordPreference = findPreference("smart_home_avm_password");
         if (passwordPreference != null) {
-            passwordPreference.setSummaryProvider(new SummaryProvider() {
-                @Override
-                public CharSequence provideSummary(Preference preference) {
-                    String text = "";
-                    for (int i = 0; i < ((EditTextPreference) preference).getText().toString().length(); i++) {
-                        text += "*";
-                    }
-                    return text;
+            passwordPreference.setSummaryProvider(preference -> {
+                String text = "";
+                for (int i = 0; i < ((EditTextPreference) preference).getText().toString().length(); i++) {
+                    text += "*";
                 }
+                return text;
             });
             passwordPreference.setOnBindEditTextListener(
-                    new EditTextPreference.OnBindEditTextListener() {
-                        @Override
-                        public void onBindEditText(@NonNull final EditText editText) {
-                            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                        }
-                    }
+                    editText -> editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
             );
         }
     }

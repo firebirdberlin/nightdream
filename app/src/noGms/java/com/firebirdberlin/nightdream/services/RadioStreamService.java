@@ -704,11 +704,12 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.cancel(NOTIFY_ID);
 
-        String action = this.intent.getAction();
-        if (ACTION_START.equals(action) || exoPlayer == null) {
-            Log.d(TAG, "UpdateNotification() return. action: " + action + " - exoPlayer: " + exoPlayer);
-            return;
-        }
+        // Removed the problematic condition
+        // String action = this.intent.getAction();
+        // if (ACTION_START.equals(action) || exoPlayer == null) {
+        //     Log.d(TAG, "UpdateNotification() return. action: " + action + " - exoPlayer: " + exoPlayer);
+        //     return;
+        // }
 
         Intent notificationIntent = new Intent(this, NightDreamActivity.class);
         PendingIntent contentIntent = Utility.getImmutableActivity(this, 0, notificationIntent);
