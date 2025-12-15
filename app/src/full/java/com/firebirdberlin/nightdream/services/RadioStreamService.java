@@ -780,11 +780,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.cancel(NOTIFY_ID);
 
-        String action = this.intent.getAction();
-        if (ACTION_START.equals(action) || exoPlayer == null) {
-            Log.d(TAG, "UpdateNotification() return. action: " + action + " - exoPlayer: " + exoPlayer);
-            return;
-        }
+        // String action = this.intent.getAction();
+        // if (ACTION_START.equals(action) || exoPlayer == null) {
+        //     Log.d(TAG, "UpdateNotification() return. action: " + action + " - exoPlayer: " + exoPlayer);
+        //     return;
+        // }
 
         Intent notificationIntent = new Intent(this, NightDreamActivity.class);
         PendingIntent contentIntent = Utility.getImmutableActivity(this, 0, notificationIntent);
@@ -865,14 +865,14 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         if (stateBuilder.build().getState() == PlaybackStateCompat.STATE_PLAYING) {
             return new NotificationCompat.Action(
-                    R.drawable.media3_notification_pause, getString(R.string.radio_pause),
+                    R.drawable.media3_icon_pause, getString(R.string.radio_pause),
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                             this, PlaybackStateCompat.ACTION_PAUSE
                     )
             );
         } else {
             return new NotificationCompat.Action(
-                    R.drawable.media3_notification_play, getString(R.string.radio_play),
+                    R.drawable.media3_icon_play, getString(R.string.radio_play),
                     MediaButtonReceiver.buildMediaButtonPendingIntent(
                             this, PlaybackStateCompat.ACTION_PLAY
                     )
@@ -882,7 +882,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
     private NotificationCompat.Action notificationNextStationAction() {
         return new NotificationCompat.Action(
-                R.drawable.media3_notification_seek_to_next, getString(R.string.radio_next),
+                R.drawable.media3_icon_next, getString(R.string.radio_next),
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                         this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT
                 )
@@ -891,7 +891,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
     private NotificationCompat.Action notificationPreviousStationAction() {
         return new NotificationCompat.Action(
-                R.drawable.media3_notification_seek_to_previous, getString(R.string.radio_previous),
+                R.drawable.media3_icon_previous, getString(R.string.radio_previous),
                 MediaButtonReceiver.buildMediaButtonPendingIntent(
                         this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                 )
