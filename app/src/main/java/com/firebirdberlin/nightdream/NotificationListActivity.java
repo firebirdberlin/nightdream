@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -74,7 +75,6 @@ public class NotificationListActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -101,7 +101,18 @@ public class NotificationListActivity extends AppCompatActivity {
         );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
+        Settings settings = new Settings(getApplicationContext());
+        setScreenOrientation(settings.screenOrientation);
     }
+
+    private void setScreenOrientation(int orientation) {
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        } else {
+            setRequestedOrientation(orientation);
+        }
+    }
+
 
     @Override
     public void onDestroy() {

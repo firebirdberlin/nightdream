@@ -72,6 +72,7 @@ import android.view.DisplayCutout;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -551,16 +552,35 @@ public class Utility {
 
     public static void hideSystemUI(Window window) {
         if (window == null) return;
-        if (Build.VERSION.SDK_INT >= 19) {
+        View decorView = window.getDecorView();
 
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Use WindowInsetsController for Android 11 (API 33) and above
+            WindowInsetsController insetsController = window.getInsetsController();
+            if (insetsController != null) {
+                // Hide status bars and navigation bars
+                insetsController.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+
+                // Optional: Set appearance to control the color of status bar icons (e.g., for dark mode)
+                // You might need to experiment with these based on your app's theme.
+                // For example, to ensure icons are light on a dark background:
+                // insetsController.setSystemBarsAppearance(0, WindowInsets.Type.statusBars());
+
+                // Example: To make navigation bar icons dark (useful if your app has a light theme over the nav bar area)
+                // insetsController.setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+
+                // Set the immersive sticky mode
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            // Use the older setSystemUiVisibility for versions below Android 11
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
         }
     }
 
