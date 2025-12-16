@@ -22,7 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.mNotificationListener;
 
 import java.util.ArrayList;
@@ -84,10 +85,18 @@ public class NotificationActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-            int position = viewHolder.getAdapterPosition();
+            int position = viewHolder.getBindingAdapterPosition();
             deleteItem(position);
         }
     };
+
+    private void setScreenOrientation(int orientation) {
+        if (orientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        } else {
+            setRequestedOrientation(orientation);
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,9 +133,9 @@ public class NotificationActivity extends AppCompatActivity {
                 broadcastReceiver, new IntentFilter("Notification.Action.notificationList")
         );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            mNotificationListener.requestNotificationList(getApplicationContext());
-        }
+        mNotificationListener.requestNotificationList(getApplicationContext());
+        Settings settings = new Settings(getApplicationContext());
+        setScreenOrientation(settings.screenOrientation);
     }
 
     @Override
@@ -182,11 +191,7 @@ public class NotificationActivity extends AppCompatActivity {
         ArrayList<String> notificationsKeys = new ArrayList<>();
         ArrayList<Notification> selectedNotifications = new ArrayList<>(adapter.getSelectedNotifications());
         for (Notification notification : selectedNotifications) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                notificationsKeys.add(notification.getNotificationKey());
-            } else {
-                notificationsKeys.add(notification.getPackageName() + ";" + notification.getNotificationTag() + ";" + notification.getNotificationID());
-            }
+            notificationsKeys.add(notification.getNotificationKey());
         }
 
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
@@ -203,15 +208,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         Notification notification = notificationList.get(position);
         Log.d(TAG, "remove swipe: " + position);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationKeys.add(notification.getNotificationKey());
-        } else {
-            notificationKeys.add(
-                    notification.getPackageName() + ";"
-                            + notification.getNotificationTag() + ";"
-                            + notification.getNotificationID()
-            );
-        }
+        notificationKeys.add(notification.getNotificationKey());
         NotificationList oldNotificationList = new NotificationList(
                 notificationList.getNotifications()
         );

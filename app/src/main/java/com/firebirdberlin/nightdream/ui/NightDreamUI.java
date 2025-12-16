@@ -216,6 +216,7 @@ public class NightDreamUI {
             Log.i(TAG, "moveAround.run()");
             removeCallbacks(hideBrightnessLevel);
             hideSystemUI();
+            setScreenOrientation(settings.screenOrientation);
             setupScreenAnimation();
 
             hideBatteryView(2000);
@@ -1225,6 +1226,7 @@ public class NightDreamUI {
         };
 
         clockLayout.removeCallbacks(fixConfig);
+        handler.postDelayed(this::hideSystemUI, 100);
         clockLayout.postDelayed(fixConfig, 500);
     }
 
@@ -1418,7 +1420,6 @@ public class NightDreamUI {
         layout.screenBrightness = value;
         layout.buttonBrightness = LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
         window.setAttributes(layout);
-        fadeSoftButtons();
     }
 
     private void setScreenOrientation(int orientation) {
@@ -1426,13 +1427,6 @@ public class NightDreamUI {
             ((AppCompatActivity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         } else {
             ((AppCompatActivity) mContext).setRequestedOrientation(orientation);
-        }
-    }
-
-    private void fadeSoftButtons() {
-        if (Build.VERSION.SDK_INT < 19) {
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
         }
     }
 
