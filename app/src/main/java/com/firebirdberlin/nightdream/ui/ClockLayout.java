@@ -108,6 +108,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     private View divider = null;
     private boolean showDivider = true;
     private boolean showWeather = false;
+    private boolean showCalendarEvents = false;
     private boolean mirrorText = false;
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
@@ -199,8 +200,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
             calendarView.setRightArrowMask(null);
             calendarView.setDynamicHeightEnabled(true);
             calendarView.setOnDateLongClickListener(this);
-//            calendarView.setOnDateSelectedListener(this); // Set the listener
-            loadCalendarEvents(); // Load and display calendar events
+            loadCalendarEvents();
         }
     }
 
@@ -387,6 +387,10 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
             date.setVisibility((on) ? View.VISIBLE : dateInvisibilityMethod);
         }
         toggleDivider();
+    }
+
+    public void showCalendarEvents(boolean on) {
+        this.showCalendarEvents = on;
     }
 
     public void showWeather(boolean on) {
@@ -1035,7 +1039,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     }
 
     private void loadCalendarEvents() {
-        if (calendarView == null) {
+        if (calendarView == null || !showCalendarEvents) {
             return;
         }
 

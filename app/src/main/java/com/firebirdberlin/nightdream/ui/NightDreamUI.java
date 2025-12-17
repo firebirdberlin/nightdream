@@ -827,6 +827,7 @@ public class NightDreamUI {
         clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.showDate(settings.showDate);
+        clockLayout.showCalendarEvents(settings.getShowCalendarEvents(layoutId));
         clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
