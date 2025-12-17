@@ -244,6 +244,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Vis en oppstartsadvarsel ved lite batteri</string>
     <string name="showBatteryWarningTitle">Batteriadvarsel</string>
     <string name="showBatteryWarningMessage">NB: Ingen strømkilder er tilkoblet</string>
+    <string name="show_calendar_events">Uthev hendelser</string>
     <string name="show_date">Vis dato</string>
     <string name="show_divider">Vis horisontale mellomrom</string>
     <string name="show_temperature">Vis temperatur</string>

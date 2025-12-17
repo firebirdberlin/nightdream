@@ -22,6 +22,7 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
      * [AM / PM-Anzeige funktioniert nicht richtig](#am--pm-anzeige-funktioniert-nicht-richtig)
      * [Benutzerdefinierte Schriftarten](#benutzerdefinierte-schriftarten)
      * [Die Querformatausrichtung (Landscape) funktioniert nicht](#die-querformatausrichtung-landscape-funktioniert-nicht)
+     * [Was bedeuten die Markierungen im Kalender?](#was-bedeuten-die-markierungen-im-kalender-)
   * [Wetter](#wetter)
      * [Wetter - Statuszeile](#wetter---statuszeile)
      * [Weather - Einstellungen](#weather---einstellungen)
@@ -122,11 +123,20 @@ Quellen für kostenlose Schriftarten im Web sind z.B.:
 
 ### Die Querformatausrichtung (Landscape) funktioniert nicht
 
-Ab Android 5 haben Screensaver / Bildschirmschoner den Fehler, dass sich die Bildschirmausrichtung sofort zum Hochformat
-ändert, sobald die Bildschirmsperre aktiviert ist.
-* Lösung 1: Deaktivieren Sie den Screensaver vollständig (Systemeinstellungen> Anzeige> Screensaver). Stattdessen
-können Sie die Autostart-Funktion der App nach Ihren Wünschen einrichten.
-* Lösung 2: Versuchen Sie, "Einstellungen> Darstellung> Automatische Drehung im Screensaver erzwingen" zu aktivieren.
+Ab Android 5 haben Screensaver / Bildschirmschoner den Fehler, dass sich die Bildschirmausrichtung
+sofort zum Hochformat ändert, sobald die Bildschirmsperre aktiviert ist.
+
+* Lösung 1: Deaktivieren Sie den Screensaver vollständig (Systemeinstellungen> Anzeige>
+  Screensaver). Stattdessen
+  können Sie die Autostart-Funktion der App nach Ihren Wünschen einrichten.
+* Lösung 2: Versuchen Sie, "Einstellungen> Darstellung> Automatische Drehung im Screensaver
+  erzwingen" zu aktivieren.
+
+### Was bedeuten die Markierungen im Kalender?
+
+Ein Punkt an einem Tag bedeutet ein wiederkehrendes Event. Wenn die Farbe der Highlightfarbe
+entspricht, ist an dem Tag ein einmaliger Eintrag. Ein langer Druck auf den Tag öffnet die Kalender
+App. Um diese Events anzuzeigen, benötigt die App die Berechtigung auf Ihren Kalender zuzugreifen.
 
 [nach oben](#inhaltsverzeichnis)
 
@@ -303,9 +313,10 @@ Der Nachtmodus verfügt über folgende Funktionen:
    wird auch ein Geräusch den Bildschirm aktivieren. Ein Geräusch kann auch die Helligkeit des Displays in
    beiden Modi leicht erhöhen.
 * Der Nachtmodus kann automatisch aktiviert werden, sobald es dunkel wird.
-   Andere Aktivierungsmodi sind * geplant * und * manuell *. Diese sind
-   für Geräte ohne Lichtsensor gedacht. Wenn Sie von der automatischen Helligkeitsregelung profitieren möchten,
-   sollten Sie die Aktivierungseinstellungen für den Nachtmodus auf * automatisch * lassen.
+  Andere Aktivierungsmodi sind * geplant * und * manuell *. Diese sind
+  für Geräte ohne Lichtsensor gedacht. Wenn Sie von der automatischen Helligkeitsregelung
+  profitieren möchten, sollten Sie die Aktivierungseinstellungen für den Nachtmodus 
+  auf * automatisch * lassen.
 
 [nach oben](#inhaltsverzeichnis)
 

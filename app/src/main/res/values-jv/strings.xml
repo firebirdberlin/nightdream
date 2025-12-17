@@ -25,4 +25,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmFadeIn">Gedhekake volume</string>
     <string name="alarmUpcoming">Alarm sabanjure</string>
     <string name="alarmStartDate">Alarm sabanjure nalika</string>
+    <string name="show_calendar_events">Sorot acara</string>
 </resources>

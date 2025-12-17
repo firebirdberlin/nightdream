@@ -18,6 +18,7 @@
 
 package com.firebirdberlin.nightdream;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ComponentName;
@@ -47,6 +48,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -59,7 +61,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
+import com.firebirdberlin.nightdream.ui.CustomCalendarClockPreferencesLayout;
 import com.firebirdberlin.nightdream.util.DevicePolicyWrapper;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
@@ -184,6 +188,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         case "rssTextSizeMode":
                             RSSViewModel.setTextSize(settings.rssTextSize);
                             break;
+                        case "showCalendarEvents:6":
+                            if (settings.getShowCalendarEvents(ClockLayout.LAYOUT_ID_CALENDAR) && !settings.hasPermission(Manifest.permission.READ_CALENDAR)) {
+                                readCalendarPermission.launch(Manifest.permission.READ_CALENDAR);
+                            }
                     }
 
                     Log.i(TAG, "prefChangedListener called. Key: " + key);
@@ -215,6 +223,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
         }
     };
+
+    private final ActivityResultLauncher<String> readCalendarPermission = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), result -> {
+                if (result) {
+                    Log.d(TAG, "readCalendarPermission: PERMISSION GRANTED");
+                } else {
+                    Log.d(TAG, "readCalendarPermission: PERMISSION DENIED");
+                    Toast.makeText(getActivity(), "Permission denied !", Toast.LENGTH_LONG).show();
+                }
+            });
 
     private final ActivityResultLauncher<String> readExternalStoragePermission = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), result -> {

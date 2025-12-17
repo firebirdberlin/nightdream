@@ -107,6 +107,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="review_request">لطفا به این برنامه امتیاز دهید.ممنون !</string>
     <string name="screen_orientation_automatic">اتوماتیک</string>
     <string name="set_alarm">انتخاب آلارم</string>
+    <string name="show_calendar_events">برجسته کردن رویدادها</string>
     <string name="show_date">نمایش تاریخ</string>
     <string name="show_temperature">نمایش دما</string>
     <string name="show_weather">نمایش آب و هوای محلی</string>

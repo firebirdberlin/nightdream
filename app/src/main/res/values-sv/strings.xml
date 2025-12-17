@@ -310,6 +310,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningTitle">Batterivarning</string>
     <string name="showBatteryWarningMessage">Varning: Ingen strömkälla är ansluten</string>
     <string name="show_apparent_temperature">Inkludera temperatur</string>
+    <string name="show_calendar_events">Markera händelser</string>
     <string name="show_date">Visa datum</string>
     <string name="show_divider">Visa delare</string>
     <string name="showPollen">Pollen risk</string>

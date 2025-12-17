@@ -117,6 +117,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">obrnuto vertikalno</string>
     <string name="screenOrientation">Orijentacija ekrana</string>
     <string name="set_alarm">podesite alarm</string>
+    <string name="show_calendar_events">Истакни догађаје</string>
     <string name="show_date">Prikazati datum</string>
     <string name="show_temperature">Prikazati temperaturu</string>
     <string name="show_weather">Prikazati lokalne vremenske prilike</string>

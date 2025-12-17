@@ -137,6 +137,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Κάθετη αντίθετη</string>
     <string name="screenOrientation">Περιστροφή οθόνης</string>
     <string name="set_alarm">Ορισμός ξυπνητηριού</string>
+    <string name="show_calendar_events">Επισήμανση συμβάντων</string>
     <string name="show_date">Εμφάνιση Ημερομηνίας</string>
     <string name="show_temperature">Εμφάνιση θερμοκρασίας</string>
     <string name="show_weather">Εμφάνιση καιρού στην τοποθεσία σας</string>

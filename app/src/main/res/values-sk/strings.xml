@@ -138,6 +138,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Orientácia obrazovky na výšku obrátene</string>
     <string name="screenOrientation">Orientácia obrazovky</string>
     <string name="set_alarm">nastaviť budík</string>
+    <string name="show_calendar_events">Zvýrazniť udalosti</string>
     <string name="show_date">Zobraziť dátum</string>
     <string name="show_temperature">Zobraziť teplotu</string>
     <string name="show_weather">Zobraziť miestne počasie</string>
