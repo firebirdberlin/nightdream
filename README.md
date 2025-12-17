@@ -48,6 +48,7 @@ Nightdream is free, open-source software. The source code is available for revie
 
 ## Permissions Explained
 * **FOREGROUND_SERVICE:** Play radio in the background.
+* **READ_CALENDAR:** Access calendar events to highlight them on the clock.
 * **MODIFY_AUDIO_SETTINGS:** Silence device in night mode.
 * **WAKE_LOCK:** Keep screen on or wake device for alarms.
 * **READ_EXTERNAL_STORAGE:** Use custom background images.

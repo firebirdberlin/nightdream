@@ -21,6 +21,7 @@ If your question is not listed here, please try to post it to the
      * [AM/PM indicator not working properly](#ampm-indicator-not-working-properly)
      * [Custom fonts](#custom-fonts)
      * [The landscape orientation does not work](#the-landscape-orientation-does-not-work)
+     * [What do the markings in the calendar mean?](#what-do-the-markings-in-the-calendar-mean-)
   * [Weather](#weather)
      * [Weather status line](#weather-status-line)
      * [Weather preferences](#weather-preferences)
@@ -126,6 +127,10 @@ as the screen lock is activated.
 * Solution 1: Disable Daydreams completely (System Settings > Display > Daydream). Instead you
 can setup the auto start feature of the app to your needs.
 * Solution 2: Try to enable Settings > Appearance > Force auto rotation in DayDream.
+
+### What do the markings in the calendar mean?
+
+A dot on a day indicates a recurring event. If the color matches the highlight color, there is a one-time entry on that day. A long press on a day opens your system's calendar app. To display these events, the app needs permission to access your calendar.
 
 [Top](#table-of-contents)
 
