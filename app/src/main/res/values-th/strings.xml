@@ -49,4 +49,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_translation">การแปลภาษา</string>
     <string name="credits">เครดิต</string>
     <string name="screen_orientation_reverse_landscape">อุบลราชธานี</string>
+    <string name="show_calendar_events">ไฮไลท์กิจกรรม</string>
 </resources>

@@ -311,6 +311,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningTitle">Allarme batteria</string>
     <string name="showBatteryWarningMessage">Attenzione: Nessuna fonte di alimentazione connessa!</string>
     <string name="show_apparent_temperature">Mostra stima temperatura</string>
+    <string name="show_calendar_events">Evidenzia eventi</string>
     <string name="show_date">Mostra data</string>
     <string name="show_divider">Mostrare divisine</string>
     <string name="showPollen">Indice di rischio inquinamento</string>

@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY and FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -20,8 +20,13 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -31,10 +36,12 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.CalendarContract;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,8 +49,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
@@ -57,13 +66,22 @@ import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding
 import com.firebirdberlin.nightdream.mNotificationListener;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.nightdream.models.FontCache;
+import com.firebirdberlin.nightdream.util.CalendarEventLoader;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateLongClickListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 
-public class ClockLayout extends LinearLayout {
+public class ClockLayout extends LinearLayout implements OnDateLongClickListener { // Implement OnDateSelectedListener
     public static final int LAYOUT_ID_DIGITAL = 0;
     public static final int LAYOUT_ID_ANALOG = 1;
     public static final int LAYOUT_ID_ANALOG2 = 2;
@@ -90,10 +108,12 @@ public class ClockLayout extends LinearLayout {
     private View divider = null;
     private boolean showDivider = true;
     private boolean showWeather = false;
+    private boolean showCalendarEvents = false;
     private boolean mirrorText = false;
     private boolean showNotifications = true;
     private int weatherIconSizeFactor = 3;
     private int oldPrimaryColor = 0;
+    private int primaryColor = 0; // Add primaryColor field
     private int dateInvisibilityMethod = GONE;
     private int backgroundTransparency = 100;
 
@@ -117,7 +137,7 @@ public class ClockLayout extends LinearLayout {
         }
         dateInvisibilityMethod = (layoutId == LAYOUT_ID_DIGITAL2) ? INVISIBLE : GONE;
         ContextThemeWrapper ctxThemeWrapper = new ContextThemeWrapper(context, R.style.ActivityTheme);
-        LayoutInflater inflater  = LayoutInflater.from(ctxThemeWrapper);
+        LayoutInflater inflater = LayoutInflater.from(ctxThemeWrapper);
         View child;
         if (layoutId == LAYOUT_ID_DIGITAL) {
             child = inflater.inflate(R.layout.clock_layout, null);
@@ -179,6 +199,8 @@ public class ClockLayout extends LinearLayout {
             calendarView.setLeftArrowMask(null);
             calendarView.setRightArrowMask(null);
             calendarView.setDynamicHeightEnabled(true);
+            calendarView.setOnDateLongClickListener(this);
+            loadCalendarEvents();
         }
     }
 
@@ -236,7 +258,8 @@ public class ClockLayout extends LinearLayout {
         applyTexture(clock_ampm, glowRadius, glowColor, textureId);
     }
 
-    private void setPrimaryColor(int color) {
+    public void setPrimaryColor(int color) {
+        this.primaryColor = color; // Update primaryColor field
         if (clock != null) {
             clock.setTextColor(color);
         }
@@ -364,6 +387,10 @@ public class ClockLayout extends LinearLayout {
             date.setVisibility((on) ? View.VISIBLE : dateInvisibilityMethod);
         }
         toggleDivider();
+    }
+
+    public void showCalendarEvents(boolean on) {
+        this.showCalendarEvents = on;
     }
 
     public void showWeather(boolean on) {
@@ -535,8 +562,7 @@ public class ClockLayout extends LinearLayout {
             if (dateTextSize > 0) {
                 layout.setTypeface(date.getTypeface());
                 layout.setTextSizePx(dateTextSize);
-            }
-            else {
+            } else {
                 int sizePx = Utility.spToPx(context, maxFontSize);
                 layout.setTextSizePx(sizePx);
             }
@@ -605,7 +631,7 @@ public class ClockLayout extends LinearLayout {
         if (weatherLayout != null) {
             weatherLayout.setMaxWidth((int) (maxWidth));
             weatherLayout.setMaxHeight((Utility.getHeightOfView(clock)));
-            weatherLayout.setMaxFontSizesInSp(10.f, clockTextSize/2);
+            weatherLayout.setMaxFontSizesInSp(10.f, clockTextSize / 2);
             weatherLayout.update();
         }
 
@@ -746,7 +772,7 @@ public class ClockLayout extends LinearLayout {
                 now.setMinimalDaysInFirstWeek(1);
                 int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
                 int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
-                calendarView.getLayoutParams().height = height;
+                calendarView.getLayoutParams().height = height + 10;
             }
         }
     }
@@ -964,5 +990,91 @@ public class ClockLayout extends LinearLayout {
 
     public float getScaledHeight() {
         return getHeight() * getScaleY();
+    }
+
+    /**
+     * DayViewDecorator to display different indicators for recurring and one-time events.
+     */
+    private static class EventDecorator implements DayViewDecorator {
+
+        private final int highlightColor;
+        private final HashSet<CalendarDay> dates;
+
+        public EventDecorator(HashSet<CalendarDay> dates, int color) {
+            this.dates = dates;
+            this.highlightColor = color;
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            // Decorate if it's a recurring event OR a one-time event
+            return dates.contains(day);
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new ForegroundColorSpan(highlightColor));
+        }
+    }
+
+    private static class RecurringEventDecorator implements DayViewDecorator {
+
+        private final int highlightColor;
+        private final HashSet<CalendarDay> dates;
+
+        public RecurringEventDecorator(HashSet<CalendarDay> dates, int color) {
+            this.dates = dates;
+            this.highlightColor = color;
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            return dates.contains(day);
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.addSpan(new DotSpan(5, this.highlightColor));
+        }
+    }
+
+    private void loadCalendarEvents() {
+        if (calendarView == null || !showCalendarEvents) {
+            return;
+        }
+
+        CalendarEventLoader.CalendarEvents events = CalendarEventLoader.loadEvents(context);
+        // Calendar event related fields
+        // For one-time events
+        HashSet<CalendarDay> eventDays = events.oneTimeEvents;
+        // For recurring events
+        HashSet<CalendarDay> recurringEventDays = events.recurringEvents;
+
+        calendarView.removeDecorators();
+
+        calendarView.addDecorator(new EventDecorator(eventDays, primaryColor));
+        calendarView.addDecorator(new RecurringEventDecorator(recurringEventDays, Color.WHITE));
+    }
+
+    @Override
+    public void onDateLongClick(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date) {
+
+        Log.i(TAG, "onDateLongClick: " + date);
+        long timeInMillis = date.getCalendar().getTimeInMillis();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse("content://com.android.calendar/time/" + timeInMillis);
+//        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, timeInMillis);
+        intent.setData(uri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Check if there is a calendar app to handle the intent
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            // Handle the case where no calendar app is found (optional)
+            Log.w(TAG, "No calendar app found to handle the intent.");
+            // You might want to show a Toast message to the user here.
+        }
     }
 }

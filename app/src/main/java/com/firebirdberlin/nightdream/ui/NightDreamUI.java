@@ -747,7 +747,7 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_SLIDESHOW:
                     Log.d(TAG, "BACKGROUND_SLIDESHOW");
                     loadBackgroundImageFiles();
-                    if (files != null && files.size() > 0) {
+                    if (files != null && !files.isEmpty()) {
                         preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
                         AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
                         runningTask.execute(preloadBackgroundImageFile);
@@ -810,6 +810,7 @@ public class NightDreamUI {
 
     public void setupClockLayout() {
         int layoutId = settings.getClockLayoutID(false);
+        clockLayout.setPrimaryColor(getAccentColor());
         clockLayout.setLayout(layoutId);
         clockLayout.setBackgroundTransparency(settings.clockBackgroundTransparency);
         clockLayout.setTypeface(settings.loadTypeface());
@@ -826,6 +827,7 @@ public class NightDreamUI {
         clockLayout.setShowDivider(settings.getShowDivider(layoutId));
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.showDate(settings.showDate);
+        clockLayout.showCalendarEvents(settings.getShowCalendarEvents(layoutId));
         clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
@@ -861,13 +863,9 @@ public class NightDreamUI {
         clockLayout.setSecondaryColor(textColor);
 
         Drawable brightnessDrawable = brightnessProgress.getProgressDrawable();
-        if (Build.VERSION.SDK_INT < 21) {
-            brightnessDrawable.setColorFilter(accentColor, PorterDuff.Mode.MULTIPLY);
-        } else {
-            brightnessProgress.setProgressTintList(ColorStateList.valueOf(accentColor));
-            brightnessProgress.setProgressBackgroundTintList(
-                    ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
-        }
+        brightnessProgress.setProgressTintList(ColorStateList.valueOf(accentColor));
+        brightnessProgress.setProgressBackgroundTintList(
+                ColorStateList.valueOf(adjustAlpha(accentColor, 0.4f)));
         Utility.colorizeView(notificationStatusBar, textColor);
     }
 

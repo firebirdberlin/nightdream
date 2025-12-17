@@ -137,6 +137,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Fordított portré</string>
     <string name="screenOrientation">Képernyő tájolása</string>
     <string name="set_alarm">Ébresztő beállítása</string>
+    <string name="show_calendar_events">Események kiemelése</string>
     <string name="show_date">Mutassa a dátumot</string>
     <string name="show_temperature">Mutassa a hőmérsékletet</string>
     <string name="show_weather">Mutassa a helyi időjárást</string>

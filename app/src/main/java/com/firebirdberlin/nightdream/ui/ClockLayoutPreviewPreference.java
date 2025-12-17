@@ -121,12 +121,13 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private void updateClockLayout(int clockLayoutId, Settings settings) {
-        clockLayout.setLayout(clockLayoutId);
-        clockLayout.setBackgroundColor(Color.TRANSPARENT);
-        clockLayout.setTypeface(settings.loadTypeface());
         int color = previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight;
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
+        clockLayout.setPrimaryColor(color);
+        clockLayout.setLayout(clockLayoutId);
+        clockLayout.setBackgroundColor(Color.TRANSPARENT);
+        clockLayout.setTypeface(settings.loadTypeface());
         clockLayout.setPrimaryColor(color, glowRadius, color, textureId, false);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 
@@ -136,6 +137,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.setScaleFactor(1.f);
         clockLayout.showDate(settings.showDate);
+        clockLayout.showCalendarEvents(settings.getShowCalendarEvents(clockLayoutId));
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
         clockLayout.setTemperature(settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit);

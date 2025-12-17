@@ -255,6 +255,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">Vis en advarsel under opstart, hvis enheden er på batteri</string>
     <string name="showBatteryWarningTitle">Batteri advarsel</string>
     <string name="showBatteryWarningMessage">BEMÆRK: Enheden er ikke tilsluttet strømkilde</string>
+    <string name="show_calendar_events">Fremhæv begivenheder</string>
     <string name="show_date">Vis dato</string>
     <string name="show_divider">Vis dele linje</string>
     <string name="show_apparent_temperature">inkluderer synlig temperatur</string>
