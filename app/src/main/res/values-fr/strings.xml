@@ -362,6 +362,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningMessage">Attention: Aucune source secteur connecté !</string>
     <string name="show_apparent_temperature">inclure la température apparente</string>
     <string name="show_alarm">Afficher les alarmes</string>
+    <string name="show_calendar_events">Surligner événements</string>
     <string name="show_date">Afficher la date</string>
     <string name="show_divider">Montrer séparations</string>
     <string name="showPollen">Indice de risque pollinique</string>
