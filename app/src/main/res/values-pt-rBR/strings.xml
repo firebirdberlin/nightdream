@@ -253,6 +253,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningTitle">Aviso de bateria</string>
     <string name="showBatteryWarningMessage">Atenção! Nenhum carregador conectado!</string>
     <string name="show_apparent_temperature">inclui temperatura aparente</string>
+    <string name="show_calendar_events">Destacar eventos</string>
     <string name="show_date">Mostre a data</string>
     <string name="show_divider">Exibir divisor</string>
     <string name="show_temperature">Mostra a temperatura</string>

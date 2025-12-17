@@ -136,6 +136,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Hrvatska</string>
     <string name="screenOrientation">Orijentacija zaslona</string>
     <string name="set_alarm">postavi alarm</string>
+    <string name="show_calendar_events">Istakni događaje</string>
     <string name="show_date">Prikaži datum</string>
     <string name="show_temperature">Temperatura</string>
     <string name="show_weather">Prikaži lokalnu vremensku prognozu</string>

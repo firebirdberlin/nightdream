@@ -258,6 +258,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningTitle">Ostrzeżenie o zużyciu baterii</string>
     <string name="showBatteryWarningMessage">Uwaga: brak źródła zasilania!</string>
     <string name="show_apparent_temperature">zawieraj odczuwalną temperaturę</string>
+    <string name="show_calendar_events">Podświetl wydarzenia</string>
     <string name="show_date">Pokaż datę</string>
     <string name="show_divider">Pokaż podział</string>
     <string name="show_temperature">Teperatura</string>

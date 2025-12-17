@@ -136,6 +136,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">直向反轉</string>
     <string name="screenOrientation">螢幕方向</string>
     <string name="set_alarm">設定鬧鐘</string>
+    <string name="show_calendar_events">突出显示活动</string>
     <string name="show_date">顯示日期</string>
     <string name="show_temperature">顯示溫度</string>
     <string name="show_weather">顯示本地天氣</string>

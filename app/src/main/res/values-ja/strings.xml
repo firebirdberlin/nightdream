@@ -177,6 +177,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="set_alarm">アラームセット</string>
     <string name="showBatteryWarningSummary">電池使用時に作動した場合警告が出ます</string>
     <string name="showBatteryWarningTitle">電池使用時の警告</string>
+    <string name="show_calendar_events">イベントをハイライト</string>
     <string name="show_date">日付を表示する</string>
     <string name="show_divider">分割線を表示する</string>
     <string name="show_temperature">温度を表示する</string>

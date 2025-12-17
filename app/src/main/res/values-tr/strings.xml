@@ -167,6 +167,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Dikey ters</string>
     <string name="screenOrientation">Ekran yönlendirme</string>
     <string name="set_alarm">Alarm kur</string>
+    <string name="show_calendar_events">Etkinlikleri vurgula</string>
     <string name="show_date">Tarihi göster</string>
     <string name="show_divider">Sperarörü göster</string>
     <string name="show_temperature">Sıcaklığı göster</string>

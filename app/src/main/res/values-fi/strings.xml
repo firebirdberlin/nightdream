@@ -145,4 +145,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_station_none">Ei radio kanavaa</string>
     <string name="radio_stream_activate_wifi">WiFi</string>
     <string name="review_request">Kiitos kun arvostelet tämän sovelluksen!</string>
+    <string name="show_calendar_events">Korosta tapahtumia</string>
 </resources>

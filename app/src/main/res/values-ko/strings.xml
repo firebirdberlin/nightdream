@@ -39,4 +39,5 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnBatteryLevel">배터리가 다음레벨이사밀 때만 작동하는</string>
     <string name="alwaysOnStartWithLockedUI">화면잠금</string>
     <string name="alwaysOnStartWithLockedUIDesc">압작동시 화면잠금모드진입. 화면을 길게 누르면 잠금해제</string>
+    <string name="show_calendar_events">캘린더 이벤트 강조</string>
 </resources>
