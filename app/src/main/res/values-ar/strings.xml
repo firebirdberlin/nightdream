@@ -241,6 +241,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningSummary">إظهار التنبيه عند بدء التشغيل عاي البطارية</string>
     <string name="showBatteryWarningTitle">تحذير البطارية</string>
     <string name="showBatteryWarningMessage">إنتباه !! لا يوجد مصد طاقة متصل!</string>
+    <string name="show_calendar_events">تسليط الضوء على أحداث التقويم</string>
     <string name="show_date">إظهار التاريخ</string>
     <string name="show_divider">إظهار الفاصل</string>
     <string name="show_temperature">درجة الحرارة</string>

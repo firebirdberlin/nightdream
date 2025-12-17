@@ -112,6 +112,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Portret inversat</string>
     <string name="screenOrientation">Orientarea ecranului</string>
     <string name="set_alarm">Setează alarma</string>
+    <string name="show_calendar_events">Evidențiați evenimente</string>
     <string name="show_date">Arata data</string>
     <string name="show_temperature">Temperatura</string>
     <string name="show_weather">Arata vremea locala</string>

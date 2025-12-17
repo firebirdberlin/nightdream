@@ -220,6 +220,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="set_alarm">nastavit budík</string>
     <string name="showBatteryWarningTitle">Varování: baterie.</string>
     <string name="showBatteryWarningMessage">Varování: není připojen zdroj.</string>
+    <string name="show_calendar_events">Zvýraznit události</string>
     <string name="show_date">Zobrazit datum</string>
     <string name="show_divider">Rozdělit linkou</string>
     <string name="show_temperature">Zobrazit teplotu</string>

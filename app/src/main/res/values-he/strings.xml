@@ -122,6 +122,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">לאורך הפוך</string>
     <string name="screenOrientation">סיבוב מסך</string>
     <string name="set_alarm">כוון שעון מעורר</string>
+    <string name="show_calendar_events">הדגשת אירועים</string>
     <string name="show_date">הצג תאריך</string>
     <string name="show_temperature">הצג טמפרטורה</string>
     <string name="show_weather">הצג מזג אויר מקומי</string>

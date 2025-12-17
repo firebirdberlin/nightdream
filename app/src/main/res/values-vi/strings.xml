@@ -133,6 +133,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Hướng dọc 180°</string>
     <string name="screenOrientation">Định hướng màn hình</string>
     <string name="set_alarm">Cài đặt báo thức</string>
+    <string name="show_calendar_events">Nổi bật sự kiện</string>
     <string name="show_date">Hiển thị ngày</string>
     <string name="show_temperature">Hiển thị nhiệt độ</string>
     <string name="show_weather">Hiển thị thời tiết địa phương</string>

@@ -172,6 +172,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">вертикальна 180 град.</string>
     <string name="screenOrientation">Орієнтація екрану</string>
     <string name="set_alarm">встановити будильник</string>
+    <string name="show_calendar_events">Виділити події</string>
     <string name="show_date">Відображати дату</string>
     <string name="show_divider">Показати розділювач</string>
     <string name="show_temperature">Відображати температуру</string>
