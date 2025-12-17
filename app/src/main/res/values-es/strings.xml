@@ -310,6 +310,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showBatteryWarningTitle">Advertencia de la batería</string>
     <string name="showBatteryWarningMessage">Atención: ¡Ninguna fuente de alimentación está conectada!</string>
     <string name="show_apparent_temperature">Mostrar temperatura aparente</string>
+    <string name="show_calendar_events">Destacar eventos</string>
     <string name="show_date">Mostrar fecha</string>
     <string name="show_divider">Mostrar línea divisoria</string>
     <string name="showPollen">Encuesta de índice de riesgo</string>
