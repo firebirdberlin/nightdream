@@ -769,6 +769,17 @@ public class Settings {
         return settings.getBoolean(key, false);
     }
 
+    public void setShowCalendarEvents(boolean showCalendarEvents, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("showCalendarEvents", clockLayoutId);
+        prefEditor.putBoolean(key, showCalendarEvents);
+        prefEditor.apply();
+    }
+    public boolean getShowCalendarEvents(int clockLayoutId) {
+        String key = getKeyForClockLayout("showCalendarEvents", clockLayoutId);
+        return settings.getBoolean(key, false);
+    }
+
     public int getClockLayoutID(boolean preview) {
         return getValidatedClockLayoutID(clockLayout, preview);
     }

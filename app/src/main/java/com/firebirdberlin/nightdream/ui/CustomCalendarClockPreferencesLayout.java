@@ -84,9 +84,7 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 settings.setGlowRadius(progress, ClockLayout.LAYOUT_ID_CALENDAR);
-                if (mListener != null) {
-                    mListener.onConfigChanged();
-                }
+                onConfigChanged();
             }
         });
         TextView fontButton = child.findViewById(R.id.typeface_preference);
@@ -95,40 +93,35 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
                 "%s: %s", fontButtonText, settings.getFontName(ClockLayout.LAYOUT_ID_CALENDAR)
         );
         fontButton.setText(fontButtonText);
-        fontButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (activity == null) {
-                    return;
+        fontButton.setOnClickListener(view -> {
+            if (activity == null) {
+                return;
+            }
+
+            FragmentManager fm = activity.getSupportFragmentManager();
+            ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
+            dialog.setIsPurchased(isPurchased);
+            dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_CALENDAR));
+            dialog.setDefaultFonts(
+                    "roboto_regular.ttf", "roboto_light.ttf",
+                    "roboto_thin.ttf", "7_segment_digital.ttf", "dseg14classic.ttf",
+                    "dancingscript_regular.ttf"
+            );
+            dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
+                @Override
+                public void onFontSelected(Uri uri, String name) {
+                    settings.setFontUri(uri.toString(), name, ClockLayout.LAYOUT_ID_CALENDAR);
+                    onConfigChanged();
                 }
 
-                FragmentManager fm = activity.getSupportFragmentManager();
-                ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
-                dialog.setIsPurchased(isPurchased);
-                dialog.setSelectedUri(settings.getFontUri(ClockLayout.LAYOUT_ID_CALENDAR));
-                dialog.setDefaultFonts(
-                        "roboto_regular.ttf", "roboto_light.ttf",
-                        "roboto_thin.ttf", "7_segment_digital.ttf", "dseg14classic.ttf",
-                        "dancingscript_regular.ttf"
-                );
-                dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
-                    @Override
-                    public void onFontSelected(Uri uri, String name) {
-                        settings.setFontUri(uri.toString(), name, ClockLayout.LAYOUT_ID_CALENDAR);
-                        if (mListener != null) {
-                            mListener.onConfigChanged();
-                        }
+                @Override
+                public void onPurchaseRequested() {
+                    if (mListener != null) {
+                        mListener.onPurchaseRequested();
                     }
-
-                    @Override
-                    public void onPurchaseRequested() {
-                        if (mListener != null) {
-                            mListener.onPurchaseRequested();
-                        }
-                    }
-                });
-                dialog.show(fm, "custom fonts");
-            }
+                }
+            });
+            dialog.show(fm, "custom fonts");
         });
 
         final TextView decorationStylePreference = child.findViewById(R.id.decoration_preference);
@@ -149,9 +142,7 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
                         .setItems(R.array.textures, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.setTextureId(which, ClockLayout.LAYOUT_ID_CALENDAR);
-                                if (mListener != null) {
-                                    mListener.onConfigChanged();
-                                }
+                                onConfigChanged();
                             }
                         });
                 builder.show();
@@ -160,15 +151,23 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
 
         Switch switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
         switchShowSeconds.setChecked(settings.getShowSeconds(ClockLayout.LAYOUT_ID_CALENDAR));
-        switchShowSeconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_CALENDAR);
-                if (mListener != null) {
-                    mListener.onConfigChanged();
-                }
-            }
+        switchShowSeconds.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_CALENDAR);
+            onConfigChanged();
         });
+
+        Switch switchShowCalendarEvents = child.findViewById(R.id.switch_show_calendar_events);
+        switchShowCalendarEvents.setChecked(settings.getShowCalendarEvents(ClockLayout.LAYOUT_ID_CALENDAR));
+        switchShowCalendarEvents.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            settings.setShowCalendarEvents(isChecked, ClockLayout.LAYOUT_ID_CALENDAR);
+            onConfigChanged();
+        });
+    }
+
+    private void onConfigChanged() {
+        if (mListener != null) {
+            mListener.onConfigChanged();
+        }
     }
 
     public void setIsPurchased(boolean isPurchased) {
