@@ -137,6 +137,7 @@ public class ClockLayoutPreviewPreference extends Preference {
         clockLayout.setMirrorText(settings.clockLayoutMirrorText);
         clockLayout.setScaleFactor(1.f);
         clockLayout.showDate(settings.showDate);
+        clockLayout.showCalendarEvents(settings.getShowCalendarEvents(clockLayoutId));
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
         clockLayout.setTemperature(settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit);

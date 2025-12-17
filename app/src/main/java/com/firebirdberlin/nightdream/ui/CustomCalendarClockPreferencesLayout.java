@@ -18,8 +18,10 @@
 
 package com.firebirdberlin.nightdream.ui;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
@@ -134,19 +137,14 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
                         textures[settings.getTextureId(ClockLayout.LAYOUT_ID_CALENDAR)]
                 )
         );
-        decorationStylePreference.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.style)
-                        .setItems(R.array.textures, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                settings.setTextureId(which, ClockLayout.LAYOUT_ID_CALENDAR);
-                                onConfigChanged();
-                            }
-                        });
-                builder.show();
-            }
+        decorationStylePreference.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.style)
+                    .setItems(R.array.textures, (dialog, which) -> {
+                        settings.setTextureId(which, ClockLayout.LAYOUT_ID_CALENDAR);
+                        onConfigChanged();
+                    });
+            builder.show();
         });
 
         Switch switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
@@ -160,6 +158,7 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
         switchShowCalendarEvents.setChecked(settings.getShowCalendarEvents(ClockLayout.LAYOUT_ID_CALENDAR));
         switchShowCalendarEvents.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             settings.setShowCalendarEvents(isChecked, ClockLayout.LAYOUT_ID_CALENDAR);
+            invalidate();
             onConfigChanged();
         });
     }

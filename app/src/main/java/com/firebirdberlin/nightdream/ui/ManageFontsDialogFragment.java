@@ -148,26 +148,23 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         }
         btnAddCustomFont.setText(btnTxt);
 
-        btnAddCustomFont.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnAddCustomFont.setOnClickListener(view1 -> {
 
-                if (!isPurchased) {
-                    if (mListener != null) {
-                        mListener.onPurchaseRequested();
-                        dismiss();
-                        return;
-                    }
-                }
-
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-                        && !hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            if (!isPurchased) {
+                if (mListener != null) {
+                    mListener.onPurchaseRequested();
+                    dismiss();
                     return;
                 }
-                selectCustomFont();
             }
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                    && !hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                return;
+            }
+            selectCustomFont();
         });
 
         initListView();
