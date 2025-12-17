@@ -121,12 +121,13 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private void updateClockLayout(int clockLayoutId, Settings settings) {
-        clockLayout.setLayout(clockLayoutId);
-        clockLayout.setBackgroundColor(Color.TRANSPARENT);
-        clockLayout.setTypeface(settings.loadTypeface());
         int color = previewMode == PreviewMode.DAY ? settings.clockColor : settings.clockColorNight;
         int glowRadius = settings.getGlowRadius(clockLayoutId);
         int textureId = settings.getTextureResId(clockLayoutId);
+        clockLayout.setPrimaryColor(color);
+        clockLayout.setLayout(clockLayoutId);
+        clockLayout.setBackgroundColor(Color.TRANSPARENT);
+        clockLayout.setTypeface(settings.loadTypeface());
         clockLayout.setPrimaryColor(color, glowRadius, color, textureId, false);
         clockLayout.setSecondaryColor(previewMode == PreviewMode.DAY ? settings.secondaryColor : settings.secondaryColorNight);
 

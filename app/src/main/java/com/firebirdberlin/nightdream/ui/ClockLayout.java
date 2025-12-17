@@ -258,7 +258,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         applyTexture(clock_ampm, glowRadius, glowColor, textureId);
     }
 
-    private void setPrimaryColor(int color) {
+    public void setPrimaryColor(int color) {
         this.primaryColor = color; // Update primaryColor field
         if (clock != null) {
             clock.setTextColor(color);
@@ -1049,7 +1049,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         calendarView.removeDecorators();
 
         calendarView.addDecorator(new EventDecorator(eventDays, primaryColor));
-        calendarView.addDecorator(new RecurringEventDecorator(recurringEventDays, primaryColor));
+        calendarView.addDecorator(new RecurringEventDecorator(recurringEventDays, Color.WHITE));
     }
 
     @Override

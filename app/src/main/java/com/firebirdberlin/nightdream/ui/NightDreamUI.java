@@ -576,8 +576,8 @@ public class NightDreamUI {
     public Runnable initClockLayout = new Runnable() {
         @Override
         public void run() {
-            setColor();
             setupClockLayout();
+            setColor();
             updateWeatherData();
 
             //Update Notifications in Clocklayout
@@ -810,6 +810,7 @@ public class NightDreamUI {
 
     public void setupClockLayout() {
         int layoutId = settings.getClockLayoutID(false);
+        clockLayout.setPrimaryColor(getAccentColor());
         clockLayout.setLayout(layoutId);
         clockLayout.setBackgroundTransparency(settings.clockBackgroundTransparency);
         clockLayout.setTypeface(settings.loadTypeface());
