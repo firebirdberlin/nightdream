@@ -28,15 +28,28 @@ public class CalendarEventLoader {
 
     private static CalendarEvents cachedEvents;
     private static long lastCacheTimeMillis = 0;
+    private static String alarmTitle = "alarm";
 
 
     public static class CalendarEvents {
         public final HashSet<CalendarDay> oneTimeEvents;
         public final HashSet<CalendarDay> recurringEvents;
+        public final HashSet<Long> upcomingAlarmTimes;
 
-        CalendarEvents(HashSet<CalendarDay> oneTimeEvents, HashSet<CalendarDay> recurringEvents) {
+        CalendarEvents(HashSet<CalendarDay> oneTimeEvents, HashSet<CalendarDay> recurringEvents, HashSet<Long> upcomingAlarmTimes) {
             this.oneTimeEvents = oneTimeEvents;
             this.recurringEvents = recurringEvents;
+            this.upcomingAlarmTimes = upcomingAlarmTimes;
+        }
+    }
+
+    /**
+     * Sets the keyword used to identify alarm events.
+     * @param title The keyword (e.g., "alarm").
+     */
+    public static void setAlarmTitle(String title) {
+        if (title != null && !title.isEmpty()) {
+            alarmTitle = title.toLowerCase();
         }
     }
 
@@ -57,13 +70,14 @@ public class CalendarEventLoader {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.w(TAG, "READ_CALENDAR permission not granted. Cannot load events.");
-            return new CalendarEvents(new HashSet<>(), new HashSet<>());
+            return new CalendarEvents(new HashSet<>(), new HashSet<>(), new HashSet<>());
         }
 
         Log.d(TAG, "Cache expired or permission granted. Fetching real calendar events.");
 
         HashSet<CalendarDay> eventDays = new HashSet<>();
         HashSet<CalendarDay> recurringEventDays = new HashSet<>();
+        HashSet<Long> alarmEventTimes = new HashSet<>();
 
         // 1. Define the time range for which you want to load events.
         // Let's load events for the next 365 days and the past year.
@@ -80,7 +94,8 @@ public class CalendarEventLoader {
         // 2. Define the columns you need from the Instances table.
         final String[] INSTANCE_PROJECTION = new String[]{
                 CalendarContract.Instances.BEGIN,          // 0: The start time of the instance
-                CalendarContract.Instances.EVENT_ID        // 1: The original event's ID
+                CalendarContract.Instances.EVENT_ID,       // 1: The original event's ID
+                CalendarContract.Instances.TITLE           // 2: The title
         };
 
         // 3. Query the Instances table for the specified time range.
@@ -94,6 +109,7 @@ public class CalendarEventLoader {
                 while (cursor.moveToNext()) {
                     long beginVal = cursor.getLong(0);
                     long eventId = cursor.getLong(1);
+                    String title = cursor.getString(2);
 
                     boolean isRecurring;
 
@@ -113,23 +129,78 @@ public class CalendarEventLoader {
                         recurrenceStatusCache.put(eventId, isRecurring);
                     }
 
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(beginVal);
-                    CalendarDay day = CalendarDay.from(calendar);
+                    boolean isAlarm = title != null && title.toLowerCase().startsWith(alarmTitle);
 
-                    if (isRecurring) {
-                        recurringEventDays.add(day);
+                    if (isAlarm) {
+                        if (beginVal >= currentTimeMillis) {
+                            alarmEventTimes.add(beginVal);
+                        }
                     } else {
-                        eventDays.add(day);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(beginVal);
+                        CalendarDay day = CalendarDay.from(calendar);
+
+                        if (isRecurring) {
+                            recurringEventDays.add(day);
+                        } else {
+                            eventDays.add(day);
+                        }
                     }
                 }
             } finally {
                 cursor.close();
             }
         }
-        cachedEvents = new CalendarEvents(eventDays, recurringEventDays);
+        cachedEvents = new CalendarEvents(eventDays, recurringEventDays, alarmEventTimes);
         lastCacheTimeMillis = currentTimeMillis;
         return cachedEvents;
+    }
+
+    /**
+     * Returns the next upcoming alarm time in milliseconds, or 0 if no upcoming alarms are found.
+     * This method is designed to be lightweight and does not use the cache.
+     *
+     * @param context The context.
+     * @return The next alarm time in milliseconds.
+     */
+    public static long loadNextAlarmTime(Context context) {
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            return 0;
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        Calendar endTime = Calendar.getInstance();
+        endTime.add(Calendar.YEAR, 1);
+        long endMillis = endTime.getTimeInMillis();
+
+        ContentResolver cr = context.getContentResolver();
+        final String[] INSTANCE_PROJECTION = new String[]{
+                CalendarContract.Instances.BEGIN,          // 0: The start time of the instance
+                CalendarContract.Instances.TITLE           // 1: The title
+        };
+
+        Uri uri = CalendarContract.Instances.CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(currentTimeMillis))
+                .appendPath(String.valueOf(endMillis))
+                .build();
+
+        String sortOrder = CalendarContract.Instances.BEGIN + " ASC";
+
+        try (Cursor cursor = cr.query(uri, INSTANCE_PROJECTION, null, null, sortOrder)) {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    String title = cursor.getString(1);
+                    if (title != null && title.toLowerCase().startsWith(alarmTitle)) {
+                        return cursor.getLong(0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading next alarm time", e);
+        }
+
+        return 0;
     }
 
     /**
