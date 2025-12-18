@@ -31,14 +31,19 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -96,13 +101,17 @@ public class AlarmClockLayout extends LinearLayout {
     private final CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
             new CheckBox.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
-                    if (!checked) {
-                        for (int d : SimpleTime.DAYS) {
-                            alarmClockEntry.removeRecurringDay(d);
-                            dayButtons[d - 1].setChecked(false);
+                public void onCheckedChanged(@NonNull CompoundButton compoundButton, boolean checked) {
+                    if (isUpdating) return;
+                    updateVisibility();
+                    if (checked) {
+                        if (!alarmClockEntry.isRecurring()) {
+                            if (alarmClockEntry.repeatMode == SimpleTime.REPEAT_MODE_DAYS) {
+                                alarmClockEntry.autocompleteRecurringDays();
+                            }
+                            ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                         }
+                    } else {
                         ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                     }
                 }
@@ -112,11 +121,18 @@ public class AlarmClockLayout extends LinearLayout {
     private ToggleButton toggleActive = null;
     private SwitchCompat switchActive = null;
     private CheckBox checkBoxIsRepeating = null;
+    private RadioGroup repeatModeGroup = null;
+    private RadioButton modeDays = null;
+    private RadioButton modeCalendar = null;
+    private AppCompatEditText calendarSearchTerm = null;
+
     private final ImageView.OnClickListener buttonDownOnClickListener = view -> {
         boolean gone = secondaryLayout.getVisibility() == View.GONE;
         showSecondaryLayout(gone);
     };
     private FavoriteRadioStations radioStations;
+
+    private boolean isUpdating = false;
 
     public AlarmClockLayout(Context context) {
         super(context);
@@ -158,11 +174,25 @@ public class AlarmClockLayout extends LinearLayout {
     public void showSecondaryLayout(boolean on) {
         secondaryLayout.setVisibility(on ? View.VISIBLE : View.GONE);
         buttonDown.setImageResource(on ? R.drawable.ic_collapse : R.drawable.ic_expand);
-        layoutDays.setVisibility(
-                (on && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
-        );
+        updateVisibility();
 
-        mainLayout.setBackgroundColor(on ? getResources().getColor(R.color.grey) : Color.TRANSPARENT);
+        mainLayout.setBackgroundColor(on ? ContextCompat.getColor(context, R.color.grey) : Color.TRANSPARENT);
+    }
+
+    private void updateVisibility() {
+        boolean on = secondaryLayout.getVisibility() == View.VISIBLE;
+        boolean isRepeating = checkBoxIsRepeating.isChecked();
+        boolean isCalendarMode = modeCalendar.isChecked();
+
+        repeatModeGroup.setVisibility(
+                (on && isRepeating) ? View.VISIBLE : View.GONE
+        );
+        layoutDays.setVisibility(
+                (on && isRepeating && !isCalendarMode) ? View.VISIBLE : View.GONE
+        );
+        calendarSearchTerm.setVisibility(
+                (on && isRepeating && isCalendarMode) ? View.VISIBLE : View.GONE
+        );
     }
 
     private void init() {
@@ -187,6 +217,10 @@ public class AlarmClockLayout extends LinearLayout {
         toggleActive = findViewById(R.id.enabled);
         switchActive = findViewById(R.id.enabledswitch);
         checkBoxIsRepeating = findViewById(R.id.checkBoxIsRepeating);
+        repeatModeGroup = findViewById(R.id.repeatModeGroup);
+        modeDays = findViewById(R.id.modeDays);
+        modeCalendar = findViewById(R.id.modeCalendar);
+        calendarSearchTerm = findViewById(R.id.calendarSearchTerm);
 
         ConstraintLayout middle = findViewById(R.id.middle);
         LayoutTransition layoutTransition = middle.getLayoutTransition();
@@ -216,8 +250,42 @@ public class AlarmClockLayout extends LinearLayout {
         buttonDown.setOnClickListener(buttonDownOnClickListener);
 
         checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
+        repeatModeGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (isUpdating) return;
+            if (alarmClockEntry != null) {
+                if (checkedId == R.id.modeDays) {
+                    alarmClockEntry.repeatMode = SimpleTime.REPEAT_MODE_DAYS;
+                    if (alarmClockEntry.recurringDays == 0) {
+                        alarmClockEntry.autocompleteRecurringDays();
+                    }
+                } else if (checkedId == R.id.modeCalendar) {
+                    alarmClockEntry.repeatMode = SimpleTime.REPEAT_MODE_CALENDAR;
+                    if (alarmClockEntry.calendarEventName == null) {
+                        alarmClockEntry.calendarEventName = "";
+                    }
+                }
+                updateVisibility();
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+            }
+        });
+
+        calendarSearchTerm.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && !isUpdating) {
+                saveCalendarEventName();
+            }
+        });
+
+        calendarSearchTerm.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                saveCalendarEventName();
+                calendarSearchTerm.clearFocus();
+            }
+            return false;
+        });
+
         update();
         SwitchCompat.OnCheckedChangeListener checkedChangeListener = (compoundButton, isChecked) -> {
+            if (isUpdating) return;
             alarmClockEntry.isActive = isChecked;
             if (isChecked) {
                 switchActive.setChecked(true);
@@ -228,7 +296,7 @@ public class AlarmClockLayout extends LinearLayout {
                             alarmClockEntry.getRemainingTimeString(context),
                             Snackbar.LENGTH_LONG
                     );
-                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.material_grey));
                     snackbar.show();
                 }
             } else {
@@ -323,6 +391,16 @@ public class AlarmClockLayout extends LinearLayout {
         });
     }
 
+    private void saveCalendarEventName() {
+        if (alarmClockEntry != null && calendarSearchTerm != null) {
+            String newText = calendarSearchTerm.getText().toString();
+            if (!newText.equals(alarmClockEntry.calendarEventName)) {
+                alarmClockEntry.calendarEventName = newText;
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+            }
+        }
+    }
+
     public void updateAlarmClockEntry(SimpleTime entry) {
         this.alarmClockEntry = entry;
         update();
@@ -330,62 +408,81 @@ public class AlarmClockLayout extends LinearLayout {
 
     public void update() {
         if (alarmClockEntry != null) {
-            nameView.setText(alarmClockEntry.name);
-            long now = System.currentTimeMillis();
-            Calendar time = alarmClockEntry.getCalendar();
-            String text = Utility.formatTime(timeFormat, time);
-            timeView.setText(text);
-            toggleActive.setChecked(alarmClockEntry.isActive);
-            switchActive.setChecked(alarmClockEntry.isActive);
-
-            String textWhen = "";
-            if (alarmClockEntry.isRecurring()) {
-                textWhen = alarmClockEntry.getWeekDaysAsString();
-
-                if (alarmClockEntry.nextEventAfter != null &&
-                        alarmClockEntry.nextEventAfter > now) {
-                    // if the alarm is postponed by the user show the date of the next event
-                    textWhen += String.format(
-                            "\n%s %s",
-                            context.getString(R.string.alarmStartsFrom),
-                            Utility.formatTime(dateFormat, time)
-                    );
-                }
-            } else if (alarmClockEntry.nextEventAfter != null && alarmClockEntry.nextEventAfter > now) {
-                // if the alarm is postponed by the user show the date of the next event
-                textWhen = String.format("%s", Utility.formatTime(dateFormat, time));
-            } else if (isToday(time)) {
-                textWhen = context.getString(R.string.today);
-            } else if (isTomorrow(time)) {
-                textWhen = context.getString(R.string.tomorrow);
-            }
-
-            textViewWhen.setText(textWhen);
-
-            checkBoxIsRepeating.setOnCheckedChangeListener(null);
-            checkBoxIsRepeating.setChecked(alarmClockEntry.isRecurring());
-            checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
-
-
-            for (ToggleButton dayButton : dayButtons) {
-                int day = (int) dayButton.getTag();
-                dayButton.setChecked(alarmClockEntry.hasDay(day));
-            }
-
-            String displayName = "alarm tone";
+            isUpdating = true;
             try {
-                if (Utility.isEmpty(alarmClockEntry.soundUri)) {
-                    Uri soundUri = Utility.getDefaultAlarmToneUri();
-                    displayName = Utility.getSoundFileTitleFromUri(context, soundUri);
-                } else {
-                    displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
+                nameView.setText(alarmClockEntry.name);
+                long now = System.currentTimeMillis();
+                Calendar time = alarmClockEntry.getCalendar();
+                String text = Utility.formatTime(timeFormat, time);
+                timeView.setText(text);
+                toggleActive.setChecked(alarmClockEntry.isActive);
+                switchActive.setChecked(alarmClockEntry.isActive);
+
+                String textWhen = "";
+                if (alarmClockEntry.isRecurring()) {
+                    textWhen = alarmClockEntry.getWeekDaysAsString();
+
+                    if (alarmClockEntry.nextEventAfter != null &&
+                            alarmClockEntry.nextEventAfter > now) {
+                        // if the alarm is postponed by the user show the date of the next event
+                        textWhen += String.format(
+                                "\n%s %s",
+                                context.getString(R.string.alarmStartsFrom),
+                                Utility.formatTime(dateFormat, time)
+                        );
+                    }
+                } else if (alarmClockEntry.nextEventAfter != null && alarmClockEntry.nextEventAfter > now) {
+                    // if the alarm is postponed by the user show the date of the next event
+                    textWhen = String.format("%s", Utility.formatTime(dateFormat, time));
+                } else if (isToday(time)) {
+                    textWhen = context.getString(R.string.today);
+                } else if (isTomorrow(time)) {
+                    textWhen = context.getString(R.string.tomorrow);
                 }
-            } catch (SecurityException ignored) {
-                // The permission for reading the external storage ma not be granted.
+
+                textViewWhen.setText(textWhen);
+
+                if (alarmClockEntry.repeatMode == SimpleTime.REPEAT_MODE_CALENDAR) {
+                    modeCalendar.setChecked(true);
+                } else {
+                    modeDays.setChecked(true);
+                }
+
+                checkBoxIsRepeating.setChecked(alarmClockEntry.isRecurring());
+
+                if (calendarSearchTerm != null) {
+                    String currentText = calendarSearchTerm.getText().toString();
+                    if (alarmClockEntry.calendarEventName != null && !alarmClockEntry.calendarEventName.equals(currentText)) {
+                        calendarSearchTerm.setText(alarmClockEntry.calendarEventName);
+                    } else if (alarmClockEntry.calendarEventName == null && !currentText.isEmpty()) {
+                        calendarSearchTerm.setText("");
+                    }
+                }
+
+                for (ToggleButton dayButton : dayButtons) {
+                    int day = (int) dayButton.getTag();
+                    dayButton.setChecked(alarmClockEntry.hasDay(day));
+                }
+
+                String displayName = "alarm tone";
+                try {
+                    if (Utility.isEmpty(alarmClockEntry.soundUri)) {
+                        Uri soundUri = Utility.getDefaultAlarmToneUri();
+                        displayName = Utility.getSoundFileTitleFromUri(context, soundUri);
+                    } else {
+                        displayName = Utility.getSoundFileTitleFromUri(context, alarmClockEntry.soundUri);
+                    }
+                } catch (SecurityException ignored) {
+                    // The permission for reading the external storage ma not be granted.
+                }
+                textViewSound.setText(displayName);
+                setupVibrationIcon();
+                setupDeleteIcon();
+
+                updateVisibility();
+            } finally {
+                isUpdating = false;
             }
-            textViewSound.setText(displayName);
-            setupVibrationIcon();
-            setupDeleteIcon();
         }
         invalidate();
     }

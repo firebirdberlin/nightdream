@@ -33,7 +33,7 @@ import org.json.JSONException;
 public class SQLiteDBHelper extends SQLiteOpenHelper {
     Context context;
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "sqlite.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + AlarmEntry.TABLE_NAME + " (" +
@@ -48,7 +48,9 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
                     AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1, " +
                     AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0, " +
                     AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0," +
-                    AlarmEntry.COLUMN_NAME + " text" +
+                    AlarmEntry.COLUMN_NAME + " text," +
+                    AlarmEntry.COLUMN_CALENDAR_EVENT_NAME + " text DEFAULT NULL," +
+                    AlarmEntry.COLUMN_REPEAT_MODE + " INTEGER DEFAULT 0" +
                     ")";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + AlarmEntry.TABLE_NAME;
@@ -99,6 +101,16 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
         if (newVersion >= 8 && oldVersion < 8) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NAME + " text");
+        }
+
+        if (newVersion >= 9 && oldVersion < 9) {
+            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_CALENDAR_EVENT_NAME + " text DEFAULT NULL");
+        }
+
+        if (newVersion >= 10 && oldVersion < 10) {
+            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_REPEAT_MODE + " INTEGER DEFAULT 0");
+            // If calendarEventName is already set, initialize repeatMode to 1 (CALENDAR)
+            db.execSQL("UPDATE " + AlarmEntry.TABLE_NAME + " SET " + AlarmEntry.COLUMN_REPEAT_MODE + " = 1 WHERE " + AlarmEntry.COLUMN_CALENDAR_EVENT_NAME + " IS NOT NULL");
         }
     }
 
@@ -170,6 +182,8 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_RADIO_STATION_INDEX = "radioStationIndex";
         public static final String COLUMN_NUM_AUTO_SNOOZE_CYCLES = "numAutoSnoozeCycles";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_CALENDAR_EVENT_NAME = "calendarEventName";
         public static final String COLUMN_VIBRATE = "vibrate";
+        public static final String COLUMN_REPEAT_MODE = "repeatMode";
     }
 }

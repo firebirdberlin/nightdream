@@ -18,9 +18,12 @@
 
 package com.firebirdberlin.nightdream.models;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 
 import com.firebirdberlin.nightdream.R;
 
@@ -34,6 +37,9 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 public class SimpleTime {
+    public static final int REPEAT_MODE_DAYS = 0;
+    public static final int REPEAT_MODE_CALENDAR = 1;
+
     public static int SUNDAY = 1;
     public static int MONDAY = 1 << 1;
     public static int TUESDAY = 1 << 2;
@@ -58,6 +64,8 @@ public class SimpleTime {
     public boolean vibrate = false;
     public int numAutoSnoozeCycles = 0;
     public String name = null;
+    public String calendarEventName = null;
+    public int repeatMode = REPEAT_MODE_DAYS;
 
     public SimpleTime() {
 
@@ -107,6 +115,8 @@ public class SimpleTime {
         this.vibrate = bundle.getBoolean("vibrate", false);
         this.numAutoSnoozeCycles = bundle.getInt("numAutoSnoozeCycles", 0);
         this.name = bundle.getString("name", null);
+        this.calendarEventName = bundle.getString("calendarEventName", null);
+        this.repeatMode = bundle.getInt("repeatMode", REPEAT_MODE_DAYS);
     }
 
     public static SimpleTime getNextFromList(List<SimpleTime> entries) {
@@ -123,7 +133,7 @@ public class SimpleTime {
             }
         }
 
-        if (map.size() > 0) {
+        if (!map.isEmpty()) {
             return map.firstEntry().getValue();
         }
         return null;
@@ -189,9 +199,11 @@ public class SimpleTime {
         bundle.putInt("alarmTimeMinutes", this.toMinutes());
         bundle.putString("soundUri", this.soundUri);
         bundle.putString("name", this.name);
+        bundle.putString("calendarEventName", this.calendarEventName);
         bundle.putInt("radioStationIndex", this.radioStationIndex);
         bundle.putBoolean("vibrate", this.vibrate);
         bundle.putInt("numAutoSnoozeCycles", this.numAutoSnoozeCycles);
+        bundle.putInt("repeatMode", this.repeatMode);
         if (this.nextEventAfter != null) {
             bundle.putLong("nextEventAfter", this.nextEventAfter);
         }
@@ -221,10 +233,19 @@ public class SimpleTime {
     }
 
     public boolean isRecurring() {
+        if (repeatMode == REPEAT_MODE_CALENDAR) {
+            return calendarEventName != null;
+        }
         return recurringDays != 0;
     }
 
     private Calendar getNextRecurringAlarmTime(Calendar reference) {
+        if (repeatMode == REPEAT_MODE_CALENDAR && calendarEventName != null && !calendarEventName.isEmpty()) {
+            // TODO: implement calendar based alarm time calculation
+            // For now, return a default one day from now if it's not implemented yet
+            // or just fall back to initCalendar if it's the intended behavior for now.
+        }
+
         List<Long> times = new ArrayList<>();
         Calendar firstEventTime = null;
         if (nextEventAfter != null) {
@@ -259,6 +280,11 @@ public class SimpleTime {
             }
         }
 
+        if (times.isEmpty()) {
+            // If it's "calendar mode" but no days are selected, it might still need to return something
+            return initCalendar(reference);
+        }
+
         Collections.sort(times);
 
         Calendar result = Calendar.getInstance();
@@ -276,12 +302,17 @@ public class SimpleTime {
         return (1 << (day - 1));
     }
 
+    @NonNull
     @Override
     public String toString() {
         return String.format("%02d:%02d", hour, min);
     }
 
     public String getWeekDaysAsString() {
+        if (repeatMode == REPEAT_MODE_CALENDAR && calendarEventName != null && !calendarEventName.isEmpty()) {
+            return "Calendar: " + calendarEventName;
+        }
+
         DateFormatSymbols symbols = new DateFormatSymbols();
         String[] dayNames = symbols.getShortWeekdays();
         int firstDayOfWeek = Calendar.getInstance().getFirstDayOfWeek();
@@ -347,4 +378,3 @@ public class SimpleTime {
         return returnString;
     }
 }
-

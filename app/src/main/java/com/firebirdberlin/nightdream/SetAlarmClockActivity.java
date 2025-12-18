@@ -24,7 +24,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.AlarmClock;
@@ -40,6 +39,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
 import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
@@ -56,7 +56,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -170,7 +170,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     private void update(Long highlight_entry_id) {
-        Collections.sort(entries, (obj1, obj2) -> obj1.getCalendar().compareTo(obj2.getCalendar()));
+        entries.sort(Comparator.comparing(SimpleTime::getCalendar));
         scrollView.removeAllViews();
         for (SimpleTime entry : entries) {
             AlarmClockLayout layout = layoutHashMap.get(entry.id);
@@ -256,7 +256,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
                             if (Utility.languageIs("de", "en")) {
                                 Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
-                                snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                                snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.material_grey));
                                 snackbar.show();
                             }
                         } else {
@@ -267,8 +267,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                 },
                 hour, min, Utility.is24HourFormat(context));
         // fix broken dialog appearance on some devices
-        mTimePicker.setTitle(null);
-        mTimePicker.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
+//        mTimePicker.setTitle(null);
+//        mTimePicker.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
         mTimePicker.show();
     }
 
