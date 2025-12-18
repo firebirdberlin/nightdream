@@ -116,7 +116,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
         BatteryStats battery = new BatteryStats(context);
-        if (settings.handle_power && battery.reference.isCharging && settings.isWithinAlwaysOnTime(battery.reference.level)) {
+        if (settings.handle_power && battery.reference.isCharging) {
             Log.i(TAG, "shallActivateStandby() autostart allowed");
             return PowerConnectionReceiver.shallAutostart(context, settings);
         }
@@ -183,9 +183,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                 ) {
                     Log.i(TAG, "unregisterListener");
                     sensorMan.unregisterListener(this);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                        broadcastReceiverThread.quitSafely();
-                    }
+                    broadcastReceiverThread.quitSafely();
                 }
             }
 
