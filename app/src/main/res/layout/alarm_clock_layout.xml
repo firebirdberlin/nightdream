@@ -147,8 +147,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/layoutDays"
                 app:layout_constraintStart_toStartOf="parent">
 
@@ -163,6 +163,35 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioGroup
+                    android:id="@+id/repeatModeGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textViewVibrate"
+                    app:layout_constraintStart_toEndOf="@id/checkBoxIsRepeating">
+
+                    <RadioButton
+                        android:id="@+id/modeDays"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tage"
+                        android:checked="true"
+                        android:textSize="12sp" />
+
+                    <RadioButton
+                        android:id="@+id/modeCalendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kalender"
+                        android:textSize="12sp" />
+                </RadioGroup>
 
                 <TextView
                     android:id="@+id/textViewVibrate"
@@ -182,9 +211,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutDays"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                app:layout_constraintBottom_toTopOf="@id/layoutSound"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/constraintLayout"
+                app:layout_constraintBottom_toTopOf="@id/calendarSearchTerm"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <ToggleButton
@@ -310,6 +339,19 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/calendarSearchTerm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="Termin-Titel suchen"
+                android:inputType="text"
+                android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                android:drawablePadding="8dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/layoutDays"
+                app:layout_constraintBottom_toTopOf="@id/layoutSound" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutSound"
                 android:layout_width="match_parent"
@@ -317,6 +359,7 @@
                 android:animateLayoutChanges="false"
                 android:orientation="horizontal"
                 android:padding="6dp"
+                app:layout_constraintTop_toBottomOf="@id/calendarSearchTerm"
                 app:layout_constraintBottom_toTopOf="@id/layoutButton"
                 app:layout_constraintStart_toStartOf="parent">
 
@@ -353,7 +396,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layoutButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/layoutSound"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
