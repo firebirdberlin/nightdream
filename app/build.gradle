@@ -32,8 +32,8 @@ android {
         applicationId "com.firebirdberlin.nightdream"
         minSdk 24
         targetSdk 36
-        versionCode 335
-        versionName "2.11.13"
+        versionCode 336
+        versionName "2.11.14"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
