@@ -49,6 +49,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
@@ -324,6 +325,7 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
         MultiDex.install(this);
         context = this;
@@ -332,6 +334,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
         Window window = getWindow();
+        window.getDecorView().post(() -> Utility.hideSystemUI(window));
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             window.addFlags(
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
