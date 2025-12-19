@@ -1055,28 +1055,47 @@ public class Settings {
     }
 
     public boolean isWithinAlwaysOnTime(int batteryLevel) {
+        final String TAG = "Settings";
         boolean isBatteryOk = (batteryLevel < 0) || (alwaysOnBatteryLevel <= batteryLevel); // Use -1 for unknown
+
+        Log.d(TAG, "isWithinAlwaysOnTime check started:");
+        Log.d(TAG, "- standbyEnabled: " + isStandbyEnabledWhileDisconnected());
+        Log.d(TAG, "- batteryOk: " + isBatteryOk + " (level: " + batteryLevel + ", required: " + alwaysOnBatteryLevel + ")");
+
         if (isStandbyEnabledWhileDisconnected() && isBatteryOk) {
 
-            if (Utility.isConfiguredAsDaydream(mContext)) return false;
-            if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) return false;
+            if (Utility.isConfiguredAsDaydream(mContext)) {
+                Log.d(TAG, "- failed: device is configured as daydream");
+                return false;
+            }
+
+            if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(mContext)) {
+                Log.d(TAG, "- failed: low ram device and API >= 29");
+                return false;
+            }
 
             Calendar now = Calendar.getInstance();
-            if (!alwaysOnWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
-               return false;
+            int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
+            if (!alwaysOnWeekdays.contains(dayOfWeek)) {
+                Log.d(TAG, "- failed: current day (" + dayOfWeek + ") not in scheduled weekdays");
+                return false;
             }
 
             Calendar start = new SimpleTime(alwaysOnTimeRangeStartInMinutes).getCalendar();
             Calendar end = new SimpleTime(alwaysOnTimeRangeEndInMinutes).getCalendar();
-            boolean isWithinAlwaysOnTime = true;
+            boolean isWithinTimeRange = true;
+
             if (end.before(start)) {
-                isWithinAlwaysOnTime = (now.after(start) || now.before(end));
+                isWithinTimeRange = (now.after(start) || now.before(end));
             } else if (!start.equals(end)) {
-                isWithinAlwaysOnTime = (now.after(start) && now.before(end));
+                isWithinTimeRange = (now.after(start) && now.before(end));
             }
-            return isWithinAlwaysOnTime;
+
+            Log.d(TAG, "- time range check: " + isWithinTimeRange + " (now: " + now.getTime() + ")");
+            return isWithinTimeRange;
         }
 
+        Log.d(TAG, "- failed: standby disabled or battery too low");
         return false;
     }
 
