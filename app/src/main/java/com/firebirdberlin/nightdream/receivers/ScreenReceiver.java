@@ -116,24 +116,30 @@ public class ScreenReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
 
         BatteryStats battery = new BatteryStats(context);
-        if (settings.handle_power && battery.reference.isCharging && settings.isWithinAlwaysOnTime(battery.reference.level)) {
-            Log.i(TAG, "shallActivateStandby() autostart allowed");
-            return PowerConnectionReceiver.shallAutostart(context, settings);
+        if (settings.handle_power && battery.reference.isCharging) {
+            boolean shallAutoStart = PowerConnectionReceiver.shallAutostart(context, settings);
+            if (shallAutoStart) {
+                Log.i(TAG, "shallActivateStandby() autostart allowed");
+                return true;
+            }
         }
 
-        if (settings.isStandbyEnabledWhileDisconnected()
-                && (
-                battery.reference.isCharging
-                        || settings.alwaysOnBatteryLevel <= battery.reference.level
-                )
-                && settings.isWithinAlwaysOnTime(battery.reference.level)
-                && !deviceIsCovered
-                && !Utility.isInCall(context)
-                && (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp)
-        ) {
+        boolean isStandbyEnabled = settings.isStandbyEnabledWhileDisconnected();
+        boolean isWithinTime = settings.isWithinAlwaysOnTime(battery.reference.level);
+        boolean isNotCovered = !deviceIsCovered;
+        boolean isNotInCall = !Utility.isInCall(context);
+        boolean screenOrientationOk = (!settings.standbyEnabledWhileDisconnectedScreenUp || isScreenUp);
+
+        Log.d(TAG, "Checking standby conditions:");
+        Log.d(TAG, "- isStandbyEnabledWhileDisconnected: " + isStandbyEnabled);
+        Log.d(TAG, "- isWithinAlwaysOnTime: " + isWithinTime);
+        Log.d(TAG, "- deviceIsNotCovered: " + isNotCovered);
+        Log.d(TAG, "- isNotInCall: " + isNotInCall);
+        Log.d(TAG, "- screenOrientationOk (screenUp check): " + screenOrientationOk);
+
+        if (isStandbyEnabled && isWithinTime && isNotCovered && isNotInCall && screenOrientationOk) {
             Log.i(TAG, "shallActivateStandby() standby allowed");
             return true;
-
         }
 
         Log.i(TAG, "shallActivateStandby() standby not allowed");
@@ -183,9 +189,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                 ) {
                     Log.i(TAG, "unregisterListener");
                     sensorMan.unregisterListener(this);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                        broadcastReceiverThread.quitSafely();
-                    }
+                    broadcastReceiverThread.quitSafely();
                 }
             }
 
