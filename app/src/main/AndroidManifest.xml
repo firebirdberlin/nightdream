@@ -208,6 +208,16 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true"
             android:exported="true">
+
+            <!--
+            Important: The opt-out is temporary and won't apply when targeting API level 37 in a
+            future Android release. That is, for apps targeting API level 37, orientation,
+            resizability, and aspect ratio restrictions are ignored on displays that are at least
+            sw600dp.
+            -->
+            <property
+                android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY"
+                android:value="true" />
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
 
