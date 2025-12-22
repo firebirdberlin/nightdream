@@ -673,9 +673,6 @@ public class Utility {
 
     public static boolean isScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if (Build.VERSION.SDK_INT <= 19) {
-            return deprecatedIsScreenOn(pm);
-        }
         return pm.isInteractive();
     }
 
@@ -686,10 +683,6 @@ public class Utility {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    protected static boolean deprecatedIsScreenOn(PowerManager pm) {
-        return pm.isScreenOn();
-    }
 
     public static String getSoundFileTitleFromUri(Context context, String uriString) {
         Log.w(TAG, "uri: " + uriString);

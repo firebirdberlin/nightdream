@@ -26,6 +26,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.location.Location;
 import android.location.LocationListener;
@@ -327,7 +329,6 @@ public class NightDreamActivity extends BillingHelperActivity
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
-        Utility.hideSystemUI(window);
 
         Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
         MultiDex.install(this);
@@ -336,6 +337,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setContentView(R.layout.main);
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             window.addFlags(
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
