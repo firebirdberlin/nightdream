@@ -57,6 +57,7 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -655,7 +656,6 @@ public class NightDreamUI {
         });
 
         initBackground();
-
         setupAlarmClock();
         setupScreenAnimation();
         lockUI(this.locked);
@@ -684,7 +684,13 @@ public class NightDreamUI {
         if (Utility.isLowRamDevice(mContext)) {
             bgshape = colorBlack;
             backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
         } else {
+            if (backgroundMode != Settings.BACKGROUND_BLACK) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+            }
             switch (backgroundMode) {
                 case Settings.BACKGROUND_TRANSPARENT: {
                     Log.d(TAG, "BACKGROUND_TRANSPARENT");
@@ -696,7 +702,6 @@ public class NightDreamUI {
 
                 case Settings.BACKGROUND_GRADIENT: {
                     Log.d(TAG, "BACKGROUND_GRADIENT");
-
                     int[] colors = {
                             settings.gradientStartColor,
                             settings.gradientEndColor,
@@ -766,7 +771,6 @@ public class NightDreamUI {
 
                 case Settings.BACKGROUND_BLACK:
                 default:
-                    Log.d(TAG, "BACKGROUND_default");
                     bgshape = colorBlack;
                     backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
                     break;
