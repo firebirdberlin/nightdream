@@ -553,27 +553,27 @@ public class Utility {
 
     public static void hideSystemUI(Window window) {
         if (window == null) return;
-//        WindowCompat.setDecorFitsSystemWindows(window, false);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            // Use WindowInsetsController for Android 11 (API 33) and above
-//            WindowInsetsController controller = window.getInsetsController();
-//            if (controller != null) {
-//                // Hide status bars and navigation bars
-//                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-//
-//                // Set the immersive sticky mode
-//                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-//            }
-//        }
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Use WindowInsetsController for Android 11 (API 33) and above
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                // Hide status bars and navigation bars
+                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
 
-        View decorView = window.getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        decorView.setSystemUiVisibility(uiOptions);
+                // Set the immersive sticky mode
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            View decorView = window.getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
 
     public static Point getDisplaySize(Context context) {
