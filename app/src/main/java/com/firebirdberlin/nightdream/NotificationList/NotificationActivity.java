@@ -90,14 +90,6 @@ public class NotificationActivity extends AppCompatActivity {
         }
     };
 
-    private void setScreenOrientation(int orientation) {
-        if (orientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-        } else {
-            setRequestedOrientation(orientation);
-        }
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -134,8 +126,6 @@ public class NotificationActivity extends AppCompatActivity {
         );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
-        Settings settings = new Settings(getApplicationContext());
-        setScreenOrientation(settings.screenOrientation);
     }
 
     @Override

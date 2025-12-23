@@ -200,7 +200,6 @@
             android:name=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize|screenLayout"
             android:enabled="true"
-            android:screenOrientation="fullSensor"
             android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTop"
             android:roundIcon="@mipmap/ic_launcher_round"
