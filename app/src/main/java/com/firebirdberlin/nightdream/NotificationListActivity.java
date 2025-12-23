@@ -101,18 +101,7 @@ public class NotificationListActivity extends AppCompatActivity {
         );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
-        Settings settings = new Settings(getApplicationContext());
-        setScreenOrientation(settings.screenOrientation);
     }
-
-    private void setScreenOrientation(int orientation) {
-        if (orientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-        } else {
-            setRequestedOrientation(orientation);
-        }
-    }
-
 
     @Override
     public void onDestroy() {

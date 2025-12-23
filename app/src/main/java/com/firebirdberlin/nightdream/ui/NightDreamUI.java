@@ -1425,6 +1425,9 @@ public class NightDreamUI {
     }
 
     private void setScreenOrientation(int orientation) {
+        if ("samsung".equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+            return;
+        }
         if (orientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
             ((AppCompatActivity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         } else {
