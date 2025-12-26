@@ -554,15 +554,14 @@ public class Utility {
     public static void hideSystemUI(Window window) {
         if (window == null) return;
         WindowCompat.setDecorFitsSystemWindows(window, false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
             // Use WindowInsetsController for Android 11 (API 33) and above
             WindowInsetsController controller = window.getInsetsController();
             if (controller != null) {
                 // Hide status bars and navigation bars
-                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                controller.hide(WindowInsets.Type.systemBars());
+//                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
 
-                // Set the immersive sticky mode
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
         } else {
             View decorView = window.getDecorView();
