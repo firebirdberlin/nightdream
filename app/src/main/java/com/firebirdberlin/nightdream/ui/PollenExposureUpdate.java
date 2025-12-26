@@ -60,7 +60,7 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
             return;
         }
         City city = GeocoderApi.findCityByCoordinates(mContext.get(), weatherEntry.lat, weatherEntry.lon);
-        if (city == null || !"DE".equals(city.countryCode) || city.postalCode.isEmpty()) {
+        if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)) {
             clear();
             return;
         }
