@@ -221,7 +221,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         cal.set(Calendar.MINUTE, m_tens_digit * 10 + ones_digit);
         cal.set(Calendar.SECOND, m_tens_digit * 10 + ones_digit);
         String text = simpleDateFormat.format(cal.getTime());
-        Log.i("CustomDigitalClock", "sample text: " + text);
+//        Log.i("CustomDigitalClock", "sample text: " + text);
         return text;
     }
 

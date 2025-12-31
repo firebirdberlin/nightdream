@@ -206,6 +206,7 @@
             android:theme="@style/ActivityTheme"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
+            android:keepScreenOn="true"
             android:exported="true">
 
             <!--

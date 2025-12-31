@@ -551,6 +551,10 @@ public class Utility {
         hideSystemUI(((AppCompatActivity) context).getWindow());
     }
 
+    public static void showSystemUI(Context context) {
+        showSystemUI(((AppCompatActivity) context).getWindow());
+    }
+
     public static void hideSystemUI(Window window) {
         if (window == null) return;
         WindowCompat.setDecorFitsSystemWindows(window, false);
@@ -560,7 +564,7 @@ public class Utility {
             if (controller != null) {
                 // Hide status bars and navigation bars
                 controller.hide(WindowInsets.Type.systemBars());
-//                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 
             }
         } else {
@@ -572,6 +576,21 @@ public class Utility {
                     | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
+
+    public static void showSystemUI(Window window) {
+        if (window == null) return;
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            // Use WindowInsetsController for Android 11 (API 33) and above
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                // Hide status bars and navigation bars
+                controller.show(WindowInsets.Type.systemBars());
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
+
+            }
         }
     }
 
