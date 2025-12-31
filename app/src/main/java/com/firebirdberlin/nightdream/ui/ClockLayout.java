@@ -300,8 +300,9 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         //view.setLayerType((glowRadius > 24) ? LAYER_TYPE_SOFTWARE : LAYER_TYPE_HARDWARE, null);
         view.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
-
+    private int secondaryColor = 0;
     public void setSecondaryColor(int color) {
+        this.secondaryColor = color;
         if (date != null) {
             date.setTextColor(color);
         }
@@ -631,16 +632,17 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         if (weatherLayout != null) {
             weatherLayout.setMaxWidth((int) (maxWidth));
             weatherLayout.setMaxHeight((Utility.getHeightOfView(clock)));
-            weatherLayout.setMaxFontSizesInSp(10.f, clockTextSize / 2);
+            weatherLayout.setMaxFontSizesInSp(10.f, clockTextSize/2);
             weatherLayout.update();
         }
 
 
         if (weatherLayout != null) {
             AutoAdjustTextView v = findViewById(R.id.weatherLocationText);
+            v.setTextColor(this.secondaryColor);
             v.setVisibility(showWeather ? View.VISIBLE : View.GONE);
             v.setMaxWidth((int) maxWidth);
-            v.setMaxFontSizesInSp(10.f, 20.f);
+            v.setMaxFontSizesInSp(10.f, 16.f);
             v.setText(weatherLayout.getLocationText());
         }
 

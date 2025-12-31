@@ -104,20 +104,20 @@
         <LinearLayout
             android:id="@+id/weather_container"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:gravity="center"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/weatherLocationText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/divider2"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/time_layout"
+            app:layout_constraintBottom_toBottomOf="@id/time_layout"
             app:layout_constraintVertical_chainStyle="packed">
 
             <com.firebirdberlin.nightdream.ui.WeatherLayout
                 xmlns:weather="weather"
                 android:id="@+id/weatherLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:visibility="gone"
                 weather:content="icon|temperature|wind"
                 weather:cycle="true"
@@ -131,7 +131,6 @@
             android:layout_height="wrap_content"
             android:visibility="visible"
             android:textSize="11sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/divider2"
             app:layout_constraintBaseline_toBaselineOf="@id/date"
