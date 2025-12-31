@@ -27,26 +27,18 @@
     </Preference>
 
     <Preference
+        android:key="bug_report"
         app:iconSpaceReserved="false"
         app:icon="@drawable/ic_bug"
         app:title="@string/bug"
-        app:summary="@string/bug_summary">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="mailto:night-clock@googlegroups.com?subject=Bug report">
-        </intent>
-    </Preference>
+        app:summary="@string/bug_summary" />
 
     <Preference
+        android:key="feature_request"
         app:iconSpaceReserved="false"
         app:icon="@drawable/ic_new_features"
         app:title="@string/suggestions"
-        app:summary="@string/suggestions_summary">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="mailto:night-clock@googlegroups.com?subject=Feature request">
-        </intent>
-    </Preference>
+        app:summary="@string/suggestions_summary" />
 
     <Preference
         app:iconSpaceReserved="false"
