@@ -600,7 +600,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             setupLightSensorPreferences();
         } else if ("behaviour".equals(rootKey)) {
             initUseDeviceLockPreference();
-            initOrientationPreference();
         } else if ("nightmode".equals(rootKey)) {
             setupLightSensorPreferences();
             setupNightModePreferences(prefs);
@@ -867,16 +866,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         if (pref.isChecked() && !devicePolicyWrapper.isAdminActive()) {
             pref.setChecked(false);
-        }
-    }
-
-    private void initOrientationPreference() {
-        Preference pref = findPreference("screenOrientation");
-        if (
-            pref != null
-             && "samsung".equalsIgnoreCase(android.os.Build.MANUFACTURER)
-        ) {
-            pref.setVisible(false);
         }
     }
 
