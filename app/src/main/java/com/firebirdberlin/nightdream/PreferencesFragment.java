@@ -1160,9 +1160,31 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
     }
 
+    private String getDeviceInfo() {
+        return String.format(
+                "\n\n\n--- Device Information ---\n" +
+                        "Manufacturer: %s\n" +
+                        "Model: %s\n" +
+                        "Flavor: %s\n" +
+                        "Android Version: %s (API %d)\n" +
+                        "App Version: %s (%d)\n",
+                Build.MANUFACTURER,
+                Build.MODEL,
+                BuildConfig.FLAVOR,
+                Build.VERSION.RELEASE,
+                Build.VERSION.SDK_INT,
+                BuildConfig.VERSION_NAME,
+                BuildConfig.VERSION_CODE
+        );
+    }
+
     private void sendEmail(String subject) {
+        String body = getDeviceInfo();
+        String uriString = "mailto:night-clock@googlegroups.com" +
+                "?subject=" + Uri.encode(subject) +
+                "&body=" + Uri.encode(body);
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:night-clock@googlegroups.com?subject=" + Uri.encode(subject)));
+        intent.setData(Uri.parse(uriString));
         try {
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException ex) {
