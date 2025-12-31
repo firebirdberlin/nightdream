@@ -603,62 +603,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         } else if ("nightmode".equals(rootKey)) {
             setupLightSensorPreferences();
             setupNightModePreferences(prefs);
-
+        } else if ("help".equals(rootKey)) {
+            setupFeedbackPreferences();
         } else if ("about".equals(rootKey)) {
-
-            Preference recommendApp = findPreference("recommendApp");
-            if (recommendApp != null) {
-                recommendApp.setOnPreferenceClickListener(preference -> {
-                    recommendApp();
-                    return true;
-                });
-            }
-
-            Preference exportPreferences = findPreference("exportPreferences");
-            if (exportPreferences != null) {
-                exportPreferences.setOnPreferenceClickListener(preference -> {
-                    ExportPreferences export = new ExportPreferences(getActivity());
-                    export.executeExport();
-                    return true;
-                });
-            }
-
-            Preference uninstallApp = findPreference("uninstallApp");
-            if (uninstallApp != null) {
-                uninstallApp.setOnPreferenceClickListener(preference -> {
-                    uninstallApplication();
-                    return true;
-                });
-            }
-            Preference resetToDefaults = findPreference("reset_to_defaults");
-            if (resetToDefaults != null) {
-
-                resetToDefaults.setOnPreferenceClickListener(preference -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle(getResources().getString(R.string.confirm_reset))
-                            .setMessage(getResources().getString(R.string.confirm_reset_question))
-                            .setNegativeButton(android.R.string.no, null)
-                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                                settings.clear();
-                                getPreferenceScreen().removeAll();
-                                WakeUpReceiver.cancelAlarm(mContext);
-                                DataSource db = new DataSource(context);
-                                db.open();
-                                db.dropData();
-                                db.close();
-                                PreferencesActivity activity = ((PreferencesActivity) mContext);
-                                activity.recreate(); // Changed from initFragment() to recreate()
-                            });
-
-                    AlertDialog alertdialog = builder.create();
-                    dialogs.add(alertdialog);
-                    alertdialog.show();
-
-                    return true;
-                });
-
-            }
-
+            setupAboutPreferences();
         } else {
             // main page
             setupDaydreamPreferences();
@@ -681,6 +629,79 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference purchasePreference = findPreference(key);
         if (purchasePreference != null) {
             purchasePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
+        }
+    }
+
+    private void setupFeedbackPreferences() {
+        Preference bugReport = findPreference("bug_report");
+        if (bugReport != null) {
+            bugReport.setOnPreferenceClickListener(preference -> {
+                sendEmail("Bug report: version " + BuildConfig.VERSION_NAME);
+                return true;
+            });
+        }
+
+        Preference featureRequest = findPreference("feature_request");
+        if (featureRequest != null) {
+            featureRequest.setOnPreferenceClickListener(preference -> {
+                sendEmail("Feature request");
+                return true;
+            });
+        }
+    }
+
+    private void setupAboutPreferences() {
+        Preference recommendApp = findPreference("recommendApp");
+        if (recommendApp != null) {
+            recommendApp.setOnPreferenceClickListener(preference -> {
+                recommendApp();
+                return true;
+            });
+        }
+
+        Preference exportPreferences = findPreference("exportPreferences");
+        if (exportPreferences != null) {
+            exportPreferences.setOnPreferenceClickListener(preference -> {
+                ExportPreferences export = new ExportPreferences(getActivity());
+                export.executeExport();
+                return true;
+            });
+        }
+
+        Preference uninstallApp = findPreference("uninstallApp");
+        if (uninstallApp != null) {
+            uninstallApp.setOnPreferenceClickListener(preference -> {
+                uninstallApplication();
+                return true;
+            });
+        }
+        Preference resetToDefaults = findPreference("reset_to_defaults");
+        if (resetToDefaults != null) {
+
+            resetToDefaults.setOnPreferenceClickListener(preference -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(getResources().getString(R.string.confirm_reset))
+                        .setMessage(getResources().getString(R.string.confirm_reset_question))
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            settings.clear();
+                            getPreferenceScreen().removeAll();
+                            WakeUpReceiver.cancelAlarm(mContext);
+                            DataSource db = new DataSource(mContext);
+                            db.open();
+                            db.dropData();
+                            db.close();
+                            PreferencesActivity activity = ((PreferencesActivity) mContext);
+                            activity.recreate(); // Changed from initFragment() to recreate()
+                        });
+
+                AlertDialog alertdialog = builder.create();
+                dialogs.add(alertdialog);
+                alertdialog.show();
+
+                return true;
+            });
+
         }
     }
 
@@ -1137,6 +1158,16 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             if ((dialog != null) && dialog.isShowing()) {
                 dialog.dismiss();
             }
+    }
+
+    private void sendEmail(String subject) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:night-clock@googlegroups.com?subject=" + Uri.encode(subject)));
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(mContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class DaydreamSettingsObserver extends ContentObserver {
