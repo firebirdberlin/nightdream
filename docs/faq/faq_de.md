@@ -1,8 +1,8 @@
-[< zurück](../index.md)
+[< zurück](../index_de.md)
 
 # Häufig gestellte Fragen
 
-[> english](faq_en.md)
+[> 🇬🇧 english](faq_en.md)
 
 ## Wo finde ich Hilfe ?
 

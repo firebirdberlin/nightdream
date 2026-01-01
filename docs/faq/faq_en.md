@@ -2,7 +2,7 @@
 
 # Frequently Asked Questions (FAQ)
 
-[> deutsch](faq_de.md)
+[> 🇩🇪 deutsch](faq_de.md)
 
 ## Where do I find support ?
 
