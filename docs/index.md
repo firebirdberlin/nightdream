@@ -12,7 +12,7 @@ lang: en
 ![demo](demoxl.png)
 
 <div align="center" style="display: flex; gap: 12px; justify-content: center; align-items: center;">
-  <a href="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream">
+  <a href="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream&utm_source=github_pages">
     <img src="google-play-badge.png" height="75" alt="Google Play">
   </a>
 
