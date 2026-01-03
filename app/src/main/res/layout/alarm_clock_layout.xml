@@ -62,7 +62,7 @@
             android:layout_weight="15"
             android:gravity="center_vertical"
             android:lineSpacingExtra="2dp"
-            android:lines="1"
+            android:minLines="1"
             android:maxLines="2"
             android:text="@string/today"
             android:textAppearance="@android:style/TextAppearance.Small"
