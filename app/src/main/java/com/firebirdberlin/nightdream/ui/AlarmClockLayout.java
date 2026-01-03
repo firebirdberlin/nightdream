@@ -311,7 +311,6 @@ public class AlarmClockLayout extends LinearLayout {
         nameView.setOnClickListener(((SetAlarmClockActivity) context)::onNameClicked);
         timeView.setOnClickListener(((SetAlarmClockActivity) context)::onTimeClicked);
         textViewWhen.setOnClickListener(((SetAlarmClockActivity) context)::onDateClicked);
-
         textViewSound.setOnClickListener(view -> {
             if (alarmClockEntry == null) return;
 
@@ -411,35 +410,13 @@ public class AlarmClockLayout extends LinearLayout {
             isUpdating = true;
             try {
                 nameView.setText(alarmClockEntry.name);
-                long now = System.currentTimeMillis();
                 Calendar time = alarmClockEntry.getCalendar();
                 String text = Utility.formatTime(timeFormat, time);
                 timeView.setText(text);
                 toggleActive.setChecked(alarmClockEntry.isActive);
                 switchActive.setChecked(alarmClockEntry.isActive);
 
-                String textWhen = "";
-                if (alarmClockEntry.isRecurring()) {
-                    textWhen = alarmClockEntry.getWeekDaysAsString();
-
-                    if (alarmClockEntry.nextEventAfter != null &&
-                            alarmClockEntry.nextEventAfter > now) {
-                        // if the alarm is postponed by the user show the date of the next event
-                        textWhen += String.format(
-                                "\n%s %s",
-                                context.getString(R.string.alarmStartsFrom),
-                                Utility.formatTime(dateFormat, time)
-                        );
-                    }
-                } else if (alarmClockEntry.nextEventAfter != null && alarmClockEntry.nextEventAfter > now) {
-                    // if the alarm is postponed by the user show the date of the next event
-                    textWhen = String.format("%s", Utility.formatTime(dateFormat, time));
-                } else if (isToday(time)) {
-                    textWhen = context.getString(R.string.today);
-                } else if (isTomorrow(time)) {
-                    textWhen = context.getString(R.string.tomorrow);
-                }
-
+                String textWhen = getAlarmWhenText(alarmClockEntry, time);
                 textViewWhen.setText(textWhen);
 
                 if (alarmClockEntry.repeatMode == SimpleTime.REPEAT_MODE_CALENDAR) {
@@ -485,6 +462,32 @@ public class AlarmClockLayout extends LinearLayout {
             }
         }
         invalidate();
+    }
+
+    private String getAlarmWhenText(SimpleTime alarmClockEntry, Calendar time) {
+        long now = System.currentTimeMillis();
+        String textWhen = "";
+        if (alarmClockEntry.isRecurring()) {
+            textWhen = alarmClockEntry.getWeekDaysAsString();
+
+            if (alarmClockEntry.nextEventAfter != null &&
+                    alarmClockEntry.nextEventAfter > now) {
+                // if the alarm is postponed by the user show the date of the next event
+                textWhen += String.format(
+                        "\n%s %s",
+                        context.getString(R.string.alarmStartsFrom),
+                        Utility.formatTime(dateFormat, time)
+                );
+            }
+        } else if (alarmClockEntry.nextEventAfter != null && alarmClockEntry.nextEventAfter > now) {
+            // if the alarm is postponed by the user show the date of the next event
+            textWhen = String.format("%s", Utility.formatTime(dateFormat, time));
+        } else if (isToday(time)) {
+            textWhen = context.getString(R.string.today);
+        } else if (isTomorrow(time)) {
+            textWhen = context.getString(R.string.tomorrow);
+        }
+        return textWhen;
     }
 
     void setupVibrationIcon() {
