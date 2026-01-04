@@ -96,6 +96,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -123,8 +124,12 @@ public class Utility {
     }
 
     public static void prepareDirectory(File directory) {
-        deleteDirectory(directory);
-        directory.mkdirs();
+        if (directory.exists()) {
+            deleteDirectory(directory);
+        }
+        if (! directory.mkdirs()){
+            Log.e("prepareDirectory", "Directory "+directory+" cannot be created");
+        }
     }
 
     public static void deleteDirectory(File fileOrDirectory) {
@@ -136,23 +141,28 @@ public class Utility {
     }
 
     public static boolean copyToDirectory(Context context, Uri srcUri, File directory, String name) {
-        InputStream inputStream;
-        try {
-            inputStream = context.getContentResolver().openInputStream(srcUri);
+        try (InputStream inputStream = context.getContentResolver().openInputStream(srcUri)) {
             File file = new File(directory, name);
-            OutputStream outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
+            } catch (Exception ex) {
+                Log.e("copyToDirectory", ex.getMessage());
+                ex.printStackTrace();
+                return false;
             }
-            outputStream.close();
-            inputStream.close();
-            return true;
-        } catch (IOException e) {
-            //throw new RuntimeException(e);
+        } catch (Exception ex) {
+            Log.e("copyToDirectory", ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
+        return true;
     }
 
     static public PendingIntent getImmutableBroadcast(Context context, int requestCode, Intent intent, int flags) {
