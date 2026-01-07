@@ -69,6 +69,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         if (!settings.handle_power) return false;
         if (Utility.isConfiguredAsDaydream(context)) return false;
         if (Build.VERSION.SDK_INT >= 29 && Utility.isLowRamDevice(context)) return false;
+        if (settings.isNightModeActive()) return false;
 
         Calendar now = new GregorianCalendar();
         Log.d(TAG, "autostart ?");

@@ -117,8 +117,8 @@ public class NightDreamActivity extends BillingHelperActivity
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
-    private static final int MODE_NIGHT = 0;
-    private static final int MODE_DAY = 2;
+    public static final int MODE_NIGHT = 0;
+    public static final int MODE_DAY = 2;
     private static int mode = MODE_DAY;
     private static Context context = null;
     final private Handler handler = new Handler();
@@ -849,6 +849,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void onChangeNightMode(int new_mode) {
         if (new_mode == MODE_NIGHT) {
+            mySettings.saveNightModeState(new_mode);
         }
     }
 
