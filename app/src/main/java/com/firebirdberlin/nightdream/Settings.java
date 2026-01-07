@@ -383,7 +383,7 @@ public class Settings {
             return 3;
         }
         String val = preferences.getString("minNotificationImportance", "3");
-        return Integer.valueOf(val);
+        return Integer.parseInt(val);
     }
 
     public static void setFlashlightIsOn(Context context, boolean isOn) {
@@ -524,7 +524,7 @@ public class Settings {
         autoSnoozeCycles = settings.getInt("autoSnoozeCycles", 20);
 
         String time = settings.getString("sleepTimeInMinutesDefaultValue", "30");
-        sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.valueOf(time);
+        sleepTimeInMinutesDefaultValue = time.isEmpty() ? -1 : Integer.parseInt(time);
         sleepTimeInMillis = settings.getLong("sleepTimeInMillis", 0L);
 
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
@@ -548,12 +548,9 @@ public class Settings {
 
         weatherEntry = getWeatherEntry();
 
-        HashSet<String> defaultOptions = new HashSet<>();
-        defaultOptions.addAll(
-                Arrays.asList(
-                        mContext.getResources().getStringArray(R.array.optionsStopAlarmsValuesDefault)
-                )
-        );
+        HashSet<String> defaultOptions = new HashSet<>(Arrays.asList(
+                mContext.getResources().getStringArray(R.array.optionsStopAlarmsValuesDefault)
+        ));
         Set<String> optionsStopAlarms = settings.getStringSet("optionsStopAlarms", defaultOptions);
         stopAlarmOnTap = optionsStopAlarms.contains("0");
         stopAlarmOnLongPress = optionsStopAlarms.contains("1");
@@ -597,11 +594,11 @@ public class Settings {
         switch (mode) {
             case 0:
                 return ScreenProtectionModes.NONE;
+            case 2:
+                return ScreenProtectionModes.FADE;
             case 1:
             default:
                 return ScreenProtectionModes.MOVE;
-            case 2:
-                return ScreenProtectionModes.FADE;
         }
     }
 
@@ -640,12 +637,9 @@ public class Settings {
     private void setPowerSourceOptions() {
 
         SharedPreferences.Editor edit = settings.edit();
-        HashSet<String> defaultOptions = new HashSet<>();
-        defaultOptions.addAll(
-                Arrays.asList(
-                        mContext.getResources().getStringArray(R.array.optionsPowerSource)
-                )
-        );
+        HashSet<String> defaultOptions = new HashSet<>(Arrays.asList(
+                mContext.getResources().getStringArray(R.array.optionsPowerSource)
+        ));
 
         if (preferencesContain(
                 "handle_power_ac",
@@ -711,15 +705,15 @@ public class Settings {
     public int getTextureResId(int clockLayoutId) {
         int textureId = getTextureId(clockLayoutId);
         switch (textureId) {
-            case 0:
-            default:
-                return -1;
             case 1:
                 return R.drawable.gold;
             case 2:
                 return R.drawable.copper;
             case 3:
                 return R.drawable.rust;
+            case 0:
+            default:
+                return -1;
         }
     }
 
@@ -1387,6 +1381,29 @@ public class Settings {
         return BatteryValue.fromJson(json);
     }
 
+    private static final String NIGHT_MODE_STATE_PREF_KEY = "night_mode_state";
+    private static final String NIGHT_MODE_TIME_PREF_KEY = "night_mode_time";
+
+    public void saveNightModeState(int mode) {
+        Log.i(TAG, "saveNightModeState: " + mode);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(NIGHT_MODE_STATE_PREF_KEY, mode);
+        editor.putLong(NIGHT_MODE_TIME_PREF_KEY, System.currentTimeMillis());
+        editor.apply();
+    }
+
+    public boolean isNightModeActive() {
+        int savedMode = settings.getInt(NIGHT_MODE_STATE_PREF_KEY, NightDreamActivity.MODE_DAY); // Default to DAY mode
+        long activationTime = settings.getLong(NIGHT_MODE_TIME_PREF_KEY, 0);
+
+        long now = System.currentTimeMillis();
+
+        return (
+                savedMode == NightDreamActivity.MODE_NIGHT
+                        && activationTime > now - 60 * 60 * 1000 // 60 minutes
+        );
+    }
+
     public static void saveBatteryReference(Context context, BatteryValue bv) {
         if (bv == null) {
             return;
@@ -1398,7 +1415,7 @@ public class Settings {
     }
 
     public boolean getShallRadioStreamActivateWiFi() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < 29) {
+        if (Build.VERSION.SDK_INT < 29) {
             return false;
         }
         return radioStreamActivateWiFi;
