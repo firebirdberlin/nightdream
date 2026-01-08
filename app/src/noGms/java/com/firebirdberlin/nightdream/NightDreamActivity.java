@@ -26,6 +26,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.location.Location;
 import android.location.LocationListener;
@@ -49,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.WindowCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
@@ -109,8 +112,8 @@ public class NightDreamActivity extends BillingHelperActivity
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
-    private static final int MODE_NIGHT = 0;
-    private static final int MODE_DAY = 2;
+    public static final int MODE_NIGHT = 0;
+    public static final int MODE_DAY = 2;
     private static int mode = MODE_DAY;
     private static Context context = null;
     final private Handler handler = new Handler();
@@ -253,6 +256,9 @@ public class NightDreamActivity extends BillingHelperActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Window window = getWindow();
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+
         Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
         MultiDex.install(this);
         context = this;
@@ -260,7 +266,7 @@ public class NightDreamActivity extends BillingHelperActivity
         setContentView(R.layout.main);
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
 
-        Window window = getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             window.addFlags(
                     WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
@@ -287,6 +293,9 @@ public class NightDreamActivity extends BillingHelperActivity
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(this::initTextToSpeech);
 
+        if (("samsung".equalsIgnoreCase(android.os.Build.MANUFACTURER) && android.os.Build.VERSION.SDK_INT >= 36)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
@@ -519,7 +528,7 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     private void showToastIfNotCharging() {
-        if (mySettings.showBatteryWarning && !Utility.isCharging(this)) {
+        if (mySettings.showBatteryWarning && !Utility.isPlugged(this)) {
             Toast.makeText(this,
                     R.string.showBatteryWarningMessage, Toast.LENGTH_LONG).show();
         }
