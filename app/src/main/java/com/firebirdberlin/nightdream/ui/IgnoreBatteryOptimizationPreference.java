@@ -35,12 +35,9 @@ public class IgnoreBatteryOptimizationPreference extends Preference{
         final Context ctx = context;
         setOnPreferenceClickListener(
                 preference -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        Intent intent = new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                        ((Activity) ctx).startActivityForResult(intent,0);
-                        return true;
-                    }
-                    return false;
+                    Intent intent = new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                    ((Activity) ctx).startActivityForResult(intent,0);
+                    return true;
                 }
         );
     }
