@@ -388,8 +388,7 @@ public class NightDreamUI {
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 Log.d(TAG, "onScroll");
                 if (
-                        clockLayoutContainer == null || mContext == null || settings == null
-                                || brightnessProgress == null
+                        clockLayoutContainer == null || brightnessProgress == null
                 ) return false;
                 if (brightnessProgress.getVisibility() == View.VISIBLE) {
                     clockLayoutContainer.getLocationInWindow(rect);
@@ -651,9 +650,8 @@ public class NightDreamUI {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> { //background thread
             clockLayoutContainer.post(initClockLayout);
-            handler.post(() -> { //like onPostExecute()
-                postFadeAnimation();
-            });
+            //like onPostExecute()
+            handler.post(this::postFadeAnimation);
         });
 
         initBackground();
