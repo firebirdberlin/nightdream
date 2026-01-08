@@ -27,23 +27,29 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.util.Log; // Import Log for logging
 import org.greenrobot.eventbus.EventBus;
 
 public class LightSensorEventListener implements SensorEventListener {
 
+    private static final String TAG = "LightSensorEventListener";
     final private Handler handler = new Handler();
     private boolean pending = false;
-    private EventBus bus;
+    private final EventBus bus;
     private float ambient_mean = 0.f;
     private float last_value = -1.f;
     private Sensor lightSensor = null;
-    private SensorManager mSensorManager = null;
+    private final SensorManager mSensorManager;
     public int count = 0;
 
 
     public LightSensorEventListener(Context context){
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        lightSensor = Utility.getLightSensor(context);
+        if (mSensorManager != null) {
+            lightSensor = Utility.getLightSensor(context);
+        } else {
+            Log.e(TAG, "SensorManager is null");
+        }
         bus = EventBus.getDefault();
     }
 
@@ -53,8 +59,8 @@ public class LightSensorEventListener implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if( event.sensor.getType() == Sensor.TYPE_LIGHT ) {
-            if (! pending) {
+        if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            if (!pending) {
                 handler.postDelayed(calculateMeanValue, 10000);
             }
 
@@ -70,26 +76,36 @@ public class LightSensorEventListener implements SensorEventListener {
     }
 
     public void register(){
-        if (lightSensor == null) return;
+        if (mSensorManager == null) {
+            Log.e(TAG, "Cannot register listener: SensorManager is null.");
+            return;
+        }
+        if (lightSensor == null) {
+            Log.e(TAG, "Cannot register listener: Light sensor not available.");
+            return;
+        }
         mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         handler.postDelayed(calculateMeanValue, 1000);
         handler.postDelayed(sensorTimeout, 15000);// start timer
     }
 
     public void unregister(){
-        removeCallbacks(sensorTimeout); // stop other instances
-        removeCallbacks(calculateMeanValue);
-        mSensorManager.unregisterListener(this);
+        if (mSensorManager != null) {
+            removeCallbacks(sensorTimeout); // stop other instances
+            removeCallbacks(calculateMeanValue);
+            mSensorManager.unregisterListener(this);
+        } else {
+            Log.e(TAG, "Cannot unregister listener: SensorManager is null.");
+        }
     }
 
     private void removeCallbacks(Runnable runnable) {
-        if (handler == null) return;
         if (runnable == null) return;
 
         handler.removeCallbacks(runnable);
     }
 
-    private Runnable calculateMeanValue = new Runnable() {
+    private final Runnable calculateMeanValue = new Runnable() {
         @Override
         public void run() {
             pending = false;
@@ -101,7 +117,7 @@ public class LightSensorEventListener implements SensorEventListener {
         }
     };
 
-    private Runnable sensorTimeout = new Runnable() {
+    private final Runnable sensorTimeout = new Runnable() {
         @Override
         public void run() {
             bus.post(new OnLightSensorValueTimeout(last_value));
