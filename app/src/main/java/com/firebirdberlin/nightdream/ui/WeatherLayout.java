@@ -116,24 +116,20 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWeatherIconMode(int weatherIconMode) {
-        Log.d(TAG, "setWeatherIconMode(int)");
         this.weatherIconMode = weatherIconMode;
     }
 
     @Override
     public void setOrientation(int orientation) {
-        Log.d(TAG, "setOrientation(int)");
         isVertical = orientation == LinearLayout.VERTICAL;
         setViewVisibility();
     }
 
     public void setIconSizeFactor(int iconSizeFactor) {
-        Log.d(TAG, "setIconSizeFactor(int)");
         this.iconSizeFactor = iconSizeFactor;
     }
 
     public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
-        Log.d(TAG, "setTemperature(boolean, boolean, int)");
         on = content.contains("temperature") && on;
         this.showTemperature = on;
         this.showApparentTemperature = showApparentTemperature;
@@ -146,7 +142,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWindSpeed(boolean on, int unit) {
-        Log.d(TAG, "setWindSpeed(boolean, int)");
         on = content.contains("wind") && on;
         this.showWindSpeed = on;
         this.speedUnit = unit;
@@ -158,12 +153,10 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setIcon(boolean on) {
-        Log.d(TAG, "setIcon(boolean)");
         showIcon = content.contains("icon") && on;
     }
 
     public void setLocation(boolean on) {
-        Log.d(TAG, "setLocation(boolean)");
         on = content.contains("location") && on;
         showLocation = on;
         locationText.setVisibility((on) ? View.VISIBLE : View.GONE);
@@ -198,17 +191,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setMaxWidth(int width) {
-        Log.d(TAG, "setMaxWidth(int)");
         this.maxWidth = width;
     }
 
     public void setMaxHeight(int height) {
-        Log.d(TAG, "setMaxHeight(int)");
         this.maxHeight = height;
     }
 
     public void setViewVisibility() {
-        Log.d(TAG, "setViewVisibility()");
         container.setOrientation(isVertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
         if (cycle) {
             ArrayList<String> items = new ArrayList<>(cycleItems);
@@ -280,20 +270,17 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTypeface(Typeface typeface) {
-        Log.d(TAG, "setTypeface(Typeface)");
         temperatureText.setTypeface(typeface);
         windText.setTypeface(typeface);
         locationText.setTypeface(typeface);
     }
 
     public void setMaxFontSizesInSp(float minSize, float maxSize) {
-        Log.d(TAG, "setMaxFontSizesInSp(float, float)");
         this.minFontSizePx = Utility.spToPx(context, minSize);
         this.maxFontSizePx = Utility.spToPx(context, maxSize);
     }
 
     public void setColor(int color) {
-        Log.d(TAG, "setColor(int)");
         if (iconText != null) {
             iconText.setTextColor(color);
         }
@@ -343,7 +330,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public Drawable getIconImage(WeatherEntry entry) {
-        Log.d(TAG, "getIconImage(WeatherEntry)");
         String identifier = entry.getWeatherIconIdentifier(weatherIconMode, widget);
 
         int imageID = getResources().getIdentifier(
@@ -356,7 +342,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setTextSizePx(int size) {
-        Log.d(TAG, "setTextSizePx(int)");
         int unit = TypedValue.COMPLEX_UNIT_PX;
 
         iconText.setTextSize(unit, iconSizeFactor * size);
@@ -374,16 +359,13 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public float getTextSize() {
-        Log.d(TAG, "getTextSize()");
         return temperatureText.getTextSize();
     }
 
     public WeatherEntry getWeatherEntry() {
-        Log.d(TAG, "getWeatherEntry()");
         return this.weatherEntry;
     }
     public CharSequence getLocationText() {
-        Log.i(TAG, "getLocationText() -> " + this.locationText.getText());
         return this.locationText.getText();
     }
 
@@ -402,7 +384,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     private void adjustTextSize() {
-        Log.d(TAG, "adjustTextSize()");
         if (maxWidth == -1) return;
         if (maxFontSizePx == -1 || minFontSizePx == -1) return;
         for (int size = minFontSizePx; size <= maxFontSizePx; size++) {
@@ -415,17 +396,14 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public int getIconHeight() {
-        Log.d(TAG, "getIconHeight()");
         return Utility.getHeightOfView(iconText);
     }
 
     public void setIconHeight(int height) {
-        Log.d(TAG, "setIconHeight(int)");
         this.iconHeight = height;
     }
 
     private void fixIconWindDirectionSize() {
-        Log.d(TAG, "fixIconWindDirectionSize()");
         int height = Utility.getHeightOfView(temperatureText);
         if (iconHeight > 0) height = iconHeight;
         LayoutParams layoutParams = (LayoutParams) iconWindDirection.getLayoutParams();
@@ -437,7 +415,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public int measureText() {
-        Log.d(TAG, "measureText()");
         int textSize = 0;
         textSize += isVisible(iconText) ? (int) measureText(iconText) : 0;
         textSize += isVisible(temperatureText) ? (int) measureText(temperatureText) : 0;
@@ -504,7 +481,6 @@ public class WeatherLayout extends LinearLayout {
     }
 
     public void setWidget(boolean widget) {
-        Log.d(TAG, "setWidget(boolean)");
         this.widget = widget;
     }
 

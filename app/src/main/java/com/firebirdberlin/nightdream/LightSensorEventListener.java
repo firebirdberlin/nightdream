@@ -27,13 +27,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.util.Log; // Import Log for logging
+import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
 
 public class LightSensorEventListener implements SensorEventListener {
 
     private static final String TAG = "LightSensorEventListener";
     final private Handler handler = new Handler();
+    private boolean isRegistered = false;
     private boolean pending = false;
     private final EventBus bus;
     private float ambient_mean = 0.f;
@@ -84,9 +85,21 @@ public class LightSensorEventListener implements SensorEventListener {
             Log.e(TAG, "Cannot register listener: Light sensor not available.");
             return;
         }
-        mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        handler.postDelayed(calculateMeanValue, 1000);
-        handler.postDelayed(sensorTimeout, 15000);// start timer
+        if (isRegistered) return; // Prevent multiple registration
+
+        Log.d(TAG, "Brightness Sensor Max Range: " + lightSensor.getMaximumRange());
+        Log.d(TAG, "Brightness Sensor Name: " + lightSensor.getName());
+        Log.d(TAG, "Brightness Sensor Vendor: " + lightSensor.getVendor());
+        boolean success = mSensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (success) {
+            isRegistered = true;
+            // Remove any pending callbacks before posting new ones to avoid duplicate events
+            removeCallbacks(calculateMeanValue);
+            removeCallbacks(sensorTimeout);
+            pending = false; // Reset pending state on re-registration
+            // The calculateMeanValue runnable will be posted by onSensorChanged when the first event arrives.
+            handler.postDelayed(sensorTimeout, 15000);// start timer
+        }
     }
 
     public void unregister(){

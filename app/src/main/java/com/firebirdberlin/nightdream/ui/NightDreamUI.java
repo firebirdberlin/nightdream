@@ -181,7 +181,7 @@ public class NightDreamUI {
         }
     };
     private final float LIGHT_VALUE_BRIGHT = 40.0f;
-    private final float LIGHT_VALUE_DAYLIGHT = 300.0f;
+    private final float LIGHT_VALUE_DAYLIGHT = 10000.0f;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -778,12 +778,14 @@ public class NightDreamUI {
     }
 
     private void initLightSensor() {
+        if (lightSensorEventListener != null) {
+            lightSensorEventListener.unregister();
+            lightSensorEventListener = null;
+        }
         if (Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC == settings.nightModeActivationMode
                 || settings.autoBrightness) {
             lightSensorEventListener = new LightSensorEventListener(mContext);
             lightSensorEventListener.register();
-        } else {
-            lightSensorEventListener = null;
         }
     }
 
@@ -1415,8 +1417,10 @@ public class NightDreamUI {
     }
 
     private void setBrightness(float value) {
-        Log.d(TAG, "setBrightness(float value)");
-        Log.i(TAG, String.format("new brightness value %.2f", value));
+        if (value != last_ambient) {
+            Log.d(TAG, "setBrightness(float value)");
+            Log.i(TAG, String.format("new brightness value %.2f", value));
+        }
         LayoutParams layout = window.getAttributes();
         layout.screenBrightness = value;
         layout.buttonBrightness = LayoutParams.BRIGHTNESS_OVERRIDE_OFF;
@@ -1693,12 +1697,14 @@ public class NightDreamUI {
 
     @Subscribe
     public void onEvent(OnNewLightSensorValue event) {
+        Log.i(TAG, "onEvent(OnNewLightSensorValue) = " + event.value);
         last_ambient = event.value;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
     @Subscribe
     public void onEvent(OnLightSensorValueTimeout event) {
+        Log.i(TAG, "onEvent(OnLightSensorValueTimeout) = " + event.value);
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
