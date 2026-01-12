@@ -1317,8 +1317,33 @@ public class NightDreamUI {
 
     private float to_range(float value, float min, float max) {
         if (value > max) return max;
-        if (value < min) return min;
-        return value;
+        return Math.max(value, min);
+    }
+
+    private float calculateLogarithmicBrightnessFactor(float currentLightValue) {
+        // make sure all boundary values are positive
+        double min_lux_for_log = Math.max(0.1, this.LIGHT_VALUE_DARK);
+        double max_lux_for_log = Math.max(min_lux_for_log + 0.1, this.LIGHT_VALUE_DAYLIGHT);
+
+        // make sure the light value is in between boundaries
+        double clampedLightValue = Math.max(min_lux_for_log, Math.min(max_lux_for_log, currentLightValue));
+
+        double logMinLux = Math.log(min_lux_for_log);
+        double logMaxLux = Math.log(max_lux_for_log);
+        double logCurrentLux = Math.log(clampedLightValue);
+
+        // normalize to [0, 1]:
+        // (log(x) - log(min)) / (log(max) - log(min))
+        double normalizedLogarithmicValue;
+        if (logMaxLux - logMinLux == 0) {
+            // mean value
+            normalizedLogarithmicValue = 0.5;
+        } else {
+            normalizedLogarithmicValue = (logCurrentLux - logMinLux) / (logMaxLux - logMinLux);
+        }
+
+        // scale [0, 1] to [-1, 1]:
+        return (float) (2 * normalizedLogarithmicValue - 1);
     }
 
     private void dimScreen(int millis, float light_value, float add_brightness) {
@@ -1326,14 +1351,15 @@ public class NightDreamUI {
         float v;
         float brightness;
         if (mode != 0 && settings.autoBrightness && Utility.getLightSensor(mContext) != null) {
-            float luminance_offset = LIGHT_VALUE_BRIGHT * add_brightness;
-            if (light_value > LIGHT_VALUE_BRIGHT && add_brightness > 0.f) {
-                luminance_offset = LIGHT_VALUE_DAYLIGHT * add_brightness;
-            }
-            v = (light_value + luminance_offset - LIGHT_VALUE_DARK) / (LIGHT_VALUE_BRIGHT - LIGHT_VALUE_DARK);
-            v = 0.3f + 0.7f * v;
+//          1. calc log(light_value) -> [-1, 1]
+            float logarithmicBrightnessFactor = calculateLogarithmicBrightnessFactor(light_value);
 
-            brightness = (light_value + luminance_offset - LIGHT_VALUE_BRIGHT) / (LIGHT_VALUE_DAYLIGHT - LIGHT_VALUE_BRIGHT);
+//          2. combine with manual preference
+            float combinedBrightnessFactor = (logarithmicBrightnessFactor + add_brightness) / 2.f;
+
+            brightness = combinedBrightnessFactor;
+            v = 1.f + brightness;
+
         } else {
             if (mode == 0) {
                 v = 1.f + settings.nightModeBrightness;
