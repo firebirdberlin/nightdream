@@ -19,18 +19,16 @@
 package com.firebirdberlin.nightdream.ui;
 
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -41,7 +39,6 @@ import com.xenione.digit.TabDigit;
 
 import java.util.Calendar;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CustomDigitalFlipClock extends LinearLayout {
 
     private static final String TAG = "CustomDigitalFlipClock";
@@ -96,6 +93,15 @@ public class CustomDigitalFlipClock extends LinearLayout {
         mCharHighHour = findViewById(R.id.charHighHour);
         mCharLowHour = findViewById(R.id.charLowHour);
 
+        mCharHighMinute.setDividerColor(Color.BLACK);
+        mCharLowMinute.setDividerColor(Color.BLACK);
+        mCharHighHour.setDividerColor(Color.BLACK);
+        mCharLowHour.setDividerColor(Color.BLACK);
+
+        mCharHighMinute.setDividerThickness(3);
+        mCharLowMinute.setDividerThickness(3);
+        mCharHighHour.setDividerThickness(3);
+        mCharLowHour.setDividerThickness(3);
     }
 
     private void init() {
