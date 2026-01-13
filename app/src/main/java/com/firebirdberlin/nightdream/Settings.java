@@ -41,6 +41,7 @@ import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -186,7 +187,7 @@ public class Settings {
     public String backgroundImageURI = "";
     public String dateFormat;
     public String timeFormat;
-    public WeatherEntry weatherEntry;
+    private WeatherEntry weatherEntry;
     public Set<Integer> autostartWeekdays;
     public Set<Integer> alwaysOnWeekdays;
     public Set<Integer> scheduledAutostartWeekdays;
@@ -1285,48 +1286,18 @@ public class Settings {
     }
 
     public WeatherEntry getWeatherEntry() {
-        this.weatherEntry = new WeatherEntry();
-
-        this.weatherEntry.timestamp = settings.getLong("weather_time", -1L);
-        this.weatherEntry.request_timestamp = settings.getLong("weather_request_time", -1L);
         String json = settings.getString("weather_json", null);
-        if (json != null && this.weatherEntry.timestamp > -1L) {
-            this.weatherEntry = WeatherEntry.fromJson(json);
-        } else if (this.weatherEntry.timestamp > -1L) {
-            this.weatherEntry.lon = settings.getFloat("weather_lon", this.weatherEntry.lon);
-            this.weatherEntry.lat = settings.getFloat("weather_lat", this.weatherEntry.lat);
-            this.weatherEntry.sunriseTime = settings.getLong("weather_sunrise_time", this.weatherEntry.sunriseTime);
-            this.weatherEntry.sunsetTime = settings.getLong("weather_sunset_time", this.weatherEntry.sunsetTime);
-            this.weatherEntry.weatherIcon = settings.getString("weather_icon", this.weatherEntry.weatherIcon);
-            this.weatherEntry.weatherIconMeteoconsSymbol = settings.getString("weather_icon_meteocons_symbol", this.weatherEntry.weatherIconMeteoconsSymbol);
-            this.weatherEntry.description = settings.getString("weather_description", this.weatherEntry.description);
-            this.weatherEntry.cityName = settings.getString("weather_city_name", this.weatherEntry.cityName);
-            this.weatherEntry.temperature = settings.getFloat("weather_temperature", (float) this.weatherEntry.temperature);
-            this.weatherEntry.apparentTemperature = settings.getFloat("weather_felt_temperature", (float) this.weatherEntry.apparentTemperature);
-            this.weatherEntry.windSpeed = settings.getFloat("weather_wind_speed", (float) this.weatherEntry.windSpeed);
-            this.weatherEntry.windDirection = settings.getInt("weather_wind_direction", this.weatherEntry.windDirection);
+        WeatherEntry entry = WeatherEntry.fromJson(json);
+        if (entry.isValid()) {
+            return entry;
         }
-        return this.weatherEntry;
+        return new WeatherEntry();
     }
 
     public void setWeatherEntry(WeatherEntry entry) {
         this.weatherEntry = entry;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putString("weather_json", entry.toJson());
-        prefEditor.putFloat("weather_lon", entry.lon);
-        prefEditor.putFloat("weather_lat", entry.lat);
-        prefEditor.putLong("weather_time", entry.timestamp);
-        prefEditor.putLong("weather_request_time", entry.request_timestamp);
-        prefEditor.putLong("weather_sunrise_time", entry.sunriseTime);
-        prefEditor.putLong("weather_sunset_time", entry.sunsetTime);
-        prefEditor.putString("weather_icon", entry.weatherIcon);
-        prefEditor.putString("weather_icon_meteocons_symbol", entry.weatherIconMeteoconsSymbol);
-        prefEditor.putString("weather_city_name", entry.cityName);
-        prefEditor.putString("weather_description", entry.description);
-        prefEditor.putFloat("weather_temperature", (float) entry.temperature);
-        prefEditor.putFloat("weather_felt_temperature", (float) entry.apparentTemperature);
-        prefEditor.putFloat("weather_wind_speed", (float) entry.windSpeed);
-        prefEditor.putInt("weather_wind_direction", entry.windDirection);
         prefEditor.apply();
     }
 

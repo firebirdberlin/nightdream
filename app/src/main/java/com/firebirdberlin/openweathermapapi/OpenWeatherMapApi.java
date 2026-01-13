@@ -58,7 +58,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,7 +72,7 @@ public class OpenWeatherMapApi {
     private static final String PREFS_KEY = "NightDream preferences"; // Added PREFS_KEY
     private static final int READ_TIMEOUT = 60000;
     private static final int CONNECT_TIMEOUT = 60000;
-    private static final long CACHE_VALIDITY_TIME = 1000 * 60 * 60; // 60 mins
+    private static final long CACHE_VALIDITY_TIME = WeatherEntry.REQUEST_INTERVAL - 1;
 
     private static void storeCacheFile(File cacheFile, String responseText) {
         try {
@@ -140,7 +142,12 @@ public class OpenWeatherMapApi {
 
         // --- Cache Reading Logic ---
         if (cacheFile.exists()) {
-            Log.i(TAG, "Cache file modify time: " + cacheFile.lastModified());
+            long lastModifiedMillis = cacheFile.lastModified();
+            Date lastModifiedDate = new Date(lastModifiedMillis);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            String formattedDate = sdf.format(lastModifiedDate);
+
+            Log.i(TAG, "Cache file modify time: " + formattedDate);
             Log.i(TAG, "new enough: " + (cacheFile.lastModified() > requestTimestamp - CACHE_VALIDITY_TIME));
         }
 

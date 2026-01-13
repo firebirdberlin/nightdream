@@ -45,6 +45,7 @@ public class BrightSkyApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.brightsky.dev";
     private static final String CACHE_FILE = "BrightSkyApi";
+    private static final long CACHE_VALIDITY_TIME = WeatherEntry.REQUEST_INTERVAL - 1;
     private static final String TAG = "BrightSkyApi";
     private static WeakReference<Context> mContext;
     private static long requestTimestamp = 0L;
@@ -101,7 +102,7 @@ public class BrightSkyApi {
         );
 
         HttpReader httpReader = new HttpReader(context, cacheFileName);
-        httpReader.setCacheExpirationTimeMillis(1000 * 60 * 60); // 1 hour
+        httpReader.setCacheExpirationTimeMillis(CACHE_VALIDITY_TIME);
         URL url;
         try {
             url = getUrlForecast(lat, lon);

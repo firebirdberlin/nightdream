@@ -271,8 +271,8 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {
-        WeatherEntry entry = settings.weatherEntry;
-        if (entry.timestamp == -1L) {
+        WeatherEntry entry = settings.getWeatherEntry();
+        if (!entry.isValid()) {
             entry.setFakeData();
         }
         return entry;

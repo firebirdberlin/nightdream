@@ -75,7 +75,7 @@ public class WeatherPreviewPreference extends Preference {
 
     protected void updateView() {
         Settings settings = new Settings(getContext());
-        WeatherEntry entry = settings.weatherEntry;
+        WeatherEntry entry = settings.getWeatherEntry();
         lastLocationUpdateTime.setText(toDateTimeString(settings.location_time));
         lastWeatherCalculationTime.setText(toDateTimeString(entry.request_timestamp));
         if (entry.cityID != 0) {

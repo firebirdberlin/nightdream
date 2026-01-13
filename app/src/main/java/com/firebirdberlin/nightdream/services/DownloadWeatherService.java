@@ -71,9 +71,10 @@ public class DownloadWeatherService extends Worker {
 
     public static boolean shallUpdateWeatherData(Context context, Settings settings) {
         if (!settings.shallShowWeather() || !Utility.isScreenOn(context)) return false;
-        WeatherEntry entry = settings.weatherEntry;
+
+        final int maxAge = WeatherEntry.REQUEST_INTERVAL;
+        WeatherEntry entry = settings.getWeatherEntry();
         long age = entry.ageMillis();
-        final int maxAge = 60 * 60 * 1000;
         Location weatherLocation = entry.getLocation();
         Location gpsLocation = settings.getLocation();
         float gpsDistance =
@@ -165,7 +166,7 @@ public class DownloadWeatherService extends Worker {
                 break;
         }
 
-        if (entry != null && entry.timestamp > WeatherEntry.INVALID) {
+        if (entry != null && entry.isValid()) {
             settings.setWeatherEntry(entry);
             ScreenWatcherService.updateNotification(getApplicationContext(), entry, settings.temperatureUnit);
             Log.d(TAG, "Download finished.");

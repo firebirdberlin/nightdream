@@ -224,7 +224,7 @@ public class NightDreamUI {
             hideBatteryView(2000);
             updateClockPosition();
 
-            updateWeatherData();
+            checkAndClearWeatherEntry();
 
             postDelayed(this, Utility.millisToTimeTick(20000));
         }
@@ -579,7 +579,7 @@ public class NightDreamUI {
         public void run() {
             setupClockLayout();
             setColor();
-            updateWeatherData();
+            checkAndClearWeatherEntry();
 
             //Update Notifications in Clocklayout
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
@@ -789,12 +789,12 @@ public class NightDreamUI {
         }
     }
 
-    private void updateWeatherData() {
+    private void checkAndClearWeatherEntry() {
         if (!settings.shallShowWeather()) return;
-        Log.i(TAG, "updateWeatherData() 2");
+        Log.i(TAG, "checkAndClearWeatherEntry()");
 
         // handle outdated weather data
-        WeatherEntry entry = settings.weatherEntry;
+        WeatherEntry entry = settings.getWeatherEntry();
         if (!entry.isValid()) {
             clockLayout.clearWeather();
         }
@@ -837,10 +837,11 @@ public class NightDreamUI {
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
         Configuration config = getConfiguration();
-        clockLayout.update(settings.weatherEntry, false);
+        WeatherEntry weatherEntry = settings.getWeatherEntry();
+        clockLayout.update(weatherEntry, false);
         clockLayout.updateLayout(clockLayoutContainer.getWidth(), config);
 
-        updatePollenExposure(settings.weatherEntry);
+        updatePollenExposure(weatherEntry);
         setClockPosition(config);
     }
 
@@ -1779,9 +1780,9 @@ public class NightDreamUI {
 
     public void weatherDataUpdated(Context context) {
         Log.d(TAG, "weatherDataUpdated");
-        settings.weatherEntry = settings.getWeatherEntry();
-        clockLayout.update(settings.weatherEntry, false);
-        updatePollenExposure(settings.weatherEntry);
+        WeatherEntry entry = settings.getWeatherEntry();
+        clockLayout.update(entry, false);
+        updatePollenExposure(entry);
         ClockWidgetProvider.updateAllWidgets(context);
     }
 
