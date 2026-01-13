@@ -51,11 +51,11 @@ public class DownloadWeatherModel extends ViewModel {
 
         PeriodicWorkRequest downloadWeatherWork =
                 new PeriodicWorkRequest.Builder(
-                        DownloadWeatherService.class, 60, TimeUnit.MINUTES
+                        DownloadWeatherService.class, WeatherEntry.REQUEST_INTERVAL, TimeUnit.MILLISECONDS
                 ).addTag(TAG).setConstraints(constraints).build();
 
         WorkManager manager = WorkManager.getInstance(context);
-        manager.enqueueUniquePeriodicWork("DownloadWeather", ExistingPeriodicWorkPolicy.KEEP, downloadWeatherWork);
+        manager.enqueueUniquePeriodicWork("DownloadWeather", ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, downloadWeatherWork);
 
         manager.getWorkInfoByIdLiveData(downloadWeatherWork.getId())
                 .observe((LifecycleOwner) context, info -> DownloadWeatherService.outputObservable.observe(

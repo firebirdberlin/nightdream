@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import org.shredzone.commons.suncalc.SunTimes;
 
 public class WeatherEntry {
+    public static int REQUEST_INTERVAL = 60 * 60 * 1000; // 1 hour
     public static final int CELSIUS = 1;
     public static final int FAHRENHEIT = 2;
     public static final int KELVIN = 3;
@@ -196,7 +197,7 @@ public class WeatherEntry {
 
     public boolean isValid() {
         long age = ageMillis();
-        return (timestamp > -1L && age < 4 * 60 * 60 * 1000);
+        return (timestamp > -1L && age < 4L * REQUEST_INTERVAL);
     }
 
     public String getWeatherIconIdentifier(int weatherIconMode, boolean widget) {

@@ -371,7 +371,7 @@ public class WeatherLayout extends LinearLayout {
 
     public void update() {
         boolean isValid = weatherEntry != null;
-        Log.d(TAG, "update() -> " + isValid);
+        Log.d(TAG, "update() -> isValid = " + isValid);
         setViewVisibility();
         adjustTextSize();
         temperatureText.invalidate();

@@ -53,6 +53,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.DownloadWeatherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -166,7 +167,8 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         // update weather date if not outdated
-        if (settings.weatherEntry != null && settings.weatherEntry.isValid()) {
+        WeatherEntry weatherEntry = settings.getWeatherEntry();
+        if (weatherEntry.isValid()) {
             clockLayout.setTemperature(
                     settings.showTemperature,
                     settings.showApparentTemperature,
@@ -176,7 +178,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             clockLayout.showWeather(showWeather && settings.shallShowWeather());
             clockLayout.setWeatherLocation(false);
             clockLayout.setWeatherIconMode(settings.weather_icon);
-            clockLayout.update(settings.weatherEntry, true);
+            clockLayout.update(weatherEntry, true);
         } else {
             clockLayout.clearWeather();
         }

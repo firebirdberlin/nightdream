@@ -972,7 +972,9 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
 
     public void update(WeatherEntry entry, boolean displayInWidget) {
         Log.i(TAG, "update(WeatherEntry) " + entry.cityName);
-        weatherLayout.setWidget(displayInWidget);
+        if (weatherLayout != null) {
+            weatherLayout.setWidget(displayInWidget);
+        }
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null) {
                 layout.setWidget(displayInWidget);
