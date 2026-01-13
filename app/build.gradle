@@ -99,7 +99,7 @@ dependencies {
     // Third-party Libraries
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.firebirdberlin:android-preferences:36.0.5'
-    implementation 'com.github.firebirdberlin:tab-digit:36.0.2'
+    implementation 'com.github.firebirdberlin:tab-digit:v36.0.3'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
     implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
     implementation 'org.greenrobot:eventbus:3.3.1'
