@@ -1288,7 +1288,7 @@ public class Settings {
     public WeatherEntry getWeatherEntry() {
         String json = settings.getString("weather_json", null);
         WeatherEntry entry = WeatherEntry.fromJson(json);
-        if (entry.isValid()) {
+        if (entry != null && entry.isValid()) {
             return entry;
         }
         return new WeatherEntry();
