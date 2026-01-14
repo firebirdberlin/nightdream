@@ -65,6 +65,9 @@ public class WeatherEntry {
 
 
     public static WeatherEntry fromJson(String json) {
+        if (json == null || json.isEmpty()) {
+            return null;
+        }
         Gson gson = new Gson();
         return gson.fromJson(json, WeatherEntry.class);
     }
