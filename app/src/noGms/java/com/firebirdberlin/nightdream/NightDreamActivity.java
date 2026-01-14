@@ -356,7 +356,12 @@ public class NightDreamActivity extends BillingHelperActivity
     void initTextToSpeech() {
         textToSpeech = new TextToSpeech(context, status -> {
             if (status != TextToSpeech.ERROR && textToSpeech != null) {
-                textToSpeech.setLanguage(Locale.getDefault());
+                try {
+                    textToSpeech.setLanguage(Locale.getDefault());
+                } catch (OutOfMemoryError e) {
+                    Log.e(TAG, "OutOfMemoryError setting TextToSpeech language", e);
+                    textToSpeech = null; // Mark TTS as unusable
+                }
             } else {
                 textToSpeech = null;
             }
@@ -764,6 +769,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private void onChangeNightMode(int new_mode) {
         if (new_mode == MODE_NIGHT) {
+            mySettings.saveNightModeState(new_mode);
         }
     }
 
@@ -815,7 +821,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private boolean shallKeepScreenOn(int mode) {
         screenWasOn = screenWasOn || Utility.isScreenOn(this);
-        boolean isCharging = Utility.isCharging(this);
+        boolean isCharging = Utility.isPlugged(this);
         long now = Calendar.getInstance().getTimeInMillis();
 
         Log.d(TAG, "screenWasOn = " + screenWasOn);
@@ -854,7 +860,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
         if (!isCharging && (
                 mySettings.batteryTimeout == -1
-                || (now - resumeTime) / 60000 < mySettings.batteryTimeout
+                        || (now - resumeTime) / 60000 < mySettings.batteryTimeout
         )
         ) {
             Log.d(TAG, "shallKeepScreenOn() -> true (not charging, waiting for battery timeout)");

@@ -88,7 +88,7 @@ public class Settings {
     public boolean standbyEnabledWhileDisconnectedScreenUp = false;
     public boolean autoBrightness = false;
     public boolean clockLayoutMirrorText = false;
-    public boolean doubleTapToFinish = false;
+    public boolean doubleTapToFinish = true;
     private boolean speakTime = false;
     public boolean handle_power = false;
     public boolean handle_power_disconnection = true;
