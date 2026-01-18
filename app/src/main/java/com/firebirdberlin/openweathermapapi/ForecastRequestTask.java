@@ -66,10 +66,10 @@ public class ForecastRequestTask {
                 try {
                     switch (weatherProvider) {
                         case BRIGHT_SKY:
-                            weatherEntries = BrightSkyApi.fetchHourlyWeatherData(context, (float) city.lat, (float) city.lon);
+                            weatherEntries = BrightSkyApi.fetchHourlyWeatherData(context, city);
                             break;
                         case MET_NO:
-                            weatherEntries = MetNoApi.fetchHourlyWeatherData(context, (float) city.lat, (float) city.lon);
+                            weatherEntries = MetNoApi.fetchHourlyWeatherData(context, city);
                             break;
                         case OPEN_WEATHER_MAP:
                         default:

@@ -57,22 +57,17 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
         cancelUpdate();
 
         if (weatherEntry == null || !weatherEntry.isValid()) {
-            return;
-        }
-        City city = GeocoderApi.findCityByCoordinates(mContext.get(), weatherEntry.lat, weatherEntry.lon);
-        if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)) {
             clear();
             return;
         }
-
         requestTask = new PollenExposureRequestTask(this, mContext.get());
-        requestTask.execute(city.postalCode);
+        requestTask.execute(weatherEntry);
     }
 
     @Override
     public void onRequestFinished(PollenExposure pollen) {
         ConstraintLayout container = pollenContainer.get();
-        if (container == null || requestTask == null) {
+        if (container == null || requestTask == null || pollen == null) {
             clear();
             return;
         }
@@ -94,6 +89,7 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
 
     @Override
     public void onRequestError(Exception exception) {
+        clear();
         Log.e(TAG, "Request error: " + exception.getMessage());
     }
 

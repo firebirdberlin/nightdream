@@ -38,7 +38,16 @@ public class City {
     @NonNull
     @Override
     public String toString() {
-        return String.format(java.util.Locale.getDefault(),"%s (%s)\n%1.3f°; %1.3f°", name, countryCode, lat, lon);
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        if (countryCode != null && !countryCode.isEmpty()) {
+            sb.append(" (").append(countryCode).append(")");
+        }
+        if (postalCode != null && !postalCode.isEmpty()) {
+            sb.append(" [").append(postalCode).append("]");
+        }
+        sb.append(String.format(" (%.2f, %.2f)", lat, lon));
+        return sb.toString();
     }
 
     public static City fromJson(String json) {

@@ -31,7 +31,6 @@ public class FontCache {
     private static final String TAG = "FontCache";
 
     public static Typeface get(Context context, String name) {
-        Log.i(TAG, "getting font:"  + name);
         final String cacheKey = name.replace("file:///android_asset/", "");
         Typeface tf = fontCache.get(cacheKey);
         if (tf == null) {
@@ -54,8 +53,6 @@ public class FontCache {
             }
             Log.d(TAG, "cache put: cacheKey=" + cacheKey + " value=" + (tf != null ? tf.toString() : "null"));
             fontCache.put(cacheKey, tf);
-        } else {
-            Log.d(TAG, "cache hit: name=" + name + " obj=" + tf.toString());
         }
         return tf;
     }

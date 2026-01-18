@@ -87,7 +87,7 @@ public class CityRequestManager {
 
                 try {
                     //cities = OpenWeatherMapApi.findCityApi(query);
-                    cities = GeocoderApi.findCitiesByName(context, query);
+                    cities = GeocoderApi.findCities(context, query);
                     if (cities == null) {
                         error = new Exception("API returned null for city search.");
                     }

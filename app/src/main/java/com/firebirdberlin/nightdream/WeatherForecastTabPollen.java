@@ -76,21 +76,8 @@ public class WeatherForecastTabPollen extends Fragment {
             return;
         }
 
-        if (city == null) {
-            Log.d(TAG, "addPollen: city = null -> return");
-            return;
-        }
-        City geocodedCity = GeocoderApi.findCityByCoordinates(context, city.lat, city.lon);
-        if (geocodedCity == null) {
-            Log.d(TAG, "addPollen: geocodedCity = null -> return");
-            return;
-        }
-        String countryCode = geocodedCity.countryCode;
-        String postCode = geocodedCity.postalCode;
-        if (!"DE".equals(countryCode) || postCode.isEmpty()) {
-            Log.d(TAG, "addPollen - countryCode/postCode return");
-            Log.d(TAG, "addPollen - countryCode: "+countryCode);
-            Log.d(TAG, "addPollen - postCode: "+postCode);
+        if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)) {
+            Log.d(TAG, "addPollen - city: " + ((city == null) ? "null" : city.toJson()));
 
             TextView textView = new TextView(context);
             textView.setGravity(Gravity.CENTER);
@@ -131,7 +118,7 @@ public class WeatherForecastTabPollen extends Fragment {
                         int index = Integer.parseInt(value);
                         index = Math.max(0, index);
                         index = Math.min(6, index);
-                        int col = res.getColor(colorResId[index]);
+                        int col = getContext().getColor(colorResId[index]);
                         herbDrawable.setColorFilter(col, PorterDuff.Mode.SRC_ATOP);
                         ImageView herb = new ImageView(context);
                         herb.setImageDrawable(herbDrawable);

@@ -107,7 +107,7 @@ public class Settings {
     private boolean showWeather = false;
     public boolean showApparentTemperature = false;
     public boolean showTemperature = true;
-    public boolean showWindSpeed = false;
+    public boolean showWindSpeed = true;
     public boolean showPollen = false;
     private boolean useDeviceLock = false;
     public boolean stopAlarmOnTap = true;
@@ -403,11 +403,11 @@ public class Settings {
     }
 
     public String getWeatherProviderString() {
-        return settings.getString("weatherProvider", "0");
+        return settings.getString("weatherProvider", "3");
     }
 
     public WeatherProvider getWeatherProvider() {
-        String provider = settings.getString("weatherProvider", "0");
+        String provider = settings.getString("weatherProvider", "3");
         switch (provider) {
             case "1":
             case "2":
@@ -443,7 +443,7 @@ public class Settings {
         standbyEnabledWhileDisconnectedScreenUp = settings.getBoolean("standbyEnabledWhileDisconnectedScreenUp", false);
         autoBrightness = settings.getBoolean("autoBrightness", false);
         clockLayoutMirrorText = settings.getBoolean("clockLayoutMirrorText", false);
-        doubleTapToFinish = settings.getBoolean("doubleTapToFinish", false);
+        doubleTapToFinish = settings.getBoolean("doubleTapToFinish", true);
         speakTime = settings.getBoolean("speakTime", false);
         alwaysOnTimeRangeStartInMinutes = settings.getInt("always_on_time_range_start_minutes", -1);
         alwaysOnTimeRangeEndInMinutes = settings.getInt("always_on_time_range_end_minutes", -1);
@@ -518,7 +518,7 @@ public class Settings {
         showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
         showPollen = settings.getBoolean("showPollen", false);
         showTemperature = settings.getBoolean("showTemperature", true);
-        showWindSpeed = settings.getBoolean("showWindSpeed", false);
+        showWindSpeed = settings.getBoolean("showWindSpeed", true);
         snoozeTimeInMillis = 60000L * settings.getInt("snoozeTimeInMinutes", 5);
         snoozeUsingVolumeButtons = settings.getBoolean("snoozeUsingVolumeButtons", false);
         autoSnoozeTimeInMillis = 60000L * settings.getInt("autoSnoozeTimeInMinutes", 2);

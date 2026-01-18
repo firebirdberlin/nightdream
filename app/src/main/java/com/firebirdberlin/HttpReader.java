@@ -25,6 +25,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.BuildConfig;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,17 +44,30 @@ public class HttpReader {
 
     private final static int READ_TIMEOUT = 10000;
     private final static int CONNECT_TIMEOUT = 10000;
-    private final File cacheFile;
-    private final File lockFile;
+    private final File cacheBaseDir;
     private final Context context;
     private final long unsuccessfulAttemptTimeout = 1000 * 60 * 10; // 10 Minutes
     private long requestTimestamp;
     private long cacheExpirationTimeMillis = 1000 * 60 * 60 * 24;
 
     public HttpReader(Context context, final String cacheFileName) {
-        cacheFile = new File(context.getCacheDir(), cacheFileName);
-        lockFile = new File(context.getCacheDir(), cacheFileName + ".lock~");
+        this.cacheBaseDir = new File(context.getCacheDir(), cacheFileName);
+        if (!this.cacheBaseDir.exists()) {
+            this.cacheBaseDir.mkdirs();
+        }
         this.context = context;
+    }
+
+    private File getCacheFileForUrl(String urlString) {
+        // Using hashCode as a simple way to get a unique-ish filename
+        // A more robust solution might use a cryptographic hash (e.g., MD5) or URL encoding.
+        String uniqueFileName = String.valueOf(urlString.hashCode());
+        return new File(cacheBaseDir, uniqueFileName);
+    }
+
+    private File getLockFileForUrl(String urlString) {
+        String uniqueFileName = String.valueOf(urlString.hashCode());
+        return new File(cacheBaseDir, uniqueFileName + ".lock~");
     }
 
     private static String getResponseText(InputStream inputStream) throws IOException {
@@ -60,7 +75,7 @@ public class HttpReader {
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
-            sb.append(line + "\n");
+            sb.append(line).append("\n");
         }
         br.close();
         return sb.toString();
@@ -98,27 +113,19 @@ public class HttpReader {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkCapabilities capabilities = null;
-            if (cm != null) {
-                capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
-            }
+        NetworkCapabilities capabilities = null;
+        if (cm != null) {
+            capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+        }
 
-            if (capabilities != null) {
-                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    return true;
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    return true;
-                } else {
-                    return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
-                }
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                return true;
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                return true;
+            } else {
+                return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
             }
-        } else {
-            NetworkInfo activeNetwork = null;
-            if (cm != null) {
-                activeNetwork = cm.getActiveNetworkInfo();
-            }
-            return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
         }
         return false;
     }
@@ -137,17 +144,21 @@ public class HttpReader {
         String responseText = "";
         long now = System.currentTimeMillis();
         requestTimestamp = 0L;
+
+        File currentCacheFile = getCacheFileForUrl(urlString);
+        File currentLockFile = getLockFileForUrl(urlString);
+
         // load the data from the cache if new enough
-        if (!overrideCache && cacheFile.exists() && cacheFile.lastModified() > now - cacheExpirationTimeMillis) {
-            responseText = readFromCacheFile(cacheFile);
-            requestTimestamp = cacheFile.lastModified();
-            Log.d(TAG, "Returning from cache");
+        if (!overrideCache && currentCacheFile.exists() && currentCacheFile.lastModified() > now - cacheExpirationTimeMillis) {
+            responseText = readFromCacheFile(currentCacheFile);
+            requestTimestamp = currentCacheFile.lastModified();
+            Log.d(TAG, "Returning from cache for " + urlString);
             return responseText;
         }
 
         // for unsuccessful attempts we need to block execution for a certain amount of time
-        if (lockFile.exists() && lockFile.lastModified() > now - unsuccessfulAttemptTimeout) {
-            Log.i(TAG, "Network access is locked");
+        if (currentLockFile.exists() && currentLockFile.lastModified() > now - unsuccessfulAttemptTimeout) {
+            Log.i(TAG, "Network access is locked for " + urlString);
             return responseText;
         }
 
@@ -156,38 +167,44 @@ public class HttpReader {
             return responseText;
         }
 
-        createLockFile();
+        createLockFile(currentLockFile);
 
         Log.i(TAG, "requesting " + urlString);
         try {
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("User-Agent", "NightClock/com.firebirdberlin.nightdream");
+            String userAgent = "NightDream/" + BuildConfig.VERSION_NAME
+                    + " (https://github.com/firebirdberlin/NightDream; stefan.fruhner@googlemail.com)";
+            Log.i(TAG, "userAgent: " + userAgent);
+            urlConnection.setRequestProperty("User-Agent", userAgent);
             urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
             urlConnection.setReadTimeout(READ_TIMEOUT);
             responseCode = urlConnection.getResponseCode();
             if (responseCode == 200) {
                 responseText = getResponseText(urlConnection.getInputStream());
                 requestTimestamp = now;
-                storeCacheFile(cacheFile, responseText);
+                storeCacheFile(currentCacheFile, responseText);
             }
             urlConnection.disconnect();
         } catch (SocketTimeoutException e) {
-            Log.e(TAG, "Http Timeout");
+            Log.e(TAG, "Http Timeout for " + urlString);
             return responseText;
         } catch (UnknownHostException e) {
-            Log.e(TAG, "Unknown host");
+            Log.e(TAG, "Unknown host for " + urlString);
             return responseText;
         } catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e), e);
             e.printStackTrace();
         }
+        Log.i(TAG, "Returning from network for " + urlString);
+        Log.i(TAG, "responseCode: " + responseCode);
+        Log.i(TAG, "responseText: " + responseText);
         return responseText;
     }
 
-    private void createLockFile() {
+    private void createLockFile(File lockFileToCreate) {
         long now = System.currentTimeMillis();
-        Log.i(TAG, "lockFile: " + now);
-        storeCacheFile(lockFile, String.valueOf(now));
+        Log.i(TAG, "lockFile: " + lockFileToCreate.getName() + " " + now);
+        storeCacheFile(lockFileToCreate, String.valueOf(now));
     }
 }

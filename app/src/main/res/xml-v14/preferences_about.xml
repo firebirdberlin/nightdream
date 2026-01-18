@@ -151,7 +151,16 @@ vi - Phong Nguyen"/>
                 android:action="android.intent.action.VIEW"
                 android:data="https://icons8.com"/>
         </Preference>
-
+        <Preference
+            app:iconSpaceReserved="false"
+            app:enabled="true"
+            app:key="credits_nominatim"
+            app:title="Nominatim OpenStreetMap"
+            app:summary="nominatim.openstreetmap.org">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://nominatim.openstreetmap.org" />
+        </Preference>
         <Preference
             app:iconSpaceReserved="false"
             app:icon="@drawable/ic_radio"

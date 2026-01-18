@@ -20,7 +20,6 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,10 +64,8 @@ public class WeatherForecastTabWeather extends Fragment {
     }
 
     private void hide() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            // avoid flickering during build
-            scrollView.setAlpha(0);
-        }
+        // avoid flickering during build
+        scrollView.setAlpha(0);
     }
 
     public void onRequestFinished(List<WeatherEntry> entries, Settings settings) {
@@ -93,16 +90,9 @@ public class WeatherForecastTabWeather extends Fragment {
                     continue;
                 }
                 TextView dateView = new TextView(context);
-                if (Build.VERSION.SDK_INT >= 23) {
-                    dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
-                    if (getActivity() != null) {
-                        dateView.setTextColor(getActivity().getResources().getColor(R.color.blue, null));
-                    }
-                } else {
-                    dateView.setTextAppearance(context, android.R.style.TextAppearance_Medium);
-                    if (getActivity() != null) {
-                        dateView.setTextColor(getActivity().getResources().getColor(R.color.blue));
-                    }
+                dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
+                if (getActivity() != null) {
+                    dateView.setTextColor(getActivity().getResources().getColor(R.color.blue, null));
                 }
                 dateView.setTypeface(null, Typeface.BOLD);
 

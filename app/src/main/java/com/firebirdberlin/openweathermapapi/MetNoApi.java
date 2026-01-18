@@ -49,22 +49,22 @@ public class MetNoApi {
     private static WeakReference<Context> mContext;
     private static long requestTimestamp = 0L;
 
-    public static WeatherEntry fetchCurrentWeatherData(Context context, float lat, float lon) {
+    public static WeatherEntry fetchCurrentWeatherData(Context context, City city) {
         mContext = new WeakReference<>(context);
-        String responseText = fetchWeatherData(context, lat, lon);
+        String responseText = fetchWeatherData(context, city);
         if (responseText == null || responseText.isEmpty()) {
             return new WeatherEntry();
         }
         Data data = new Gson().fromJson(responseText, Data.class);
         long now = System.currentTimeMillis();
         if (data != null) {
-            return data.getLatestWeather(now, lat, lon);
+            return data.getLatestWeather(now, city);
         }
         return null;
     }
 
-    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, float lat, float lon) {
-        String responseText = fetchWeatherData(context, lat, lon);
+    public static List<WeatherEntry> fetchHourlyWeatherData(Context context, City city) {
+        String responseText = fetchWeatherData(context, city);
         if (responseText == null || responseText.isEmpty()) {
             return new ArrayList<>();
         }
@@ -75,15 +75,17 @@ public class MetNoApi {
         List<WeatherEntry> entries = new ArrayList<>();
         if (data.isValid()) {
             for (Properties.TimeSeries timeSeries : data.properties.timeseries) {
-                entries.add(timeSeries.toWeatherEntry(lat, lon, requestTimestamp));
+                entries.add(timeSeries.toWeatherEntry(city, requestTimestamp));
             }
         }
         return entries;
     }
 
-    private static String fetchWeatherData(Context context, float lat, float lon) {
+    private static String fetchWeatherData(Context context, City city) {
         String responseText;
 
+        float lat = (float) city.lat;
+        float lon = (float) city.lon;
         Log.d(TAG, "fetchWeatherData(" + lat + "," + lon + ")");
         String cacheFileName = String.format(
                 Locale.getDefault(), "%s_%3.2f_%3.2f.txt", CACHE_FILE, lat, lon
@@ -135,7 +137,7 @@ public class MetNoApi {
             );
         }
 
-        WeatherEntry getLatestWeather(long now, float lat, float lon) {
+        WeatherEntry getLatestWeather(long now, City city) {
             Properties.TimeSeries result = null;
             if (isValid()) {
                 for (Properties.TimeSeries timeSeries : properties.timeseries) {
@@ -146,7 +148,7 @@ public class MetNoApi {
                 }
             }
             if (result != null) {
-                return result.toWeatherEntry(lat, lon, requestTimestamp);
+                return result.toWeatherEntry(city, requestTimestamp);
             }
             return null;
         }
@@ -199,12 +201,12 @@ public class MetNoApi {
                 }
             }
 
-            WeatherEntry toWeatherEntry(float lat, float lon, long requestTimestamp) {
+            WeatherEntry toWeatherEntry(City city, long requestTimestamp) {
                 WeatherEntry entry = new WeatherEntry();
                 entry.cityID = -1;
                 entry.cityName = null;
-                entry.lat = lat;
-                entry.lon = lon;
+                entry.lat = (float) city.lat;
+                entry.lon = (float) city.lon;
 
                 if (data.next_1_hours != null && data.next_1_hours.details != null) {
                     entry.rain1h = data.next_1_hours.details.precipitation_amount;
@@ -219,11 +221,7 @@ public class MetNoApi {
                 entry.sunriseTime = 0L;
                 entry.sunsetTime = 0L;
                 entry.apparentTemperature = -273.15;
-
-                if (mContext != null && mContext.get() != null) {
-                    City city = GeocoderApi.findCityByCoordinates(mContext.get(), lat, lon);
-                    if (city != null && !Utility.isEmpty(city.name)) entry.cityName = city.name;
-                }
+                entry.cityName = city.name;
 
                 entry.clouds = Math.round(data.instant.details.cloud_area_fraction);
                 if (data.next_1_hours != null && data.next_1_hours.summary != null && data.next_1_hours.summary.symbol_code != null) {

@@ -29,6 +29,11 @@ import java.util.concurrent.RejectedExecutionException;
 
 import com.firebirdberlin.HttpReader;
 import com.firebirdberlin.nightdream.PollenExposure;
+import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
+import com.firebirdberlin.openweathermapapi.apimodels.Weather;
+import com.firebirdberlin.openweathermapapi.models.City;
+import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 public class PollenExposureRequestTask {
 
@@ -44,20 +49,22 @@ public class PollenExposureRequestTask {
         this.context = mContext;
     }
 
-    public void execute(String postalCode) {
-        if (postalCode == null || postalCode.isEmpty()) {
-            mainThreadHandler.post(() -> delegate.onRequestError(new IllegalArgumentException("Postal code cannot be null or empty.")));
-            return;
-        }
-
+    public void execute(WeatherEntry weatherEntry) {
         try {
             executorService.execute(() -> {
+                City city = GeocoderApi.findCityByCoordinates(context, weatherEntry.lat, weatherEntry.lon);
+                if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)) {
+                    mainThreadHandler.post(() -> delegate.onRequestFinished(null));
+                    return;
+                }
+                Log.i(TAG, "requesting pollen data for " + city.toJson());
+                String postalCode = city.postalCode;
                 HttpReader httpReader = new HttpReader(context, "pollen.json");
                 String url = "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json";
                 PollenExposure pollen = new PollenExposure();
                 pollen.setPostCode(postalCode);
 
-                String result = null;
+                String result;
                 try {
                     // read data (either from the url or from the cache)
                     result = httpReader.readUrl(url, false);

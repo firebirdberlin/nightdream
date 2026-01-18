@@ -65,10 +65,10 @@ public class ForecastRequestTaskToday {
                 try {
                     switch (weatherProvider) {
                         case BRIGHT_SKY:
-                            weatherEntry = BrightSkyApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
+                            weatherEntry = BrightSkyApi.fetchCurrentWeatherData(context, city);
                             break;
                         case MET_NO:
-                            weatherEntry = MetNoApi.fetchCurrentWeatherData(context, (float) city.lat, (float) city.lon);
+                            weatherEntry = MetNoApi.fetchCurrentWeatherData(context, city);
                             break;
                         case OPEN_WEATHER_MAP:
                         default:

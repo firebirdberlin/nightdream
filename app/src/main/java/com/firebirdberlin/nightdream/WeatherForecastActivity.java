@@ -26,7 +26,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -46,7 +45,6 @@ import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
-import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -181,16 +179,16 @@ public class WeatherForecastActivity
                 tabLayout.setupWithViewPager(viewPager);
             });
 
-            if (autoLocationEnabled) {
+            if ((autoLocationEnabled && !locationAccessGranted) || (!autoLocationEnabled && selectedCity == null)) {
+                Log.i(TAG, "Showing weather location dialog for manual search.");
+                showWeatherLocationDialog();
+            } else if (autoLocationEnabled && locationAccessGranted) {
                 Log.i(TAG, "starting with auto location (GPS)");
                 getWeatherForCurrentLocation();
-            } else {
-                selectedCity = settings.getCityForWeather();
-                if (selectedCity != null) {
-                    Log.i(TAG, "starting with " + selectedCity.toJson());
-                    addToFavoriteCities(selectedCity);
-                    requestWeather(selectedCity);
-                }
+            } else { // This means !autoLocationEnabled && selectedCity != null
+                Log.i(TAG, "starting with " + selectedCity.toJson());
+                addToFavoriteCities(selectedCity);
+                requestWeather(selectedCity);
             }
 
             conditionallyShowSnackBar();
@@ -226,7 +224,11 @@ public class WeatherForecastActivity
         Log.i(TAG, "onRequestFinished()");
         if (!entries.isEmpty()) {
             WeatherEntry firstEntry = entries.get(0);
-            actionBarSetup(firstEntry.cityName);
+            String cityName = firstEntry.cityName;
+            if (Utility.isEmpty(cityName) && !autoLocationEnabled) {
+                cityName = selectedCity.name;
+            }
+            actionBarSetup(cityName);
         }
         ((WeatherForecastTabWeather) adapter.getItem(0)).onRequestFinished(entries, settings);
 
@@ -417,18 +419,14 @@ public class WeatherForecastActivity
     }
 
     void requestWeather(City city) {
+
         if (city != null) {
             new ForecastRequestTask(this, settings.getWeatherProvider(), this).execute(city.toJson());
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
-
             if (settings.showPollen) {
-                String postCode = city.postalCode;
-                if (Utility.isEmpty(postCode)) {
-                    City geocodedCity = GeocoderApi.findCityByCoordinates(this, city.lat, city.lon);
-                    if (geocodedCity == null) return;
-                    postCode = geocodedCity.postalCode;
-                }
-                new PollenExposureRequestTask(this, this).execute(postCode);
+                Log.i(TAG, "requesting pollen data for " + city.toJson());
+                WeatherEntry weatherEntry = settings.getWeatherEntry();
+                new PollenExposureRequestTask(this, this).execute(weatherEntry);
             }
         }
     }
@@ -456,6 +454,13 @@ public class WeatherForecastActivity
                     // system settings in an effort to convince the user to change
                     // their decision.
                     locationAccessGranted = false;
+                    if (cities != null && !cities.isEmpty()) {
+                        City firstCity = cities.get(0);
+                        if (firstCity != null) {
+                            Log.i(TAG, "Permission denied, activating first favorite location: " + firstCity.name);
+                            onWeatherLocationSelected(firstCity);
+                        }
+                    }
                 }
                 invalidateOptionsMenu();
                 return;
@@ -476,12 +481,21 @@ public class WeatherForecastActivity
         }
     }
 
-    @Override
     protected void onPurchasesInitialized() {
         Log.i(TAG, "onPurchasesInitialized");
         super.onPurchasesInitialized();
-        init();
-        invalidateOptionsMenu();
+
+        // Use post to ensure this runs after the view hierarchy is attached and laid out
+        if (viewPager != null) {
+            viewPager.post(() -> {
+                init();
+                invalidateOptionsMenu();
+            });
+        } else {
+            // Fallback if onCreate hasn't finished yet (unlikely here but safe)
+            init();
+            invalidateOptionsMenu();
+        }
     }
 
     private boolean isLocationProviderEnabled() {

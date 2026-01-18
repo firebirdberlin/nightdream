@@ -43,7 +43,7 @@
 
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
-        app:defaultValue="false"
+        app:defaultValue="true"
         app:dependency="showWeather"
         app:key="showWindSpeed"
         app:title="@string/show_wind_speed" />
@@ -78,8 +78,7 @@
 
     <ListPreference
         app:iconSpaceReserved="false"
-        app:dependency="showWeather"
-        app:defaultValue="0"
+        app:defaultValue="3"
         app:entries="@array/weatherProvider"
         app:useSimpleSummaryProvider="true"
         app:allowDividerAbove="true"
@@ -99,7 +98,7 @@
 
     <Preference
         app:key="weatherProviderAttribution"
-        app:dependency="showWeather"
+        app:dependency="weatherProvider"
         app:enableCopying="true"
         app:icon="@drawable/ic_about"/>
 

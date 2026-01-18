@@ -21,6 +21,7 @@ package com.firebirdberlin.radiostreamapi;
 import android.net.Uri;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.radiostreamapi.models.Country;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
@@ -103,7 +104,11 @@ public class RadioBrowserApi {
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setRequestProperty("charset", "utf-8");
-            urlConnection.setRequestProperty("User-Agent", "NightDream/2.8 - com.firebirdberlin.nightdream");
+            urlConnection.setRequestProperty(
+                "User-Agent",
+                "NightDream/" + BuildConfig.VERSION_NAME
+                        + " (https://github.com/firebirdberlin/NightDream; stefan.fruhner@googlemail.com)"
+            );
             urlConnection.setRequestProperty("Content-Length", Integer.toString(postDataLength));
             urlConnection.getOutputStream().write(postDataBytes);
 

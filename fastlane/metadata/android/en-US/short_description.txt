@@ -1,1 +1,1 @@
-Open-source clock, screensaver & radio with dynamic brightness & custom features.
+Clock, screensaver & radio with dynamic brightness & custom layouts.

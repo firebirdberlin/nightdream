@@ -35,6 +35,7 @@ import androidx.work.WorkerParameters;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.BrightSkyApi;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.MetNoApi;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -109,40 +110,28 @@ public class DownloadWeatherService extends Worker {
         Settings settings = new Settings(getApplicationContext());
 
         City city = settings.getCityForWeather();
-        Location location = settings.getLocation();
         Settings.WeatherProvider weatherProvider = settings.getWeatherProvider();
-        WeatherEntry entry;
+
+        if (city == null) { // must be auto-location
+            Location location = settings.getLocation();
+            city = GeocoderApi.findCityByCoordinates(
+                    getApplicationContext(),
+                    location.getLatitude(),
+                    location.getLongitude()
+            );
+        }
 
         Log.d(TAG, "fetchWeatherData");
+        WeatherEntry entry = null;
         switch (weatherProvider) {
             case BRIGHT_SKY:
                 if (city != null) {
-                    entry = BrightSkyApi.fetchCurrentWeatherData(
-                            getApplicationContext(),
-                            (float) city.lat,
-                            (float) city.lon
-                    );
-                } else {
-                    entry = BrightSkyApi.fetchCurrentWeatherData(
-                            getApplicationContext(),
-                            (float) location.getLatitude(),
-                            (float) location.getLongitude()
-                    );
+                    entry = BrightSkyApi.fetchCurrentWeatherData(getApplicationContext(),city);
                 }
                 break;
             case MET_NO:
                 if (city != null) {
-                    entry = MetNoApi.fetchCurrentWeatherData(
-                            getApplicationContext(),
-                            (float) city.lat,
-                            (float) city.lon
-                    );
-                } else {
-                    entry = MetNoApi.fetchCurrentWeatherData(
-                            getApplicationContext(),
-                            (float) location.getLatitude(),
-                            (float) location.getLongitude()
-                    );
+                    entry = MetNoApi.fetchCurrentWeatherData(getApplicationContext(),city);
                 }
                 break;
             case OPEN_WEATHER_MAP:
@@ -154,14 +143,6 @@ public class DownloadWeatherService extends Worker {
                             (float) city.lat,
                             (float) city.lon
                     );
-                } else {
-                    entry = OpenWeatherMapApi.fetchWeatherDataApi(
-                            getApplicationContext(),
-                            null,
-                            (float) location.getLatitude(),
-                            (float) location.getLongitude()
-                    );
-
                 }
                 break;
         }
