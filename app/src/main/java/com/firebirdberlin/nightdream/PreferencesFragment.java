@@ -1063,9 +1063,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private void conditionallyShowSnackBar() {
         Log.i(TAG, "conditionallyShowSnackBar");
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_KEY, 0);
         if (
                 !Utility.hasPermissionCanDrawOverlays(mContext)
                         && !Utility.isLowRamDevice(mContext)
+                        && isAutostartActivated(settings)
         ) {
             Activity activity = getActivity();
             if (activity == null) return;
@@ -1107,6 +1109,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         if (
                 (snackbar != null && snackbar.isShown())
                         || Utility.isAirplaneModeOn(mContext)
+                        || "noGms".equalsIgnoreCase(BuildConfig.FLAVOR)
                         || isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)
                         || isPurchased(PurchaseManager.ITEM_DONATION)
                         || isPurchased(PurchaseManager.ITEM_PRO)

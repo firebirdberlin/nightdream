@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.provider.AlarmClock;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -76,6 +78,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     private String dateFormat = "h:mm";
     private List<SimpleTime> entries = null;
     private FavoriteRadioStations radioStations = null;
+    private static Context context = null;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, SetAlarmClockActivity.class);
@@ -89,6 +92,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         setContentView(R.layout.activity_set_alarm_clock);
         setTheme(R.style.AlarmClockActivityTheme);
 
+        context = this;
         scrollView = findViewById(R.id.scroll_view);
 
         // https://www.youtube.com/watch?v=55wLsaWpQ4g
@@ -163,6 +167,9 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             entries = db.getAlarms();
         }
         update();
+        if (entries != null && !entries.isEmpty()){
+            conditionallyShowSnackBar();
+        }
     }
 
     private void update() {
@@ -254,11 +261,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
                             entries.add(entry);
                             update(entry.id);
 
-                            if (Utility.languageIs("de", "en")) {
-                                Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
-                                snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
-                                snackbar.show();
-                            }
+                            showSnackBar(entry);
                         } else {
                             update();
                         }
@@ -411,4 +414,74 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
             new Handler().postDelayed(this::finish, 3000);
         }
     }
+
+    private class CanDrawOverlaysPermissionListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Utility.requestPermissionCanDrawOverlays(context);
+            dismissSnackBar();
+        }
+    }
+
+    private Snackbar snackbar = null;
+
+    private void showSnackBar(SimpleTime entry) {
+        if (conditionallyShowSnackBar()) return;
+        if (Utility.languageIs("de", "en")) {
+            Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
+            snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+            snackbar.show();
+        }
+    }
+
+    private boolean conditionallyShowSnackBar() {
+        Log.i(TAG, "conditionallyShowSnackBar");
+        if (
+                !Utility.hasPermissionCanDrawOverlays(context)
+                        && !Utility.isLowRamDevice(context)
+        ) {
+            View view = findViewById(android.R.id.content);
+            snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
+            int color = Utility.getRandomMaterialColor(context);
+            int textColor = Utility.getContrastColor(color);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(color);
+            snackbar.setDuration(2 * 60_000);
+            snackbar.setActionTextColor(textColor);
+
+            // Adjust the bottom margin of the Snackbar's view.
+            // This will push the Snackbar up, revealing the content below it.
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+            if (params != null) {
+                params.bottomMargin = 75;
+                snackbarView.setLayoutParams(params);
+            }
+
+            TextView tv = snackbarView.findViewById(R.id.snackbar_text);
+            tv.setTextColor(textColor);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                tv.setAutoSizeTextTypeUniformWithConfiguration(
+                        10, // minTextSize
+                        20, // maxTextSize
+                        2,  // autoSizeStepGranularity
+                        TypedValue.COMPLEX_UNIT_SP // unit
+                );
+            }
+
+            snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
+            snackbar.show();
+            return true;
+        } else {
+            dismissSnackBar();
+        }
+        return false;
+    }
+
+    void dismissSnackBar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
+    }
+
 }

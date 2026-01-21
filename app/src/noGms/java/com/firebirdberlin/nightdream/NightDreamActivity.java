@@ -39,7 +39,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -47,7 +46,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -88,9 +86,7 @@ import com.firebirdberlin.nightdream.viewmodels.BatteryReferenceViewModel;
 import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
-import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -299,60 +295,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
-    Snackbar snackbar = null;
-
-    private class CanDrawOverlaysPermissionListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Utility.requestPermissionCanDrawOverlays(context);
-            dismissSnackBar();
-        }
-    }
-
-
-    private void conditionallyShowSnackBar() {
-        Log.i(TAG, "conditionallyShowSnackBar");
-        long daysSinceInstall = Utility.getDaysSinceFirstInstall(context);
-        if (
-                !Utility.hasPermissionCanDrawOverlays(context)
-                && daysSinceInstall < 3
-                && !AlarmHandlerService.alarmIsRunning()
-                && !Utility.isLowRamDevice(context)
-        ) {
-            View view = findViewById(android.R.id.content);
-            snackbar = Snackbar.make(view, R.string.permission_request_overlays, Snackbar.LENGTH_INDEFINITE);
-            int color = Utility.getRandomMaterialColor(context);
-            int textColor = Utility.getContrastColor(color);
-            View snackbarView = snackbar.getView();
-            snackbarView.setBackgroundColor(color);
-            snackbar.setDuration(2 * 60_000);
-            snackbar.setActionTextColor(textColor);
-
-            TextView tv = snackbarView.findViewById(R.id.snackbar_text);
-            tv.setTextColor(textColor);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                tv.setAutoSizeTextTypeUniformWithConfiguration(
-                        10, // minTextSize
-                        20, // maxTextSize
-                        2,  // autoSizeStepGranularity
-                        TypedValue.COMPLEX_UNIT_SP // unit
-                );
-            }
-
-            snackbar.setAction(android.R.string.ok, new CanDrawOverlaysPermissionListener());
-            snackbar.show();
-        } else {
-            dismissSnackBar();
-        }
-    }
-
-    void dismissSnackBar() {
-        if (snackbar != null && snackbar.isShown()) {
-            snackbar.dismiss();
-            snackbar = null;
-        }
-    }
-
     void initTextToSpeech() {
         textToSpeech = new TextToSpeech(context, status -> {
             if (status != TextToSpeech.ERROR && textToSpeech != null) {
@@ -517,7 +459,6 @@ public class NightDreamActivity extends BillingHelperActivity
             // TODO optionally enable the Flashlight
         }
 
-        conditionallyShowSnackBar();
         setKeepScreenOn(true);
         Log.i(TAG, "onResume took: " + (System.currentTimeMillis() - startTime) + " ms");
     }
