@@ -815,8 +815,12 @@ public class NightDreamUI {
 
     public void setupClockLayout() {
         int layoutId = settings.getClockLayoutID(false);
-        clockLayout.setPrimaryColor(getAccentColor());
         clockLayout.setLayout(layoutId);
+        clockLayout.setPrimaryColor(getAccentColor());
+        clockLayout.setColorHours(settings.getColorHours(layoutId));
+        clockLayout.setColorMinutes(settings.getColorMinutes(layoutId));
+        clockLayout.setColorSeconds(settings.getColorSeconds(layoutId));
+
         clockLayout.setBackgroundTransparency(settings.clockBackgroundTransparency);
         clockLayout.setTypeface(settings.loadTypeface());
         clockLayout.setDateFormat(settings.dateFormat);

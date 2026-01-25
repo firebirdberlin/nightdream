@@ -19,7 +19,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,25 +26,30 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.rarepebble.colorpicker.ColorPickerView;
 
 
-public class CustomDigitalClockPreferencesLayout extends LinearLayout {
+public class CustomDigitalClockPreferencesLayout extends LinearLayout implements View.OnClickListener {
 
     private OnConfigChangedListener mListener = null;
     private Settings settings = null;
     private boolean isPurchased = false;
     AppCompatActivity activity = null;
     private int layoutId = ClockLayout.LAYOUT_ID_DIGITAL;
+
+    private ColorPrefWidgetView colorPickerHours = null;
+    private ColorPrefWidgetView colorPickerMinutes = null;
+    private ColorPrefWidgetView colorPickerSeconds = null;
 
     public CustomDigitalClockPreferencesLayout(
             Context context, Settings settings, AppCompatActivity activity, int layoutId
@@ -83,20 +87,17 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
         addView(child, lp);
 
         if (layoutId == ClockLayout.LAYOUT_ID_DIGITAL) {
-            Switch switchShowDivider = child.findViewById(R.id.switch_show_divider);
+            SwitchCompat switchShowDivider = child.findViewById(R.id.switch_show_divider);
             switchShowDivider.setChecked(settings.getShowDivider(layoutId));
-            switchShowDivider.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    settings.setShowDivider(isChecked, layoutId);
-                    if (mListener != null) {
-                        mListener.onConfigChanged();
-                    }
+            switchShowDivider.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                settings.setShowDivider(isChecked, layoutId);
+                if (mListener != null) {
+                    mListener.onConfigChanged();
                 }
             });
         }
 
-        Switch switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
+        SwitchCompat switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
         switchShowSeconds.setChecked(settings.getShowSeconds(layoutId));
         switchShowSeconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -157,40 +158,37 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                 "%s: %s", fontButtonText, settings.getFontName(layoutId)
         );
         fontButton.setText(fontButtonText);
-        fontButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (activity == null) {
-                    return;
+        fontButton.setOnClickListener(view -> {
+            if (activity == null) {
+                return;
+            }
+
+            FragmentManager fm = activity.getSupportFragmentManager();
+            ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
+            dialog.setIsPurchased(isPurchased);
+            dialog.setSelectedUri(settings.getFontUri(layoutId));
+            dialog.setDefaultFonts(
+                    "roboto_regular.ttf", "roboto_light.ttf",
+                    "roboto_thin.ttf", "7_segment_digital.ttf", "dseg14classic.ttf",
+                    "dancingscript_regular.ttf"
+            );
+            dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
+                @Override
+                public void onFontSelected(Uri uri, String name) {
+                    settings.setFontUri(uri.toString(), name, layoutId);
+                    if (mListener != null) {
+                        mListener.onConfigChanged();
+                    }
                 }
 
-                FragmentManager fm = activity.getSupportFragmentManager();
-                ManageFontsDialogFragment dialog = new ManageFontsDialogFragment();
-                dialog.setIsPurchased(isPurchased);
-                dialog.setSelectedUri(settings.getFontUri(layoutId));
-                dialog.setDefaultFonts(
-                        "roboto_regular.ttf", "roboto_light.ttf",
-                        "roboto_thin.ttf", "7_segment_digital.ttf", "dseg14classic.ttf",
-                        "dancingscript_regular.ttf"
-                );
-                dialog.setOnFontSelectedListener(new ManageFontsDialogFragment.ManageFontsDialogListener() {
-                    @Override
-                    public void onFontSelected(Uri uri, String name) {
-                        settings.setFontUri(uri.toString(), name, layoutId);
-                        if (mListener != null) {
-                            mListener.onConfigChanged();
-                        }
+                @Override
+                public void onPurchaseRequested() {
+                    if (mListener != null) {
+                        mListener.onPurchaseRequested();
                     }
-
-                    @Override
-                    public void onPurchaseRequested() {
-                        if (mListener != null) {
-                            mListener.onPurchaseRequested();
-                        }
-                    }
-                });
-                dialog.show(fm, "custom fonts");
-            }
+                }
+            });
+            dialog.show(fm, "custom fonts");
         });
 
         final TextView decorationStylePreference = child.findViewById(R.id.decoration_preference);
@@ -203,24 +201,79 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout {
                         textures[settings.getTextureId(layoutId)]
                 )
         );
-        decorationStylePreference.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.style)
-                        .setItems(R.array.textures, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                settings.setTextureId(which, layoutId);
-                                if (mListener != null) {
-                                    mListener.onConfigChanged();
-                                }
-                            }
-                        });
-                builder.show();
+        decorationStylePreference.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.style)
+                    .setItems(R.array.textures, (dialog, which) -> {
+                        settings.setTextureId(which, layoutId);
+                        if (mListener != null) {
+                            mListener.onConfigChanged();
+                        }
+                    });
+            builder.show();
+        });
+
+        // Initialize and set click listeners for ColorPickers
+        colorPickerHours = child.findViewById(R.id.colorPickerHours);
+        colorPickerMinutes = child.findViewById(R.id.colorPickerMinutes);
+        colorPickerSeconds = child.findViewById(R.id.colorPickerSeconds);
+
+        colorPickerHours.setOnClickListener(this);
+        colorPickerMinutes.setOnClickListener(this);
+        colorPickerSeconds.setOnClickListener(this);
+        
+        updateColorPickers();
+    }
+
+    private void updateColorPickers() {
+        if (colorPickerHours != null) {
+            colorPickerHours.setColor(settings.getColorHours(layoutId));
+        }
+        if (colorPickerMinutes != null) {
+            colorPickerMinutes.setColor(settings.getColorMinutes(layoutId));
+        }
+        if (colorPickerSeconds != null) {
+            colorPickerSeconds.setColor(settings.getColorSeconds(layoutId));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof ColorPrefWidgetView) {
+            showColorPickerDialog((ColorPrefWidgetView) v);
+        }
+    }
+
+    private void showColorPickerDialog(final ColorPrefWidgetView colorPrefWidgetView) {
+        final ColorPickerView picker = new ColorPickerView(getContext());
+        picker.showAlpha(false);
+        picker.showHex(true);
+        picker.showPreview(true);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(null).setView(picker);
+
+        picker.setColor(colorPrefWidgetView.getColor());
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            final int color = picker.getColor();
+            int viewId = colorPrefWidgetView.getId();
+
+            if (viewId == R.id.colorPickerHours) {
+                settings.setColorHours(color, layoutId);
+            } else if (viewId == R.id.colorPickerMinutes) {
+                settings.setColorMinutes(color, layoutId);
+            } else if (viewId == R.id.colorPickerSeconds) {
+                settings.setColorSeconds(color, layoutId);
+            }
+            updateColorPickers();
+            if (mListener != null) {
+                mListener.onConfigChanged();
             }
         });
 
+        builder.show();
     }
+
 
     public void setIsPurchased(boolean isPurchased) {
         this.isPurchased = isPurchased;

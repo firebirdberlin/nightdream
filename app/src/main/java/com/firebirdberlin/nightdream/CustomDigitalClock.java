@@ -25,9 +25,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.provider.Settings;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.format.DateFormat;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan; // Add this import
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,12 +58,14 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     private SimpleDateFormat simpleDateFormat;
     private FormatChangeObserver mFormatChangeObserver;
     private Handler handler;
-    private final Runnable update = new Runnable() {
-        @Override
-        public void run() {
-            updateTextView();
-        }
-    };
+
+    // New color variables
+    private int primaryColor = -1;
+    private int hourColor = -1;
+    private int minuteColor = -1;
+    private int secondColor = -1;
+
+    private final Runnable update = this::updateTextView;
 
     public CustomDigitalClock(Context context) {
         super(context);
@@ -75,6 +83,11 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         m24 = a.getString(R.styleable.CustomDigitalClock_format24Hr);
         capitalize = a.getBoolean(R.styleable.CustomDigitalClock_capitalize, false);
 
+        // Read new color attributes
+        hourColor = a.getColor(R.styleable.CustomDigitalClock_hourColor, -1);
+        minuteColor = a.getColor(R.styleable.CustomDigitalClock_minuteColor, -1);
+        secondColor = a.getColor(R.styleable.CustomDigitalClock_secondColor, -1);
+
         a.recycle();
 
         initClock();
@@ -87,8 +100,23 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         setFormat();
-        updateTextView();
         setClickable(false);
+    }
+
+    /**
+     * Splits a time string into segments based on the colon delimiter.
+     * For example, "12:34:56" would become ["12", "34", "56"].
+     * "12:34 PM" would become ["12", "34 PM"].
+     *
+     * @param timeString The time string to split.
+     * @return An array of strings, where each string is a segment of the time string.
+     */
+    public String[] splitTimeStringByColon(String timeString) {
+        if (timeString == null) {
+            return new String[0]; // Return an empty array for null input
+        }
+        // The split method takes a regular expression. ":" is not a special regex character here.
+        return timeString.split(":");
     }
 
     protected void updateTextView() {
@@ -105,19 +133,81 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             }
         }
 
-        String text = simpleDateFormat.format(mCalendar.getTime());
-        if (text != getText()) {
-            setText(text);
-            //invalidate();
+        String currentTimeString = simpleDateFormat.format(mCalendar.getTime());
+        if (currentTimeString.contains(":")) {
+            hourColor = (hourColor == -1) ? primaryColor : hourColor;
+            minuteColor = (minuteColor == -1) ? primaryColor : minuteColor;
+            secondColor = (secondColor == -1) ? primaryColor : secondColor;
+
+            String hourStr = "";
+            String minuteStr = "";
+            String secondStr = "";
+
+            // Split the current time string into segments
+            String[] timeSegments = splitTimeStringByColon(currentTimeString);
+            if (timeSegments.length > 0) {
+                hourStr = timeSegments[0];
+            }
+            if (timeSegments.length > 1) {
+                minuteStr = timeSegments[1];
+            }
+            if (timeSegments.length > 2) {
+                secondStr = " " + timeSegments[2];
+            }
+            String divider = ":";
+            SpannableString spannableString = new SpannableString(
+                    hourStr + divider + minuteStr + secondStr
+            );
+
+            // Calculate span start and end for coloring based on the assigned strings
+            int hourStart = -1, hourEnd = -1;
+            if (!hourStr.isEmpty()) {
+                hourStart = 0;
+                hourEnd = hourStart + hourStr.length();
+            }
+
+            int minuteStart = -1, minuteEnd = -1;
+            // Search for minute after the hour segment, or from the beginning if hour wasn't found
+            if (!minuteStr.isEmpty()) {
+                minuteStart = hourEnd + divider.length();
+                minuteEnd = minuteStart + minuteStr.length();
+            }
+            int secondStart = -1, secondEnd = -1;
+            // Only search for seconds if the format includes ":ss" and secondStr is not empty.
+            // Search after the minute segment, or hour, or from the beginning.
+            if (mFormat.contains(":ss") && !secondStr.isEmpty()) {
+                secondStart = minuteEnd;
+                secondEnd = secondStart + secondStr.length();
+            }
+            // Apply colors if they are set and the component is present
+            if (hourColor != -1 && hourStart != -1) {
+                spannableString.setSpan(new ForegroundColorSpan(hourColor), hourStart, hourEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if (minuteColor != -1 && minuteStart != -1) {
+                spannableString.setSpan(new ForegroundColorSpan(minuteColor), minuteStart, minuteEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if (secondColor != -1 && secondStart != -1) {
+                spannableString.setSpan(new ForegroundColorSpan(secondColor), secondStart, secondEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new RelativeSizeSpan(0.5f), secondStart, secondEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
+            if (!spannableString.equals(getText())){
+                setText(spannableString);
+            }
+        } else {
+            if (getText() == null || !getText().toString().equals(currentTimeString)){
+                setText(currentTimeString);
+            }
         }
 
+        // retrigger the update in 1s if seconds are visible
         if (mFormat.contains(":ss")) {
             if (handler == null) {
                 handler = new Handler();
             }
             handler.removeCallbacks(update);
             long now = System.currentTimeMillis();
-            long delta = 1000 - now / 1000 * 1000;
+            long delta = 1000 - (now % 1000); // Correct delta calculation for seconds
             handler.postDelayed(update, delta);
         }
     }
@@ -162,7 +252,8 @@ public class CustomDigitalClock extends AutoAdjustTextView {
      * Pulls 12/24 mode from system settings
      */
     private boolean get24HourMode() {
-        return android.text.format.DateFormat.is24HourFormat(getContext());
+        // Use android.text.format.DateFormat for reliable 24-hour format check
+        return DateFormat.is24HourFormat(getContext());
     }
 
     private void setFormat() {
@@ -174,7 +265,9 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             mFormat = m12;
         }
         simpleDateFormat = new SimpleDateFormat(mFormat);
+
         setSampleTime();
+        updateTextView();
     }
 
     public void setSampleTime() {
@@ -228,18 +321,38 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     public void setCustomFormat(String format) {
         this.mCustom = format;
         setFormat();
-        updateTextView();
     }
 
     public void setFormat12Hour(String format) {
         this.m12 = format;
         setFormat();
-        updateTextView();
     }
 
     public void setFormat24Hour(String format) {
         this.m24 = format;
         setFormat();
+    }
+
+    @Override
+    public void setTextColor(int color) {
+        Log.d("CustomDigitalClock", "setTextColor called with color: " + color);
+        this.primaryColor = color;
+        super.setTextColor(color);
+    }
+
+    // Setters for colors
+    public void setHourColor(int color) {
+        this.hourColor = color;
+        updateTextView();
+    }
+
+    public void setMinuteColor(int color) {
+        this.minuteColor = color;
+        updateTextView();
+    }
+
+    public void setSecondColor(int color) {
+        this.secondColor = color;
         updateTextView();
     }
 
@@ -258,7 +371,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         }
         if (input.length() > 1) {
             return input.substring(0, 1).toUpperCase() + input.substring(1);
-        } else if (input.length() > 0) {
+        } else if (!input.isEmpty()) {
             return input.substring(0, 1).toUpperCase();
         }
 

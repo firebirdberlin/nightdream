@@ -6,6 +6,45 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="top"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/colors"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+            android:id="@+id/colorPickerHours"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            />
+        <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+            android:id="@+id/colorPickerMinutes"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            />
+        <com.firebirdberlin.nightdream.ui.ColorPrefWidgetView
+            android:id="@+id/colorPickerSeconds"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="8dp"
+            />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/typeface_preference"
         android:layout_width="match_parent"

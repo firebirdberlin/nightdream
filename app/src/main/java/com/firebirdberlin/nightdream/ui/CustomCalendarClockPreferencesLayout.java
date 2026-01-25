@@ -40,14 +40,19 @@ import androidx.fragment.app.FragmentManager;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
+import com.rarepebble.colorpicker.ColorPickerView;
 
 
-public class CustomCalendarClockPreferencesLayout extends LinearLayout {
+public class CustomCalendarClockPreferencesLayout extends LinearLayout implements View.OnClickListener {
 
     private OnConfigChangedListener mListener = null;
     private Settings settings = null;
     private boolean isPurchased = false;
     AppCompatActivity activity = null;
+
+    private ColorPrefWidgetView colorPickerHours = null;
+    private ColorPrefWidgetView colorPickerMinutes = null;
+    private ColorPrefWidgetView colorPickerSeconds = null;
 
     public CustomCalendarClockPreferencesLayout(
             Context context, Settings settings, AppCompatActivity activity
@@ -161,8 +166,67 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout {
             invalidate();
             onConfigChanged();
         });
+
+        // Initialize and set click listeners for ColorPickers
+        colorPickerHours = child.findViewById(R.id.colorPickerHours);
+        colorPickerMinutes = child.findViewById(R.id.colorPickerMinutes);
+        colorPickerSeconds = child.findViewById(R.id.colorPickerSeconds);
+
+        colorPickerHours.setOnClickListener(this);
+        colorPickerMinutes.setOnClickListener(this);
+        colorPickerSeconds.setOnClickListener(this);
+
+        updateColorPickers();
     }
 
+    private void updateColorPickers() {
+        if (colorPickerHours != null) {
+            colorPickerHours.setColor(settings.getColorHours(ClockLayout.LAYOUT_ID_CALENDAR));
+        }
+        if (colorPickerMinutes != null) {
+            colorPickerMinutes.setColor(settings.getColorMinutes(ClockLayout.LAYOUT_ID_CALENDAR));
+        }
+        if (colorPickerSeconds != null) {
+            colorPickerSeconds.setColor(settings.getColorSeconds(ClockLayout.LAYOUT_ID_CALENDAR));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof ColorPrefWidgetView) {
+            showColorPickerDialog((ColorPrefWidgetView) v);
+        }
+    }
+
+    private void showColorPickerDialog(final ColorPrefWidgetView colorPrefWidgetView) {
+        final ColorPickerView picker = new ColorPickerView(getContext());
+        picker.showAlpha(false);
+        picker.showHex(true);
+        picker.showPreview(true);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(null).setView(picker);
+
+        picker.setColor(colorPrefWidgetView.getColor());
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            final int color = picker.getColor();
+            int viewId = colorPrefWidgetView.getId();
+
+            if (viewId == R.id.colorPickerHours) {
+                settings.setColorHours(color, ClockLayout.LAYOUT_ID_CALENDAR);
+            } else if (viewId == R.id.colorPickerMinutes) {
+                settings.setColorMinutes(color, ClockLayout.LAYOUT_ID_CALENDAR);
+            } else if (viewId == R.id.colorPickerSeconds) {
+                settings.setColorSeconds(color, ClockLayout.LAYOUT_ID_CALENDAR);
+            }
+            updateColorPickers();
+            if (mListener != null) {
+                mListener.onConfigChanged();
+            }
+        });
+
+        builder.show();
+    }
     private void onConfigChanged() {
         if (mListener != null) {
             mListener.onConfigChanged();
