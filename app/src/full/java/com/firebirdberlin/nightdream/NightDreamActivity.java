@@ -54,7 +54,6 @@ import androidx.annotation.NonNull;
 import androidx.core.view.WindowCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.multidex.MultiDex;
 
 import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
 import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
@@ -330,7 +329,6 @@ public class NightDreamActivity extends BillingHelperActivity
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
-        MultiDex.install(this);
         context = this;
 
         setContentView(R.layout.main);

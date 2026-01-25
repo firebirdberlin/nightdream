@@ -150,26 +150,22 @@ public class NotificationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.menuItem_markall:
-
-                if (notificationList != null) {
-                    NotificationList oldNotificationList = new NotificationList(
-                            notificationList.getNotifications()
-                    );
-                    for (int index = 0; index < notificationList.size(); index++) {
-                        oldNotificationList.setSelected(index, notificationList.isSelected(index));
-                        notificationList.setSelected(index, true);
-                    }
-                    //adapter.notifyDataSetChanged();
-                    adapter.updateDataSet(oldNotificationList, notificationList);
+        if (id == R.id.menuItem_markall) {
+            if (notificationList != null) {
+                NotificationList oldNotificationList = new NotificationList(
+                        notificationList.getNotifications()
+                );
+                for (int index = 0; index < notificationList.size(); index++) {
+                    oldNotificationList.setSelected(index, notificationList.isSelected(index));
+                    notificationList.setSelected(index, true);
                 }
-                break;
-            case R.id.menuItem_delete:
-                clearSelectedNotifications();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
+                //adapter.notifyDataSetChanged();
+                adapter.updateDataSet(oldNotificationList, notificationList);
+            }
+        } else if (id == R.id.menuItem_delete) {
+            clearSelectedNotifications();
+        } else {
+            return super.onOptionsItemSelected(item);
         }
         return true;
     }

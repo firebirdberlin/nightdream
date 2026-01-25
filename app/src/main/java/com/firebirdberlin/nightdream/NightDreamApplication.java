@@ -24,8 +24,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.Log;
 
-import androidx.multidex.MultiDex;
-
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.CityRequestManager;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
@@ -42,7 +40,6 @@ public class NightDreamApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
     }
 
     @Override
