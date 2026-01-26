@@ -43,7 +43,6 @@ import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.AlarmNotificationService;
-import com.firebirdberlin.nightdream.services.AlarmWifiService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.viewmodels.AlarmClockViewModel;
 import com.firebirdberlin.nightdream.widget.AlarmClockWidgetProvider;
@@ -65,13 +64,11 @@ public class WakeUpReceiver extends BroadcastReceiver {
             setAlarm(context, next);
 
             AlarmNotificationService.scheduleJob(context, next);
-            AlarmWifiService.scheduleJob(context, next);
         } else {
             PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
             AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             am.cancel(pI);
             AlarmNotificationService.cancelJob(context);
-            AlarmWifiService.cancelJob(context);
         }
 
         Intent intent = new Intent(Config.ACTION_ALARM_SET);
@@ -154,7 +151,6 @@ public class WakeUpReceiver extends BroadcastReceiver {
         Utility.logIntent(TAG, "onReceive()", intent);
         AlarmNotificationService.cancelNotification(context);
         AlarmNotificationService.cancelJob(context);
-        AlarmWifiService.cancelJob(context);
         deleteCurrentlyActiveAlarm(context, intent);
         AlarmHandlerService.start(context);
 

@@ -199,7 +199,6 @@ public class Settings {
     boolean showBatteryWarning = true;
     int batteryTimeout = 5;
     SharedPreferences settings;
-    private boolean radioStreamActivateWiFi = false;
     private int background_mode = BACKGROUND_BLACK;
     private final Context mContext;
     private boolean reactivate_screen_on_noise = false;
@@ -536,7 +535,6 @@ public class Settings {
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", false);
         showAlarmsPersistently = settings.getBoolean("showAlarmsPersistently", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
-        radioStreamActivateWiFi = settings.getBoolean("radioStreamActivateWiFi", false);
         radioStreamRequireWiFi = settings.getBoolean("radioStreamRequireWiFi", false);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
@@ -1416,13 +1414,6 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putString("batteryReference", bv.toJson());
         prefEditor.apply();
-    }
-
-    public boolean getShallRadioStreamActivateWiFi() {
-        if (Build.VERSION.SDK_INT < 29) {
-            return false;
-        }
-        return radioStreamActivateWiFi;
     }
 
     public enum WeatherProvider {OPEN_WEATHER_MAP, DARK_SKY, BRIGHT_SKY, MET_NO}
