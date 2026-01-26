@@ -248,7 +248,7 @@ public class WeatherForecastActivity
     }
 
     public void onRequestFinished(PollenExposure result) {
-        Log.d(TAG, "onRequestFinished(PollenExposure) " + result.getPostCode());
+        Log.d(TAG, "onRequestFinished(PollenExposure)");
         ((WeatherForecastTabPollen) adapter.getItem(1)).onRequestFinished(selectedCity, result);
     }
 

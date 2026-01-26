@@ -76,7 +76,8 @@ public class WeatherForecastTabPollen extends Fragment {
             return;
         }
 
-        if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)) {
+        if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)
+                || result == null) {
             Log.d(TAG, "addPollen - city: " + ((city == null) ? "null" : city.toJson()));
 
             TextView textView = new TextView(context);
