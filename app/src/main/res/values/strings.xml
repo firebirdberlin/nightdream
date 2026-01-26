@@ -328,6 +328,7 @@ OR
     <string name="remaining_alarm_time_now">This alarm will ring soon.</string>
     <string name="remaining_alarm_time_start">This alarm will ring in&#160;</string>
     <string name="repeat">repeat</string>
+    <string name="reset">reset</string>
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="rss">RSS ticker</string>
     <string name="rss_charset">character encoding</string>

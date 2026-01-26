@@ -766,17 +766,17 @@ public class Settings {
 
     public int getColorHours(int clockLayoutId) {
         String key = getKeyForClockLayout("colorHours", clockLayoutId);
-        return settings.getInt(key, clockColor);
+        return settings.getInt(key, -1);
     }
 
     public int getColorMinutes(int clockLayoutId) {
         String key = getKeyForClockLayout("colorMinutes", clockLayoutId);
-        return settings.getInt(key, clockColor);
+        return settings.getInt(key, -1);
     }
 
     public int getColorSeconds(int clockLayoutId) {
         String key = getKeyForClockLayout("colorSeconds", clockLayoutId);
-        return settings.getInt(key, clockColor);
+        return settings.getInt(key, -1);
     }
 
     public void setColorHours(int color, int clockLayoutId) {

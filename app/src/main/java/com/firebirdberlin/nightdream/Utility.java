@@ -368,21 +368,16 @@ public class Utility {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+        NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
 
-            if (capabilities != null) {
-                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    return true;
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    return true;
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                    return true;
-                }
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                return true;
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                return true;
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                return true;
             }
-        } else {
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
         }
         return false;
     }
@@ -391,23 +386,14 @@ public class Utility {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+        NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
 
-            if (capabilities != null) {
-                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    return true;
-                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                    return true;
-                }
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                return true;
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                return true;
             }
-        } else {
-
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-            return (hasNetworkConnection(context) &&
-                    (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
-                            activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET));
         }
         return false;
     }

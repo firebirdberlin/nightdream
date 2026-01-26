@@ -225,6 +225,23 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout implement
             }
         });
 
+        // Add the 'reset' button
+        builder.setNegativeButton(R.string.reset, (dialog, which) -> {
+            int viewId = colorPrefWidgetView.getId();
+
+            if (viewId == R.id.colorPickerHours) {
+                settings.setColorHours(-1, ClockLayout.LAYOUT_ID_CALENDAR);
+            } else if (viewId == R.id.colorPickerMinutes) {
+                settings.setColorMinutes(-1, ClockLayout.LAYOUT_ID_CALENDAR);
+            } else if (viewId == R.id.colorPickerSeconds) {
+                settings.setColorSeconds(-1, ClockLayout.LAYOUT_ID_CALENDAR);
+            }
+            updateColorPickers();
+            if (mListener != null) {
+                mListener.onConfigChanged();
+            }
+        });
+
         builder.show();
     }
     private void onConfigChanged() {
