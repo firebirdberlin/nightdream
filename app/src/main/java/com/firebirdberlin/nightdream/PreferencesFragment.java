@@ -268,12 +268,26 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     Log.d("PhotoPicker", "Number of items selected: " + uris.size());
                     File directory = new File(mContext.getFilesDir() + "/backgroundImages");
                     Utility.prepareDirectory(directory);
-                    int count = 0;
-                    for (Uri uri: uris) {
-                        count += 1;
-                        String name = "image_" + count + ".jpg";
-                        Utility.copyToDirectory(mContext, uri, directory, name);
-                    }
+
+                    PreferencesActivity activity = ((PreferencesActivity) mContext);
+
+                    //Copy images in the background
+                    new Thread(() -> {
+                        // do background stuff here
+                        int count = 0;
+                        for (Uri uri: uris) {
+                            count += 1;
+                            String name = "image_" + count + ".jpg";
+                            Utility.copyToDirectory(mContext, uri, directory, name);
+                            Log.d("PhotoPicker", "Copy Image: "+count+" / "+uris.size());
+                        }
+
+                        activity.runOnUiThread(() -> {
+                            // OnPostExecute stuff here
+                            Log.d("PhotoPicker", "All images processed");
+                        });
+                    }).start();
+
                 } else {
                     Log.d("PhotoPicker", "No media selected");
                 }
