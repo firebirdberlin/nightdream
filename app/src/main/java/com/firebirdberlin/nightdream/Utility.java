@@ -140,26 +140,48 @@ public class Utility {
         fileOrDirectory.delete();
     }
 
+    public static void writeFile(InputStream inputStream,OutputStream outputStream ) {
+        try {
+            byte[] buffer = new byte[1024];
+
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+        } catch (Exception ex){
+            Log.e("writeFile", ex.getMessage());
+            Log.e("writeFile", ex.toString());
+        }
+    }
+
     public static boolean copyToDirectory(Context context, Uri srcUri, File directory, String name) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(srcUri)) {
             File file = new File(directory, name);
-            try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) > 0) {
-                    outputStream.write(buffer, 0, length);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
+                    writeFile(inputStream,outputStream);
+                } catch (Exception ex) {
+                    Log.e("copyToDirectory", ex.getMessage());
+                    Log.e("copyToDirectory",ex.toString());
+                    return false;
                 }
-                outputStream.flush();
-                outputStream.close();
-                inputStream.close();
-            } catch (Exception ex) {
-                Log.e("copyToDirectory", ex.getMessage());
-                ex.printStackTrace();
-                return false;
+            }
+            else {
+                try (OutputStream outputStream = new FileOutputStream(file)) {
+                    writeFile(inputStream,outputStream);
+                } catch (Exception ex) {
+                    Log.e("copyToDirectory", ex.getMessage());
+                    Log.e("copyToDirectory",ex.toString());
+                    return false;
+                }
             }
         } catch (Exception ex) {
             Log.e("copyToDirectory", ex.getMessage());
-            ex.printStackTrace();
+            Log.e("copyToDirectory", ex.toString());
             return false;
         }
         return true;
@@ -378,16 +400,21 @@ public class Utility {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
 
-        if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                return true;
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                return true;
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                return true;
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    return true;
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    return true;
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    return true;
+                }
             }
+        } else {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return (activeNetwork != null && activeNetwork.isConnectedOrConnecting());
         }
         return false;
     }
@@ -396,14 +423,23 @@ public class Utility {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
 
-        if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                return true;
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                return true;
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    return true;
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                    return true;
+                }
             }
+        } else {
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+            return (hasNetworkConnection(context) &&
+                    (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
+                            activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET));
         }
         return false;
     }
