@@ -764,6 +764,39 @@ public class Settings {
         return settings.getBoolean(key, false);
     }
 
+    public int getColorHours(int clockLayoutId) {
+        String key = getKeyForClockLayout("colorHours", clockLayoutId);
+        return settings.getInt(key, clockColor);
+    }
+
+    public int getColorMinutes(int clockLayoutId) {
+        String key = getKeyForClockLayout("colorMinutes", clockLayoutId);
+        return settings.getInt(key, clockColor);
+    }
+
+    public int getColorSeconds(int clockLayoutId) {
+        String key = getKeyForClockLayout("colorSeconds", clockLayoutId);
+        return settings.getInt(key, clockColor);
+    }
+
+    public void setColorHours(int color, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("colorHours", clockLayoutId);
+        prefEditor.putInt(key, color);
+        prefEditor.apply();
+    }
+    public void setColorMinutes(int color, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("colorMinutes", clockLayoutId);
+        prefEditor.putInt(key, color);
+        prefEditor.apply();
+    }
+    public void setColorSeconds(int color, int clockLayoutId) {
+        SharedPreferences.Editor prefEditor = settings.edit();
+        String key = getKeyForClockLayout("colorSeconds", clockLayoutId);
+        prefEditor.putInt(key, color);
+        prefEditor.apply();
+    }
     public void setShowCalendarEvents(boolean showCalendarEvents, int clockLayoutId) {
         SharedPreferences.Editor prefEditor = settings.edit();
         String key = getKeyForClockLayout("showCalendarEvents", clockLayoutId);

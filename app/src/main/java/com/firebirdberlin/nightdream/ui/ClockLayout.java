@@ -96,7 +96,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     private final WeatherLayout[] weatherLayouts = {null, null, null};
     private final Context context;
     private int layoutId = LAYOUT_ID_DIGITAL;
-    private AutoAdjustTextView clock = null;
+    private CustomDigitalClock clock = null;
     private MaterialCalendarView calendarView = null;
     private AutoAdjustTextView clock_ampm = null;
     private CustomAnalogClock analog_clock = null;
@@ -257,9 +257,23 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         applyTexture(clock, glowRadius, glowColor, textureId);
         applyTexture(clock_ampm, glowRadius, glowColor, textureId);
     }
-
+    public void setColorHours(int color) {
+        if (clock != null) {
+            clock.setHourColor(color);
+        }
+    }
+    public void setColorMinutes(int color) {
+        if (clock != null) {
+            clock.setMinuteColor(color);
+        }
+    }
+    public void setColorSeconds(int color) {
+        if (clock != null) {
+            clock.setSecondColor(color);
+        }
+    }
     public void setPrimaryColor(int color) {
-        this.primaryColor = color; // Update primaryColor field
+        this.primaryColor = color;
         if (clock != null) {
             clock.setTextColor(color);
         }

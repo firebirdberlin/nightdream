@@ -18,10 +18,11 @@
 
 package com.firebirdberlin.nightdream;
 
+import static android.text.format.DateFormat.getBestDateTimePattern;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
-import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 
@@ -37,20 +38,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-import static android.text.format.DateFormat.getBestDateTimePattern;
-
 
 public class DateFormatPreference extends ListPreference {
     private static final String FORMAT_TYPE_DATE = "date";
     private static final String FORMAT_TYPE_HOUR = "time";
 
     private String formatType = FORMAT_TYPE_DATE;
-    private FormatChangeObserver mFormatChangeObserver;
     static private List<Integer> types = Arrays.asList(DateFormat.FULL,
                                                        DateFormat.LONG,
                                                        DateFormat.MEDIUM,
                                                        DateFormat.SHORT);
-    static private List<String> skeletons = Arrays.asList("ddMM",
+    static private final List<String> skeletons = Arrays.asList("ddMM",
                                                           "ddMMM",
                                                           "ddMMMM",
                                                           "ddMMMMyy",
@@ -93,9 +91,10 @@ public class DateFormatPreference extends ListPreference {
         a.recycle();
 
         if ( FORMAT_TYPE_HOUR.equals(formatType) ) {
-            mFormatChangeObserver = new FormatChangeObserver();
+            FormatChangeObserver mFormatChangeObserver = new FormatChangeObserver();
             context.getContentResolver().registerContentObserver(
-                android.provider.Settings.System.CONTENT_URI, true, mFormatChangeObserver);
+                android.provider.Settings.System.CONTENT_URI, true, mFormatChangeObserver
+            );
             initHourFormatType();
         } else {
             initDateFormatType();
@@ -110,7 +109,7 @@ public class DateFormatPreference extends ListPreference {
         valueList.add("h:mm");
         valueList.add("hh:mm");
 
-        CharSequence[] values = valueList.toArray(new CharSequence[valueList.size()]);
+        CharSequence[] values = valueList.toArray(new CharSequence[0]);
         Arrays.sort(values);
 
         Calendar cal = Calendar.getInstance();
@@ -151,20 +150,18 @@ public class DateFormatPreference extends ListPreference {
         }
 
         // for newer api levels add custom formats
-        if (Build.VERSION.SDK_INT >= 18){
-            for (String value : skeletons) {
-                String format = getDateFormat(value);
-                valueList.add(format);
-            }
+        for (String value : skeletons) {
+            String format = getDateFormat(value);
+            valueList.add(format);
         }
 
-        CharSequence[] values = valueList.toArray(new CharSequence[valueList.size()]);
+        CharSequence[] values = valueList.toArray(new CharSequence[0]);
         Arrays.sort(values);
         for (CharSequence value : values) {
             entryList.add(dateAsString(value.toString()));
 
         }
-        CharSequence[] cs = entryList.toArray(new CharSequence[entryList.size()]);
+        CharSequence[] cs = entryList.toArray(new CharSequence[0]);
 
         setEntries(cs);
         setEntryValues(values);
@@ -177,9 +174,6 @@ public class DateFormatPreference extends ListPreference {
 
     // only for api level >= 18
     private String getDateFormat(String skeleton) {
-        if (Build.VERSION.SDK_INT < 18){
-            return "";
-        }
         return getBestDateTimePattern(Locale.getDefault(), skeleton);
     }
 
