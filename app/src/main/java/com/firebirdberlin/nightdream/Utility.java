@@ -76,6 +76,7 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityManagerCompat;
@@ -96,6 +97,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -123,11 +125,16 @@ public class Utility {
     }
 
     public static void prepareDirectory(File directory) {
-        deleteDirectory(directory);
-        directory.mkdirs();
+        if (directory.exists()) {
+            deleteDirectory(directory);
+        }
+        if (! directory.mkdirs()){
+            Log.e("prepareDirectory", "Directory "+directory+" cannot be created");
+        }
     }
 
     public static void deleteDirectory(File fileOrDirectory) {
+        if (fileOrDirectory == null) return;
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles()) {
                 Utility.deleteDirectory(child);
@@ -136,22 +143,44 @@ public class Utility {
     }
 
     public static boolean copyToDirectory(Context context, Uri srcUri, File directory, String name) {
-        InputStream inputStream;
-        try {
-            inputStream = context.getContentResolver().openInputStream(srcUri);
+        try (InputStream inputStream = context.getContentResolver().openInputStream(srcUri)) {
             File file = new File(directory, name);
-            OutputStream outputStream = new FileOutputStream(file);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
+                    writeFile(inputStream,outputStream);
+                } catch (Exception e) {
+                    Log.e("copyToDirectory", e.toString());
+                    return false;
+                }
+            } else {
+                try (OutputStream outputStream = new FileOutputStream(file)) {
+                    writeFile(inputStream,outputStream);
+                } catch (Exception e) {
+                    Log.e("copyToDirectory", e.toString());
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            Log.e("copyToDirectory", e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    private static void writeFile(InputStream inputStream, OutputStream outputStream ) {
+        try {
             byte[] buffer = new byte[1024];
+
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
+            outputStream.flush();
             outputStream.close();
             inputStream.close();
-            return true;
-        } catch (IOException e) {
-            //throw new RuntimeException(e);
-            return false;
+        } catch (Exception e){
+            Log.e("writeFile", e.toString());
         }
     }
 
