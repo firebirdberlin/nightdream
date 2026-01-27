@@ -135,11 +135,18 @@ public class Utility {
 
     public static void deleteDirectory(File fileOrDirectory) {
         if (fileOrDirectory == null) return;
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles()) {
-                Utility.deleteDirectory(child);
+        File[] files = fileOrDirectory.listFiles();
+        if(files != null) {
+            for (File file : files) {
+                Utility.deleteDirectory(file);
             }
-        fileOrDirectory.delete();
+        }
+
+        if (fileOrDirectory.delete()){
+            Log.d("deleteDirectory", "File or directory deleted:"+fileOrDirectory.getName());
+        } else {
+            Log.e("deleteDirectory", "File or Directory not deleted:"+fileOrDirectory.getName());
+        }
     }
 
     public static boolean copyToDirectory(Context context, Uri srcUri, File directory, String name) {
