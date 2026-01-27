@@ -5,12 +5,9 @@ Open-source clock, screensaver & radio with dynamic brightness & custom features
   <a href="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream">
     <img src="docs/google-play-badge.png" height="75" alt="Google Play">
   </a>
-
-  <a href="https://www.buymeacoffee.com/firebirdberlin">
-    <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=firebirdberlin&button_colour=000000&font_colour=ffffff&font_family=Bree&outline_colour=ffffff&coffee_colour=FFDD00" 
-    height="50" alt="Buy me a coffee">
-  </a>
 </div>
+
+[![Digital Clock & Night Clock Downloads](https://www.appbrain.com/shield/com.firebirdberlin.nightdream.svg)](https://www.appbrain.com/app/digital-clock-night-clock/com.firebirdberlin.nightdream)
 
 ![image](docs/demoxl.png)
 
@@ -45,6 +42,11 @@ Show current weather and a 5-day forecast from providers like OpenWeatherMap, Br
 
 ## Open Source & Donations
 Nightdream is free, open-source software. The source code is available for review. Support development through donations.
+
+<div style="text-align: center;">
+<a href="https://www.buymeacoffee.com/firebirdberlin"><img alt="Buy Me A Coffee" src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-firebirdberlin-orange?style=for-the-badge&logo=buymeacoffee" height="30"></a>
+<a href="https://github.com/sponsors/firebirdberlin"><img alt="GitHub Sponsors" src="https://img.shields.io/badge/GitHub%20Sponsors-firebirdberlin-purple?style=for-the-badge&logo=github" height="30"></a>
+</div>
 
 ## Permissions Explained
 * **FOREGROUND_SERVICE:** Play radio in the background.

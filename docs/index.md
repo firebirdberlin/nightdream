@@ -22,6 +22,8 @@ lang: en
   </a>
 </div>
 
+[![Digital Clock & Night Clock Downloads](https://www.appbrain.com/shield/com.firebirdberlin.nightdream.svg)](https://www.appbrain.com/app/digital-clock-night-clock/com.firebirdberlin.nightdream)
+
 Nightdream is a powerful **open-source desk clock** and versatile **screensaver (Daydream)**, perfect for both day and night use. The app features a **big digital clock** with auto-brightness, battery level, date, and notifications. The optimized night mode provides an extremely dark display (pure black on AMOLED) – making it the ideal **night clock** for your bedside table.
 
 ## Customizable Design & Big Clock
