@@ -1,0 +1,4 @@
+<b>Color Your Clock!</b> You can now personalize your digital clock with
+unique colors for hours, minutes, and seconds. We've also made a visual
+adjustment: seconds will now display at 50% of their original size for a
+fresh look.
