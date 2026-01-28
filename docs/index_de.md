@@ -22,6 +22,8 @@ lang: de
   </a>
 </div>
 
+[![Digital Clock & Night Clock Downloads](https://www.appbrain.com/shield/com.firebirdberlin.nightdream.svg)](https://www.appbrain.com/app/digital-clock-night-clock/com.firebirdberlin.nightdream)
+
 Nightdream ist eine leistungsstarke **Open-Source Tischuhr** (Desk Clock) und ein vielseitiger **Bildschirmschoner** (Daydream), perfekt für den Einsatz bei Tag und Nacht. Die App bietet eine **große Digitaluhr** mit automatischer Helligkeitsanpassung, Akkustand, Datum und Benachrichtigungen. Der optimierte Nachtmodus bietet ein extrem dunkles Display (echtes Schwarz auf AMOLED) – die ideale **Nachtuhr** für deinen Nachttisch.
 
 ## Individuelles Design & Große Uhr

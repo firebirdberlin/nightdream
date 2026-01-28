@@ -21,7 +21,6 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
      * [Die Oberfläche ist gesperrt](#die-oberfläche-ist-gesperrt)
      * [AM / PM-Anzeige funktioniert nicht richtig](#am--pm-anzeige-funktioniert-nicht-richtig)
      * [Benutzerdefinierte Schriftarten](#benutzerdefinierte-schriftarten)
-     * [Die Querformatausrichtung (Landscape) funktioniert nicht](#die-querformatausrichtung-landscape-funktioniert-nicht)
      * [Was bedeuten die Markierungen im Kalender?](#was-bedeuten-die-markierungen-im-kalender-)
   * [Wetter](#wetter)
      * [Wetter - Statuszeile](#wetter---statuszeile)
@@ -56,7 +55,7 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
      * [Bild](#bild)
         * [Werden animierte Gifs angezeigt?](#werden-animierte-gifs-angezeigt)
      * [Diashow](#diashow)
-        * [Welche Bilder werden in der Diashow angezeigt?](#welche-bilder-werden-in-der-diashow-angezeigt)
+        * [Welche Bilder werden in der Diashow angezeigt?](#welche-bilder werden-in-der-diashow-angezeigt)
         * [Wie kann eine Auswahl der Bilder vorgenommen werden?](#wie-kann-eine-auswahl-der-bilder-vorgenommen-werden)
         * [Wie kann auf einen Cloudspeicher zugegriffen werden?](#wie-kann-auf-einen-cloudspeicher-zugegriffen-werden)
         * [Beim Starten der App erscheint die Diashow mit Verzögerung](#beim-starten-der-app-erscheint-die-diashow-mit-verzögerung)
@@ -120,17 +119,6 @@ Navigieren Sie einfach zu Ihrem Download-Ordner und wählen Sie eine Datei, die 
 Quellen für kostenlose Schriftarten im Web sind z.B.:
 [fonts.google.com](https://fonts.google.com/) und
 [Font Squirrel](https://www.fontsquirrel.com/).
-
-### Die Querformatausrichtung (Landscape) funktioniert nicht
-
-Ab Android 5 haben Screensaver / Bildschirmschoner den Fehler, dass sich die Bildschirmausrichtung
-sofort zum Hochformat ändert, sobald die Bildschirmsperre aktiviert ist.
-
-* Lösung 1: Deaktivieren Sie den Screensaver vollständig (Systemeinstellungen> Anzeige>
-  Screensaver). Stattdessen
-  können Sie die Autostart-Funktion der App nach Ihren Wünschen einrichten.
-* Lösung 2: Versuchen Sie, "Einstellungen> Darstellung> Automatische Drehung im Screensaver
-  erzwingen" zu aktivieren.
 
 ### Was bedeuten die Markierungen im Kalender?
 
