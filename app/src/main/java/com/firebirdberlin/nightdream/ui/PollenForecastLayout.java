@@ -66,18 +66,32 @@ public class PollenForecastLayout extends ConstraintLayout {
     }
 
     public void setPollenStressLevel(int index) {
-        int pollenStressId = 0;
-        String pollenStress = "showPollenIndex" + index;
-        Log.d(TAG, "pollenkey: " + pollenStress);
-        Class resString = R.string.class;
-        Field field = null;
-        try {
-            field = resString.getField(pollenStress);
-            pollenStressId = field.getInt(null);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        int pollenStressId;
+        switch (index) {
+            case 0:
+                pollenStressId = R.string.showPollenIndex0;
+                break;
+            case 1:
+                pollenStressId = R.string.showPollenIndex1;
+                break;
+            case 2:
+                pollenStressId = R.string.showPollenIndex2;
+                break;
+            case 3:
+                pollenStressId = R.string.showPollenIndex3;
+                break;
+            case 4:
+                pollenStressId = R.string.showPollenIndex4;
+                break;
+            case 5:
+                pollenStressId = R.string.showPollenIndex5;
+                break;
+            case 6:
+                pollenStressId = R.string.showPollenIndex6;
+                break;
+            default:
+                Log.e(TAG, "Invalid pollen index: " + index);
+                return;
         }
 
         pollenStressLevel.setText(context.getString(pollenStressId));

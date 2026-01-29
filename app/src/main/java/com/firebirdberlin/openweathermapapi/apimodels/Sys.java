@@ -18,6 +18,9 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class Sys {
     private String pod;
 

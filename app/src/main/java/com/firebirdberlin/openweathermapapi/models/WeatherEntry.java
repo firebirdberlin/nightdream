@@ -22,6 +22,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import com.firebirdberlin.nightdream.Settings;
@@ -30,6 +31,7 @@ import com.google.gson.Gson;
 
 import org.shredzone.commons.suncalc.SunTimes;
 
+@Keep
 public class WeatherEntry {
     public static int REQUEST_INTERVAL = 60 * 60 * 1000; // 1 hour
     public static final int CELSIUS = 1;

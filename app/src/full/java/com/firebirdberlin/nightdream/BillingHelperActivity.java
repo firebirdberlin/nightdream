@@ -449,6 +449,10 @@ private String getProductWithPrice(int resId, String sku) {
     }
 
     void queryPurchases() {
+        if (Utility.isEmulator()) {
+            onPurchasesInitialized();
+            return;
+        }
         // Query for INAPP purchases
         mBillingClient.queryPurchasesAsync(
                 QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),

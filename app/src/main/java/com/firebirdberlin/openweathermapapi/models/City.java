@@ -18,12 +18,14 @@
 
 package com.firebirdberlin.openweathermapapi.models;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 
 import java.util.Objects;
 
+@Keep
 public class City {
 
     public int id = -1;

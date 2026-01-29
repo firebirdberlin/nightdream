@@ -18,9 +18,13 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
+import androidx.annotation.Keep;
+
 import com.firebirdberlin.openweathermapapi.models.City; // Import your existing City model
 import com.google.gson.annotations.SerializedName;
 
+
+@Keep
 public class ApiCity {
     private int id;
     private String name;

@@ -23,6 +23,8 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Keep;
+
 import com.firebirdberlin.HttpReader;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -145,6 +147,7 @@ public class BrightSkyApi {
         return new URL(url);
     }
 
+    @Keep
     public class Data {
         List<Source> sources;
         List<Weather> weather;
@@ -153,8 +156,8 @@ public class BrightSkyApi {
             return (
                     weather != null
                             && sources != null
-                            && weather.size() > 0
-                            && sources.size() > 0
+                            && !weather.isEmpty()
+                            && !sources.isEmpty()
             );
         }
 
@@ -195,7 +198,8 @@ public class BrightSkyApi {
         }
     }
 
-    class Source {
+    @Keep
+    static class Source {
         // commented fields are currently not in use
         int id;
         // String dwd_station_id;
@@ -208,7 +212,8 @@ public class BrightSkyApi {
         // int distance;
     }
 
-    class Weather {
+    @Keep
+    static class Weather {
         // commented fields are currently not in use
         String timestamp;
         int source_id;
