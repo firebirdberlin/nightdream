@@ -19,8 +19,6 @@
 #   public *;
 #}
 
--dontskipnonpubliclibraryclasses
--forceprocessing
 -optimizationpasses 5
 
 -keep class * extends android.app.Activity
@@ -35,19 +33,41 @@
 }
 
 
--keepattributes *Annotation*
+# keep classes with @Keep annotation
+-keep @androidx.annotation.Keep class * { *; }
+
 -keepclassmembers class * {
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+-keep class com.firebirdberlin.nightdream.events.** { *; }
+-keep class com.firebirdberlin.nightdream.models.** { *; }
 
--dontwarn android.support.v7.**
--keep class android.support.v7.** { *; }
--keep interface android.support.v7.** { *; }
+-keepattributes *Annotation*
+-keepattributes Signature,RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations
 
--ignorewarnings
--keep class * {
-    public private *;
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
 }
 
--keep class edu.umd.cs.findbugs.annotations.Nullable { *; }
+-keepclassmembers class * extends android.app.Activity {
+    public void *(android.view.View);
+}
+
+# Keep generated data binding classes
+-keep class * extends androidx.databinding.ViewDataBinding {
+    public <fields>;
+    public <methods>;
+}
+-keep class com.firebirdberlin.nightdream.databinding.** { *; }
+# Keep BindingAdapters
+-keep class * { @androidx.databinding.BindingAdapter <methods>; }
+
+
+# ProGuard rules for androidx.window library
+-keep class androidx.window.** { *; }
+-dontwarn androidx.window.extensions.**
+-dontwarn androidx.window.sidecar.**
+
+# ProGuard rules for findbugs annotations (referenced by suncalc)
+-dontwarn edu.umd.cs.findbugs.annotations.**

@@ -18,8 +18,9 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
-import java.util.List;
+import androidx.annotation.Keep;
 
+@Keep
 public class FindCityEntry {
     private int id;
     private String name;

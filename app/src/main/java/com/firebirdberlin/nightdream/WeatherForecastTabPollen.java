@@ -37,10 +37,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.firebirdberlin.nightdream.ui.PollenForecastLayout;
-import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 
-import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 public class WeatherForecastTabPollen extends Fragment {
@@ -55,6 +54,20 @@ public class WeatherForecastTabPollen extends Fragment {
             R.color.material_purple,
             R.color.material_red
     };
+    // Map to store Pollen Key -> String Resource ID
+    private static final Map<String, Integer> POLLEN_KEY_TO_STRING_RESOURCE_ID_MAP = new HashMap<String, Integer>() {
+        {
+            put("pollen_hazelnut", R.string.pollen_hazelnut);
+            put("pollen_birch", R.string.pollen_birch);
+            put("pollen_ambrosia", R.string.pollen_ambrosia);
+            put("pollen_grass", R.string.pollen_grass);
+            put("pollen_ash", R.string.pollen_ash);
+            put("pollen_mugwort", R.string.pollen_mugwort);
+            put("pollen_alder", R.string.pollen_alder);
+            put("pollen_rye", R.string.pollen_rye);
+        }
+    };
+
     private LinearLayout scrollViewLayout = null;
 
     @Override
@@ -100,20 +113,10 @@ public class WeatherForecastTabPollen extends Fragment {
 
                     Drawable herbDrawable = ContextCompat.getDrawable(context, resID);
 
-                    int pollenKeyId = 0;
-                    String pollenKey = "pollen_" + entrySet.getKey();
-                    Log.d(TAG, "pollenkey: " + pollenKey);
-                    Class resString = R.string.class;
-                    Field field;
-                    try {
-                        field = resString.getField(pollenKey);
-                        pollenKeyId = field.getInt(null);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d(TAG, "pollenKeyId: " + pollenKeyId);
+                    String pollenKeyName = "pollen_" + entrySet.getKey();
+                    Integer pollenKeyId = POLLEN_KEY_TO_STRING_RESOURCE_ID_MAP.get(pollenKeyName);
 
-                    if (herbDrawable != null && value != null) {
+                    if (herbDrawable != null && value != null && pollenKeyId != null) {
                         // the index may be "0-1", "1-2"
                         value = value.substring(value.length() - 1);
                         int index = Integer.parseInt(value);
@@ -130,6 +133,10 @@ public class WeatherForecastTabPollen extends Fragment {
                         pollenLayout.setPollenStressLevel(index);
 
                         scrollViewLayout.addView(pollenLayout);
+                    } else {
+                        if (herbDrawable == null) Log.w(TAG, "Drawable not found for icon: " + icon);
+                        if (value == null) Log.w(TAG, "Value is null for pollen key: " + entrySet.getKey());
+                        if (pollenKeyId == null) Log.w(TAG, "String resource ID not found for pollen key: " + pollenKeyName);
                     }
                 }
             }

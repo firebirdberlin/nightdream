@@ -67,13 +67,16 @@ public class ForecastRequestTask {
                     switch (weatherProvider) {
                         case BRIGHT_SKY:
                             weatherEntries = BrightSkyApi.fetchHourlyWeatherData(context, city);
+                            Log.d(TAG, "Fetched weather entries (BrightSky): " + (weatherEntries == null ? "null" : weatherEntries.size()));
                             break;
                         case MET_NO:
                             weatherEntries = MetNoApi.fetchHourlyWeatherData(context, city);
+                            Log.d(TAG, "Fetched weather entries (MetNo): " + (weatherEntries == null ? "null" : weatherEntries.size()));
                             break;
                         case OPEN_WEATHER_MAP:
                         default:
                             weatherEntries = OpenWeatherMapApi.fetchWeatherForecastApi(context, city);
+                            Log.d(TAG, "Fetched weather entries (OpenWeatherMap): " + (weatherEntries == null ? "null" : weatherEntries.size()));
                             break;
                     }
                 } catch (Exception e) {
@@ -82,6 +85,7 @@ public class ForecastRequestTask {
                     mainThreadHandler.post(() -> delegate.onRequestError(e));
                 }
 
+                Log.d(TAG, "Posting to delegate: " + (weatherEntries == null ? "null" : weatherEntries.size()) + " entries.");
                 final List<WeatherEntry> finalWeatherEntries = weatherEntries;
                 mainThreadHandler.post(() -> delegate.onRequestFinished(finalWeatherEntries));
             });

@@ -18,8 +18,11 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
+import androidx.annotation.Keep;
+
 import com.google.gson.annotations.SerializedName;
 
+@Keep
 public class Main {
     private double temp;
     @SerializedName("feels_like")
