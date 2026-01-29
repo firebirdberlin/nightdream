@@ -230,7 +230,11 @@ public class WeatherForecastActivity
             }
             actionBarSetup(cityName);
         }
-        ((WeatherForecastTabWeather) adapter.getItem(0)).onRequestFinished(entries, settings);
+        try {
+            ((WeatherForecastTabWeather) adapter.getItem(0)).onRequestFinished(entries, settings);
+        } catch (ClassCastException e) {
+            Log.e(TAG, "ClaascastException e");
+        }
 
     }
 
@@ -419,7 +423,9 @@ public class WeatherForecastActivity
     }
 
     void requestWeather(City city) {
-
+        if (!isPurchased(PurchaseManager.ITEM_WEATHER_DATA)) {
+            return;
+        }
         if (city != null) {
             new ForecastRequestTask(this, settings.getWeatherProvider(), this).execute(city.toJson());
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
