@@ -18,8 +18,11 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
+import androidx.annotation.Keep;
+
 import com.google.gson.annotations.SerializedName;
 
+@Keep
 public class Snow {
     @SerializedName("1h")
     private Double volume1h; // Use Double (object type) to allow null if not present

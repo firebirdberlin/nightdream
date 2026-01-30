@@ -22,6 +22,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Keep;
+
 import com.firebirdberlin.HttpReader;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.City;
@@ -40,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+@Keep
 public class MetNoApi {
     public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.met.no/weatherapi/locationforecast/2.0/";
@@ -126,6 +129,7 @@ public class MetNoApi {
         return new URL(url);
     }
 
+    @Keep
     public static class Data {
         Geometry geometry;
         Properties properties;
@@ -162,19 +166,23 @@ public class MetNoApi {
         }
     }
 
+    @Keep
     static class Geometry {
         String type;
         List<Float> coordinates;
     }
 
+    @Keep
     static class Properties {
         Meta meta;
         List<TimeSeries> timeseries;
 
+        @Keep
         static class Meta {
             String updated_at;
             Units units;
 
+            @Keep
             static class Units {
                 String air_pressure_at_sea_level;
                 String air_temperature;
@@ -186,6 +194,7 @@ public class MetNoApi {
             }
         }
 
+        @Keep
         static class TimeSeries {
             String time;
             Data data;
@@ -305,14 +314,17 @@ public class MetNoApi {
                 return "";
             }
 
+            @Keep
             static class Data {
                 Instant instant;
                 Next_1_hours next_1_hours;
                 Next_6_hours next_6_hours;
 
+                @Keep
                 static class Instant {
                     Details details;
 
+                    @Keep
                     static class Details {
                         float air_pressure_at_sea_level;
                         float air_temperature;
@@ -323,15 +335,18 @@ public class MetNoApi {
                     }
                 }
 
+                @Keep
                 static class Next_1_hours {
                     Summary summary;
                     Details details;
 
+                    @Keep
                     static class Summary {
                         String symbol_code;
 
                     }
 
+                    @Keep
                     static class Details {
                         float precipitation_amount;
                         float precipitation_amount_max;
@@ -340,14 +355,17 @@ public class MetNoApi {
                         float probability_of_thunder;
                     }
                 }
+                @Keep
                 static class Next_6_hours {
                     Summary summary;
                     Details details;
 
+                    @Keep
                     static class Summary {
                         String symbol_code;
                     }
 
+                    @Keep
                     static class Details {
                         float precipitation_amount;
                         float precipitation_amount_max;
