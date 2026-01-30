@@ -18,8 +18,11 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
+import androidx.annotation.Keep;
+
 import java.util.List;
 
+@Keep
 public class OpenWeatherMapFindCityResponse {
     private String message;
     private String cod;

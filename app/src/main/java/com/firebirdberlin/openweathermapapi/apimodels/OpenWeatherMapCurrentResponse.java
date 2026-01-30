@@ -18,9 +18,12 @@
 
 package com.firebirdberlin.openweathermapapi.apimodels;
 
+import androidx.annotation.Keep;
+
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+@Keep
 public class OpenWeatherMapCurrentResponse {
     private ApiCoord coord;
     private List<Weather> weather;

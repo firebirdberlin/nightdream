@@ -94,7 +94,7 @@ public class PurchaseManager {
         if (BuildConfig.FLAVOR == "noGms") {
             return true;
         }
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || Utility.isEmulator()) {
             return true;
         }
 
