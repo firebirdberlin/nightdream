@@ -18,14 +18,12 @@
 
 package com.firebirdberlin.nightdream.ui;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -39,7 +37,6 @@ import com.firebirdberlin.nightdream.R;
 
 import java.util.Calendar;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CustomDigitalAnimClock extends LinearLayout {
 
     private static final String TAG = "CustomDigitalAnimClock";
