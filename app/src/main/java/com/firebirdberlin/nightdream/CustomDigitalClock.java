@@ -135,9 +135,9 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
         String currentTimeString = simpleDateFormat.format(mCalendar.getTime());
         if (currentTimeString.contains(":")) {
-            hourColor = (hourColor == -1) ? primaryColor : hourColor;
-            minuteColor = (minuteColor == -1) ? primaryColor : minuteColor;
-            secondColor = (secondColor == -1) ? primaryColor : secondColor;
+            int hourColor = (this.hourColor == -1) ? primaryColor : this.hourColor;
+            int minuteColor = (this.minuteColor == -1) ? primaryColor : this.minuteColor;
+            int secondColor = (this.secondColor == -1) ? primaryColor : this.secondColor;
 
             String hourStr = "";
             String minuteStr = "";
@@ -338,6 +338,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         Log.d("CustomDigitalClock", "setTextColor called with color: " + color);
         this.primaryColor = color;
         super.setTextColor(color);
+        updateTextView();
     }
 
     // Setters for colors

@@ -35,6 +35,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import java.util.Calendar;
+
 public class PreferencesActivity extends BillingHelperActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
@@ -265,8 +267,39 @@ public class PreferencesActivity extends BillingHelperActivity
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
+
+        new Handler().postDelayed(this::checkForReviewRequest, 100);
     }
 
+    private void checkForReviewRequest() {
+        long lastReviewRequestTime = Settings.getLastReviewRequestTime(this);
+
+        // Check if lastReviewRequestTime is more than 30 days ago
+        Calendar lastRequestCal = Calendar.getInstance();
+        lastRequestCal.setTimeInMillis(lastReviewRequestTime);
+        Calendar thirtyDaysAgo = Calendar.getInstance();
+        thirtyDaysAgo.add(Calendar.DAY_OF_YEAR, -30);
+
+        if (lastReviewRequestTime > -1L && lastRequestCal.after(thirtyDaysAgo)) {
+            Log.d(TAG, "Skipping review request: last review was within 30 days.");
+            return; // Don't ask for review if it was within the last 30 days
+        }
+
+        // check if the app is installed for at least 10 days
+        long firstInstallTime = Utility.getFirstInstallTime(this);
+        Log.i(TAG, "First install time: " + firstInstallTime);
+        Calendar install_time = Calendar.getInstance();
+        install_time.setTimeInMillis(firstInstallTime);
+
+        Calendar ten_days_ago = Calendar.getInstance();
+        int currentHour = ten_days_ago.get(Calendar.HOUR_OF_DAY);
+        ten_days_ago.add(Calendar.DAY_OF_YEAR, -10);
+
+        if (install_time.before(ten_days_ago) && currentHour >= 16) {
+            ReviewApi.askForReview(this);
+            Settings.saveLastReviewRequestTime(this, Calendar.getInstance().getTimeInMillis());
+        }
+    }
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         Log.d(TAG, "onConfigurationChanged()");

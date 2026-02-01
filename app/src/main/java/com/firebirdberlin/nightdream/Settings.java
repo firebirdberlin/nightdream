@@ -196,7 +196,7 @@ public class Settings {
     public int clockLayout;
     boolean autostartForNotifications = true;
     public boolean showBattery = true;
-    boolean showBatteryWarning = true;
+    boolean showBatteryWarning = false;
     int batteryTimeout = 5;
     SharedPreferences settings;
     private int background_mode = BACKGROUND_BLACK;
@@ -511,7 +511,7 @@ public class Settings {
         sensitivity = 10 - settings.getInt("NoiseSensitivity", 4);
 
         showBattery = settings.getBoolean("showBattery", true);
-        showBatteryWarning = settings.getBoolean("showBatteryWarning", true);
+        showBatteryWarning = settings.getBoolean("showBatteryWarning", false);
         showDate = settings.getBoolean("showDate", true);
         showWeather = settings.getBoolean("showWeather", false);
         showApparentTemperature = settings.getBoolean("showApparentTemperature", false);
@@ -1063,6 +1063,18 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
         prefEditor.apply();
+    }
+
+    public static Long getLastReviewRequestTime(Context context) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, 0);
+        return settings.getLong("lastReviewRequestTime", -1L);
+    }
+
+    public static void saveLastReviewRequestTime(Context context, long reviewRequestTime) {
+        SharedPreferences settings = context.getSharedPreferences(PREFS_KEY, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong("lastReviewRequestTime", reviewRequestTime);
+        editor.apply();
     }
 
     public void setSleepTimeInMinutesDefaultValue(int sleepTimeInMinutes) {

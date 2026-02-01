@@ -64,7 +64,7 @@
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
             app:allowDividerBelow="true"
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:key="showBatteryWarning"
             app:summary="@string/showBatteryWarningSummary"
             app:title="@string/showBatteryWarningTitle" />
