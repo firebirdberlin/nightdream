@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <!-- Dangerous and Special Permissions: Require runtime user approval -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -127,6 +128,13 @@
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="To monitor the device's state and start the app's main functionality." />
+        </service>
+
+        <service
+            android:name=".services.ImageCopyService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:enabled="true" >
         </service>
 
         <activity

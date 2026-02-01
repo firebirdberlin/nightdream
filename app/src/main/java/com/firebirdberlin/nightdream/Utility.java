@@ -869,6 +869,18 @@ public class Utility {
             );
             notificationManager.createNotificationChannel(channelServices);
         }
+
+        NotificationChannel channelCopyImages = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_COPYMSG);
+        if (channelCopyImages == null) {
+            channelCopyImages = prepareNotificationChannel(
+                    context,
+                    Config.NOTIFICATION_CHANNEL_ID_SERVICES,
+                    R.string.notification_channel_name_copy_images,
+                    R.string.notification_channel_desc_copy_images,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channelCopyImages);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

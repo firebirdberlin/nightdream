@@ -18,12 +18,15 @@
 
 package com.firebirdberlin.nightdream;
 
+import static androidx.core.app.ActivityCompat.requestPermissions;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -32,6 +35,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
@@ -48,7 +52,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -58,12 +61,13 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebirdberlin.nightdream.models.PrefCopyImages;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
+import com.firebirdberlin.nightdream.services.ImageCopyService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.ClockLayoutPreviewPreference;
-import com.firebirdberlin.nightdream.ui.CustomCalendarClockPreferencesLayout;
 import com.firebirdberlin.nightdream.util.DevicePolicyWrapper;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
@@ -76,6 +80,28 @@ import java.util.Vector;
 import de.firebirdberlin.preference.InlineSeekBarPreference;
 
 public class PreferencesFragment extends PreferenceFragmentCompat {
+    private Intent intentImageCopyService;
+
+    private ImageCopyService copyService;
+    private boolean bound = false;
+
+    private final ServiceConnection copyServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            Log.d(TAG, "ServiceConnection");
+            ImageCopyService.LocalBinder b = (ImageCopyService.LocalBinder) binder;
+            copyService = b.getService();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
+
+    private PrefCopyImages viewModel;
+
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
     private final Handler handler = new Handler();
@@ -271,22 +297,13 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
                     PreferencesActivity activity = ((PreferencesActivity) mContext);
 
-                    //Copy images in the background
-                    new Thread(() -> {
-                        // do background stuff here
-                        int count = 0;
-                        for (Uri uri: uris) {
-                            count += 1;
-                            String name = "image_" + count + ".jpg";
-                            Utility.copyToDirectory(mContext, uri, directory, name);
-                            Log.d("PhotoPicker", "Copy Image: "+count+" / "+uris.size());
-                        }
-
-                        activity.runOnUiThread(() -> {
-                            // OnPostExecute stuff here
-                            Log.d("PhotoPicker", "All images processed");
-                        });
-                    }).start();
+                    //Use the copying service
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mContext.startForegroundService(intentImageCopyService);
+                    } else {
+                        mContext.startService(intentImageCopyService);
+                    }
+                    copyService.copyImages(activity, uris, directory);
 
                 } else {
                     Log.d("PhotoPicker", "No media selected");
@@ -333,6 +350,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        intentImageCopyService = new Intent(mContext, ImageCopyService.class);
+
+        //Bind service
+        mContext.bindService(intentImageCopyService, copyServiceConnection, Context.BIND_AUTO_CREATE);
+        Log.d(TAG, "Bind Service");
     }
 
     @Override
@@ -602,6 +625,23 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
             Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
             if (chooseDirectory != null) {
+
+                Log.d(TAG,"chooseDirectory != null");
+
+                PrefCopyImages.getInstance().getImageCopyServiceStatus().observe(this, serviceStatus-> {
+                    Log.d(TAG,"serviceStatus: "+serviceStatus);
+                    if (serviceStatus) {
+                        PrefCopyImages.getInstance().getImageProcessed().observe(this, imageProcessed -> {
+                            chooseDirectory.setSummary(getString(R.string.copy_images, imageProcessed, PrefCopyImages.getInstance().getImageUriSize().getValue()));
+                            chooseDirectory.setEnabled(false);
+                        });
+                    }
+                    else {
+                        chooseDirectory.setSummary("");
+                        chooseDirectory.setEnabled(true);
+                    }
+                });
+
                 chooseDirectory.setOnPreferenceClickListener(preference -> {
                     pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
                             .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
