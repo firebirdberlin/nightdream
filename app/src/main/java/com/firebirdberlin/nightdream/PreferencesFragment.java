@@ -18,8 +18,6 @@
 
 package com.firebirdberlin.nightdream;
 
-import static androidx.core.app.ActivityCompat.requestPermissions;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -61,7 +59,7 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebirdberlin.nightdream.models.PrefCopyImages;
+import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ImageCopyService;
@@ -100,7 +98,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
     };
 
-    private PrefCopyImages viewModel;
+    private CopyImagesDataHolder viewModel;
 
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
@@ -628,11 +626,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
                 Log.d(TAG,"chooseDirectory != null");
 
-                PrefCopyImages.getInstance().getImageCopyServiceStatus().observe(this, serviceStatus-> {
+                CopyImagesDataHolder.getInstance().getImageCopyServiceStatus().observe(this, serviceStatus-> {
                     Log.d(TAG,"serviceStatus: "+serviceStatus);
                     if (serviceStatus) {
-                        PrefCopyImages.getInstance().getImageProcessed().observe(this, imageProcessed -> {
-                            chooseDirectory.setSummary(getString(R.string.copy_images, imageProcessed, PrefCopyImages.getInstance().getImageUriSize().getValue()));
+                        CopyImagesDataHolder.getInstance().getImageProcessed().observe(this, imageProcessed -> {
+                            chooseDirectory.setSummary(getString(R.string.copy_images, imageProcessed, CopyImagesDataHolder.getInstance().getImageUriSize().getValue()));
                             chooseDirectory.setEnabled(false);
                         });
                     }

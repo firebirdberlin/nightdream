@@ -5,22 +5,22 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class PrefCopyImages{
+public class CopyImagesDataHolder {
 
-    private static final String TAG = "PrefCopyImages";
-    private static PrefCopyImages instance;
+    private static final String TAG = "CopyImagesDataHolder";
+    private static CopyImagesDataHolder instance;
     private final MutableLiveData<Integer> imageProcessed = new MutableLiveData<>();
     private final MutableLiveData<Boolean> imageCopyServiceStatus = new MutableLiveData<>();
     private final MutableLiveData<Integer> imageUriSize = new MutableLiveData<>();
 
-    public PrefCopyImages() {
+    public CopyImagesDataHolder() {
         imageProcessed.postValue(0);
         imageCopyServiceStatus.postValue(false);
         imageUriSize.postValue(0);
     }
 
-    public static synchronized PrefCopyImages getInstance() {
-        if (instance == null) instance = new PrefCopyImages();
+    public static synchronized CopyImagesDataHolder getInstance() {
+        if (instance == null) instance = new CopyImagesDataHolder();
         return instance;
     }
 

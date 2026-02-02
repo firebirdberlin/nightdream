@@ -1,12 +1,10 @@
 package com.firebirdberlin.nightdream.services;
 
-import android.Manifest;
 import android.app.ForegroundServiceStartNotAllowedException;
 
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Binder;
@@ -14,16 +12,14 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.ServiceCompat;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.models.PrefCopyImages;
+import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
 
 import java.io.File;
 import java.util.List;
@@ -92,17 +88,17 @@ public class ImageCopyService extends Service {
 
             imageProcessed = 0;
             urisSize = uris.size();
-            PrefCopyImages.getInstance().updateImageUriSize(urisSize);
+            CopyImagesDataHolder.getInstance().updateImageUriSize(urisSize);
 
             //Copy images in the background
             new Thread(() -> {
                 // do background stuff here
                 running = true;
-                PrefCopyImages.getInstance().updateImageCopyServiceStatus(running);
+                CopyImagesDataHolder.getInstance().updateImageCopyServiceStatus(running);
 
                 for (Uri uri : uris) {
                     imageProcessed += 1;
-                    PrefCopyImages.getInstance().updateImageProcessed(imageProcessed);
+                    CopyImagesDataHolder.getInstance().updateImageProcessed(imageProcessed);
                     String name = "image_" + imageProcessed + ".jpg";
                     Utility.copyToDirectory(mContext, uri, directory, name);
 
@@ -111,7 +107,7 @@ public class ImageCopyService extends Service {
                 // OnPostExecute stuff here
                 Log.d(TAG, "All images processed");
                 running = false;
-                PrefCopyImages.getInstance().updateImageCopyServiceStatus(running);
+                CopyImagesDataHolder.getInstance().updateImageCopyServiceStatus(running);
             }).start();
         } catch (Exception ex) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
