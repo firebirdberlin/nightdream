@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.services;
 
 import android.app.ForegroundServiceStartNotAllowedException;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
@@ -61,11 +62,9 @@ public class ImageCopyService extends Service {
     }
 
     public void copyImages(PreferencesActivity mContext, List<Uri> uris, File directory) {
-        NotificationManager notificationManager;
 
         try {
-
-            NotificationCompat.Builder notification =
+            Notification notification =
                     new NotificationCompat.Builder(this, Config.NOTIFICATION_CHANNEL_ID_COPYMSG)
                             // Create the notification to display while the service
                             // is running
@@ -73,7 +72,8 @@ public class ImageCopyService extends Service {
                             .setAutoCancel(true)
                             .setContentTitle(getString(R.string.app_name))
                             .setContentText(getString(R.string.images_background_copy))
-                            .setSmallIcon(R.drawable.ic_clock);
+                            .setSmallIcon(R.drawable.ic_clock)
+                            .build();
 
             int type = 0;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -83,7 +83,7 @@ public class ImageCopyService extends Service {
             ServiceCompat.startForeground(
                     /* service = */ this,
                     /* id = */ 100, // Cannot be 0
-                    /* notification = */ notification.build(),
+                    /* notification = */ notification,
                     /* foregroundServiceType = */ type);
 
             imageProcessed = 0;
@@ -113,7 +113,6 @@ public class ImageCopyService extends Service {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
                     ex instanceof ForegroundServiceStartNotAllowedException) {
                 Log.e(TAG, ex.toString());
-
             }
         }
         stopSelf();
