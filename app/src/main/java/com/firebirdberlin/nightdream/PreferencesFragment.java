@@ -80,13 +80,13 @@ import de.firebirdberlin.preference.InlineSeekBarPreference;
 public class PreferencesFragment extends PreferenceFragmentCompat {
     private Intent intentImageCopyService;
 
-    private ImageCopyService copyService;
+    private ImageCopyService copyService = null;
     private boolean bound = false;
 
     private final ServiceConnection copyServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            Log.d(TAG, "ServiceConnection");
+            Log.d(TAG, "onServiceConnected");
             ImageCopyService.LocalBinder b = (ImageCopyService.LocalBinder) binder;
             copyService = b.getService();
             bound = true;
@@ -94,11 +94,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected");
+            copyService = null;
             bound = false;
         }
     };
-
-    private CopyImagesDataHolder viewModel;
 
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
@@ -293,15 +293,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     File directory = new File(mContext.getFilesDir() + "/backgroundImages");
                     Utility.prepareDirectory(directory);
 
-                    PreferencesActivity activity = ((PreferencesActivity) mContext);
+                    //Binding a service is asynchronous, therefore we need to check this
+                    if (bound && copyService != null) {
+                        PreferencesActivity activity = ((PreferencesActivity) mContext);
 
-                    //Use the copying service
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        mContext.startForegroundService(intentImageCopyService);
+                        //Start the copying service
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            mContext.startForegroundService(intentImageCopyService);
+                        } else {
+                            mContext.startService(intentImageCopyService);
+                        }
+
+                        //Start copying images
+                        copyService.copyImages(activity, uris, directory);
                     } else {
-                        mContext.startService(intentImageCopyService);
+                        Log.e(TAG, "Service not bound. Bound: "+bound+" copyService: "+copyService);
+                        Toast.makeText(getActivity(), getString(R.string.images_background_service_unbound),
+                                Toast.LENGTH_LONG).show();
                     }
-                    copyService.copyImages(activity, uris, directory);
 
                 } else {
                     Log.d("PhotoPicker", "No media selected");
@@ -351,9 +360,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         intentImageCopyService = new Intent(mContext, ImageCopyService.class);
 
-        //Bind service
-        mContext.bindService(intentImageCopyService, copyServiceConnection, Context.BIND_AUTO_CREATE);
-        Log.d(TAG, "Bind Service");
+        //Bind ImageCopyService
+        if(mContext.bindService(intentImageCopyService, copyServiceConnection, Context.BIND_AUTO_CREATE)){
+            Log.d(TAG, "Bind Service successful");
+        } else {
+            Log.d(TAG, "Bind Service failed");
+        }
     }
 
     @Override
@@ -374,6 +386,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         try {
             mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
         } catch (IllegalArgumentException | NullPointerException ignored) {
@@ -560,7 +573,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onPause() {
         super.onPause();
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+        if (prefs != null) {
+            prefs.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+        }
     }
 
     @Override
@@ -624,8 +639,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
             if (chooseDirectory != null) {
 
-                Log.d(TAG,"chooseDirectory != null");
-
                 CopyImagesDataHolder.getInstance().getImageCopyServiceStatus().observe(this, serviceStatus-> {
                     Log.d(TAG,"serviceStatus: "+serviceStatus);
                     if (serviceStatus) {
@@ -646,6 +659,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             .build());
                     return true;
                 });
+            } else{
+                Log.e(TAG,"Preference chooseDirectory is null");
             }
         } else if ("brightness".equals(rootKey)) {
             setupBrightnessControls(prefs);
