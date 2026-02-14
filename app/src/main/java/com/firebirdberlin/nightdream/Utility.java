@@ -57,13 +57,13 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings.System;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -76,11 +76,12 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.exifinterface.media.ExifInterface;
@@ -812,6 +813,18 @@ public class Utility {
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
         return note;
     }
+    public static boolean checkNotificationChannel(Context context, @Nullable String channelId){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(!TextUtils.isEmpty(channelId)) {
+                NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationChannel channel = manager.getNotificationChannel(channelId);
+                return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+            }
+            return false;
+        } else {
+            return NotificationManagerCompat.from(context).areNotificationsEnabled();
+        }
+    }
 
     public static void createNotificationChannels(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -870,17 +883,6 @@ public class Utility {
             notificationManager.createNotificationChannel(channelServices);
         }
 
-        NotificationChannel channelCopyImages = notificationManager.getNotificationChannel(Config.NOTIFICATION_CHANNEL_ID_COPYMSG);
-        if (channelCopyImages == null) {
-            channelCopyImages = prepareNotificationChannel(
-                    context,
-                    Config.NOTIFICATION_CHANNEL_ID_SERVICES,
-                    R.string.notification_channel_name_copy_images,
-                    R.string.notification_channel_desc_copy_images,
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            notificationManager.createNotificationChannel(channelCopyImages);
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

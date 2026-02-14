@@ -193,6 +193,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="ignoreBatteryOptimisation_summary">Es wird empfohlen, die App von der Akkuoptimierung auszuschließen.</string>
     <string name="inner_circle_radius">Radius des inneren Kreises</string>
     <string name="images_background_copy">Verarbeite Bilder im Hintergrund</string>
+    <string name="images_background_service_unbound">Fehler beim Verarbeiten der Bilder. Bitte probieren Sie es noch einmal.</string>
     <string name="length">Länge</string>
     <string name="location_time">Zeit der letzten Standortbestimmung</string>
     <string name="mailing_list">Öffentliche Mailingliste</string>

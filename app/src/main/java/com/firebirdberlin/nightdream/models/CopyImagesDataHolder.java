@@ -24,29 +24,33 @@ public class CopyImagesDataHolder {
         return instance;
     }
 
-    public void updateImageProcessed(Integer newData) {
-        Log.d(TAG,"imageProcessed changed: "+newData);
-        imageProcessed.postValue(newData); // from thread to service
+    public void updateImageProcessed(Integer intProcessedImages) {
+        Log.d(TAG,"imageProcessed changed: "+intProcessedImages);
+        imageProcessed.postValue(intProcessedImages); // from thread to service
     }
 
-    public void updateImageCopyServiceStatus(Boolean newData) {
-        Log.d(TAG,"imageCopyServiceStatus changed: "+newData);
-        imageCopyServiceStatus.postValue(newData); // from thread to service
+    public void updateImageCopyServiceStatus(Boolean boolImageCopyServiceStatus) {
+        Log.d(TAG,"imageCopyServiceStatus changed: "+boolImageCopyServiceStatus);
+        imageCopyServiceStatus.postValue(boolImageCopyServiceStatus); // from thread to service
     }
 
-    public void updateImageUriSize(Integer newData) {
-        Log.d(TAG,"updateImageUriSize changed: "+newData);
-        imageUriSize.postValue(newData); // from thread to service
+    public void updateImageUriSize(Integer intImageUriSize) {
+        Log.d(TAG,"updateImageUriSize changed: "+intImageUriSize);
+        imageUriSize.postValue(intImageUriSize); // from thread to service
     }
 
+    //Returns the number of currently processed images
     public LiveData<Integer> getImageProcessed() {
         return imageProcessed;
     }
 
+    //Returns the status of the Service
+    //@return: true = running, false = not running
     public LiveData<Boolean> getImageCopyServiceStatus() {
         return imageCopyServiceStatus;
     }
 
+    //Returns the maximum number of images to be processed.
     public LiveData<Integer> getImageUriSize() {
         return imageUriSize;
     }
