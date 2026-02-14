@@ -31,6 +31,8 @@ public class ImageCopyService extends Service {
     private int imageProcessed = 0;
     private int urisSize = 0;
     private boolean running = false;
+    private Notification notification;
+    private int type = 0;
 
     public class LocalBinder extends Binder {
         public ImageCopyService getService() {
@@ -40,43 +42,58 @@ public class ImageCopyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG,"A client is binding to the service with bindService()");
         return binder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG,"All clients have unbound with unbindService()");
+        return true;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Create the notification to display while the service is running
+        notification =
+                new NotificationCompat.Builder(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
+                        .setOngoing(true)
+                        .setAutoCancel(true)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(getString(R.string.images_background_copy))
+                        .setSmallIcon(R.drawable.ic_clock)
+                        .build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            type = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+        }
     }
 
+    //Returns the status of the Service
+    //@return: true = running, false = not running
     public boolean getStatus() {
         return running;
     }
 
+    //Returns the number of currently processed images
     public int getImageProcessed() {
         return imageProcessed;
     }
 
+    //Returns the maximum number of images to be processed.
     public int getUrisSize() {
         return urisSize;
     }
 
     public void copyImages(PreferencesActivity mContext, List<Uri> uris, File directory) {
-
         try {
-            Notification notification =
-                    new NotificationCompat.Builder(this, Config.NOTIFICATION_CHANNEL_ID_COPYMSG)
-                            // Create the notification to display while the service
-                            // is running
-                            .setOngoing(true)
-                            .setAutoCancel(true)
-                            .setContentTitle(getString(R.string.app_name))
-                            .setContentText(getString(R.string.images_background_copy))
-                            .setSmallIcon(R.drawable.ic_clock)
-                            .build();
 
-            int type = 0;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                type = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+            //Checking if the channel is created.
+            boolean checkNotificationChannel = Utility.checkNotificationChannel(mContext, Config.NOTIFICATION_CHANNEL_ID_SERVICES);
+            if (!checkNotificationChannel){
+                Log.e(TAG, "NotificationChannel not found");
             }
 
             ServiceCompat.startForeground(
@@ -107,6 +124,10 @@ public class ImageCopyService extends Service {
                 Log.d(TAG, "All images processed");
                 running = false;
                 CopyImagesDataHolder.getInstance().updateImageCopyServiceStatus(running);
+
+                Log.d(TAG, "Work done. stopForeground + stopSelf");
+                stopForeground(true);
+                stopSelf();
             }).start();
         } catch (Exception ex) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -114,11 +135,11 @@ public class ImageCopyService extends Service {
                 Log.e(TAG, ex.toString());
             }
         }
-        stopSelf();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "The service is no longer used and is being destroyed");
     }
 }
