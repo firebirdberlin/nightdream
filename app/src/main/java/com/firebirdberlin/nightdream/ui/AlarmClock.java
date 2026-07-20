@@ -61,16 +61,27 @@ public class AlarmClock extends RelativeLayout {
     private SimpleTime currentlyActiveAlarm = null;
     private NightDreamBroadcastReceiver broadcastReceiver = null;
 
+    public AlarmClock(Context context) {
+        super(context);
+        alarmTimeTextView = new TextView(context); // initialize here to avoid final variable error
+        init(null);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public AlarmClock(Context context, AttributeSet attrs) {
         super(context, attrs);
+        alarmTimeTextView = new TextView(context); // initialize here to avoid final variable error
+        init(attrs);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void init(AttributeSet attrs) {
         setClipChildren(false);
         initColorFilters();
 
-        alarmClockView = new AlarmClockView(context, attrs);
+        alarmClockView = new AlarmClockView(getContext(), attrs);
         LayoutParams layoutAlarmClockView = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-        alarmTimeTextView = new TextView(context);
         alarmTimeTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         alarmTimeTextView.setMarqueeRepeatLimit(-1);
         alarmTimeTextView.setHorizontallyScrolling(true);
@@ -139,7 +150,7 @@ public class AlarmClock extends RelativeLayout {
                         ) {
                             //skip next alarm
                             if (currentlyActiveAlarm != null) {
-                                SqliteIntentService.skipAlarm(context, currentlyActiveAlarm);
+                                SqliteIntentService.skipAlarm(getContext(), currentlyActiveAlarm);
                             }
                         } else if (
                                 now - timestampDown < 300

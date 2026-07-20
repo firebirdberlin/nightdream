@@ -109,12 +109,16 @@ public class WebRadioLayout extends RelativeLayout {
     public WebRadioLayout(Context context) {
         super(context);
         this.context = context;
+        init(null);
     }
 
     public WebRadioLayout(final Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        init(attrs);
+    }
 
+    private void init(AttributeSet attrs) {
         settings = new Settings(context);
         stations = settings.getFavoriteRadioStations();
 

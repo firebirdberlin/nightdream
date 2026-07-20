@@ -68,10 +68,19 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     private boolean running = false;
     final private Handler handler = new Handler();
 
+    public Ticker(Context context) {
+        super(context);
+        this.context = context;
+        init(null);
+    }
+
     public Ticker(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        init(attrs);
+    }
 
+    private void init(AttributeSet attrs) {
         GradientDrawable background = new GradientDrawable();
         background.setColor(Color.parseColor("#AA212121"));
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});

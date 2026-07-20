@@ -61,8 +61,8 @@ public class AlarmClockView extends View {
     private final Context ctx;
     private final Paint paint = new Paint();
     private final Rect alarmTimeRect = new Rect(0, 0, 0, 0);
-    private final HotCorner cornerLeft;
-    private final HotCorner cornerRight;
+    private HotCorner cornerLeft;
+    private HotCorner cornerRight;
     public int touch_zone_radius = 150;
     public int quiet_zone_size = 60;
     SimpleTime time = null;
@@ -98,11 +98,20 @@ public class AlarmClockView extends View {
     private float lastHourX = -1;
     private int lastHour = -1;
 
+    public AlarmClockView(Context context) {
+        super(context);
+        this.ctx = context;
+        init(null);
+    }
+
     public AlarmClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
+        init(attrs);
+    }
 
-        mGestureDetector = new GestureDetector(context, mSimpleOnGestureListener);
+    private void init(AttributeSet attrs) {
+        mGestureDetector = new GestureDetector(ctx, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
         cornerLeft.setIconResource(getResources(), R.drawable.ic_alarm_clock);
         cornerRight = new HotCorner(Position.RIGHT);
