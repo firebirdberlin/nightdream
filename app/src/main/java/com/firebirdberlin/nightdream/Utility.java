@@ -878,7 +878,7 @@ public class Utility {
                     Config.NOTIFICATION_CHANNEL_ID_SERVICES,
                     R.string.notification_channel_name_services,
                     R.string.notification_channel_desc_services,
-                    NotificationManager.IMPORTANCE_MIN
+                    NotificationManager.IMPORTANCE_LOW
             );
             notificationManager.createNotificationChannel(channelServices);
         }

@@ -295,7 +295,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
                     //Binding a service is asynchronous, therefore we need to check this
                     if (bound && copyService != null) {
-                        PreferencesActivity activity = ((PreferencesActivity) mContext);
 
                         //Start the copying service
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -305,7 +304,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                         }
 
                         //Start copying images
-                        copyService.copyImages(activity, uris, directory);
+                        copyService.copyImages(uris, directory);
                     } else {
                         Log.e(TAG, "Service not bound. Bound: "+bound+" copyService: "+copyService);
                         Toast.makeText(getActivity(), getString(R.string.images_background_service_unbound),
@@ -386,6 +385,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (bound) {
+            mContext.unbindService(copyServiceConnection);
+            bound = false;
+        }
 
         try {
             mContext.getContentResolver().unregisterContentObserver(daydreamSettingsObserver);
