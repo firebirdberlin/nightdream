@@ -16,7 +16,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 
 import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
@@ -87,11 +86,16 @@ public class ImageCopyService extends Service {
         return urisSize;
     }
 
-    public void copyImages(PreferencesActivity mContext, List<Uri> uris, File directory) {
+    public void copyImages(List<Uri> uris, File directory) {
+        if (running) {
+            Log.d(TAG, "copyImages: already running, ignoring request");
+            return;
+        }
+
         try {
 
             //Checking if the channel is created.
-            boolean checkNotificationChannel = Utility.checkNotificationChannel(mContext, Config.NOTIFICATION_CHANNEL_ID_SERVICES);
+            boolean checkNotificationChannel = Utility.checkNotificationChannel(this, Config.NOTIFICATION_CHANNEL_ID_SERVICES);
             if (!checkNotificationChannel){
                 Log.e(TAG, "NotificationChannel not found");
             }
@@ -116,7 +120,7 @@ public class ImageCopyService extends Service {
                     imageProcessed += 1;
                     CopyImagesDataHolder.getInstance().updateImageProcessed(imageProcessed);
                     String name = "image_" + imageProcessed + ".jpg";
-                    Utility.copyToDirectory(mContext, uri, directory, name);
+                    Utility.copyToDirectory(getApplicationContext(), uri, directory, name);
 
                     Log.d(TAG, "Copy Image: " + imageProcessed + " / " + urisSize);
                 }
