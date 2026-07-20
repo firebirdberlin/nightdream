@@ -576,7 +576,7 @@ public class Settings {
     }
 
     public int getAlarmMaxVolumePercent() {
-        return (alarmFadeIn) ? alarmFadeInMaxVolumePercent : 100;
+        return Math.max(1, (alarmFadeIn) ? alarmFadeInMaxVolumePercent : 100);
     }
 
     int getBatteryTimeoutMinutes() {

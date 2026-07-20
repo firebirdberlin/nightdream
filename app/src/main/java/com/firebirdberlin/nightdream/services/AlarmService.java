@@ -196,7 +196,7 @@ public class AlarmService extends Service
                 settings = new Settings(this);
                 alarmTime = new SimpleTime(intent.getExtras());
                 setVolume(settings.alarmVolume);
-                maxVolumePercent = settings.getAlarmMaxVolumePercent();
+                maxVolumePercent = Math.max(1, settings.getAlarmMaxVolumePercent());
                 fadeInDelay = settings.alarmFadeInDurationSeconds * 1000L / maxVolumePercent;
                 int FADEOUT_TIME_MILLIS = 10000;
                 fadeOutDelay = FADEOUT_TIME_MILLIS / maxVolumePercent;
