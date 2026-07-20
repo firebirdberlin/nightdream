@@ -35,7 +35,6 @@ public class BottomPanelLayout extends FrameLayout {
     private static final String TAG = "BottomPanelLayout";
 
     private AlarmClock view = null;
-    private AttributeSet attrs;
     private Panel activePanel = Panel.ALARM_CLOCK;
     private Ticker tickerLayout = null;
     private UserInteractionObserver userInteractionObserver;
@@ -90,8 +89,7 @@ public class BottomPanelLayout extends FrameLayout {
         super(context, attrs);
         this.context = context;
         init();
-        this.attrs = attrs;
-        view = new AlarmClock(context, attrs);
+        view = new AlarmClock(context);
     }
 
     private void init() {
@@ -283,7 +281,7 @@ public class BottomPanelLayout extends FrameLayout {
         }
         removeAllViews();
         clearViews();
-        webRadioLayout = new WebRadioLayout(context, attrs);
+        webRadioLayout = new WebRadioLayout(context);
         setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
         webRadioLayout.setCustomColor(accentColor, textColor);
         webRadioLayout.setUserInteractionObserver(userInteractionObserver);
@@ -301,7 +299,7 @@ public class BottomPanelLayout extends FrameLayout {
         }
         clearViews();
 
-        tickerLayout = new Ticker(context, attrs);
+        tickerLayout = new Ticker(context);
 
         setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
         addView(tickerLayout);
