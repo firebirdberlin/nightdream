@@ -287,7 +287,9 @@ public class NightDreamActivity extends BillingHelperActivity
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(this::initTextToSpeech);
 
-        if (("samsung".equalsIgnoreCase(android.os.Build.MANUFACTURER) && android.os.Build.VERSION.SDK_INT >= 36)) {
+        String manufacturer = android.os.Build.MANUFACTURER;
+        if (("samsung".equalsIgnoreCase(manufacturer) || "oppo".equalsIgnoreCase(manufacturer) || "oneplus".equalsIgnoreCase(manufacturer))
+                && android.os.Build.VERSION.SDK_INT >= 36) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
         Log.i(TAG, "onCreate took: " + (System.currentTimeMillis() - startTime) + " ms");
