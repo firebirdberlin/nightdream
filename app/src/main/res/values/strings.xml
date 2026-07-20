@@ -147,6 +147,7 @@ OR
     <string name="contribute_beta_channel">Get beta versions</string>
     <string name="contribute_source_code">Source code</string>
     <string name="contribute_translation">Translation</string>
+    <string name="copy_images">Processing image %1$d of %2$d</string>
     <string name="country">Country</string>
     <string name="credits">Credits</string>
     <string name="credits_pull_requests">Pull requests</string>
@@ -157,7 +158,7 @@ OR
     <string name="dialog_message_thank_you">Thank you very much!</string>
     <string name="dialog_title_thank_you">Thanks</string>
     <string name="digit_emphasize_quarters">Emphasize quarters</string>
-    <string name="directory_background_image_select">Select a directory</string>
+    <string name="directory_background_image_select">Select images</string>
     <string name="decoration">Decoration</string>
     <string name="decoration_glow_effect">Glow effect</string>
     <string name="decoration_style_copper">Copper</string>
@@ -194,6 +195,8 @@ OR
     <string name="ignoreBatteryOptimisation">Battery optimisation</string>
     <string name="ignoreBatteryOptimisation_summary">It is recommended to exclude the app from battery optimisations.</string>
     <string name="inner_circle_radius">Inner circle radius</string>
+    <string name="images_background_copy">Process images in the background</string>
+    <string name="images_background_service_unbound">Error processing images. Please try again.</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
     <string name="mailing_list">Public mailing list</string>
@@ -222,10 +225,12 @@ OR
     <string name="notification_channel_name_devmsg">Messages</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Services</string>
+    <string name="notification_channel_name_copy_images">Copy images</string>
     <string name="notification_channel_desc_alarms">Notification showing up during alarms</string>
     <string name="notification_channel_desc_devmsg">Messages concerning the app</string>
     <string name="notification_channel_desc_radio">Notification showing up while web radio is playing</string>
     <string name="notification_channel_desc_services">Notification indicating running services</string>
+    <string name="notification_channel_desc_copy_images">Notification indicating running service for copy images</string>
     <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
     <string name="notification_show_preview_title">Notification preview</string>
     <string name="notification_show_mediastyle_summary">Show media player controls</string>
