@@ -90,6 +90,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             ImageCopyService.LocalBinder b = (ImageCopyService.LocalBinder) binder;
             copyService = b.getService();
             bound = true;
+            updateChooseDirectoryEnabledState();
         }
 
         @Override
@@ -97,6 +98,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             Log.d(TAG, "onServiceDisconnected");
             copyService = null;
             bound = false;
+            updateChooseDirectoryEnabledState();
         }
     };
 
@@ -316,6 +318,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
+
+    private void updateChooseDirectoryEnabledState() {
+        Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
+        if (chooseDirectory != null) {
+            Boolean isRunning = CopyImagesDataHolder.getInstance().getImageCopyServiceStatus().getValue();
+            boolean running = (isRunning != null && isRunning);
+            chooseDirectory.setEnabled(bound && !running);
+        }
+    }
 
     int getMaxNumImages() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
@@ -642,6 +653,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             }
             Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
             if (chooseDirectory != null) {
+                updateChooseDirectoryEnabledState();
 
                 CopyImagesDataHolder.getInstance().getImageCopyServiceStatus().observe(this, serviceStatus-> {
                     Log.d(TAG,"serviceStatus: "+serviceStatus);
@@ -653,7 +665,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     }
                     else {
                         chooseDirectory.setSummary("");
-                        chooseDirectory.setEnabled(true);
+                        updateChooseDirectoryEnabledState();
                     }
                 });
 
