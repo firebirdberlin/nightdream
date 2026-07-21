@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -836,6 +837,19 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int diff = newConfig.diff(prevConfig);
+
+        // Android 17 (API 37) no longer restarts by default for desk mode transitions.
+        // We manually recreate the activity to maintain previous behavior if uiMode changed.
+        if ((diff & ActivityInfo.CONFIG_UI_MODE) != 0) {
+            int oldMode = prevConfig.uiMode & Configuration.UI_MODE_TYPE_MASK;
+            int newMode = newConfig.uiMode & Configuration.UI_MODE_TYPE_MASK;
+            if (oldMode != newMode && (oldMode == Configuration.UI_MODE_TYPE_DESK || newMode == Configuration.UI_MODE_TYPE_DESK)) {
+                Log.d(TAG, "uiMode changed (Desk transition), recreating activity");
+                recreate();
+                return;
+            }
+        }
+
         if ((nightDreamUI != null) && (diff != 0)) {
             nightDreamUI.onConfigurationChanged(newConfig);
         }
