@@ -397,6 +397,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="smart_home_avm_password">Passwort</string>
     <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_purchase_request">AVM Geräte schalten mit der Pro Version</string>
+    <string name="smart_home_permission_denied">Berechtigung für den Zugriff auf das lokale Netzwerk verweigert. Verbindung zur Fritz!Box nicht möglich.</string>
     <string name="snoozeAfter">Automatisch schlummern nach</string>
     <string name="snoozeCycles">Maximale Wiederholungen der Schlummerfunktion vor Auto-Stopp</string>
     <string name="snoozeTime">Schlummerzeit</string>

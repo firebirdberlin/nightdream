@@ -400,6 +400,7 @@ OR
     <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_avm_password">Password</string>
     <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
+    <string name="smart_home_permission_denied">Permission for local network access denied. Cannot connect to Fritz!Box.</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="snoozeAfter">Auto snooze after</string>
     <string name="snoozeCycles">Auto snooze cycles before auto stop</string>

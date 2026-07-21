@@ -56,6 +56,8 @@ public class SmartHomeActivity
         extends BillingHelperActivity
         implements AvmAhaRequestTask.AsyncResponse {
     static final String TAG = "SmartHomeActivity";
+    private static final int REQUEST_LOCAL_NETWORK = 101;
+    private static final String PERMISSION_ACCESS_LOCAL_NETWORK = "android.permission.ACCESS_LOCAL_NETWORK";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -129,7 +131,26 @@ public class SmartHomeActivity
     }
 
     private void init() {
+        if (Build.VERSION.SDK_INT >= 37) { // Android 17
+            if (checkSelfPermission(PERMISSION_ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{PERMISSION_ACCESS_LOCAL_NETWORK}, REQUEST_LOCAL_NETWORK);
+                return;
+            }
+        }
         update();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCAL_NETWORK) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                update();
+            } else {
+                Toast.makeText(this, R.string.smart_home_permission_denied, Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 
 
