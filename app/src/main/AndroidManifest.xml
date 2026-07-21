@@ -201,7 +201,7 @@
             android:theme="@style/NotificationActivityTheme" />
         <activity
             android:name=".NightDreamActivity"
-            android:configChanges="orientation|keyboard|screenSize|screenLayout"
+            android:configChanges="orientation|keyboard|screenSize|screenLayout|uiMode"
             android:enabled="true"
             android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTop"

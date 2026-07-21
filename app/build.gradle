@@ -10,7 +10,7 @@ def getApiKeyOWM() {
 
 android {
     namespace = 'com.firebirdberlin.nightdream'
-    compileSdk = 36
+    compileSdk = 37
 
     flavorDimensions "version"
 
@@ -31,7 +31,7 @@ android {
     defaultConfig {
         applicationId "com.firebirdberlin.nightdream"
         minSdk 24
-        targetSdk 36
+        targetSdk 37
         versionCode 353
         versionName "2.11.31"
 
@@ -85,6 +85,9 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.work:work-multiprocess:2.11.2'
     implementation 'androidx.work:work-runtime-ktx:2.11.2'
+
+    // Legacy Media Support
+    implementation 'androidx.media:media:1.7.0'
 
     // Google Libraries
     implementation 'androidx.media3:media3-exoplayer:1.9.0'
