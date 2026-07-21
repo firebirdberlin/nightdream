@@ -80,20 +80,20 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.3.0"
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
     implementation 'androidx.fragment:fragment-ktx:1.8.9'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0"
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.work:work-multiprocess:2.11.2'
     implementation 'androidx.work:work-runtime-ktx:2.11.2'
 
     // Legacy Media Support
-    implementation 'androidx.media:media:1.7.0'
+    implementation 'androidx.media:media:1.8.0'
 
     // Google Libraries
-    implementation 'androidx.media3:media3-exoplayer:1.9.0'
-    implementation 'androidx.media3:media3-ui:1.9.0'
-    implementation 'androidx.media3:media3-session:1.9.0'
-    implementation 'androidx.media3:media3-exoplayer-hls:1.9.0'
+    implementation 'androidx.media3:media3-exoplayer:1.10.1'
+    implementation 'androidx.media3:media3-ui:1.10.1'
+    implementation 'androidx.media3:media3-session:1.10.1'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.10.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.14.0'
     implementation 'com.google.code.gson:gson:2.14.0'
@@ -108,9 +108,9 @@ dependencies {
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
 
     // Full flavor specific dependencies
-    fullImplementation 'com.android.billingclient:billing:8.3.0'
-    fullImplementation 'com.google.android.gms:play-services-cast-framework:22.2.0'
-    fullImplementation 'androidx.media3:media3-cast:1.9.0'
+    fullImplementation 'com.android.billingclient:billing:9.1.0'
+    fullImplementation 'com.google.android.gms:play-services-cast-framework:22.3.1'
+    fullImplementation 'androidx.media3:media3-cast:1.10.1'
     fullImplementation 'com.google.android.play:review:2.0.2'
     // Testing Libraries
     testImplementation 'junit:junit:4.13.2'
