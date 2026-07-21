@@ -11,7 +11,7 @@
 
 
         <EditTextPreference
-            android:defaultValue="http://fritz.box"
+            android:defaultValue="https://fritz.box"
             android:key="smart_home_avm_host"
             android:selectAllOnFocus="true"
             android:singleLine="true"
