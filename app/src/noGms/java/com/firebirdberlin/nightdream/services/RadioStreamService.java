@@ -41,6 +41,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
@@ -304,7 +305,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         fadeInDelay = 50;
                         if (myNoisyAudioStreamReceiver == null) {
                             myNoisyAudioStreamReceiver = new BecomingNoisyReceiver();
-                            registerReceiver(myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter);
+                            ContextCompat.registerReceiver(this, myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
                         }
 
                         readyForPlayback = false;

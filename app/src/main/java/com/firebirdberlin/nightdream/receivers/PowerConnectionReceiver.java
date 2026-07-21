@@ -34,6 +34,7 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
@@ -55,7 +56,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
         filter.addAction(Intent.ACTION_MY_PACKAGE_REPLACED);
         PowerConnectionReceiver receiver = new PowerConnectionReceiver();
-        ctx.registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(ctx, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
