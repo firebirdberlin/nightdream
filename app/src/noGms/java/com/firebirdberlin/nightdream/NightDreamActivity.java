@@ -49,7 +49,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -277,6 +281,13 @@ public class NightDreamActivity extends BillingHelperActivity
         bottomPanelLayout = findViewById(R.id.bottomPanel);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
         sidePanel = findViewById(R.id.side_menu);
+
+        View topPanel = findViewById(R.id.topPanel);
+        ViewCompat.setOnApplyWindowInsetsListener(topPanel, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, v.getPaddingBottom());
+            return insets;
+        });
 
         ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
@@ -625,7 +636,7 @@ public class NightDreamActivity extends BillingHelperActivity
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
-        registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 

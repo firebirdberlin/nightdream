@@ -32,6 +32,8 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -52,7 +54,7 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_MY_PACKAGE_REPLACED);
         ScheduledAutoStartReceiver receiver = new ScheduledAutoStartReceiver();
-        ctx.registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(ctx, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
