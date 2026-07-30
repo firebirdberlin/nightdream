@@ -50,6 +50,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -73,6 +74,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
 
 import java.io.File;
+import java.util.List;
 import java.util.Vector;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
@@ -286,6 +288,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     // Registers a photo picker activity launcher in multi-select mode.
     // In this example, the app lets the user select up to 5 media files.
+
+    /*
     ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
             registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(getMaxNumImages()), uris -> {
                 // Callback is invoked after the user selects media items or closes the
@@ -317,7 +321,27 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     Log.d("PhotoPicker", "No media selected");
                 }
             });
+     */
 
+    // We use OpenMultipleDocuments instead of PickMultipleVisualMedia to get the exif location
+    private final ActivityResultLauncher<String[]> pickMultipleMedia =
+            registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), uris -> {
+                if (uris != null && !uris.isEmpty()) {
+                    Log.d("OpenMultipleDocuments", "Number of items selected: " + uris.size());
+                    File directory = new File(mContext.getFilesDir() + "/backgroundImages");
+                    Utility.prepareDirectory(directory);
+                    copyService.copyImages(uris, directory);
+                } else {
+                    Log.d("OpenMultipleDocuments", "No media selected");
+                }
+            });
+
+    // Launcher for the permission
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                // start with or without permission
+                pickMultipleMedia.launch(new String[]{"image/*"});
+            });
 
     private void updateChooseDirectoryEnabledState() {
         Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
@@ -670,9 +694,26 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 });
 
                 chooseDirectory.setOnPreferenceClickListener(preference -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_MEDIA_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+                            // permission granted
+                            pickMultipleMedia.launch(new String[]{"image/*"});
+                        } else {
+                            // permission not granted
+                            requestPermissionLauncher.launch(Manifest.permission.ACCESS_MEDIA_LOCATION);
+                        }
+                    }
+                    else {
+                        pickMultipleMedia.launch(new String[]{"image/*"});
+                    }
+
+                    /*
                     pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
                             .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                             .build());
+                            
+                     */
                     return true;
                 });
             } else{
