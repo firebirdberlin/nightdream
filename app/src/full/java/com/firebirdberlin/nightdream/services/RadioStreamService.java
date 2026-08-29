@@ -47,15 +47,13 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.media3.common.AudioAttributes;
+import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
-import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.hls.HlsMediaSource;
-import androidx.media3.exoplayer.source.MediaSource;
-import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -566,18 +564,17 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         if (exoPlayer == null) {
             Log.d(TAG, "init exoPlayer");
-            DefaultHttpDataSource.Factory httpDataSourceFactory = new DefaultHttpDataSource.Factory();
-            MediaSource mediaSource;
-            if (streamURL.endsWith("m3u8")) {
-                mediaSource = new HlsMediaSource.Factory(httpDataSourceFactory)
-                        .createMediaSource(MediaItem.fromUri(streamURL));
-            } else {
-                mediaSource = new ProgressiveMediaSource.Factory(httpDataSourceFactory)
-                        .createMediaSource(MediaItem.fromUri(streamURL));
-            }
 
-            exoPlayer = new ExoPlayer.Builder(getApplicationContext()).build();
-            exoPlayer.setMediaSource(mediaSource);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build();
+
+            exoPlayer = new ExoPlayer.Builder(getApplicationContext())
+                    .setAudioAttributes(audioAttributes, /* handleAudioFocus= */ true)
+                    .build();
+
+            exoPlayer.setMediaItem(MediaItem.fromUri(streamURL));
             exoPlayer.prepare();
 
             exoPlayer.addListener(new Player.Listener() {
