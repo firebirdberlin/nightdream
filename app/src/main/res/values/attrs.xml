@@ -19,5 +19,9 @@
     <declare-styleable name="SidePanel">
         <attr name="iconColor" format="color"/>
         <attr name="iconBackground" format="reference"/>
+        <attr name="side" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="right" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>

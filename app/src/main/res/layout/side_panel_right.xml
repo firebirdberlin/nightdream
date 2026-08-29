@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.firebirdberlin.nightdream.ui.SidePanel
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/side_menu_right"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:background="@drawable/side_panel_right_bg"
+    app:alignItems="center"
+    app:dividerDrawable="@drawable/divider"
+    app:flexDirection="column"
+    app:flexWrap="wrap"
+    android:visibility="invisible"
+    app:justifyContent="flex_end"
+    app:side="right"
+    app:showDividerVertical="none">
+
+        <ImageView
+            android:id="@+id/night_mode_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/night_mode"
+            android:focusable="true"
+            android:onClick="onNightModeClick"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_sun" />
+
+        <ImageView
+            android:id="@+id/flashlight_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/flashlight"
+            android:focusable="true"
+            android:onClick="onTorchClick"
+            android:padding="5dp"
+            android:layout_marginTop="25dp"
+            app:srcCompat="@drawable/ic_torch" />
+
+</com.firebirdberlin.nightdream.ui.SidePanel>

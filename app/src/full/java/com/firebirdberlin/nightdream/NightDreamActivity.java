@@ -133,7 +133,8 @@ public class NightDreamActivity extends BillingHelperActivity
     private ImageView alarmClockIcon;
     private BottomPanelLayout bottomPanelLayout;
     private ClockLayoutContainer clockLayoutContainer;
-    private SidePanel sidePanel;
+    private SidePanel sidePanelLeft;
+    private SidePanel sidePanelRight;
     private boolean screenWasOn = false;
     private float last_ambient = 4.0f;
     private NightDreamUI nightDreamUI = null;
@@ -355,7 +356,8 @@ public class NightDreamActivity extends BillingHelperActivity
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
-        sidePanel = findViewById(R.id.side_menu);
+        sidePanelLeft = findViewById(R.id.side_menu_left);
+        sidePanelRight = findViewById(R.id.side_menu_right);
 
         View topPanel = findViewById(R.id.topPanel);
         ViewCompat.setOnApplyWindowInsetsListener(topPanel, (v, insets) -> {
@@ -400,9 +402,9 @@ public class NightDreamActivity extends BillingHelperActivity
         if (flash == null) {
             flash = new FlashlightProvider(this);
         }
-        sidePanel.post(() -> {
-            sidePanel.setTorchIconVisibility(flash.hasCameraFlash());
-            sidePanel.setTorchIconActive(flash.isFlashlightOn());
+        sidePanelRight.post(() -> {
+            sidePanelRight.setTorchIconVisibility(flash.hasCameraFlash());
+            sidePanelRight.setTorchIconActive(flash.isFlashlightOn());
         });
     }
 
@@ -751,7 +753,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
         }
-        sidePanel.setRadioIconActive(panel != BottomPanelLayout.Panel.WEB_RADIO);
+        sidePanelLeft.setRadioIconActive(panel != BottomPanelLayout.Panel.WEB_RADIO);
         nightDreamUI.showAlarmClock();
     }
 
