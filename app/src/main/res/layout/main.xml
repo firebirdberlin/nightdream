@@ -144,7 +144,8 @@
                     android:translationY="0dp" />
             </com.firebirdberlin.nightdream.ui.ClockLayoutContainer>
 
-            <include layout="@layout/side_panel" />
+            <include layout="@layout/side_panel_left" />
+            <include layout="@layout/side_panel_right" />
         </FrameLayout>
 
         <com.firebirdberlin.nightdream.ui.BottomPanelLayout

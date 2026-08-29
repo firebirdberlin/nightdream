@@ -123,7 +123,8 @@ public class NightDreamUI {
     private final ClockLayoutContainer clockLayoutContainer;
     private final ClockLayout clockLayout;
     private final FlexboxLayout notificationStatusBar;
-    private final SidePanel sidePanel;
+    private final SidePanel sidePanelLeft;
+    private final SidePanel sidePanelRight;
     private final BottomPanelLayout bottomPanelLayout;
     private final ProgressBar brightnessProgress;
     private final Runnable hideBrightnessView = new Runnable() {
@@ -352,14 +353,22 @@ public class NightDreamUI {
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.d(TAG, "left swipe");
-                    sidePanel.closeMenu();
+                    if (!sidePanelLeft.isHidden()) {
+                        sidePanelLeft.closeMenu();
+                    } else {
+                        sidePanelRight.openMenu();
+                    }
                 }
                 // left to right swipe
                 else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
                         && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                     Log.d(TAG, "right swipe");
-                    sidePanel.openMenu();
-                    handler.postDelayed(hideAlarmClock, 20000);
+                    if (!sidePanelRight.isHidden()) {
+                        sidePanelRight.closeMenu();
+                    } else {
+                        sidePanelLeft.openMenu();
+                        handler.postDelayed(hideAlarmClock, 20000);
+                    }
                 }
                 return false;
             }
@@ -437,7 +446,8 @@ public class NightDreamUI {
         notificationStatusBar = rootView.findViewById(R.id.notificationstatusbar);
         parentLayout = rootView.findViewById(R.id.background_group);
         radioIcon = rootView.findViewById(R.id.radio_icon);
-        sidePanel = rootView.findViewById(R.id.side_menu);
+        sidePanelLeft = rootView.findViewById(R.id.side_menu_left);
+        sidePanelRight = rootView.findViewById(R.id.side_menu_right);
 
         backgroundImages[0] = rootView.findViewById(R.id.background_view);
         backgroundImages[1] = rootView.findViewById(R.id.background_view2);
@@ -452,7 +462,7 @@ public class NightDreamUI {
 
         OnClickListener onMenuItemClickListener = v -> {
             if (locked) return;
-            sidePanel.toggleMenu();
+            sidePanelLeft.toggleMenu();
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
         View.OnLongClickListener onMenuItemLongClickListener = v -> {
@@ -460,7 +470,8 @@ public class NightDreamUI {
             settings.setUILocked(locked);
             lockUI(locked);
             if (locked) {
-                sidePanel.closeMenu();
+                sidePanelLeft.closeMenu();
+                sidePanelRight.closeMenu();
             }
             if (Utility.hasPermission(mContext, Manifest.permission.VIBRATE)) {
                 v.performHapticFeedback(
@@ -518,7 +529,8 @@ public class NightDreamUI {
         Point displaySize = Utility.getDisplaySize(mContext);
         Rect safeRect = Utility.getSafeWindowRect((Activity) mContext);
 
-        sidePanel.setPaddingLeft(safeRect.left);
+        sidePanelLeft.setPaddingLeft(safeRect.left);
+        sidePanelRight.setPaddingRight(displaySize.x - safeRect.right);
 
         int baseHeight = Utility.dpToPx(mContext, 60);
         int paddingHorizontal = Math.max(safeRect.left, displaySize.x - safeRect.right);
@@ -683,12 +695,12 @@ public class NightDreamUI {
         if (Utility.isLowRamDevice(mContext)) {
             bgshape = colorBlack;
             backgroundImages[activeBackgroundImage].setImageDrawable(bgshape);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+            window.clearFlags(LayoutParams.FLAG_SHOW_WALLPAPER);
         } else {
             if (backgroundMode != Settings.BACKGROUND_BLACK) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+                window.addFlags(LayoutParams.FLAG_SHOW_WALLPAPER);
             } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+                window.clearFlags(LayoutParams.FLAG_SHOW_WALLPAPER);
             }
             switch (backgroundMode) {
                 case Settings.BACKGROUND_TRANSPARENT: {
@@ -859,9 +871,12 @@ public class NightDreamUI {
         batteryIconView.setVisibility(View.VISIBLE);
         menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 
-        // colorize icons in the side panel
-        sidePanel.setAccentColor(accentColor);
-        sidePanel.setSecondaryColor(textColor);
+        // colorize icons in the side panels
+        sidePanelLeft.setAccentColor(accentColor);
+        sidePanelLeft.setSecondaryColor(textColor);
+
+        sidePanelRight.setAccentColor(accentColor);
+        sidePanelRight.setSecondaryColor(textColor);
 
         updateRadioIconColor();
 
