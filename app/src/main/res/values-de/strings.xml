@@ -300,6 +300,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_paused">Radio angehalten</string>
     <string name="radio_play">Radio starten</string>
     <string name="radio_playing">Stream läuft</string>
+    <string name="radio_stream_keep_running">Radio anlassen</string>
+    <string name="radio_stream_keep_running_summary">Den Radiostream nach dem Beenden des Alarms weiterlaufen lassen.</string>
     <string name="radio_previous">vorheriger Radiosender</string>
     <string name="radio_station">Sender</string>
     <string name="radio_station_dialog_title">Radiosender auswählen</string>

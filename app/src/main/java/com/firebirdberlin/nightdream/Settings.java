@@ -118,6 +118,7 @@ public class Settings {
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamRequireWiFi = false;
+    public boolean keepRadioStreamRunning = true;
     private boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
     public float dim_offset = 0.8f;
@@ -541,6 +542,7 @@ public class Settings {
         showAlarmsPersistently = settings.getBoolean("showAlarmsPersistently", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamRequireWiFi = settings.getBoolean("radioStreamRequireWiFi", false);
+        keepRadioStreamRunning = settings.getBoolean("keepRadioStreamRunning", true);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());

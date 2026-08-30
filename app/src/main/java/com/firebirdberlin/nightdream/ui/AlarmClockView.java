@@ -49,6 +49,7 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 import java.util.Calendar;
@@ -423,6 +424,13 @@ public class AlarmClockView extends View {
             SqliteIntentService.deleteAlarm(ctx, time);
         }
         time = null;
+
+        if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM) {
+            Settings settings = new Settings(ctx);
+            AlarmHandlerService.stop(ctx, settings.keepRadioStreamRunning);
+            return;
+        }
+
         AlarmHandlerService.stop(ctx);
     }
 

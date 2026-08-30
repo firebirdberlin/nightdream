@@ -207,6 +207,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Doação</string>
     <string name="product_name_pro">Versão Completa</string>
     <string name="radio">Rádio</string>
+    <string name="radio_stream_keep_running">Manter rádio ligada</string>
+    <string name="radio_stream_keep_running_summary">Continuar a reproduzir a transmissão de rádio após o alarme ter sido interrompido.</string>
     <string name="radio_station">Estação de rádio</string>
     <string name="radio_station_dialog_title">Selecionar uma estação de rádio</string>
     <string name="radio_station_none">Sem estação</string>

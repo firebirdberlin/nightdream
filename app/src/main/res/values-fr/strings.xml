@@ -295,6 +295,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_paused">en pause</string>
     <string name="radio_play">jouer radio</string>
     <string name="radio_playing">en cours de lecture</string>
+    <string name="radio_stream_keep_running">Garder la radio allumée</string>
+    <string name="radio_stream_keep_running_summary">Continuer à lire le flux radio une fois l\'alarme arrêtée.</string>
     <string name="radio_previous">station précédente</string>
     <string name="radio_station">Station radio</string>
     <string name="radio_station_dialog_title">Sélectionner une station radio</string>

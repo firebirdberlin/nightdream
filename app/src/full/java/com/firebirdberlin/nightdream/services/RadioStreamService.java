@@ -90,6 +90,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private static final String ACTION_START = "start";
     private static final String ACTION_START_STREAM = "start stream";
     private static final String ACTION_STOP = "stop";
+    public static final String ACTION_SWITCH_TO_RADIO_MODE = Config.ACTION_RADIO_STREAM_SWITCH_TO_RADIO_MODE;
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
@@ -205,6 +206,12 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public static void stop(Context context) {
         Intent i = getStopIntent(context);
         context.stopService(i);
+    }
+
+    public static void switchToRadioMode(Context context) {
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_SWITCH_TO_RADIO_MODE);
+        Utility.startForegroundService(context, i);
     }
 
     private static Intent getStopIntent(Context context) {
@@ -361,6 +368,21 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                     readyForPlayback = false;
                     Log.d(TAG, "stopself");
                     stopSelf();
+                    break;
+                case ACTION_SWITCH_TO_RADIO_MODE:
+                    if (streamingMode == StreamingMode.ALARM) {
+                        streamingMode = StreamingMode.RADIO;
+                        alarmIsRunning = false;
+                        currentStreamType = AudioManager.STREAM_MUSIC;
+                        restoreAlarmVolume();
+                        handler.removeCallbacks(timeout);
+                        updateNotification(getResources().getString(R.string.radio_playing));
+
+                        Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
+                        broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
+                    }
+                    break;
             }
         }
 

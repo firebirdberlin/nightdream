@@ -218,6 +218,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi">Kræver at Wifi er forbundet</string>
     <string name="radio_stream_require_wifi_desc">Hvis On, vil alram uret afspille web radio hvis WiFi er tilsluttet</string>
     <string name="radio_stream">Radio streams</string>
+    <string name="radio_stream_keep_running">Hold radioen kørende</string>
+    <string name="radio_stream_keep_running_summary">Fortsæt afspilning af radiostreamen efter alarmen er stoppet.</string>
     <string name="radio_stream_failure">Radio stream fejl</string>
     <string name="radio_stream_manual_edit">Ret radio station</string>
     <string name="radio_stream_manual_input_description">Stations navn</string>

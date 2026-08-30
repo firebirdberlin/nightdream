@@ -157,5 +157,12 @@
             app:key="radioStreamRequireWiFi"
             app:summary="@string/radio_stream_require_wifi_desc"
             app:title="@string/radio_stream_require_wifi" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:key="keepRadioStreamRunning"
+            app:summary="@string/radio_stream_keep_running_summary"
+            app:title="@string/radio_stream_keep_running" />
     </PreferenceCategory>
 </PreferenceScreen>

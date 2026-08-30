@@ -301,6 +301,8 @@ OR
     <string name="radio_paused">paused</string>
     <string name="radio_play">play radio</string>
     <string name="radio_playing">playing</string>
+    <string name="radio_stream_keep_running">Keep radio running</string>
+    <string name="radio_stream_keep_running_summary">Continue playing the radio stream after the alarm has been stopped.</string>
     <string name="radio_previous">previous station</string>
     <string name="radio_station">Radio station</string>
     <string name="radio_station_dialog_title">Select a radio station</string>

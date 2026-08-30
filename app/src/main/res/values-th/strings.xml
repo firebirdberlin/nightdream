@@ -50,4 +50,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits">เครดิต</string>
     <string name="screen_orientation_reverse_landscape">อุบลราชธานี</string>
     <string name="show_calendar_events">ไฮไลท์กิจกรรม</string>
+    <string name="radio_stream_keep_running">เปิดวิทยุค้างไว้</string>
+    <string name="radio_stream_keep_running_summary">เล่นวิทยุต่อเนื่องหลังจากหยุดนาฬิกาปลุกแล้ว</string>
 </resources>
