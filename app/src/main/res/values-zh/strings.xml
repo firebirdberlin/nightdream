@@ -111,6 +111,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">贊助</string>
     <string name="product_name_pro">完整版</string>
     <string name="radio">收音機</string>
+    <string name="radio_stream_keep_running">保持收音机运行</string>
+    <string name="radio_stream_keep_running_summary">停止闹钟后继续播放收音机流。</string>
     <string name="radio_stream">串流廣播</string>
     <string name="radio_stream_failure">串流廣播失敗</string>
     <string name="radio_stream_manual_input_description">電台名稱</string>

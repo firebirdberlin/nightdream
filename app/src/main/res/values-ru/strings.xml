@@ -237,6 +237,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Пожертвование</string>
     <string name="product_name_pro">Полная версия</string>
     <string name="radio">Радио</string>
+    <string name="radio_stream_keep_running">Не выключать радио</string>
+    <string name="radio_stream_keep_running_summary">Продолжить воспроизведение радиопотока после выключения будильника.</string>
     <string name="radio_station">Радио станция</string>
     <string name="radio_station_dialog_title">Выберите радио станцию</string>
     <string name="radio_station_none">Нет радиостанций</string>

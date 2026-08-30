@@ -108,6 +108,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Quyên góp</string>
     <string name="product_name_pro">Full ver</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_keep_running">Duy trì radio</string>
+    <string name="radio_stream_keep_running_summary">Tiếp tục phát luồng radio sau khi báo thức đã dừng.</string>
     <string name="radio_stream">luồng phát thanh</string>
     <string name="radio_stream_failure">Lỗi luồng phát thanh</string>
     <string name="radio_stream_manual_input_description">Tên kênh</string>

@@ -28,4 +28,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarm">Alarma</string>
     <string name="alarmUpcoming">Propera Alarma</string>
     <string name="show_calendar_events">Destacar esdeveniments</string>
+    <string name="radio_stream_keep_running">Mantenir la ràdio en funcionament</string>
+    <string name="radio_stream_keep_running_summary">Continuar reproduint el flux de ràdio després d\'aturar l\'alarma.</string>
 </resources>

@@ -35,6 +35,7 @@ public class Config {
     public final static String ACTION_ALARM_DELETED = "com.firebirdberlin.nightdream.ALARM_DELETED";
     public final static String ACTION_SWITCH_NIGHT_MODE = "com.firebirdberlin.nightdream.ACTION_SWITCH_NIGHT_MODE";
     public final static String ACTION_STOP_BACKGROUND_SERVICE = "com.firebirdberlin.nightdream.ACTION_STOP_BACKGROUND_SERVICE";
+    public final static String ACTION_RADIO_STREAM_SWITCH_TO_RADIO_MODE = "com.firebirdberlin.nightdream.ACTION_RADIO_STREAM_SWITCH_TO_RADIO_MODE";
 
     public final static int NOTIFICATION_ID_DISMISS_ALARMS = 1338;
     public final static int NOTIFICATION_ID_FOREGROUND_SERVICES = 1339;

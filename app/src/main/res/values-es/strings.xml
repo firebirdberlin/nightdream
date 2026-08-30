@@ -263,6 +263,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi">La radio por streaming requiere WiFi</string>
     <string name="radio_stream_require_wifi_desc">Si está seleccionado, la alarma reproducirá la radio web sólo si hay una conexión WiFi activa</string>
     <string name="radio_stream">Emisoras de radio</string>
+    <string name="radio_stream_keep_running">Mantener radio encendida</string>
+    <string name="radio_stream_keep_running_summary">Continuar reproduciendo la emisión de radio después de detener la alarma.</string>
     <string name="radio_stream_failure">Fallo de emisión</string>
     <string name="radio_stream_manual_edit">Editar emisora de radio</string>
     <string name="radio_stream_manual_input_description">Nombre de la emisora de radio</string>

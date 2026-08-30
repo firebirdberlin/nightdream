@@ -96,6 +96,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">وضعیت باطری را طی شارژ کردن به طور مداوم نشان بده</string>
     <string name="preview">پیش نمایش</string>
     <string name="radio">رادیو</string>
+    <string name="radio_stream_keep_running">رادیو را روشن نگه دارید</string>
+    <string name="radio_stream_keep_running_summary">پس از توقف زنگ هشدار، به پخش جریان رادیویی ادامه دهید.</string>
     <string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
     <string name="radio_stream_offline">افلاین</string>
     <string name="radio_stream_search">جستوجو</string>
