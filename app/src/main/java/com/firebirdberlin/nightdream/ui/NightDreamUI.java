@@ -466,7 +466,11 @@ public class NightDreamUI {
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
         View.OnLongClickListener onMenuItemLongClickListener = v -> {
+            boolean wasLocked = locked;
             locked = !locked;
+            if (wasLocked && !locked) {
+                settings.incrementUnlockCount();
+            }
             settings.setUILocked(locked);
             lockUI(locked);
             if (locked) {
@@ -1637,9 +1641,12 @@ public class NightDreamUI {
         showAlarmClock();
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
         menuIcon.setImageDrawable(ContextCompat.getDrawable(mContext, resId));
-        unlockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
-        if (locked) {
+        if (on && settings.shallShowUnlockHint()) {
+            unlockHint.setVisibility(View.VISIBLE);
             updateUnlockHintPosition();
+            settings.updateLastUnlockHintShownTime();
+        } else {
+            unlockHint.setVisibility(View.GONE);
         }
         if (AlarmHandlerService.alarmIsRunning()) {
             blinkIfLocked();
@@ -1663,7 +1670,14 @@ public class NightDreamUI {
         if (locked) {
             handler.removeCallbacks(hideAlarmClock);
             setAlpha(menuIcon, 1.f, 250);
-            setAlpha(unlockHint, 1.f, 250);
+            if (settings.shallShowUnlockHint()) {
+                if (unlockHint.getVisibility() != View.VISIBLE) {
+                    unlockHint.setVisibility(View.VISIBLE);
+                    updateUnlockHintPosition();
+                }
+                setAlpha(unlockHint, 1.f, 250);
+                settings.updateLastUnlockHintShownTime();
+            }
             setAlpha(notificationStatusBar, 1.f, 250);
             setAlpha(batteryIconView, 1.f, 250);
             setAlpha(bottomPanelLayout, 1.f, 250);
