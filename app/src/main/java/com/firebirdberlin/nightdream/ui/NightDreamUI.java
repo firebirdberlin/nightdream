@@ -1244,6 +1244,10 @@ public class NightDreamUI {
             setClockPosition(newConfig);
             configureSafeRect();
 
+            if (unlockHint.getVisibility() == View.VISIBLE) {
+                updateUnlockHintPosition();
+            }
+
             postDelayed(moveAround, Utility.millisToTimeTick(20000));
             if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
                 postBackgroundImageChange();
@@ -1633,16 +1637,24 @@ public class NightDreamUI {
         showAlarmClock();
         int resId = on ? R.drawable.ic_lock : R.drawable.ic_menu;
         menuIcon.setImageDrawable(ContextCompat.getDrawable(mContext, resId));
-        menuIcon.post(
-                () -> {
-                    unlockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
-                    unlockHint.setY(menuIcon.getHeight());
-                    unlockHint.setX(menuIcon.getWidth());
-                }
-        );
+        unlockHint.setVisibility(locked ? View.VISIBLE : View.GONE);
+        if (locked) {
+            updateUnlockHintPosition();
+        }
         if (AlarmHandlerService.alarmIsRunning()) {
             blinkIfLocked();
         }
+    }
+
+    private void updateUnlockHintPosition() {
+        menuIcon.post(
+                () -> {
+                    int[] location = new int[2];
+                    menuIcon.getLocationInWindow(location);
+                    unlockHint.setX(location[0] + menuIcon.getWidth());
+                    unlockHint.setY(location[1] + menuIcon.getHeight());
+                }
+        );
     }
 
     public boolean onTouch(View view, MotionEvent e) {
