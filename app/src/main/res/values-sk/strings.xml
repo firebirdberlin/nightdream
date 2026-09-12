@@ -112,6 +112,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Daruj</string>
     <string name="product_name_pro">Plná verzia</string>
     <string name="radio">Rádio</string>
+    <string name="radio_stream_keep_running">Nechať rádio hrať</string>
+    <string name="radio_stream_keep_running_summary">Po zastavení budíka pokračovať v prehrávaní rádiového streamu.</string>
     <string name="radio_stream">Rádiové vysielanie</string>
     <string name="radio_stream_failure">Rádiové vysielanie na prd</string>
     <string name="radio_stream_manual_input_description">Vlož meno stanice </string>

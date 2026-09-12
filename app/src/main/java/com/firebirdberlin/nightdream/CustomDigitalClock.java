@@ -27,7 +27,9 @@ import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Handler;
+import androidx.core.content.ContextCompat;
 import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -245,7 +247,15 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
     void setTimeTick() {
         timeReceiver = new TimeReceiver();
-        context.registerReceiver(timeReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        if (Build.VERSION.SDK_INT >= 37) { // ACTION_TIMEZONE_OFFSET_CHANGED
+            filter.addAction("android.intent.action.TIMEZONE_OFFSET_CHANGED");
+        }
+
+        ContextCompat.registerReceiver(context, timeReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     /**

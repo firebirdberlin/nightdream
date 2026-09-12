@@ -204,6 +204,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi">تحتاج إتصال واي فاي</string>
     <string name="radio_stream_require_wifi_desc">في حالة التشغيل، ستقوم الإنذارات بتشغيل موجات راديو الإنترنت فقط من خلال اتصال واي فاي ثابت</string>
     <string name="radio_stream">موجات الراديو</string>
+    <string name="radio_stream_keep_running">استمرار تشغيل الراديو</string>
+    <string name="radio_stream_keep_running_summary">استمر في تشغيل بث الراديو بعد إيقاف التنبيه.</string>
     <string name="radio_stream_failure">فشل موجة الراديو</string>
     <string name="radio_stream_manual_edit">تعديل محطة الراديو</string>
     <string name="radio_stream_manual_input_description">إسم المحطة</string>

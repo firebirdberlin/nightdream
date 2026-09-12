@@ -199,6 +199,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Donasjon</string>
     <string name="product_name_pro">Full versjon</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_keep_running">Hold radioen i gang</string>
+    <string name="radio_stream_keep_running_summary">Fortsett å spille radiostrømmen efter at alarmen er stoppet.</string>
     <string name="radio_station">Radiostasjon</string>
     <string name="radio_station_dialog_title">Velg en radiostasjon</string>
     <string name="radio_station_none">Ingen radiostasjon</string>

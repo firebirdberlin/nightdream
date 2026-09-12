@@ -125,6 +125,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker">Mini zapisnik vremena</string>
     <string name="preview">Pregled</string>
     <string name="radio_stream">Radio streamovi</string>
+    <string name="radio_stream_keep_running">Zadrži radio uključenim</string>
+    <string name="radio_stream_keep_running_summary">Nastavite s reprodukcijom radijskog prijenosa nakon što se alarm zaustavi.</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretraživanja.</string>
     <string name="radio_stream_query_hint">Niz za pretraživanje</string>
     <string name="recommend_app_desc">Odaberite aplikaciju kako biste dodijelili preporuku.</string>

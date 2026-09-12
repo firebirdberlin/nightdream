@@ -112,6 +112,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="product_name_pro">Bertsio osoa</string>
     <string name="radio">Irratia</string>
     <string name="radio_stream">Irratiko streaming-ak</string>
+    <string name="radio_stream_keep_running">Irratia pizturik mantendu</string>
+    <string name="radio_stream_keep_running_summary">Irrati-korrontea erreproduzitzen jarraitu alarma gelditu ondoren.</string>
 <string name="radio_stream_failure">Irratiako streaming-aren akatsa</string>
 <string name="radio_stream_manual_input_hint">Irrati emisora eskuz gehitu</string>
 <string name="radio_stream_manual_input_url">Stream URL</string>

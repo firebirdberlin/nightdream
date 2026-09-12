@@ -57,7 +57,7 @@ public class SidePanel extends FlexboxLayout {
     };
     private int mIconColor;
     private int mAccentColor;
-    private View paddingLeft;
+    private int mSide = 0; // 0 for left, 1 for right
 
     public SidePanel(Context context) {
         super(context);
@@ -97,6 +97,7 @@ public class SidePanel extends FlexboxLayout {
             try {
                 mIconColor = a.getColor(R.styleable.SidePanel_iconColor, transparentColor);
                 mIconBackground = a.getResourceId(R.styleable.SidePanel_iconBackground, 0);
+                mSide = a.getInt(R.styleable.SidePanel_side, 0);
             } finally {
                 a.recycle();
             }
@@ -109,9 +110,7 @@ public class SidePanel extends FlexboxLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        paddingLeft = findViewById(R.id.padding_left);
-
-        setX(getWidth());
+        post(() -> setTranslationX(mSide == 0 ? -getWidth() : getWidth()));
         menuIsOpen = false;
         handler.removeCallbacks(hideSideMenu);
         colorizeIcons();
@@ -136,9 +135,15 @@ public class SidePanel extends FlexboxLayout {
         Log.d(TAG, "closeMenu(): " + menuIsOpen);
         if (menuIsOpen) {
             ObjectAnimator animation;
-            animation = ObjectAnimator.ofFloat(
-                    this, "translationX", 0, -this.getWidth()
-            );
+            if (mSide == 0) {
+                animation = ObjectAnimator.ofFloat(
+                        this, "translationX", 0, -this.getWidth()
+                );
+            } else {
+                animation = ObjectAnimator.ofFloat(
+                        this, "translationX", 0, this.getWidth()
+                );
+            }
             startMenuAnimation(animation);
             handler.removeCallbacks(hideSideMenu);
         }
@@ -149,9 +154,15 @@ public class SidePanel extends FlexboxLayout {
         setVisibility(VISIBLE);
         if (!menuIsOpen) {
             ObjectAnimator animation;
-            animation = ObjectAnimator.ofFloat(
-                    this, "translationX", -this.getWidth(), 0
-            );
+            if (mSide == 0) {
+                animation = ObjectAnimator.ofFloat(
+                        this, "translationX", -this.getWidth(), 0
+                );
+            } else {
+                animation = ObjectAnimator.ofFloat(
+                        this, "translationX", this.getWidth(), 0
+                );
+            }
             startMenuAnimation(animation);
             handler.postDelayed(hideSideMenu, 20000);
         }
@@ -224,6 +235,7 @@ public class SidePanel extends FlexboxLayout {
             View view = getChildAt(i);
             if (view instanceof ImageView) {
                 ((ImageView) view).setColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP);
+                setIconSize(getContext(), (ImageView) view);
             }
         }
     }
@@ -283,8 +295,14 @@ public class SidePanel extends FlexboxLayout {
     }
 
     public void setPaddingLeft(int padding) {
-        paddingLeft.getLayoutParams().width = padding;
+        setPadding(padding, getPaddingTop(), getPaddingRight(), getPaddingBottom());
         requestLayout();
-        post(() -> setX(isHidden() ? -getWidth() : 0));
+        post(() -> setTranslationX(isHidden() ? (mSide == 0 ? -getWidth() : getWidth()) : 0));
+    }
+
+    public void setPaddingRight(int padding) {
+        setPadding(getPaddingLeft(), getPaddingTop(), padding, getPaddingBottom());
+        requestLayout();
+        post(() -> setTranslationX(isHidden() ? (mSide == 0 ? -getWidth() : getWidth()) : 0));
     }
 }

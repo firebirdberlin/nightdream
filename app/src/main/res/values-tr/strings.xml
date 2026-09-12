@@ -142,6 +142,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Bağış yap</string>
     <string name="product_name_pro">Tam sürüm</string>
     <string name="radio">Radyo</string>
+    <string name="radio_stream_keep_running">Radyoyu açık tut</string>
+    <string name="radio_stream_keep_running_summary">Alarm durdurulduktan sonra radyo akışını çalmaya devam et.</string>
     <string name="radio_stream">Radyo akışları</string>
     <string name="radio_stream_failure">Radyo akış hatası</string>
     <string name="radio_stream_manual_input_description">Kanal adı</string>

@@ -26,4 +26,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alarmUpcoming">Alarm sabanjure</string>
     <string name="alarmStartDate">Alarm sabanjure nalika</string>
     <string name="show_calendar_events">Sorot acara</string>
+    <string name="radio_stream_keep_running">Tetep uripake radio</string>
+    <string name="radio_stream_keep_running_summary">Terusake muter aliran radio sawise weker dipateni.</string>
 </resources>
