@@ -6,12 +6,12 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
--> Edit the strings in this file
--> Send your file to stefan.fruhner@googlemail.com.
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
 OR
--> Open a pull request on Github.
+ -> Open a pull request on Github.
 
-Please preserve the xml tags and the utf8 encoding.
+ Please preserve the xml tags and the utf8 encoding.
 -->
 
 
@@ -28,8 +28,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_alarm_tone">Добавить свою мелодию</string>
     <string name="add_custom_font">Добавить свой шрифт</string>
     <string name="alarm">Будильник</string>
+    <string name="alarmName">Название будильника</string>
     <string name="alarmFadeIn">Нарастание громкости</string>
     <string name="alarmFadeInDurationSeconds">Исчезать через</string>
+    <string name="alarmFadeInMaxVolumePercent">максимальная громкость</string>
     <string name="alarmStartDate">Включить следующий будильник</string>
     <string name="alarmStartsFrom">От</string>
     <string name="alarmUpcoming">Время будильника</string>
@@ -52,7 +54,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="autostart_timerange_label_start">Время начала</string>
     <string name="background">Задний фон</string>
     <string name="background_zoomin">Масштабирование анимации</string>
-    <string name="background_zoomin_summary">Автоматически масштабировать фоновое изображение.</string>
+    <string name="background_zoomin_summary">Автоматически масштабировать фоное изображение.</string>
     <string name="background_fadein">Плавная анимация</string>
     <string name="background_fadein_summary">Плавный переход между фоновыми изображениями.</string>
     <string name="background_movein">Перемещение анимации</string>
@@ -61,15 +63,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_movein_right">Справа</string>
     <string name="background_movein_bottom">Снизу</string>
     <string name="background_movein_left">Слева</string>
+    <string name="background_image_filter">Фильтр изображения</string>
+    <string name="background_image_filter_none">Нет</string>
+    <string name="background_image_filter_grey">Серый</string>
+    <string name="background_image_filter_sepia">Сепия</string>
+    <string name="background_image_filter_invert">Инверсия</string>
+    <string name="background_image_filter_contrast">Контраст</string>
+    <string name="background_image_filter_sketch">Эскиз</string>
+    <string name="background_image_filter_blur">Размытие</string>
     <string name="background_auto_accent_color">Автоматический выбор цвета</string>
     <string name="background_auto_accent_summary">Автоматический выбор подходящего цвета.</string>
     <string name="background_black">Чёрный</string>
     <string name="background_exif">Показать информацию EXIF</string>
     <string name="background_exif_summary">Показать информацию EXIF на текущем фоновом изображении</string>
     <string name="background_gradient">Градиент</string>
+    <string name="background_gradient_start_color">Начальный цвет</string>
+    <string name="background_gradient_end_color">Конечный цвет</string>
     <string name="background_image">Изображение</string>
     <string name="background_image_select">Выбор изображения</string>
     <string name="background_slideshow">Слайд-шоу</string>
+    <string name="background_transparent">Прозрачный</string>
     <string name="background_image_duration">Изображение меняется каждые</string>
     <string name="seconds_60">60 сек.</string>
     <string name="seconds_30">30 сек.</string>
@@ -79,6 +92,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
     <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
     <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
+    <string name="battery">Батарея</string>
     <string name="batteryTimeoutDescription">Время ожидания батареи</string>
     <string name="batteryTimeoutNever">Никогда</string>
     <string name="batteryTimeout1min">1 мин</string>
@@ -91,8 +105,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Яркость</string>
     <string name="brightness_night_mode">Яркость в ночном режиме</string>
     <string name="brightness_offset">Предел яркости</string>
+    <string name="brightsky_conditions_dry">сухо</string>
+    <string name="brightsky_conditions_fog">туман</string>
+    <string name="brightsky_conditions_hail">град</string>
+    <string name="brightsky_conditions_rain">дождь</string>
+    <string name="brightsky_conditions_sleet">мокрый снег</string>
+    <string name="brightsky_conditions_snow">снег</string>
+    <string name="brightsky_conditions_thunderstorm">гроза</string>
+    <string name="bug">Сообщить об ошибке</string>
+    <string name="bug_summary">Пожалуйста, дайте нам знать, если что-то пошло не так.</string>
     <string name="buy">Купить</string>
     <string name="buy_upgrade_summary">Обновите до профессиональной версии сейчас.</string>
+    <string name="subscribe">Подписаться</string>
     <string name="category_handle_power">… и когда подключен к</string>
     <string name="category_handle_power_autostart_time">Запуск в промежуток времени</string>
     <string name="category_night_mode_display_management">Управление экраном</string>
@@ -100,17 +124,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Основной цвет</string>
     <string name="choose_secondary_color">Цвет текста</string>
     <string name="clear">Очистить</string>
+    <string name="clock">Часы</string>
     <string name="clock_hands">Стрелки</string>
     <string name="clock_layout_analog">Аналоговые часы</string>
     <string name="clock_layout_calendar">Цифровые часы с календарём</string>
     <string name="clock_layout_digital">Цифровые часы</string>
     <string name="clock_layout_digital2">Цифровые часы с большими значками погоды</string>
+    <string name="clock_layout_digital3">цифровые часы с погодой (2)</string>
     <string name="clock_layout_elegant_analog">Элегантные аналоговые часы</string>
     <string name="clock_layout_digit_analog">Аналоговые часы с цифрами</string>
     <string name="clock_layout_digital_flip">Перекидные цифровые часы</string>
+    <string name="clock_layout_anim_digit">цифровые анимированные часы</string>
     <string name="clock_layout">Тип часов</string>
     <string name="clock_layout_modern_analog">Современные аналоговые часы</string>
     <string name="clock_layout_mirror_text">Зеркальный текст</string>
+    <string name="clockBackgroundTransparency">Прозрачность фона часов</string>
     <string name="colors">Цвета</string>
     <string name="confirm_reset_question">Вы уверены в сбросе всех настроек?</string>
     <string name="confirm_reset_question_layout">Вы действительно хотите сбросить этот шаблон до значений по умолчанию?</string>
@@ -119,6 +147,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">Получить beta версию</string>
     <string name="contribute_source_code">Исходный код проекта</string>
     <string name="contribute_translation">Перевод</string>
+    <string name="copy_images">Обработка изображения %1$d из %2$d</string>
     <string name="country">Страна</string>
     <string name="credits">Разработчики</string>
     <string name="credits_pull_requests">Внести изменения</string>
@@ -145,6 +174,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="gift_for_donors">Подарок за ваше пожертвование</string>
     <string name="flashlight">Фонарик</string>
     <string name="forecast">Прогноз погоды на 5 дней</string>
+    <string name="frequently_asked_questions">часто задаваемые вопросы</string>
     <string name="hand_shape_arc">Обводка</string>
     <string name="hand_shape_bar">Прямоугольник</string>
     <string name="hand_shape_triangle">Треугольник</string>
@@ -158,12 +188,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_disconnection_at_time_range_end">По заверш. диапазона времени автозапуска</string>
     <string name="handle_power_usb">Зарядка от USB</string>
     <string name="handle_power_wireless">Беспроводная зарядка</string>
+    <string name="help">Справка и обратная связь</string>
     <string name="hide_background_image_in_night_mode">Скрыть</string>
     <string name="hide_background_image_in_night_mode_summary">Скрыть фон в ночном режиме</string>
     <string name="hour">ч.</string>
+    <string name="ignoreBatteryOptimisation">Оптимизация батареи</string>
+    <string name="ignoreBatteryOptimisation_summary">Рекомендуется исключить приложение из оптимизации батареи.</string>
     <string name="inner_circle_radius">Радиус внутреннего круга</string>
+    <string name="images_background_copy">Обработка изображений в фоновом режиме</string>
+    <string name="images_background_service_unbound">Ошибка при обработке изображений. Пожалуйста, попробуйте еще раз.</string>
     <string name="length">Длина</string>
     <string name="location_time">Местное время</string>
+    <string name="mailing_list">Публичный список рассылки</string>
     <string name="manage_permissions">Управление разрешениями</string>
     <string name="maxBrightness">Максимальная яркость экрана</string>
     <string name="maxBrightnessBattery">Максимальная яркость от АКБ</string>
@@ -183,18 +219,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Время окончания</string>
     <string name="night_mode_timerange_label_start">Время начала</string>
     <string name="night_mode_timerange_title">Ночные часы</string>
+    <string name="no_alarm_set">будильник не установлен</string>
     <string name="noise_sensitivity">Чувствительность микрофона</string>
     <string name="notification_channel_name_alarms">Будильники</string>
     <string name="notification_channel_name_devmsg">Сообщения</string>
     <string name="notification_channel_name_radio">Радио</string>
     <string name="notification_channel_name_services">Службы</string>
+    <string name="notification_channel_name_copy_images">Копирование изображений</string>
     <string name="notification_channel_desc_alarms">Уведомление показывать во время активного будильника</string>
     <string name="notification_channel_desc_devmsg">Сообщения, касающиеся приложения</string>
     <string name="notification_channel_desc_radio">Уведомление о работающем интернет радио</string>
     <string name="notification_channel_desc_services">Уведомление запущенных сервисов</string>
+    <string name="notification_channel_desc_copy_images">Уведомление, указывающее на работающую службу копирования изображений</string>
+    <string name="notification_show_preview_summary">Показывать превью входящих уведомлений</string>
+    <string name="notification_show_preview_title">Превью уведомлений</string>
     <string name="notification_show_mediastyle_summary">Показать элементы управления медиаплеером</string>
     <string name="notification_show_mediastyle_title">Управление плеером</string>
     <string name="notification_lowest_importance">Степень важности</string>
+    <string name="notification_list_delete_all">Удалить все</string>
+    <string name="notification_list_delete_marked">Удалить все отмеченные</string>
+    <string name="notification_list_mark_all">Отметить все</string>
     <string name="notification_importance_min">минимальная</string>
     <string name="notification_importance_low">низкая</string>
     <string name="notification_importance_default">по умолчанию</string>
@@ -204,6 +248,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notificationsInStatusBarTitle">Статус-бар</string>
     <string name="notificationsInStatusBarSummary">Показывать уведомления в строке состояния, если включено, в противном случае добавить дополнительную строку.</string>
     <string name="notificationListenerService">Служба прослушивания уведомлений</string>
+    <string name="notifyForUpcomingAlarmsSummary">Уведомлять о предстоящих будильниках</string>
+    <string name="notifyForUpcomingAlarmsTitle">Уведомить заранее</string>
     <string name="showNotifications">Показать уведомления</string>
     <string name="showNotificationsAccessGranted">Доступ разрешен</string>
     <string name="showNotificationsAccessNotGranted">Доступ не разрешен!</string>
@@ -221,15 +267,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Долгое нажатие</string>
     <string name="outer_circle_radius">Радиус внешнего круга</string>
     <string name="outer_circle_width">Ширина внешнего круга</string>
+    <string name="permission_request">Запрос разрешения</string>
+    <string name="permission_request_post_notifications">Пожалуйста, предоставьте разрешение на отправку уведомлений.</string>
     <string name="permission_request_overlays">Разрешение на отображение оверлеев (автозапуск) не предоставлено. Пожалуйста, предоставьте это разрешение!</string>
     <string name="permission_request_location_mode">Включенный в данный момент режим определения местоположения не позволяет сканировать текущее местоположение.</string>
+    <string name="permission_request_storage">Разрешение на доступ к хранилищу не было предоставлено.</string>
     <string name="persistent_battery_value_while_charging">Всегда отображать заряд</string>
     <string name="persistent_battery_value_while_charging_summary">Показывать статус батареи во время зарядки</string>
+    <string name="pollen_hazelnut">Лещина</string>
+    <string name="pollen_birch">Береза</string>
+    <string name="pollen_ambrosia">Амброзия</string>
+    <string name="pollen_grass">Травы</string>
+    <string name="pollen_ash">Ясень</string>
+    <string name="pollen_mugwort">Полынь</string>
+    <string name="pollen_alder">Ольха</string>
+    <string name="pollen_rye">Рожь</string>
     <string name="power_source">Источник питания</string>
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>
     <string name="preview">Предосмотр</string>
-<string name="product_description_weather">Обновление включает:
+    <string name="product_description_weather">Обновление включает:
 \n
 \n- строка состояния погоды отображается под часами;
 \n- прогноз погоды на 5 дней;
@@ -237,35 +294,58 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Пожертвование</string>
     <string name="product_name_pro">Полная версия</string>
     <string name="radio">Радио</string>
+    <string name="radio_connecting">подключение</string>
+    <string name="radio_muting">отключение рекламы</string>
+    <string name="radio_next">следующая станция</string>
+    <string name="radio_pause">пауза радио</string>
+    <string name="radio_paused">на паузе</string>
+    <string name="radio_play">играть радио</string>
+    <string name="radio_playing">играет</string>
     <string name="radio_stream_keep_running">Не выключать радио</string>
     <string name="radio_stream_keep_running_summary">Продолжить воспроизведение радиопотока после выключения будильника.</string>
+    <string name="radio_previous">предыдущая станция</string>
     <string name="radio_station">Радио станция</string>
     <string name="radio_station_dialog_title">Выберите радио станцию</string>
     <string name="radio_station_none">Нет радиостанций</string>
+    <string name="radio_stream">Потоковое радио</string>
     <string name="radio_stream_activate_wifi">WiFi</string>
     <string name="radio_stream_activate_wifi_desc">Когда Включено, будет активирован Вай-фай за несколько минут до начала проигрывания интернет радио</string>
-    <string name="radio_stream_require_wifi">требуется подключение к WiFi</string>
-    <string name="radio_stream_require_wifi_desc">Если включено, будильники будут воспроизводить веб-радиопотоки только при установленном соединении WiFi.</string>
-    <string name="radio_stream">Потоковое радио</string>
     <string name="radio_stream_failure">Поток неожиданно остановлен</string>
     <string name="radio_stream_manual_edit">Изменить радио-станцию</string>
     <string name="radio_stream_manual_input_description">Название станции</string>
     <string name="radio_stream_manual_input_hint">Добавить станцию вручную</string>
-    <string name="radio_stream_manual_input_url">Поток URL</string>
     <string name="radio_stream_manual_input_seconds_to_mute">Секунд до отключения</string>
+    <string name="radio_stream_manual_input_url">Поток URL</string>
     <string name="radio_stream_music_allowed">Использовать музыкальный поток</string>
     <string name="radio_stream_no_search_results">Поиск не дал результатов</string>
     <string name="radio_stream_offline">Отключено</string>
     <string name="radio_stream_query_hint">Строка поиска</string>
+    <string name="radio_stream_require_wifi">требуется подключение к WiFi</string>
+    <string name="radio_stream_require_wifi_desc">Если включено, будильники будут воспроизводить веб-радиопотоки только при установленном соединении WiFi.</string>
     <string name="radio_stream_search">Поиск</string>
     <string name="radio_stream_unreachable_url">URL недоступен</string>
     <string name="recommend_app_desc">Выберите приложение чтобы поделиться рекомендациями</string>
     <string name="recommend_app_subject">Я хочу порекомендовать Вам это приложение-часы</string>
     <string name="recommend">Рекомендовать приложение</string>
     <string name="export_preferences">Экспорт информации о приложении</string>
+    <string name="rate">Оценить это приложение</string>
+    <string name="rate_summary">Мы хотели бы знать, нравится ли вам наше приложение</string>
     <string name="remaining">осталось</string>
+    <string name="remaining_alarm_time_end"> </string>
+    <string name="remaining_alarm_time_now">Этот будильник скоро прозвенит.</string>
+    <string name="remaining_alarm_time_start">Этот будильник прозвенит через </string>
     <string name="repeat">Повторы</string>
+    <string name="reset">сброс</string>
     <string name="reset_to_defaults">Сброс настроек</string>
+    <string name="rss">RSS лента</string>
+    <string name="rss_charset">кодировка символов</string>
+    <string name="rss_enable_summary">Включить RSS ленту</string>
+    <string name="rss_tickerspeed">Скорость бегущей строки</string>
+    <string name="rss_timeset">Интервал обновления (минуты)</string>
+    <string name="rss_url_error">URL не установлен</string>
+    <string name="rss_data_error">Произошла ошибка. Данные недоступны.</string>
+    <string name="rss_text_size">Размер текста</string>
+    <string name="screen">Экран</string>
     <string name="screenProtection">Защита экрана от выгорания</string>
     <string name="screenProtectionNone">Ничего</string>
     <string name="screenProtectionMove">Перемещать часы по экрану</string>
@@ -285,13 +365,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="set_alarm">Уст. будильник</string>
     <string name="showAlarmsPersistently">Постоянно показывать</string>
     <string name="showAlarmsPersistentlySummary">Показывать время следующего будильника постоянно на экране.</string>
+    <string name="showBattery">Показывать батарею</string>
     <string name="showBatteryWarningSummary">Предупреждать о работе от батареи</string>
     <string name="showBatteryWarningTitle">Предупреждение о батарее</string>
     <string name="showBatteryWarningMessage">Внимание: Источник внешнего питания отключен!</string>
     <string name="show_apparent_temperature">Включить температуру по ощущению</string>
+    <string name="show_alarm">Показывать будильники</string>
     <string name="show_calendar_events">Выделить события</string>
     <string name="show_date">Показывать дату</string>
     <string name="show_divider">Отображать разделитель</string>
+    <string name="showPollen">Индекс риска пыльцы</string>
+    <string name="showPollenIndex">Уровень нагрузки</string>
+    <string name="showPollenIndex0">нет</string>
+    <string name="showPollenIndex1">отсутствует до низкого</string>
+    <string name="showPollenIndex2">низкий</string>
+    <string name="showPollenIndex3">от низкого до умеренного</string>
+    <string name="showPollenIndex4">умеренный</string>
+    <string name="showPollenIndex5">от умеренного до высокого</string>
+    <string name="showPollenIndex6">высокий</string>
+    <string name="showPollenNoData">Нет данных для этой области. Индекс риска пыльцы доступен только для регионов Германии.</string>
+    <string name="showPollenSummary">доступно только для регионов Германии</string>
     <string name="show_temperature">Показывать температуру</string>
     <string name="show_second_hand">Показывать секундную стрелку</string>
     <string name="show_seconds">Показывать секунды</string>
@@ -302,8 +395,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_center_animated">Анимация</string>
     <string name="slideshow_style">Стиль</string>
     <string name="sleep_time_dialog_title">Таймер сна</string>
+    <string name="smart_home">Умный дом</string>
+    <string name="smart_home_avm">AVM Fritz!Box</string>
+    <string name="smart_home_avm_host">Хост</string>
+    <string name="smart_home_avm_host_summary">Адрес вашего Fritz!Box, например http://fritz.box</string>
+    <string name="smart_home_avm_username">Имя пользователя</string>
+    <string name="smart_home_avm_password">Пароль</string>
+    <string name="smart_home_purchase_request">Управляйте своими умными устройствами AVM с помощью Pro версии</string>
+    <string name="smart_home_permission_denied">Доступ к локальной сети отклонен. Не удается подключиться к Fritz!Box.</string>
     <string name="snoozeTime">Время повтора</string>
     <string name="snoozeAfter">Автоматическая отсрочка после</string>
+    <string name="snoozeCycles">Циклы автоповтора до автостопа</string>
     <string name="speakTime">Сейчас</string>
     <string name="speakTimeSummary">Сказать текущее время при долгом нажатии на экран.</string>
     <string name="speakTimeTitle">Озвучить текущее время</string>
@@ -313,7 +415,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">В промежутке времени</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Режим ожидания при разрядке.</string>
     <string name="style">Стиль</string>
+    <string name="suggestions">Предложения</string>
+    <string name="suggestions_summary">Дайте нам знать, если у вас есть какие-либо предложения для будущих версий.</string>
     <string name="temperatureUnit">Ед. температуры</string>
+    <string name="text_size">Размер текста</string>
     <string name="tick_style_hours">Стиль часовых делений</string>
     <string name="tick_style_minutes">Стиль минутных делений</string>
     <string name="tick_style_circle">Точки</string>
@@ -332,6 +437,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Шрифт</string>
     <string name="uninstall">Удалить приложение</string>
+    <string name="unlockHint">Долгое нажатие для разблокировки</string>
     <string name="upgrade_now">Обновите сейчас!</string>
     <string name="useAlarmSwipeGesture">Установите будильник с помощью жестов</string>
     <string name="useAlarmSwipeGestureSummary">Позволяет установить новый будильник, проводя пальцем из левого нижнего угла.</string>
@@ -340,10 +446,34 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLock">Заблокировать устройство</string>
     <string name="weather">Погода</string>
     <string name="weatherProvider">Провайдер погоды</string>
+    <string name="open_weather_map_api_key">API ключ OpenWeatherMap</string>
+    <string name="open_weather_map_api_key_summary">Введите ваш API ключ для OpenWeatherMap. Получите его на openweathermap.org</string>
     <string name="weather_calculation_time">время подсчёта погоды</string>
     <string name="weather_city_id_title">Поиск местоположения</string>
     <string name="weather_current_location">Текущее местоположение</string>
+    <string name="weather_icon">Значок погоды</string>
+    <string name="weather_icon_default">По умолчанию</string>
+    <string name="weather_icon_colored">Цветной</string>
+    <string name="weather_icon_animated">Анимированный (Android 6+)</string>
     <string name="weather_info_title">Информация</string>
+    <string name="weather_sun_rise">Восход</string>
+    <string name="weather_sun_set">Закат</string>
     <string name="weekdays">Дни недели</string>
     <string name="width">Ширина</string>
+    <string name="snoozeUsingVolumeButtons">Отложить с помощью кнопок громкости</string>
+    <string name="product_name_subscription">годовая подписка</string>
+    <string name="subscription_free_trial_description">%s бесплатно для пробного периода.</string>
+    <string name="subscription_prefix_after_period">Затем</string>
+    <string name="subscription_prefix_subsequently">Впоследствии</string>
+    <string name="subscription_price_per_period">%s за %s.</string>
+    <string name="subscription_offer_price_for_period">%s за %s.</string>
+    <string name="subscription_renewal_info">Автопродление. Отмена в любое время.</string>
+    <string name="unit_day">День</string>
+    <string name="unit_days">Дней</string>
+    <string name="unit_week">Неделя</string>
+    <string name="unit_weeks">Недель</string>
+    <string name="unit_month">Месяц</string>
+    <string name="unit_months">Месяцев</string>
+    <string name="unit_year">Год</string>
+    <string name="unit_years">Лет</string>
 </resources>

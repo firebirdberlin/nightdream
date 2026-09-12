@@ -6,12 +6,12 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
--> Edit the strings in this file
--> Send your file to stefan.fruhner@googlemail.com.
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
 OR
--> Open a pull request on Github.
+ -> Open a pull request on Github.
 
-Please preserve the xml tags and the utf8 encoding.
+ Please preserve the xml tags and the utf8 encoding.
 -->
 
 
@@ -28,8 +28,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_alarm_tone">Aangepaste alarmtoon toevoegen</string>
     <string name="add_custom_font">Aangepast lettertype toevoegen</string>
     <string name="alarm">Alarm</string>
+    <string name="alarmName">Naam van het alarm</string>
     <string name="alarmFadeIn">Toenemend volume</string>
     <string name="alarmFadeInDurationSeconds">Vervaag in duur</string>
+    <string name="alarmFadeInMaxVolumePercent">maximaal volume</string>
     <string name="alarmStartDate">Volgend alarm op</string>
     <string name="alarmStartsFrom">Van</string>
     <string name="alarmUpcoming">Aanstaand alarm</string>
@@ -75,6 +77,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_exif">Toon EXIF-informatie achtergrond</string>
     <string name="background_exif_summary">Toon EXIF-informatie achtergrond samenvatting</string>
     <string name="background_gradient">Verloop</string>
+    <string name="background_gradient_start_color">Startkleur</string>
+    <string name="background_gradient_end_color">Eindkleur</string>
     <string name="background_image">Afbeelding</string>
     <string name="background_image_select">Selecteer een afbeelding</string>
     <string name="background_slideshow">Slideshow</string>
@@ -88,6 +92,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
     <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
     <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
+    <string name="battery">Batterij</string>
     <string name="batteryTimeoutDescription">Tijdslimiet batterij</string>
     <string name="batteryTimeoutNever">Nooit</string>
     <string name="batteryTimeout1min">1 min</string>
@@ -100,10 +105,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Helderheid</string>
     <string name="brightness_night_mode">Helderheid nachtmodus</string>
     <string name="brightness_offset">Helderheid standaard</string>
+    <string name="brightsky_conditions_dry">droog</string>
+    <string name="brightsky_conditions_fog">mist</string>
+    <string name="brightsky_conditions_hail">hagel</string>
+    <string name="brightsky_conditions_rain">pioggia</string>
+    <string name="brightsky_conditions_sleet">natte sneeuw</string>
+    <string name="brightsky_conditions_snow">sneeuw</string>
+    <string name="brightsky_conditions_thunderstorm">onweer</string>
     <string name="bug">Een fout melden</string>
     <string name="bug_summary">Laat het ons weten als er iets mis is gegaan</string>
     <string name="buy">Kopen</string>
     <string name="buy_upgrade_summary">Verkrijg versie met alle opties</string>
+    <string name="subscribe">Abonneren</string>
     <string name="category_handle_power">… en als je verbonden bent met</string>
     <string name="category_handle_power_autostart_time">Starten binnen tijdsbereik</string>
     <string name="category_night_mode_display_management">Scherminstellingen</string>
@@ -121,6 +134,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_elegant_analog">elegante analoge klok</string>
     <string name="clock_layout_digit_analog">analoge klok met cijfers</string>
     <string name="clock_layout_digital_flip">flip klok</string>
+    <string name="clock_layout_anim_digit">geanimeerde digitale klok</string>
     <string name="clock_layout">Indeling</string>
     <string name="clock_layout_modern_analog">moderne analoge klok</string>
     <string name="clock_layout_mirror_text">Tekst spiegelen</string>
@@ -133,12 +147,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">Verkrijg betaversie</string>
     <string name="contribute_source_code">Broncode</string>
     <string name="contribute_translation">Vertaling</string>
+    <string name="copy_images">Verwerken van afbeelding %1$d van %2$d</string>
     <string name="country">Land</string>
     <string name="credits">Met dank aan</string>
     <string name="credits_pull_requests">Codeverzoeken</string>
     <string name="date_format">Datumopmaak</string>
     <string name="delete">Verwijderen</string>
-    <string name="dialog_message_pending_purchase">Je aankoop was nog niet bevestigd door Google Pay</string>
+    <string name="dialog_message_pending_purchase">Je aankoop was nog niet bevestigd door Google Play</string>
     <string name="dialog_message_already_owned">Dit item is al gekocht</string>
     <string name="dialog_message_thank_you">Hartelijk bedankt!</string>
     <string name="dialog_title_thank_you">Bedankt</string>
@@ -177,7 +192,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hide_background_image_in_night_mode">Verbergen</string>
     <string name="hide_background_image_in_night_mode_summary">Achtergrondafbeelding verbergen in de nachtmodus.</string>
     <string name="hour">u</string>
+    <string name="ignoreBatteryOptimisation">Batterijoptimalisatie</string>
+    <string name="ignoreBatteryOptimisation_summary">Het wordt aanbevolen om de app uit te sluiten van batterijoptimalisaties.</string>
     <string name="inner_circle_radius">Straal van binnenste cirkel</string>
+    <string name="images_background_copy">Afbeeldingen op de achtergrond verwerken</string>
+    <string name="images_background_service_unbound">Fout bij het verwerken van afbeeldingen. Probeer het opnieuw.</string>
     <string name="length">Lengte</string>
     <string name="location_time">Plaatselijke tijd</string>
     <string name="mailing_list">Openbare mailinglijst</string>
@@ -200,20 +219,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Eindtijd</string>
     <string name="night_mode_timerange_label_start">Begintijd</string>
     <string name="night_mode_timerange_title">Nachttijd</string>
+    <string name="no_alarm_set">geen alarm ingesteld</string>
     <string name="noise_sensitivity">Gevoeligheid van microfoon</string>
     <string name="notification_channel_name_alarms">Alarmen</string>
     <string name="notification_channel_name_devmsg">Berichten</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Diensten</string>
+    <string name="notification_channel_name_copy_images">Afbeeldingen kopiëren</string>
     <string name="notification_channel_desc_alarms">Notificatie weergave tijdens alarm</string>
     <string name="notification_channel_desc_devmsg">Berichten over deze app</string>
     <string name="notification_channel_desc_radio">Notificatie weergave tijdens afspelen van web radio</string>
     <string name="notification_channel_desc_services">Notificatie weergave voor lopende diensten</string>
+    <string name="notification_channel_desc_copy_images">Melding die aangeeft dat de service voor het kopiëren van afbeeldingen actief is</string>
     <string name="notification_show_preview_summary">Toon een voorbeeld van inkomende meldingen</string>
     <string name="notification_show_preview_title">Voorbeeld van melding</string>
     <string name="notification_show_mediastyle_summary">Toon</string>
     <string name="notification_show_mediastyle_title">Media-instellingen</string>
     <string name="notification_lowest_importance">Belangrijk is hoger of gelijk aan</string>
+    <string name="notification_list_delete_all">Alles verwijderen</string>
+    <string name="notification_list_delete_marked">Alle gemarkeerde verwijderen</string>
+    <string name="notification_list_mark_all">Alles markeren</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">laag</string>
     <string name="notification_importance_default">standaard</string>
@@ -223,6 +248,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notificationsInStatusBarTitle">Statusbalk</string>
     <string name="notificationsInStatusBarSummary">Meldingen weergeven in de statusbalk indien ingeschakeld. Voeg anders een extra rij toe.</string>
     <string name="notificationListenerService">Notificatie luisterdienst</string>
+    <string name="notifyForUpcomingAlarmsSummary">Melding voor aankomende alarmen</string>
+    <string name="notifyForUpcomingAlarmsTitle">Vooraf melden</string>
     <string name="showNotifications">Toon berichten</string>
     <string name="showNotificationsAccessGranted">Toegang geaccepteerd</string>
     <string name="showNotificationsAccessNotGranted">Toegang niet toegestaan</string>
@@ -240,15 +267,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">Lang drukken</string>
     <string name="outer_circle_radius">Straal van buitenste cirkel</string>
     <string name="outer_circle_width">Diameter van buitenste cirkel</string>
+    <string name="permission_request">Verzoek om toestemming</string>
+    <string name="permission_request_post_notifications">Verleen toestemming om meldingen te plaatsen.</string>
     <string name="permission_request_overlays">De machtiging om overlays the tonen (autostart) is niet verleend. Verleen deze machtiging a.u.b.</string>
     <string name="permission_request_location_mode">de locatiemode laat scannen naar de huidige locatie niet toe</string>
+    <string name="permission_request_storage">De toestemming voor toegang tot de opslag is niet verleend.</string>
     <string name="persistent_battery_value_while_charging">Permanente batterijstatus</string>
     <string name="persistent_battery_value_while_charging_summary">Batterijstatus permanent tonen tijdens het opladen.</string>
+    <string name="pollen_hazelnut">Hazelaar</string>
+    <string name="pollen_birch">Berk</string>
+    <string name="pollen_ambrosia">Ambrosia</string>
+    <string name="pollen_grass">Grassen</string>
+    <string name="pollen_ash">Es</string>
+    <string name="pollen_mugwort">Bijvoet</string>
+    <string name="pollen_alder">Els</string>
+    <string name="pollen_rye">Rogge</string>
     <string name="power_source">Energiebron</string>
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>
     <string name="preview">Voorbeeld</string>
-<string name="product_description_weather">Een update bevat
+    <string name="product_description_weather">Een update bevat
 \n
 \n- een één-lijns weerbericht onder de klok
 \n- een vijfdaagse weersvoorspelling
@@ -256,26 +294,34 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Donatie</string>
     <string name="product_name_pro">Volledige versie</string>
     <string name="radio">Radio</string>
+    <string name="radio_connecting">verbinden</string>
+    <string name="radio_muting">advertenties dempen</string>
+    <string name="radio_next">volgende station</string>
+    <string name="radio_pause">radio pauzeren</string>
+    <string name="radio_paused">gepauzeerd</string>
+    <string name="radio_play">radio afspelen</string>
+    <string name="radio_playing">speelt af</string>
+    <string name="radio_stream_keep_running">Radio aan laten staan</string>
+    <string name="radio_stream_keep_running_summary">Ga door met het afspelen van de radiostream nadat het alarm is gestopt.</string>
+    <string name="radio_previous">vorig station</string>
     <string name="radio_station">Radiostation</string>
     <string name="radio_station_dialog_title">Selecteer een radiostation</string>
     <string name="radio_station_none">geen radiostation</string>
+    <string name="radio_stream">Radiostreams</string>
     <string name="radio_stream_activate_wifi">Wi-Fi</string>
     <string name="radio_stream_activate_wifi_desc">Indien aan: Wi-Fi wordt enkele minuten voor het starten van de radiostream ingeschakeld.</string>
-    <string name="radio_stream_require_wifi">Wi-Fi-verbinding nodig</string>
-    <string name="radio_stream_require_wifi_desc">Indien aan: alarm zal streams van internetradio\'s alleen afspelen als er Wi-Fi-verbinding is</string>
-    <string name="radio_stream">Radiostreams</string>
-    <string name="radio_stream_keep_running">Radio aan laten staan</string>
-    <string name="radio_stream_keep_running_summary">Ga door met het afspelen van de radiostream nadat het alarm is gestopt.</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>
     <string name="radio_stream_manual_edit">Bewerk radiostation</string>
     <string name="radio_stream_manual_input_description">Stationsnaam</string>
     <string name="radio_stream_manual_input_hint">Handmatig een station toevoegen</string>
-    <string name="radio_stream_manual_input_url">Stream-URL</string>
     <string name="radio_stream_manual_input_seconds_to_mute">Seconden te dempen voor starten</string>
+    <string name="radio_stream_manual_input_url">Stream-URL</string>
     <string name="radio_stream_music_allowed">Muziek streamen toegestaan</string>
     <string name="radio_stream_no_search_results">Er zijn geen zoekresultaten.</string>
     <string name="radio_stream_offline">offline</string>
     <string name="radio_stream_query_hint">Zoekterm</string>
+    <string name="radio_stream_require_wifi">Wi-Fi-verbinding nodig</string>
+    <string name="radio_stream_require_wifi_desc">Indien aan: alarm zal streams van internetradio\'s alleen afspelen als er Wi-Fi-verbinding is</string>
     <string name="radio_stream_search">Zoeken</string>
     <string name="radio_stream_unreachable_url">De URL is niet bereikbaar.</string>
     <string name="recommend_app_desc">Kies een app om je aanbeveling mee te delen.</string>
@@ -289,7 +335,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining_alarm_time_now">resterende_alarm_tijd_nu</string>
     <string name="remaining_alarm_time_start">resterende_alarm_tijd_start</string>
     <string name="repeat">herhalen</string>
+    <string name="reset">resetten</string>
     <string name="reset_to_defaults">Standaardwaarden herstellen</string>
+    <string name="rss">RSS-ticker</string>
+    <string name="rss_charset">tekstcodering</string>
+    <string name="rss_enable_summary">RSS-ticker inschakelen</string>
+    <string name="rss_tickerspeed">Tickersnelheid</string>
+    <string name="rss_timeset">Vernieuwingsinterval (minuten)</string>
+    <string name="rss_url_error">URL niet ingesteld</string>
+    <string name="rss_data_error">Er is een fout opgetreden. Geen gegevens beschikbaar.</string>
+    <string name="rss_text_size">Tekstgrootte</string>
+    <string name="screen">Scherm</string>
     <string name="screenProtection">Inbrandbescherming</string>
     <string name="screenProtectionNone">Geen</string>
     <string name="screenProtectionMove">Klok willekeurig verplaatsen</string>
@@ -309,15 +365,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="set_alarm">alarm instellen</string>
     <string name="showAlarmsPersistently">Aanhoudend tonen</string>
     <string name="showAlarmsPersistentlySummary">Toon het volgende alarm aanhoudend op het scherm</string>
+    <string name="showBattery">Batterij tonen</string>
     <string name="showBatteryWarningSummary">Laat een waarschuwing zien bij opstarten als batterij gebruikt wordt.</string>
     <string name="showBatteryWarningTitle">Batterijwaarschuwing</string>
     <string name="showBatteryWarningMessage">Let op: Geen voeding aangesloten!</string>
     <string name="show_apparent_temperature">Toon gevoelstemperatuur</string>
+    <string name="show_alarm">Alarmen tonen</string>
     <string name="show_calendar_events">Toon agenda-events</string>
     <string name="show_date">Datum tonen</string>
     <string name="show_divider">Scheidingslijn tonen</string>
     <string name="showPollen">toon Pollen</string>
-    <string name="showPollenSummary">showPollenSamenvatting</string>
+    <string name="showPollenIndex">Stressniveau</string>
+    <string name="showPollenIndex0">geen</string>
+    <string name="showPollenIndex1">geen tot laag</string>
+    <string name="showPollenIndex2">laag</string>
+    <string name="showPollenIndex3">laag tot matig</string>
+    <string name="showPollenIndex4">matig</string>
+    <string name="showPollenIndex5">matig tot hoog</string>
+    <string name="showPollenIndex6">hoog</string>
+    <string name="showPollenNoData">Geen gegevens voor dit gebied. Pollenrisico-index alleen beschikbaar voor Duitse locaties.</string>
+    <string name="showPollenSummary">Disponibile solo per località in Germania</string>
     <string name="show_temperature">Temperatuur tonen</string>
     <string name="show_second_hand">Toon tweede wijzer</string>
     <string name="show_seconds">Toon seconden</string>
@@ -328,6 +395,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_center_animated">geanimeerd</string>
     <string name="slideshow_style">Stijl</string>
     <string name="sleep_time_dialog_title">Bedtijd</string>
+    <string name="smart_home">Smart Home</string>
+    <string name="smart_home_avm">AVM Fritz!Box</string>
+    <string name="smart_home_avm_host">Host</string>
+    <string name="smart_home_avm_host_summary">Adres van uw Fritz!Box, bijv. http://fritz.box</string>
+    <string name="smart_home_avm_username">Gebruikersnaam</string>
+    <string name="smart_home_avm_password">Wachtwoord</string>
+    <string name="smart_home_purchase_request">Bedien uw AVM smart home-apparaten met de Pro-versie</string>
+    <string name="smart_home_permission_denied">Toestemming voor lokale netwerktoegang geweigerd. Kan geen verbinding maken met Fritz!Box.</string>
     <string name="snoozeTime">Sluimertijd</string>
     <string name="snoozeAfter">Auto snooze na</string>
     <string name="snoozeCycles">snoozeCycles</string>
@@ -343,6 +418,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="suggestions">suggesties</string>
     <string name="suggestions_summary">suggesties_samenvatting</string>
     <string name="temperatureUnit">Temperatuureenheid</string>
+    <string name="text_size">Tekstgrootte</string>
     <string name="tick_style_hours">Stijl van uurstreep</string>
     <string name="tick_style_minutes">Stijl van minuutstreep</string>
     <string name="tick_style_circle">Cirkel</string>
@@ -361,6 +437,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto thin</string>
     <string name="typeface">Lettertype</string>
     <string name="uninstall">App verwijderen</string>
+    <string name="unlockHint">Lang indrukken om te ontgrendelen</string>
     <string name="upgrade_now">Upgrade nu!</string>
     <string name="useAlarmSwipeGesture">Alarm instellen middels veegbeweging</string>
     <string name="useAlarmSwipeGestureSummary">Toestemming om nieuw alarm in te stellen met een veeg van de linkerbenedenhoek</string>
@@ -369,10 +446,34 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLock">Apparaat vergrendelen</string>
     <string name="weather">Weer</string>
     <string name="weatherProvider">Weersdienst leverancier</string>
+    <string name="open_weather_map_api_key">OpenWeatherMap API-sleutel</string>
+    <string name="open_weather_map_api_key_summary">Voer uw API-sleutel voor OpenWeatherMap in. Vraag er een aan op openweathermap.org</string>
     <string name="weather_calculation_time">Weerberekeningstijd</string>
     <string name="weather_city_id_title">Locatie zoeken</string>
     <string name="weather_current_location">Huidige locatie</string>
+    <string name="weather_icon">Weerpictogram</string>
+    <string name="weather_icon_default">Standaard</string>
+    <string name="weather_icon_colored">Gekleurd</string>
+    <string name="weather_icon_animated">Geanimeerd (Android 6+)</string>
     <string name="weather_info_title">Informatie</string>
+    <string name="weather_sun_rise">Zonsopgang</string>
+    <string name="weather_sun_set">Zonsondergang</string>
     <string name="weekdays">Dagen van de week</string>
     <string name="width">Breedte</string>
+    <string name="snoozeUsingVolumeButtons">Snoozen met de volumeknoppen</string>
+    <string name="product_name_subscription">jaarlijks abonnement</string>
+    <string name="subscription_free_trial_description">%s gratis op proef.</string>
+    <string name="subscription_prefix_after_period">Daarna</string>
+    <string name="subscription_prefix_subsequently">Vervolgens</string>
+    <string name="subscription_price_per_period">%s per %s.</string>
+    <string name="subscription_offer_price_for_period">%s voor %s.</string>
+    <string name="subscription_renewal_info">Verlengt automatisch. Op elk moment opzegbaar.</string>
+    <string name="unit_day">Dag</string>
+    <string name="unit_days">Dagen</string>
+    <string name="unit_week">Week</string>
+    <string name="unit_weeks">Weken</string>
+    <string name="unit_month">Maand</string>
+    <string name="unit_months">Maanden</string>
+    <string name="unit_year">Jaar</string>
+    <string name="unit_years">Jaren</string>
 </resources>

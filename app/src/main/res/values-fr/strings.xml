@@ -6,12 +6,12 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
--> Edit the strings in this file
--> Send your file to stefan.fruhner@googlemail.com.
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
 OR
--> Open a pull request on Github.
+ -> Open a pull request on Github.
 
-Please preserve the xml tags and the utf8 encoding.
+ Please preserve the xml tags and the utf8 encoding.
 -->
 
 
@@ -116,6 +116,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="bug_summary">Nous monter un problème</string>
     <string name="buy">Acheter</string>
     <string name="buy_upgrade_summary">Passez à la version pro maintenant</string>
+    <string name="subscribe">S\'abonner</string>
     <string name="category_handle_power">…et lorsque connecté à</string>
     <string name="category_handle_power_autostart_time">Démarrer dans la plage horaire</string>
     <string name="category_night_mode_display_management">Gestion d\'affichage</string>
@@ -146,6 +147,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">Obtenir les versions beta</string>
     <string name="contribute_source_code">Code source</string>
     <string name="contribute_translation">Traduction</string>
+    <string name="copy_images">Traitement de l\'image %1$d sur %2$d</string>
     <string name="country">Pays</string>
     <string name="credits">Crédits</string>
     <string name="credits_pull_requests">Tirer</string>
@@ -193,6 +195,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="ignoreBatteryOptimisation">Optimisation batterie</string>
     <string name="ignoreBatteryOptimisation_summary">Il est recommandé d\'exclure l\'application des optimisations de la batterie.</string>
     <string name="inner_circle_radius">Rayon cercle intérieur</string>
+    <string name="images_background_copy">Traiter les images en arrière-plan</string>
+    <string name="images_background_service_unbound">Erreur lors du traitement des images. Veuillez réessayer.</string>
     <string name="length">Hauteur</string>
     <string name="location_time">Localisation déterminée à:</string>
     <string name="mailing_list">Liste publique de mailing</string>
@@ -221,10 +225,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_name_devmsg">Messages</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Services</string>
+    <string name="notification_channel_name_copy_images">Copier les images</string>
     <string name="notification_channel_desc_alarms">Notification s\'affichant durant les alarmes</string>
     <string name="notification_channel_desc_devmsg">Messages à propos de l\'app</string>
     <string name="notification_channel_desc_radio">Notifications s\'affichant lorsqu\'une radio web joue</string>
     <string name="notification_channel_desc_services">Notification indiquant un service est actif</string>
+    <string name="notification_channel_desc_copy_images">Notification indiquant le service en cours pour la copie d\'images</string>
     <string name="notification_show_preview_summary">montrer un spperçu des notifications en. cours</string>
     <string name="notification_show_preview_title">Apperçu des notifications</string>
     <string name="notification_show_mediastyle_summary">Afficher les commandes du lecteur multimédia</string>
@@ -271,7 +277,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="pollen_hazelnut">Noisetier</string>
     <string name="pollen_birch">Bouleau</string>
     <string name="pollen_ambrosia">Ambroisie</string>
-    <string name="pollen_grass">Graminées</string>
+    <string name="pollen_grass">Gramíneas</string>
     <string name="pollen_ash">Frêne</string>
     <string name="pollen_mugwort">Armoise</string>
     <string name="pollen_alder">Aulne</string>
@@ -308,8 +314,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_manual_edit">Modifier la station de radio</string>
     <string name="radio_stream_manual_input_description">Nom de la station</string>
     <string name="radio_stream_manual_input_hint">Ajouter manuellement une station de radio</string>
-    <string name="radio_stream_manual_input_url">Adresse URL du flux</string>
     <string name="radio_stream_manual_input_seconds_to_mute">Secondes pour couper le son avant de commencer</string>
+    <string name="radio_stream_manual_input_url">Adresse URL du flux</string>
     <string name="radio_stream_music_allowed">Utiliser flux musique</string>
     <string name="radio_stream_no_search_results">Aucun résultat de recherche</string>
     <string name="radio_stream_offline">Hors ligne</string>
@@ -329,6 +335,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="remaining_alarm_time_now">L\'alarme sonnera bientôt</string>
     <string name="remaining_alarm_time_start">L\'alarme sonnera dans</string>
     <string name="repeat">Répéter</string>
+    <string name="reset">réinitialiser</string>
     <string name="reset_to_defaults">Réinitialiser aux paramètres par défaut</string>
     <string name="rss">Fil RSS</string>
     <string name="rss_charset">encodage caractères</string>
@@ -395,6 +402,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="smart_home_avm_username">Nom d\'utilisateur</string>
     <string name="smart_home_avm_password">Mot de passe</string>
     <string name="smart_home_purchase_request">Contrôlez vos appareils domestiques intelligents AVM avec la version Pro</string>
+    <string name="smart_home_permission_denied">Autorisation d\'accès au réseau local refusée. Impossible de se connecter à la Fritz!Box.</string>
     <string name="snoozeTime">Durée du report</string>
     <string name="snoozeAfter">Répétition automatique après</string>
     <string name="snoozeCycles">Cycles de répétition automatique avant l\'arrêt automatique</string>
@@ -438,6 +446,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLock">Verrouiller l\'appareil</string>
     <string name="weather">Météo</string>
     <string name="weatherProvider">Fournisseur météo</string>
+    <string name="open_weather_map_api_key">Clé API OpenWeatherMap</string>
+    <string name="open_weather_map_api_key_summary">Entrez votre clé API pour OpenWeatherMap. Obtenez-en une sur openweathermap.org</string>
     <string name="weather_calculation_time">Prévisions récupérées le:</string>
     <string name="weather_city_id_title">ID de la ville</string>
     <string name="weather_current_location">Localisation actuelle</string>
@@ -452,15 +462,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="width">Largeur</string>
     <string name="snoozeUsingVolumeButtons">Répétition avec les boutons de volume</string>
     <string name="product_name_subscription">abonnement annuel</string>
-
     <string name="subscription_free_trial_description">%s essai gratuit.</string>
     <string name="subscription_prefix_after_period">Ensuite </string>
     <string name="subscription_prefix_subsequently">Par la suite </string>
     <string name="subscription_price_per_period">%s par %s.</string>
     <string name="subscription_offer_price_for_period">%s pour %s.</string>
     <string name="subscription_renewal_info">Renouvellement automatique. Annulation à tout moment.</string>
-
-    <!-- Units for subscription periods -->
     <string name="unit_day">Jour</string>
     <string name="unit_days">Jours</string>
     <string name="unit_week">Semaine</string>
