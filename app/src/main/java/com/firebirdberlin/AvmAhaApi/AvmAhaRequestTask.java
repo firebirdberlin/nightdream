@@ -43,6 +43,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -73,12 +74,21 @@ public class AvmAhaRequestTask {
         AvmAhaRequestTask.credentials = credentials;
     }
 
+    private boolean isDemoMode() {
+        return credentials != null && "demo".equalsIgnoreCase(credentials.username);
+    }
+
     public void fetchDeviceList() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> { //background thread
-            if (!sessionIsValid()) login();
-            List<AvmAhaDevice> devices = getDeviceList();
+            List<AvmAhaDevice> devices;
+            if (isDemoMode()) {
+                devices = getMockDevices();
+            } else {
+                if (!sessionIsValid()) login();
+                devices = getDeviceList();
+            }
             handler.post(() -> { // main thread
                 if (errorMessage != null) {
                     delegate.onAhaConnectionError(errorMessage);
@@ -95,8 +105,13 @@ public class AvmAhaRequestTask {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> { // background thread
-            if (!sessionIsValid()) login();
-            boolean result = toggleBulb(device.ain, newState);
+            boolean result;
+            if (isDemoMode()) {
+                result = true;
+            } else {
+                if (!sessionIsValid()) login();
+                result = toggleBulb(device.ain, newState);
+            }
             Log.i(TAG, "new_state: " + result);
             if (result) {
                 device.state = newState;
@@ -106,6 +121,26 @@ public class AvmAhaRequestTask {
             });
         });
         // No explicit shutdown for this single-use executor.
+    }
+
+    private List<AvmAhaDevice> getMockDevices() {
+        List<AvmAhaDevice> mocks = new ArrayList<>();
+        mocks.add(createMockDevice("demo_1", "Living Room Light"));
+        mocks.add(createMockDevice("demo_2", "Kitchen Light"));
+        mocks.add(createMockDevice("demo_3", "Smart Plug"));
+        return mocks;
+    }
+
+    private AvmAhaDevice createMockDevice(String ain, String name) {
+        AvmAhaDevice device = new AvmAhaDevice();
+        device.ain = ain;
+        device.name = name;
+        device.manufacturer = "AVM";
+        device.productname = "FRITZ!DECT 200";
+        device.state = "1";
+        device.present = "1";
+        device.functionbitmask = (1 << 15) | (1 << 9); // switchable and switch
+        return device;
     }
 
     public void closeSession() {
