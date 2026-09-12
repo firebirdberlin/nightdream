@@ -99,6 +99,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">Stalno prikazivanje statusa baterije prilikom punjenja.</string>
     <string name="preview">Pregled</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_keep_running">Задржи радио укљученим</string>
+    <string name="radio_stream_keep_running_summary">Наставите са репродукцијом радио преноса након што се аларм заустави.</string>
     <string name="radio_stream">Radio strimovi</string>
     <string name="radio_stream_no_search_results">Nema rezultata pretrage.</string>
     <string name="radio_stream_query_hint">Niz za pretraživanje</string>

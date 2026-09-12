@@ -197,6 +197,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi">Zapnout WiFi.</string>
     <string name="radio_stream_require_wifi">Požadované WiFi připojení.</string>
     <string name="radio_stream">Radiová vysílání</string>
+    <string name="radio_stream_keep_running">Nechat rádio hrát</string>
+    <string name="radio_stream_keep_running_summary">Po zastavení budíku pokračovat v přehrávání rádiového streamu.</string>
     <string name="radio_stream_failure">Selhání příjmu rádia</string>
     <string name="radio_stream_no_search_results">Nic nenalezeno.</string>
     <string name="radio_stream_offline">offline</string>

@@ -41,16 +41,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.media3.common.AudioAttributes;
+import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
-import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.exoplayer.hls.HlsMediaSource;
-import androidx.media3.exoplayer.source.MediaSource;
-import androidx.media3.exoplayer.source.ProgressiveMediaSource;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -81,6 +80,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private static final String ACTION_START = "start";
     private static final String ACTION_START_STREAM = "start stream";
     private static final String ACTION_STOP = "stop";
+    public static final String ACTION_SWITCH_TO_RADIO_MODE = Config.ACTION_RADIO_STREAM_SWITCH_TO_RADIO_MODE;
     static public boolean isRunning = false;
     static public boolean alarmIsRunning = false;
     public static StreamingMode streamingMode = StreamingMode.INACTIVE;
@@ -195,6 +195,12 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         context.stopService(i);
     }
 
+    public static void switchToRadioMode(Context context) {
+        Intent i = new Intent(context, RadioStreamService.class);
+        i.setAction(ACTION_SWITCH_TO_RADIO_MODE);
+        Utility.startForegroundService(context, i);
+    }
+
     private static Intent getStopIntent(Context context) {
         Intent i = new Intent(context, RadioStreamService.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -304,7 +310,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         fadeInDelay = 50;
                         if (myNoisyAudioStreamReceiver == null) {
                             myNoisyAudioStreamReceiver = new BecomingNoisyReceiver();
-                            registerReceiver(myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter);
+                            ContextCompat.registerReceiver(this, myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
                         }
 
                         readyForPlayback = false;
@@ -315,6 +321,21 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                     readyForPlayback = false;
                     Log.d(TAG, "stopself");
                     stopSelf();
+                    break;
+                case ACTION_SWITCH_TO_RADIO_MODE:
+                    if (streamingMode == StreamingMode.ALARM) {
+                        streamingMode = StreamingMode.RADIO;
+                        alarmIsRunning = false;
+                        currentStreamType = AudioManager.STREAM_MUSIC;
+                        restoreAlarmVolume();
+                        handler.removeCallbacks(timeout);
+                        updateNotification(getResources().getString(R.string.radio_playing));
+
+                        Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
+                        broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
+                    }
+                    break;
             }
         }
 
@@ -517,18 +538,17 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         if (exoPlayer == null) {
             Log.d(TAG, "init exoPlayer");
-            DefaultHttpDataSource.Factory httpDataSourceFactory = new DefaultHttpDataSource.Factory();
-            MediaSource mediaSource;
-            if (streamURL.endsWith("m3u8")) {
-                mediaSource = new HlsMediaSource.Factory(httpDataSourceFactory)
-                        .createMediaSource(MediaItem.fromUri(streamURL));
-            } else {
-                mediaSource = new ProgressiveMediaSource.Factory(httpDataSourceFactory)
-                        .createMediaSource(MediaItem.fromUri(streamURL));
-            }
 
-            exoPlayer = new ExoPlayer.Builder(getApplicationContext()).build();
-            exoPlayer.setMediaSource(mediaSource);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build();
+
+            exoPlayer = new ExoPlayer.Builder(getApplicationContext())
+                    .setAudioAttributes(audioAttributes, /* handleAudioFocus= */ true)
+                    .build();
+
+            exoPlayer.setMediaItem(MediaItem.fromUri(streamURL));
             exoPlayer.prepare();
 
             exoPlayer.addListener(new Player.Listener() {

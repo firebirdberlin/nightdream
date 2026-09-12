@@ -111,6 +111,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Adomány</string>
     <string name="product_name_pro">Teljes verzió</string>
     <string name="radio">Rádió</string>
+    <string name="radio_stream_keep_running">Rádió bekapcsolva tartása</string>
+    <string name="radio_stream_keep_running_summary">A rádióadás lejátszásának folytatása az ébresztés leállítása után.</string>
     <string name="radio_stream">Rádióadások</string>
     <string name="radio_stream_failure">Rádiósugárzás hiba</string>
     <string name="radio_stream_manual_input_description">Állomás neve</string>

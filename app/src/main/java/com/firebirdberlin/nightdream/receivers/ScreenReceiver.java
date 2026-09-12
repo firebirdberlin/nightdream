@@ -33,6 +33,8 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -62,7 +64,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         filter.addAction(Intent.ACTION_SCREEN_ON);
         ScreenReceiver receiver = new ScreenReceiver();
 
-        ctx.registerReceiver(receiver, filter, null, broadcastReceiverHandler);
+        ContextCompat.registerReceiver(ctx, receiver, filter, null, broadcastReceiverHandler, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 

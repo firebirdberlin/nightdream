@@ -256,6 +256,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Fullständig version</string>
     <string name="radio">Radio</string>
+    <string name="radio_stream_keep_running">Låt radion spela</string>
+    <string name="radio_stream_keep_running_summary">Fortsätt spela radiostrømmen efter att larmet har stoppats.</string>
     <string name="radio_station">Radiostation</string>
     <string name="radio_station_dialog_title">Välj en radiostation</string>
     <string name="radio_station_none">Ingen radiostation</string>

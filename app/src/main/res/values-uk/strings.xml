@@ -146,6 +146,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Пожертва</string>
     <string name="product_name_pro">Повна версія</string>
     <string name="radio">Радіо</string>
+    <string name="radio_stream_keep_running">Не вимикати радіо</string>
+    <string name="radio_stream_keep_running_summary">Продовжити відтворення радіопотоку після вимкнення будильника.</string>
     <string name="radio_stream">Радіопотоки</string>
     <string name="radio_stream_failure">Помилка радіопотоку</string>
     <string name="radio_stream_manual_input_description">Назва станції</string>

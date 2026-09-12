@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -51,7 +52,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -128,7 +133,8 @@ public class NightDreamActivity extends BillingHelperActivity
     private ImageView alarmClockIcon;
     private BottomPanelLayout bottomPanelLayout;
     private ClockLayoutContainer clockLayoutContainer;
-    private SidePanel sidePanel;
+    private SidePanel sidePanelLeft;
+    private SidePanel sidePanelRight;
     private boolean screenWasOn = false;
     private float last_ambient = 4.0f;
     private NightDreamUI nightDreamUI = null;
@@ -350,7 +356,15 @@ public class NightDreamActivity extends BillingHelperActivity
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
         clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
-        sidePanel = findViewById(R.id.side_menu);
+        sidePanelLeft = findViewById(R.id.side_menu_left);
+        sidePanelRight = findViewById(R.id.side_menu_right);
+
+        View topPanel = findViewById(R.id.topPanel);
+        ViewCompat.setOnApplyWindowInsetsListener(topPanel, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, v.getPaddingBottom());
+            return insets;
+        });
 
         ImageView background_image = findViewById(R.id.background_view);
         background_image.setOnTouchListener(this);
@@ -388,9 +402,9 @@ public class NightDreamActivity extends BillingHelperActivity
         if (flash == null) {
             flash = new FlashlightProvider(this);
         }
-        sidePanel.post(() -> {
-            sidePanel.setTorchIconVisibility(flash.hasCameraFlash());
-            sidePanel.setTorchIconActive(flash.isFlashlightOn());
+        sidePanelRight.post(() -> {
+            sidePanelRight.setTorchIconVisibility(flash.hasCameraFlash());
+            sidePanelRight.setTorchIconActive(flash.isFlashlightOn());
         });
     }
 
@@ -699,7 +713,7 @@ public class NightDreamActivity extends BillingHelperActivity
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
-        registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
@@ -739,7 +753,7 @@ public class NightDreamActivity extends BillingHelperActivity
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
         }
-        sidePanel.setRadioIconActive(panel != BottomPanelLayout.Panel.WEB_RADIO);
+        sidePanelLeft.setRadioIconActive(panel != BottomPanelLayout.Panel.WEB_RADIO);
         nightDreamUI.showAlarmClock();
     }
 
@@ -825,6 +839,19 @@ public class NightDreamActivity extends BillingHelperActivity
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         int diff = newConfig.diff(prevConfig);
+
+        // Android 17 (API 37) no longer restarts by default for desk mode transitions.
+        // We manually recreate the activity to maintain previous behavior if uiMode changed.
+        if ((diff & ActivityInfo.CONFIG_UI_MODE) != 0) {
+            int oldMode = prevConfig.uiMode & Configuration.UI_MODE_TYPE_MASK;
+            int newMode = newConfig.uiMode & Configuration.UI_MODE_TYPE_MASK;
+            if (oldMode != newMode && (oldMode == Configuration.UI_MODE_TYPE_DESK || newMode == Configuration.UI_MODE_TYPE_DESK)) {
+                Log.d(TAG, "uiMode changed (Desk transition), recreating activity");
+                recreate();
+                return;
+            }
+        }
+
         if ((nightDreamUI != null) && (diff != 0)) {
             nightDreamUI.onConfigurationChanged(newConfig);
         }

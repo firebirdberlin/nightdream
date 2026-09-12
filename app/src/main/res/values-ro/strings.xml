@@ -96,6 +96,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="persistent_battery_value_while_charging_summary">Afişare status baterie permanent în timpul încărcării</string>
     <string name="preview">Previzualizare</string>
     <string name="radio_stream">Canale radio</string>
+    <string name="radio_stream_keep_running">Păstrați radioul pornit</string>
+    <string name="radio_stream_keep_running_summary">Continuați redarea fluxului radio după ce alarma a fost oprită.</string>
     <string name="radio_stream_no_search_results">Nu s-au găsit înregistrări</string>
     <string name="radio_stream_query_hint">Cauta cuvant</string>
     <string name="radio_stream_search">Cautare</string>

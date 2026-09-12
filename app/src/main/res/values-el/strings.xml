@@ -113,6 +113,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_pro">Πλήρη έκδοση</string>
     <string name="radio">Ράδιο</string>
     <string name="radio_stream">Ροές</string>
+    <string name="radio_stream_keep_running">Διατήρηση λειτουργίας ραδιοφώνου</string>
+    <string name="radio_stream_keep_running_summary">Συνέχιση αναπαραγωγής της ροής ραδιοφώνου μετά τη διακοπή της ειδοποίησης.</string>
     <string name="radio_stream_failure">Σφάλμα ροής</string>
     <string name="radio_stream_manual_input_description">Όνομα σταθμού</string>
     <string name="radio_stream_manual_input_hint">Πρόσθεση σταθμού χειροκίνητα</string>

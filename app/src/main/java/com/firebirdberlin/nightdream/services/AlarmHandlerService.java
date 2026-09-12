@@ -81,7 +81,11 @@ public class AlarmHandlerService extends BroadcastReceiver {
     }
 
     public static void stop(Context context) {
-        AlarmHandlerService.stopAlarm(context);
+        AlarmHandlerService.stopAlarm(context, true, false);
+    }
+
+    public static void stop(Context context, boolean keepRadio) {
+        AlarmHandlerService.stopAlarm(context, true, keepRadio);
     }
 
     public static void snooze(final Context context) {
@@ -132,17 +136,25 @@ public class AlarmHandlerService extends BroadcastReceiver {
     }
 
     private static void stopAlarm(Context context) {
-        stopAlarm(context, true);
+        stopAlarm(context, true, false);
     }
 
-    private static void stopAlarm(Context context, boolean reschedule) {
+    public static void stopAlarm(Context context, boolean reschedule) {
+        stopAlarm(context, reschedule, false);
+    }
+
+    private static void stopAlarm(Context context, boolean reschedule, boolean keepRadio) {
         boolean isRunning = alarmIsRunning();
         if (AlarmService.isRunning) {
             AlarmService.stop(context);
         }
 
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM) {
-            RadioStreamService.stop(context);
+            if (keepRadio) {
+                RadioStreamService.switchToRadioMode(context);
+            } else {
+                RadioStreamService.stop(context);
+            }
         }
 
         AlarmHandlerService.cancel(context);

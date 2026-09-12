@@ -40,4 +40,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="alwaysOnStartWithLockedUI">화면잠금</string>
     <string name="alwaysOnStartWithLockedUIDesc">압작동시 화면잠금모드진입. 화면을 길게 누르면 잠금해제</string>
     <string name="show_calendar_events">캘린더 이벤트 강조</string>
+    <string name="radio_stream_keep_running">라디오 계속 재생</string>
+    <string name="radio_stream_keep_running_summary">알람이 중지된 후에도 라디오 스트리밍을 계속 재생합니다.</string>
 </resources>

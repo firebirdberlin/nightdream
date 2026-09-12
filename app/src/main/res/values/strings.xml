@@ -301,6 +301,8 @@ OR
     <string name="radio_paused">paused</string>
     <string name="radio_play">play radio</string>
     <string name="radio_playing">playing</string>
+    <string name="radio_stream_keep_running">Keep radio running</string>
+    <string name="radio_stream_keep_running_summary">Continue playing the radio stream after the alarm has been stopped.</string>
     <string name="radio_previous">previous station</string>
     <string name="radio_station">Radio station</string>
     <string name="radio_station_dialog_title">Select a radio station</string>
@@ -400,6 +402,7 @@ OR
     <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_avm_password">Password</string>
     <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
+    <string name="smart_home_permission_denied">Permission for local network access denied. Cannot connect to Fritz!Box.</string>
     <string name="snoozeTime">Snooze time</string>
     <string name="snoozeAfter">Auto snooze after</string>
     <string name="snoozeCycles">Auto snooze cycles before auto stop</string>

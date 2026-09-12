@@ -264,6 +264,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi">Wi-Fi-verbinding nodig</string>
     <string name="radio_stream_require_wifi_desc">Indien aan: alarm zal streams van internetradio\'s alleen afspelen als er Wi-Fi-verbinding is</string>
     <string name="radio_stream">Radiostreams</string>
+    <string name="radio_stream_keep_running">Radio aan laten staan</string>
+    <string name="radio_stream_keep_running_summary">Ga door met het afspelen van de radiostream nadat het alarm is gestopt.</string>
     <string name="radio_stream_failure">Probleem met de radiostream</string>
     <string name="radio_stream_manual_edit">Bewerk radiostation</string>
     <string name="radio_stream_manual_input_description">Stationsnaam</string>

@@ -32,6 +32,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
@@ -117,6 +118,7 @@ public class Settings {
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
     public boolean radioStreamRequireWiFi = false;
+    public boolean keepRadioStreamRunning = true;
     private boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
     public float dim_offset = 0.8f;
@@ -176,6 +178,8 @@ public class Settings {
     public int nightModeTimeRangeEndInMinutes = -1;
     public int nextAlarmTimeMinutes = 0;
     public int sleepTimeInMinutesDefaultValue = 30;
+    public int unlockCount = 0;
+    public long lastUnlockHintShownTime = 0L;
     public long lastReviewRequestTime = 0L;
     public long sleepTimeInMillis = 0L; // 5 min
     public long snoozeTimeInMillis = 300000; // 5 min
@@ -497,6 +501,8 @@ public class Settings {
         maxBrightnessBattery = 0.01f * settings.getInt("maxBrightnessBattery", 25);
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
+        unlockCount = settings.getInt("unlockCount", 0);
+        lastUnlockHintShownTime = settings.getLong("lastUnlockHintShownTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
         persistentBatteryValueWhileCharging = settings.getBoolean("persistentBatteryValueWhileCharging", true);
         screenProtection = getScreenProtection();
@@ -536,6 +542,7 @@ public class Settings {
         showAlarmsPersistently = settings.getBoolean("showAlarmsPersistently", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamRequireWiFi = settings.getBoolean("radioStreamRequireWiFi", false);
+        keepRadioStreamRunning = settings.getBoolean("keepRadioStreamRunning", true);
         isUIlocked = settings.getBoolean("isUIlocked", false);
         dateFormat = settings.getString("dateFormat", getDefaultDateFormat());
         timeFormat = settings.getString("timeFormat", getDefaultTimeFormat());
@@ -852,7 +859,7 @@ public class Settings {
     }
 
     private String getDefaultTimeFormat() {
-        boolean is24hr = android.text.format.DateFormat.is24HourFormat(mContext);
+        boolean is24hr = DateFormat.is24HourFormat(mContext);
         return is24hr ? "HH:mm" : "h:mm";
 
     }
@@ -1008,7 +1015,7 @@ public class Settings {
         if (clockLayoutId == ClockLayout.LAYOUT_ID_DIGITAL ) {
             return key;
         }
-        return String.format(java.util.Locale.getDefault(),"%s:%d", key, clockLayoutId);
+        return String.format(Locale.getDefault(),"%s:%d", key, clockLayoutId);
     }
 
     public void setBrightnessOffset(float value) {
@@ -1063,6 +1070,24 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("lastReviewRequestTime", lastReviewRequestTime);
         prefEditor.apply();
+    }
+
+    public boolean shallShowUnlockHint() {
+        if (unlockCount < 3) {
+            return true;
+        }
+        long threeMonthsMillis = 90L * 24 * 60 * 60 * 1000;
+        return System.currentTimeMillis() - lastUnlockHintShownTime > threeMonthsMillis;
+    }
+
+    public void incrementUnlockCount() {
+        unlockCount++;
+        settings.edit().putInt("unlockCount", unlockCount).apply();
+    }
+
+    public void updateLastUnlockHintShownTime() {
+        lastUnlockHintShownTime = System.currentTimeMillis();
+        settings.edit().putLong("lastUnlockHintShownTime", lastUnlockHintShownTime).apply();
     }
 
     public static Long getLastReviewRequestTime(Context context) {
