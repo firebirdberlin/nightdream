@@ -154,7 +154,15 @@ public class mNotificationListener extends NotificationListenerService {
         if (notification == null) return true;
 
         Bundle extras = notification.extras;
-        String template = (String) extras.getCharSequence("android.template");
+        String template = null;
+        try {
+            if (extras != null) {
+                template = (String) extras.getCharSequence("android.template");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading notification extras in shallIgnoreNotification", e);
+            return true;
+        }
         if (template != null && template.contains("MediaStyle")) {
             Log.w(TAG, "MediaStyle notification found");
             return false;
@@ -344,44 +352,50 @@ public class mNotificationListener extends NotificationListenerService {
         StringBuilder textLinesData = new StringBuilder();
         Bundle extras = notification.extras;
 
-        template = extras.getCharSequence("android.template");
-        if (template == null) template = "";
-        if (extras.containsKey(Notification.EXTRA_PICTURE)) {
-            bigPicture = (Bitmap) extras.get(Notification.EXTRA_PICTURE);
-        }
+        try {
+            if (extras != null) {
+                template = extras.getCharSequence("android.template");
+                if (template == null) template = "";
+                if (extras.containsKey(Notification.EXTRA_PICTURE)) {
+                    bigPicture = (Bitmap) extras.get(Notification.EXTRA_PICTURE);
+                }
 
-        if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getCharSequence("android.title") != null) {
-            titleData = extras.getCharSequence(Notification.EXTRA_TITLE);
-        }
-        if (extras.containsKey(Notification.EXTRA_TITLE_BIG) && extras.getCharSequence("android.title.big") != null) {
-            titleBigData = extras.getCharSequence(Notification.EXTRA_TITLE_BIG);
-        }
+                if (extras.containsKey(Notification.EXTRA_TITLE) && extras.getCharSequence("android.title") != null) {
+                    titleData = extras.getCharSequence(Notification.EXTRA_TITLE);
+                }
+                if (extras.containsKey(Notification.EXTRA_TITLE_BIG) && extras.getCharSequence("android.title.big") != null) {
+                    titleBigData = extras.getCharSequence(Notification.EXTRA_TITLE_BIG);
+                }
 
-        //this is the longer text shown in the big form of a BigTextStyle notification,
-        if (extras.containsKey(Notification.EXTRA_BIG_TEXT) && extras.getCharSequence("android.bigText") != null) {
-            textBigData = extras.getCharSequence(Notification.EXTRA_BIG_TEXT);
-        }
+                //this is the longer text shown in the big form of a BigTextStyle notification,
+                if (extras.containsKey(Notification.EXTRA_BIG_TEXT) && extras.getCharSequence("android.bigText") != null) {
+                    textBigData = extras.getCharSequence(Notification.EXTRA_BIG_TEXT);
+                }
 
-        //this is the summary information intended to be shown alongside expanded notification
-        if (extras.containsKey(Notification.EXTRA_SUMMARY_TEXT) && extras.getCharSequence("android.summaryText") != null) {
-            summaryText = extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT);
-        }
-        if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
-            textData = extras.getCharSequence(Notification.EXTRA_TEXT);
-        }
+                //this is the summary information intended to be shown alongside expanded notification
+                if (extras.containsKey(Notification.EXTRA_SUMMARY_TEXT) && extras.getCharSequence("android.summaryText") != null) {
+                    summaryText = extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT);
+                }
+                if (extras.containsKey(Notification.EXTRA_TEXT) && extras.getCharSequence("android.text") != null) {
+                    textData = extras.getCharSequence(Notification.EXTRA_TEXT);
+                }
 
-        //An array of CharSequences to show in InboxStyle expanded notifications
-        if (extras.containsKey(Notification.EXTRA_TEXT_LINES)) {
-            CharSequence[] messages = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
-            if (messages != null) {
-                for (CharSequence message : messages) {
-                    if (textLinesData.toString().isEmpty()) {
-                        textLinesData = new StringBuilder(message.toString());
-                    } else {
-                        textLinesData.append("<br>").append(message.toString());
+                //An array of CharSequences to show in InboxStyle expanded notifications
+                if (extras.containsKey(Notification.EXTRA_TEXT_LINES)) {
+                    CharSequence[] messages = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+                    if (messages != null) {
+                        for (CharSequence message : messages) {
+                            if (textLinesData.toString().isEmpty()) {
+                                textLinesData = new StringBuilder(message.toString());
+                            } else {
+                                textLinesData.append("<br>").append(message.toString());
+                            }
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading notification extras in getIntentForBroadCast", e);
         }
 
         // the "ticker" text which is sent to accessibility services.
@@ -393,7 +407,7 @@ public class mNotificationListener extends NotificationListenerService {
 
         // Extract MessagingStyle object from the active notification.
         StringBuilder notification_messages = new StringBuilder();
-        {
+        try {
             String lastPerson = "";
             NotificationCompat.MessagingStyle activeStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification);
             if (activeStyle != null) {
@@ -412,6 +426,8 @@ public class mNotificationListener extends NotificationListenerService {
                     }
                 }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error extracting MessagingStyle in getIntentForBroadCast", e);
         }
 
         //get date and time
@@ -525,8 +541,17 @@ public class mNotificationListener extends NotificationListenerService {
     private void logNotification(StatusBarNotification sbn) {
         if (sbn == null || Build.VERSION.SDK_INT < 26) return;
         Notification notification = sbn.getNotification();
-        CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
-        CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        if (notification == null) return;
+        CharSequence title = "";
+        CharSequence text = "";
+        try {
+            if (notification.extras != null) {
+                title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+                text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading notification extras in logNotification", e);
+        }
         String group_key = notification.getGroup();
         Log.i(TAG, "ID :" + sbn.getId()
                 + "\t" + title
