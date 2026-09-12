@@ -63,6 +63,15 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        if (prefs != null) {
+            prefs.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final RecyclerView recyclerView = getListView();
@@ -78,7 +87,10 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
     private void init() {
         settings = new Settings(getContext());
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        if (prefs != null) {
+            prefs.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+            prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        }
         setupAlarmClockPreferences();
         setupNotificationPermissionPreference();
     }
@@ -106,7 +118,11 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
         SwitchPreferenceCompat toggle = (SwitchPreferenceCompat) findPreference("notifyForUpcomingAlarms");
         Context context = getContext();
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+        if (preference == null || toggle == null || context == null) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             boolean isSet = Utility.hasPermission(context, Manifest.permission.POST_NOTIFICATIONS);
             preference.setVisible( !isSet && toggle.isChecked() );
             preference.setOnPreferenceClickListener(preference1 -> {
