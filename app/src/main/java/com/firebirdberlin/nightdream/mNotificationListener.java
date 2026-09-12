@@ -407,27 +407,30 @@ public class mNotificationListener extends NotificationListenerService {
 
         // Extract MessagingStyle object from the active notification.
         StringBuilder notification_messages = new StringBuilder();
-        try {
-            String lastPerson = "";
-            NotificationCompat.MessagingStyle activeStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification);
-            if (activeStyle != null) {
-                for (NotificationCompat.MessagingStyle.Message message : activeStyle.getMessages()) {
-                    if (message.getPerson() != null && message.getPerson().getName() != null) {
-                        if (lastPerson.contentEquals(message.getPerson().getName())) {
-                            notification_messages.append("<br>").append(message.getText());
-                        } else {
-                            if (notification_messages.toString().isEmpty()) {
-                                notification_messages = new StringBuilder(message.getPerson().getName() + "<br> " + message.getText());
+        if (template.toString().contains("MessagingStyle")) {
+            try {
+                String lastPerson = "";
+                NotificationCompat.MessagingStyle activeStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(notification);
+                if (activeStyle != null) {
+                    for (NotificationCompat.MessagingStyle.Message message : activeStyle.getMessages()) {
+                        if (message.getPerson() != null && message.getPerson().getName() != null) {
+                            if (lastPerson.contentEquals(message.getPerson().getName())) {
+                                notification_messages.append("<br>").append(message.getText());
                             } else {
-                                notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
+                                if (notification_messages.toString().isEmpty()) {
+                                    notification_messages = new StringBuilder(message.getPerson().getName() + "<br> " + message.getText());
+                                } else {
+                                    notification_messages.append("<br>").append(message.getPerson().getName()).append("<br> ").append(message.getText());
+                                }
+                                lastPerson = message.getPerson().getName().toString();
                             }
-                            lastPerson = message.getPerson().getName().toString();
                         }
                     }
                 }
+            } catch (Throwable t) {
+                // Defensive catch for library-internal NullPointerException in androidx.core.app.Person$Api28Impl
+                Log.e(TAG, "Error extracting MessagingStyle in getIntentForBroadCast", t);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error extracting MessagingStyle in getIntentForBroadCast", e);
         }
 
         //get date and time
