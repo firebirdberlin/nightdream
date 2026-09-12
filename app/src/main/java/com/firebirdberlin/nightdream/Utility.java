@@ -1084,6 +1084,7 @@ public class Utility {
     }
 
     public static boolean hasPermission(Context context, String permission) {
+        if (context == null) return false;
         return (ContextCompat.checkSelfPermission(context, permission)
                 == PackageManager.PERMISSION_GRANTED);
     }
