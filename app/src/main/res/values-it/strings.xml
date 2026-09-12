@@ -6,12 +6,12 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
--> Edit the strings in this file
--> Send your file to stefan.fruhner@googlemail.com.
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
 OR
--> Open a pull request on Github.
+ -> Open a pull request on Github.
 
-Please preserve the xml tags and the utf8 encoding.
+ Please preserve the xml tags and the utf8 encoding.
 -->
 
 
@@ -28,8 +28,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_custom_alarm_tone">Aggiungi un tono di allarme personalizzato</string>
     <string name="add_custom_font">Aggiungi un tipo di carattere personalizzato</string>
     <string name="alarm">Sveglia</string>
+    <string name="alarmName">Nome della sveglia</string>
     <string name="alarmFadeIn">Volume incrementale</string>
     <string name="alarmFadeInDurationSeconds">Durata dissolvenza iniziale</string>
+    <string name="alarmFadeInMaxVolumePercent">volume massimo</string>
     <string name="alarmStartDate">Prossimo allarme alle</string>
     <string name="alarmStartsFrom">Dalle</string>
     <string name="alarmUpcoming">Sveglia imminente</string>
@@ -75,6 +77,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_exif">Mostra informazioni EXIF</string>
     <string name="background_exif_summary">Mostra informazioni EXIF per lo sfondo corrente</string>
     <string name="background_gradient">Sfumatura</string>
+    <string name="background_gradient_start_color">Colore iniziale</string>
+    <string name="background_gradient_end_color">Colore finale</string>
     <string name="background_image">Immagine</string>
     <string name="background_image_select">Seleziona una immagine</string>
     <string name="background_slideshow">Presentazione</string>
@@ -88,6 +92,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceNotificationText">Il servizio in backgroud è attivo</string>
     <string name="backgroundServiceNotificationTextLocation">Aggiornamento località in avanzamento</string>
     <string name="backgroundServiceNotificationTextNightMode">La modalità notturna è attiva</string>
+    <string name="battery">Batteria</string>
     <string name="batteryTimeoutDescription">Al termine della batteria</string>
     <string name="batteryTimeoutNever">mai</string>
     <string name="batteryTimeout1min">1 min</string>
@@ -100,10 +105,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Luminosità</string>
     <string name="brightness_night_mode">Luminosità in modalità notturna</string>
     <string name="brightness_offset">Compensazione della luminosità</string>
+    <string name="brightsky_conditions_dry">asciutto</string>
+    <string name="brightsky_conditions_fog">nebbia</string>
+    <string name="brightsky_conditions_hail">grandine</string>
+    <string name="brightsky_conditions_rain">pioggia</string>
+    <string name="brightsky_conditions_sleet">nevischio</string>
+    <string name="brightsky_conditions_snow">neve</string>
+    <string name="brightsky_conditions_thunderstorm">temporale</string>
     <string name="bug">Segnala un errore</string>
     <string name="bug_summary">Facci sapere se qualcosa è andato storto</string>
     <string name="buy">Acquista</string>
     <string name="buy_upgrade_summary">Passa alla versione professionale adesso!</string>
+    <string name="subscribe">Iscriviti</string>
     <string name="category_handle_power">… e quando connesso a</string>
     <string name="category_handle_power_autostart_time">Avvia nell\'intervallo</string>
     <string name="category_night_mode_display_management">Gestione del display</string>
@@ -121,6 +134,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_elegant_analog">Orologio analogico elegante</string>
     <string name="clock_layout_digit_analog">Orologio analogico con numeri</string>
     <string name="clock_layout_digital_flip">Specchia l\'orologio digitale</string>
+    <string name="clock_layout_anim_digit">orologio digitale animato</string>
     <string name="clock_layout">Tipo orologio</string>
     <string name="clock_layout_modern_analog">Orologio analogico moderno</string>
     <string name="clock_layout_mirror_text">Testo speculare</string>
@@ -133,6 +147,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">Ottieni la versione beta</string>
     <string name="contribute_source_code">Codice sorgente</string>
     <string name="contribute_translation">Traduzione</string>
+    <string name="copy_images">Elaborazione immagine %1$d di %2$d</string>
     <string name="country">Paese</string>
     <string name="credits">Ringraziamenti</string>
     <string name="credits_pull_requests">Richiesta pull</string>
@@ -177,7 +192,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hide_background_image_in_night_mode">Nascondi</string>
     <string name="hide_background_image_in_night_mode_summary">In modalità Notte, nascondi l\'immagine di sfondo</string>
     <string name="hour">h</string>
+    <string name="ignoreBatteryOptimisation">Ottimizzazione batteria</string>
+    <string name="ignoreBatteryOptimisation_summary">Si consiglia di escludere l\'app dalle ottimizzazioni della batteria.</string>
     <string name="inner_circle_radius">Raggio cerchio interno</string>
+    <string name="images_background_copy">Elabora immagini in background</string>
+    <string name="images_background_service_unbound">Errore durante l\'elaborazione delle immagini. Riprova.</string>
     <string name="length">Lunghezza</string>
     <string name="location_time">Ora locale</string>
     <string name="mailing_list">Mailing list pubblica</string>
@@ -200,20 +219,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Ora fine</string>
     <string name="night_mode_timerange_label_start">Ora inizio</string>
     <string name="night_mode_timerange_title">Orario notturno</string>
+    <string name="no_alarm_set">nessuna sveglia impostata</string>
     <string name="noise_sensitivity">Sensibilità del microfono</string>
     <string name="notification_channel_name_alarms">Sveglie</string>
     <string name="notification_channel_name_devmsg">Messaggi</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Servizi</string>
+    <string name="notification_channel_name_copy_images">Copia immagini</string>
     <string name="notification_channel_desc_alarms">Le notifiche vengono mostrate sopra l\'allarme</string>
     <string name="notification_channel_desc_devmsg">Messaggi riguardante l\'applicazione</string>
     <string name="notification_channel_desc_radio">Una notifica mostra la stazione radio che si sta riproducendo</string>
     <string name="notification_channel_desc_services">Una notifica indica che l\'applicazione è in esecuzione</string>
+    <string name="notification_channel_desc_copy_images">Notifica che indica il servizio in esecuzione per la copia delle immagini</string>
     <string name="notification_show_preview_summary">Mostra un\'anteprima delle notifiche in arrivo</string>
     <string name="notification_show_preview_title">Anteprima notifiche</string>
     <string name="notification_show_mediastyle_summary">Mostra controlli multimediali</string>
     <string name="notification_show_mediastyle_title">Controlli multimediali</string>
-    <string name="notification_lowest_importance">L\'importanza è maggiore o uguale a</string>
+    <string name="notification_lowest_importance">L\'importance è maggiore o uguale a</string>
+    <string name="notification_list_delete_all">Elimina tutto</string>
+    <string name="notification_list_delete_marked">Elimina tutti i contrassegnati</string>
+    <string name="notification_list_mark_all">Contrassegna tutto</string>
     <string name="notification_importance_min">min</string>
     <string name="notification_importance_low">basso</string>
     <string name="notification_importance_default">default</string>
@@ -223,6 +248,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notificationsInStatusBarTitle">Barra di stato</string>
     <string name="notificationsInStatusBarSummary">Mostra le notifiche nella barra di stato se abilitato. Altrimenti aggiungi una riga aggiuntiva.</string>
     <string name="notificationListenerService">Servizio di ascolto delle notifiche</string>
+    <string name="notifyForUpcomingAlarmsSummary">Notifica per le prossime sveglie</string>
+    <string name="notifyForUpcomingAlarmsTitle">Notifica in anticipo</string>
     <string name="showNotifications">Mostra notifiche</string>
     <string name="showNotificationsAccessGranted">Permetti notifica</string>
     <string name="showNotificationsAccessNotGranted">Non permettere notifica</string>
@@ -240,15 +267,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_long_press">premere a lungo</string>
     <string name="outer_circle_radius">Raggio cerchio esterno</string>
     <string name="outer_circle_width">Larghezza cerchio esterno</string>
+    <string name="permission_request">Richiesta di permesso</string>
+    <string name="permission_request_post_notifications">Concedi il permesso per inviare notifiche.</string>
     <string name="permission_request_overlays">L\'autorizzazione per la visualizzazione di overlay (avvio automatico) non è concessa. Per favore, concedi questo permesso!</string>
     <string name="permission_request_location_mode">Il tipo di localizzazione attivo non permette di identificare la località corrente</string>
+    <string name="permission_request_storage">Il permesso di accesso alla memoria non è stato concesso.</string>
     <string name="persistent_battery_value_while_charging">Livello batteria persistente</string>
     <string name="persistent_battery_value_while_charging_summary">Mostra lo stato della batteria durante il caricamento</string>
+    <string name="pollen_hazelnut">Nocciolo</string>
+    <string name="pollen_birch">Betulla</string>
+    <string name="pollen_ambrosia">Ambrosia</string>
+    <string name="pollen_grass">Graminacee</string>
+    <string name="pollen_ash">Frassino</string>
+    <string name="pollen_mugwort">Artemisia</string>
+    <string name="pollen_alder">Ontano</string>
+    <string name="pollen_rye">Segale</string>
     <string name="power_source">alimentazione</string>
     <string name="preferences">Preferenze</string>
     <string name="prev">Precedente</string>
     <string name="preview">Anteprima</string>
-<string name="product_description_weather">L\'aggiornamento include:
+    <string name="product_description_weather">L\'aggiornamento include:
 \n
 \n- una linea del meteo attuale mostrata sotto l\'orologio
 \n- le previsioni dei 5 giorni successivi
@@ -256,26 +294,34 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Donazione</string>
     <string name="product_name_pro">Versione completa</string>
     <string name="radio">Radio</string>
+    <string name="radio_connecting">connessione in corso</string>
+    <string name="radio_muting">disattivazione pubblicità</string>
+    <string name="radio_next">stazione successiva</string>
+    <string name="radio_pause">pausa radio</string>
+    <string name="radio_paused">in pausa</string>
+    <string name="radio_play">riproduci radio</string>
+    <string name="radio_playing">in riproduzione</string>
     <string name="radio_stream_keep_running">Mantieni radio accesa</string>
     <string name="radio_stream_keep_running_summary">Continua a riprodurre lo streaming radio dopo aver interrotto la sveglia.</string>
+    <string name="radio_previous">stazione precedente</string>
     <string name="radio_station">Stazione radio</string>
     <string name="radio_station_dialog_title">Seleziona una stazione radio</string>
     <string name="radio_station_none">Nessuna stazione radio</string>
+    <string name="radio_stream">Radio</string>
     <string name="radio_stream_activate_wifi">Attiva WiFi</string>
     <string name="radio_stream_activate_wifi_desc">Se attivo, la connessione alla rete WiFi verrà attivata alcuni minuti prima che la riproduzione parta</string>
-    <string name="radio_stream_require_wifi">Richiede la connessione alla rete WiFi</string>
-    <string name="radio_stream_require_wifi_desc">Se attivo, gli allarmi riprodurranno i flussi della web radio solo con una connessione WiFi stabilita.</string>
-    <string name="radio_stream">Radio</string>
     <string name="radio_stream_failure">Errore sullo stream radio</string>
     <string name="radio_stream_manual_edit">Modifica stazione radio</string>
     <string name="radio_stream_manual_input_description">Nome stazione radio</string>
     <string name="radio_stream_manual_input_hint">Aggiungi Radio manualmente</string>
-    <string name="radio_stream_manual_input_url">Stream URL</string>
     <string name="radio_stream_manual_input_seconds_to_mute">Secondi da silenziare prima dell\'inizio</string>
+    <string name="radio_stream_manual_input_url">Stream URL</string>
     <string name="radio_stream_music_allowed">Usare musica in stream</string>
     <string name="radio_stream_no_search_results">La ricerca non ha dato risultati.</string>
     <string name="radio_stream_offline">Offline</string>
     <string name="radio_stream_query_hint">Stringa di ricerca</string>
+    <string name="radio_stream_require_wifi">Richiede la connessione alla rete WiFi</string>
+    <string name="radio_stream_require_wifi_desc">Se attivo, gli allarmi riprodurranno i flussi della web radio solo con una connessione WiFi stabilita.</string>
     <string name="radio_stream_search">Cerca</string>
     <string name="radio_stream_unreachable_url">l\'URL non è raggiungibile</string>
     <string name="recommend_app_desc">Scegli un\'app per condividere i tuoi consigli</string>
@@ -285,11 +331,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="rate">Valuta questa applicazione</string>
     <string name="rate_summary">Ci piacerebbe conoscere se ti piace la nostra applicazione</string>
     <string name="remaining">Residuo</string>
-    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_end"> </string>
     <string name="remaining_alarm_time_now">Questo allarme suonerà presto</string>
-    <string name="remaining_alarm_time_start">Questo allarme suonerà tra &#160;</string>
+    <string name="remaining_alarm_time_start">Questo allarme suonerà tra  </string>
     <string name="repeat">Ripeti</string>
+    <string name="reset">ripristina</string>
     <string name="reset_to_defaults">Reset ai valori predefiniti</string>
+    <string name="rss">Lettore RSS</string>
+    <string name="rss_charset">codifica caratteri</string>
+    <string name="rss_enable_summary">Abilita lettore RSS</string>
+    <string name="rss_tickerspeed">Velocità testo</string>
+    <string name="rss_timeset">Intervallo di aggiornamento (minuti)</string>
+    <string name="rss_url_error">URL non impostato</string>
+    <string name="rss_data_error">Si è verificato un errore. Nessun dato disponibile.</string>
+    <string name="rss_text_size">Dimensione testo</string>
+    <string name="screen">Schermo</string>
     <string name="screenProtection">Protezione salvaschermo</string>
     <string name="screenProtectionNone">Non attivo</string>
     <string name="screenProtectionMove">sposta l\'orologio</string>
@@ -309,14 +365,25 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="set_alarm">imposta allarme</string>
     <string name="showAlarmsPersistently">Mostra sempre</string>
     <string name="showAlarmsPersistentlySummary">Mostra sempre l\'ora della prossima sveglia sullo schermo.</string>
+    <string name="showBattery">Mostra batteria</string>
     <string name="showBatteryWarningSummary">Mostra un avviso all\'avvio quando non sei collegato alla rete elettrica</string>
     <string name="showBatteryWarningTitle">Allarme batteria</string>
     <string name="showBatteryWarningMessage">Attenzione: Nessuna fonte di alimentazione connessa!</string>
     <string name="show_apparent_temperature">Mostra stima temperatura</string>
+    <string name="show_alarm">Mostra sveglie</string>
     <string name="show_calendar_events">Evidenzia eventi</string>
     <string name="show_date">Mostra data</string>
     <string name="show_divider">Mostrare divisine</string>
     <string name="showPollen">Indice di rischio inquinamento</string>
+    <string name="showPollenIndex">Livello di stress</string>
+    <string name="showPollenIndex0">nessuno</string>
+    <string name="showPollenIndex1">da nessuno a basso</string>
+    <string name="showPollenIndex2">basso</string>
+    <string name="showPollenIndex3">da basso a moderato</string>
+    <string name="showPollenIndex4">moderato</string>
+    <string name="showPollenIndex5">da moderato ad alto</string>
+    <string name="showPollenIndex6">alto</string>
+    <string name="showPollenNoData">Nessun dato per questa zona. L\'indice del rischio polline è disponibile solo per le località tedesche.</string>
     <string name="showPollenSummary">Disponibile solo per località in Germania</string>
     <string name="show_temperature">Mostra temperatura</string>
     <string name="show_second_hand">Mostra seconda mano</string>
@@ -328,6 +395,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="slideshow_center_animated">Animato</string>
     <string name="slideshow_style">Stile</string>
     <string name="sleep_time_dialog_title">Timer spegnimento automatico</string>
+    <string name="smart_home">Smart Home</string>
+    <string name="smart_home_avm">AVM Fritz!Box</string>
+    <string name="smart_home_avm_host">Host</string>
+    <string name="smart_home_avm_host_summary">Indirizzo del tuo Fritz!Box, es. http://fritz.box</string>
+    <string name="smart_home_avm_username">Nome utente</string>
+    <string name="smart_home_avm_password">Password</string>
+    <string name="smart_home_purchase_request">Controlla i tuoi dispositivi smart home AVM con la versione Pro</string>
+    <string name="smart_home_permission_denied">Permesso di accesso alla rete locale negato. Impossibile connettersi al Fritz!Box.</string>
     <string name="snoozeTime">Intervallo rinvio</string>
     <string name="snoozeAfter">Posticipa automaticamente dopo</string>
     <string name="snoozeCycles">Cicli snooze automatico prima di stop automatico</string>
@@ -343,6 +418,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="suggestions">Suggerimenti</string>
     <string name="suggestions_summary">Facci sapere se hai suggerimenti per le prossime versioni</string>
     <string name="temperatureUnit">unità di misura della temperatura</string>
+    <string name="text_size">Dimensione testo</string>
     <string name="tick_style_hours">Stile tick ore</string>
     <string name="tick_style_minutes">Stile tick minuti</string>
     <string name="tick_style_circle">Cerchio</string>
@@ -361,6 +437,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_thin">Roboto leggero</string>
     <string name="typeface">carattere tipografico</string>
     <string name="uninstall">Disinstalla l\'applicazione</string>
+    <string name="unlockHint">Pressione prolungata per sbloccare</string>
     <string name="upgrade_now">Aggiorna subito!</string>
     <string name="useAlarmSwipeGesture">Setta l\'allarme con uno swipe</string>
     <string name="useAlarmSwipeGestureSummary">Permette di impostare una nuova sveglia tirando dall\'angolo in basso a sinistra.</string>
@@ -369,21 +446,28 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLock">Blocca dispositivo</string>
     <string name="weather">Meteo</string>
     <string name="weatherProvider">Fornitore servizi meteo</string>
+    <string name="open_weather_map_api_key">Chiave API OpenWeatherMap</string>
+    <string name="open_weather_map_api_key_summary">Inserisci la tua chiave API per OpenWeatherMap. Ottienine una su openweathermap.org</string>
     <string name="weather_calculation_time">Tempo di calcolo previsioni meteo</string>
     <string name="weather_city_id_title">Ricerca posizione</string>
     <string name="weather_current_location">Località corrente</string>
+    <string name="weather_icon">Icona meteo</string>
+    <string name="weather_icon_default">Predefinita</string>
+    <string name="weather_icon_colored">Colorata</string>
+    <string name="weather_icon_animated">Animata (Android 6+)</string>
     <string name="weather_info_title">Informazioni</string>
+    <string name="weather_sun_rise">Alba</string>
+    <string name="weather_sun_set">Tramonto</string>
     <string name="weekdays">Giorni della settimana</string>
     <string name="width">Larghezza</string>
-
+    <string name="snoozeUsingVolumeButtons">Snooze usando i tasti del volume</string>
+    <string name="product_name_subscription">abbonamento annuale</string>
     <string name="subscription_free_trial_description">%s prova gratuita.</string>
     <string name="subscription_prefix_after_period">Poi </string>
     <string name="subscription_prefix_subsequently">Successivamente </string>
     <string name="subscription_price_per_period">%s per %s.</string>
     <string name="subscription_offer_price_for_period">%s per %s.</string>
     <string name="subscription_renewal_info">Si rinnova automaticamente. Annullabile in qualsiasi momento.</string>
-
-    <!-- Units for subscription periods -->
     <string name="unit_day">Giorno</string>
     <string name="unit_days">Giorni</string>
     <string name="unit_week">Settimana</string>
