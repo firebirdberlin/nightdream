@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Preskočiť</string>
     <string name="action_snooze">Odložiť o</string>
     <string name="action_stop">Zastaviť</string>
+    <string name="options_stop_alarms_slider">posuvník</string>
+    <string name="options_stop_alarms_error_min_one">Vyberte prosím aspoň jedno gesto.</string>
     <string name="activateDoNotDisturb">Aktivovať DnD</string>
     <string name="add_new_alarm">Pridať nový budík</string>
     <string name="add_custom_alarm_tone">Pridať zvonenie podľa vlastného výberu</string>

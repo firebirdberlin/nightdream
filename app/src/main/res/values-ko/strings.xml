@@ -21,6 +21,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">취소</string>
     <string name="action_snooze">스누즈</string>
     <string name="action_stop">정지</string>
+    <string name="options_stop_alarms_slider">슬라이더</string>
+    <string name="options_stop_alarms_error_min_one">제스처를 하나 이상 선택하십시오.</string>
     <string name="activateDoNotDisturb">방해금지 작동</string>
     <string name="activateDoNotDisturbAllowPriority">우선순위</string>
     <string name="activateDoNotDisturbSummary">앱작동시 방해금지모드착동</string>

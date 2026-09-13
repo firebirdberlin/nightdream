@@ -185,6 +185,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_tap">نقر</string>
     <string name="options_stop_alarms_title">إيماء لوقف التنبيهات</string>
     <string name="options_stop_alarms_long_press">ضغطة مطولة</string>
+    <string name="options_stop_alarms_slider">منزلق</string>
+    <string name="options_stop_alarms_error_min_one">يرجى اختيار لفتة واحدة على الأقل.</string>
     <string name="outer_circle_radius">نصف القطر الخارجي للدائرة</string>
     <string name="outer_circle_width">العرض الخارجي للدائرة</string>
     <string name="permission_request_overlays">لم يتم منح إذن لإظهار التراكبات (التشغيل التلقائي).  يرجى منح هذا الإذن!</string>

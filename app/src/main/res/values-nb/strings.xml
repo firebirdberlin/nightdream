@@ -187,6 +187,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_tap">Press</string>
     <string name="options_stop_alarms_title">For å stoppe alarmer</string>
     <string name="options_stop_alarms_long_press">Langt press</string>
+    <string name="options_stop_alarms_slider">slider</string>
+    <string name="options_stop_alarms_error_min_one">Velg minst én bevegelse.</string>
     <string name="outer_circle_radius">Ytre sirkelradius</string>
     <string name="outer_circle_width">Ytre sirkelradius</string>
     <string name="permission_request_overlays">Autostart ikke tillatt. Vennligs gi programmet tillatelse.</string>

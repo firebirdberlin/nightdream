@@ -192,6 +192,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_tap">tap</string>
     <string name="options_stop_alarms_title">Gestus for at stoppe alarm</string>
     <string name="options_stop_alarms_long_press">langt tryk</string>
+    <string name="options_stop_alarms_slider">slider</string>
+    <string name="options_stop_alarms_error_min_one">Vælg venligst mindst én gestus.</string>
     <string name="outer_circle_radius">Ydre cirkel radius</string>
     <string name="outer_circle_width">Ydre cirkel bredde</string>
     <string name="permission_request_overlays"> Tilladelsen til at vise overlays (autostart) er ikke tildelt. Giv denne tilladelse!</string>

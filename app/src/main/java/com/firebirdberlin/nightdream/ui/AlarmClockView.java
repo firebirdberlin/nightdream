@@ -39,6 +39,7 @@ import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -74,8 +75,11 @@ public class AlarmClockView extends View {
     private boolean userChangesAlarmTime = false;
     private boolean FingerDownDeleteAlarm = false;
     private boolean useAlarmSwipeGesture = false;
+    public boolean useAlarmStopSlider = false;
     private boolean useSingleTap = true;
     private boolean useLongPress = false;
+    private float sliderHandleX = -1;
+    private boolean isSliding = false;
     private int customColor = Color.parseColor("#33B5E5");
     private int paddingHorizontal = 0;
     private ColorFilter customColorFilter;
@@ -128,6 +132,10 @@ public class AlarmClockView extends View {
         useAlarmSwipeGesture = enabled;
     }
 
+    public void setUseAlarmStopSlider(boolean enabled) {
+        useAlarmStopSlider = enabled;
+    }
+
     public void setUseSingleTap(boolean useSingleTap) {
         this.useSingleTap = useSingleTap;
     }
@@ -162,7 +170,7 @@ public class AlarmClockView extends View {
     }
 
     public boolean isInteractive() {
-        return (FingerDown || FingerDownDeleteAlarm);
+        return (FingerDown || FingerDownDeleteAlarm || isSliding);
     }
 
     private float distance(Point a, Point b) {
@@ -178,6 +186,10 @@ public class AlarmClockView extends View {
 
         // the view should be visible before the user interacts with it
         if (!isClickable() || locked) return false;
+
+        if (useAlarmStopSlider && alarmIsRunning()) {
+            return handleAlarmSliderEvents(e);
+        }
 
         if (showRightCorner()) {
             boolean success = mGestureDetector.onTouchEvent(e) || handleAlarmCancelling(e);
@@ -259,6 +271,55 @@ public class AlarmClockView extends View {
         return false;
     }
 
+    private boolean handleAlarmSliderEvents(MotionEvent e) {
+        float x = e.getX();
+        float w = getWidth();
+        int maxSliderWidth = Utility.dpToPx(getContext(), 400);
+        float actualSliderWidth = Math.min(w, maxSliderWidth);
+        float sliderLeft = (w - actualSliderWidth) / 2;
+
+        float centerX = w / 2;
+        float handleRadius = touch_zone_radius / 3.0f;
+
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (x >= sliderLeft && x <= sliderLeft + actualSliderWidth && Math.abs(x - centerX) < handleRadius * 3) {
+                    isSliding = true;
+                    sliderHandleX = x;
+                    invalidate();
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (isSliding) {
+                    sliderHandleX = Math.max(sliderLeft, Math.min(x, sliderLeft + actualSliderWidth));
+                    invalidate();
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (isSliding) {
+                    float totalSwipe = sliderHandleX - centerX;
+                    float threshold = actualSliderWidth / 4;
+                    if (totalSwipe < -threshold) {
+                        snooze();
+                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    } else if (totalSwipe > threshold) {
+                        stopAlarm();
+                        postAlarmTime();
+                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                    }
+                    isSliding = false;
+                    sliderHandleX = -1;
+                    invalidate();
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
     private void XYtotime(float x, float y) {
         int w = getWidth() - 2 * touch_zone_radius;
         int h = Utility.getDisplaySize(ctx).y - 2 * touch_zone_radius;
@@ -330,22 +391,26 @@ public class AlarmClockView extends View {
         touch_zone_radius = Math.min(w, h);
         quiet_zone_size = touch_zone_radius / 4;
 
-        if (showLeftCorner()) {
-            cornerLeft.setCenter(paddingHorizontal, h);
-            cornerLeft.setRadius(touch_zone_radius);
-            cornerLeft.setActive(FingerDown);
-            cornerLeft.draw(canvas, paint);
+        if (useAlarmStopSlider && alarmIsRunning()) {
+            drawSlider(canvas, w, h);
+        } else {
+            if (showLeftCorner()) {
+                cornerLeft.setCenter(paddingHorizontal, h);
+                cornerLeft.setRadius(touch_zone_radius);
+                cornerLeft.setActive(FingerDown);
+                cornerLeft.draw(canvas, paint);
 
-        }
-        if (showRightCorner()) {
-            cornerRight.setCenter(w - paddingHorizontal, h);
-            cornerRight.setRadius(touch_zone_radius);
-            cornerRight.setIconResource(
-                    getResources(),
-                    alarmIsRunning() ? R.drawable.ic_no_audio : R.drawable.ic_no_alarm_clock
-            );
-            cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
-            cornerRight.draw(canvas, paint);
+            }
+            if (showRightCorner()) {
+                cornerRight.setCenter(w - paddingHorizontal, h);
+                cornerRight.setRadius(touch_zone_radius);
+                cornerRight.setIconResource(
+                        getResources(),
+                        alarmIsRunning() ? R.drawable.ic_no_audio : R.drawable.ic_no_alarm_clock
+                );
+                cornerRight.setActive(FingerDownDeleteAlarm || blinkStateOn);
+                cornerRight.draw(canvas, paint);
+            }
         }
 
         if (userChangesAlarmTime) {
@@ -364,6 +429,64 @@ public class AlarmClockView extends View {
         }
     }
 
+    private void drawSlider(Canvas canvas, int w, int h) {
+        int maxSliderWidth = Utility.dpToPx(getContext(), 400);
+        float actualSliderWidth = Math.min(w, maxSliderWidth);
+        float sliderLeft = (w - actualSliderWidth) / 2;
+
+        float handleRadius = h * 0.8f / 2.0f;
+        float centerY = h / 2.0f;
+        float centerX = w / 2.0f;
+
+        // Draw Engraved Pill Background
+        RectF pillRect = new RectF(sliderLeft + 10, centerY - handleRadius, sliderLeft + actualSliderWidth - 10, centerY + handleRadius);
+
+        // Dark inner fill
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setAlpha(25);
+        canvas.drawRoundRect(pillRect, handleRadius, handleRadius, paint);
+
+        // Engraved effect (subtle top shadow and bottom highlight)
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+
+        // Bottom highlight (white)
+        paint.setColor(Color.WHITE);
+        paint.setAlpha(50);
+        canvas.drawRoundRect(pillRect, handleRadius, handleRadius, paint);
+
+        // Top shadow (black)
+        canvas.save();
+        canvas.clipRect(pillRect.left, pillRect.top, pillRect.right, centerY);
+        paint.setColor(Color.BLACK);
+        paint.setAlpha(45);
+        canvas.drawRoundRect(pillRect, handleRadius, handleRadius, paint);
+        canvas.restore();
+
+        // Draw labels
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAlpha(180);
+        paint.setTextSize(h / 3.2f);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float labelY = centerY + (paint.getTextSize() / 3.0f); // Center vertically
+        float trackPadding = sliderLeft + handleRadius + 20;
+
+        paint.setColor(Color.WHITE);
+        canvas.drawText(ctx.getString(R.string.action_snooze), trackPadding, labelY, paint);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText(ctx.getString(R.string.action_stop), sliderLeft + actualSliderWidth - handleRadius - 20, labelY, paint);
+
+        // Draw Handle
+        float handleX = isSliding ? sliderHandleX : centerX;
+        handleX = Math.max(sliderLeft + handleRadius + 10, Math.min(handleX, sliderLeft + actualSliderWidth - handleRadius - 10));
+
+        paint.setColor(customColor);
+        paint.setAlpha(blinkStateOn ? 255 : 200);
+        canvas.drawCircle(handleX, centerY, handleRadius - 4, paint);
+        paint.setColorFilter(null);
+    }
+
     private boolean showAlarmTime() {
         return (isAlarmSet() || userChangesAlarmTime);
     }
@@ -375,12 +498,12 @@ public class AlarmClockView extends View {
 
     private boolean showRightCorner() {
         if (locked) return false;
-        if (alarmIsRunning()) return true;
+        if (alarmIsRunning()) return !useAlarmStopSlider;
         return (isAlarmSet() && !time.isRecurring()) || userChangesAlarmTime;
 
     }
 
-    private String getAlarmTimeFormatted() {
+    public String getAlarmTimeFormatted() {
         if (alarmIsRunning()) {
             SimpleTime current = AlarmHandlerService.getCurrentlyActiveAlarm();
             if (current != null) {

@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Passa</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Atura</string>
+    <string name="options_stop_alarms_slider">lliscador</string>
+    <string name="options_stop_alarms_error_min_one">Seleccioneu almenys un gest.</string>
     <string name="activateDoNotDisturb">No molestar</string>
     <string name="activateDoNotDisturbSummary">Activa "no molestar" mentre l\'App estigui activa</string>
     <string name="add_custom_alarm_tone">Afegir tó personalitzat</string>

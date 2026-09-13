@@ -265,6 +265,8 @@ OR
     <string name="options_stop_alarms_tap">натискання</string>
     <string name="options_stop_alarms_title">Жест для зупинки будильників</string>
     <string name="options_stop_alarms_long_press">довге натискання</string>
+    <string name="options_stop_alarms_slider">повзунок</string>
+    <string name="options_stop_alarms_error_min_one">Будь ласка, виберіть хоча б один жест.</string>
     <string name="outer_circle_radius">Зовнішній радіус кола</string>
     <string name="outer_circle_width">Зовнішня ширина кола</string>
     <string name="permission_request">Запит дозволу</string>

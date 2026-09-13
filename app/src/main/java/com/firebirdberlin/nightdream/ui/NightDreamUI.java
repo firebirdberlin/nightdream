@@ -380,7 +380,7 @@ public class NightDreamUI {
                 showAlarmClock();
                 resetAlarmClockHideDelay();
 
-                if (AlarmHandlerService.alarmIsRunning()) {
+                if (AlarmHandlerService.alarmIsRunning() && !settings.stopAlarmWithSlider) {
                     alarmClock.snooze();
                 }
 
@@ -1195,6 +1195,7 @@ public class NightDreamUI {
     private void setupAlarmClock() {
         bottomPanelLayout.setAlarmUseLongPress(settings.stopAlarmOnLongPress);
         bottomPanelLayout.setAlarmUseSingleTap(settings.stopAlarmOnTap);
+        bottomPanelLayout.setAlarmUseSlider(settings.stopAlarmWithSlider);
         bottomPanelLayout.setRssEnabled(settings.isRssEnabled());
         bottomPanelLayout.setNotifyForUpComingAlarms(settings.notifyForUpcomingAlarms);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);

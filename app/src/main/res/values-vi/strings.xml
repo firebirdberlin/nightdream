@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">Giới thiệu</string>
     <string name="action_snooze">Ngủ thêm</string>
     <string name="action_stop">Dừng</string>
+    <string name="options_stop_alarms_slider">thanh trượt</string>
+    <string name="options_stop_alarms_error_min_one">Vui lòng chọn ít nhất một cử chỉ.</string>
     <string name="add_custom_alarm_tone">Thêm âm thanh báo thức</string>
     <string name="alarmFadeIn">Tăng âm lượng</string>
     <string name="alarmVolume">Âm lượng</string>

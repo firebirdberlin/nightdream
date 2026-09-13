@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="about">APP-ari burz</string>
 <string name="action_snooze">Lokuluska </string>
 <string name="action_stop">Geldi</string>
+<string name="options_stop_alarms_slider">irristatzailea</string>
+    <string name="options_stop_alarms_error_min_one">Hautatu gutxienez keinu bat.</string>
 <string name="add_new_alarm">Alarma berria gehitu</string>
 <string name="add_custom_alarm_tone">Alarmaren soinua aukeratu</string>
 <string name="add_custom_font">Letra tipoa aukeratu</string>

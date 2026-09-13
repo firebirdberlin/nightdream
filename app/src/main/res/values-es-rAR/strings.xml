@@ -265,6 +265,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_tap">pulsar</string>
     <string name="options_stop_alarms_title">Gesto para detener las alarmas</string>
     <string name="options_stop_alarms_long_press">Pulsación larga</string>
+    <string name="options_stop_alarms_slider">deslizador</string>
+    <string name="options_stop_alarms_error_min_one">Seleccione al menos un gesto.</string>
     <string name="outer_circle_radius">Radio del círculo externo</string>
     <string name="outer_circle_width">Grosor del círculo externo</string>
     <string name="permission_request">Solicitud de permiso</string>

@@ -265,6 +265,8 @@ OR
     <string name="options_stop_alarms_tap">Тап</string>
     <string name="options_stop_alarms_title">Жест для остановки будильника</string>
     <string name="options_stop_alarms_long_press">Долгое нажатие</string>
+    <string name="options_stop_alarms_slider">ползунок</string>
+    <string name="options_stop_alarms_error_min_one">Пожалуйста, выберите хотя бы один жест.</string>
     <string name="outer_circle_radius">Радиус внешнего круга</string>
     <string name="outer_circle_width">Ширина внешнего круга</string>
     <string name="permission_request">Запрос разрешения</string>

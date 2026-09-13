@@ -238,6 +238,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_tap">Tryck</string>
     <string name="options_stop_alarms_title">Gest för att stänga alarm</string>
     <string name="options_stop_alarms_long_press">långt tryck</string>
+    <string name="options_stop_alarms_slider">slider</string>
+    <string name="options_stop_alarms_error_min_one">Välj minst en gest.</string>
     <string name="outer_circle_radius">Cirkelns yttre diameter</string>
     <string name="outer_circle_width">Cirkelns yttre bredd</string>
     <string name="permission_request_overlays">Rättighet för visning ovanpå (autostart) är inte beviljad. Vänligen bevilja denna rättighet!</string>

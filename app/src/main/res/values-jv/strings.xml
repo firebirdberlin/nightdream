@@ -18,7 +18,10 @@ Please preserve the xml tags and the utf8 encoding.
 <resources>
     <string name="about">Babagan</string>
     <string name="action_skip">Babah</string>
+    <string name="action_snooze">Tundha</string>
     <string name="action_stop">Mandeg</string>
+    <string name="options_stop_alarms_slider">slider</string>
+    <string name="options_stop_alarms_error_min_one">Mangga milih paling ora siji patrap.</string>
     <string name="add_new_alarm">Tambah alarm anyar</string>
     <string name="add_custom_alarm_tone">Tambah dering alarm racikan</string>
     <string name="alarm">Alarm</string>

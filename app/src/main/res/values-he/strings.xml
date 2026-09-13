@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">דלג</string>
     <string name="action_snooze">נודניק</string>
     <string name="action_stop">לעצור</string>
+    <string name="options_stop_alarms_slider">מחוון</string>
+    <string name="options_stop_alarms_error_min_one">בחר לפחות מחווה אחת.</string>
     <string name="activateDoNotDisturb">נא לא להפריע</string>
     <string name="add_new_alarm">הוסף שעון מעורר חדש</string>
     <string name="add_custom_alarm_tone">הוסף צליל שעון מעורר מותאם אישית</string>

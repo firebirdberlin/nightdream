@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Παραλείπω</string>
     <string name="action_snooze">Αναβολή</string>
     <string name="action_stop">Τερματισμός</string>
+    <string name="options_stop_alarms_slider">ρυθμιστικό</string>
+    <string name="options_stop_alarms_error_min_one">Επιλέξτε τουλάχιστον μία χειρονομία.</string>
     <string name="add_new_alarm">Εισαγωγή νέου ξυπνητηριού</string>
     <string name="add_custom_alarm_tone">Εισαγωγή ήχου</string>
     <string name="add_custom_font">Εισαγωγή γραμματοσειράς</string>

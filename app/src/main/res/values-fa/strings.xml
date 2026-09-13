@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">درباره</string>
     <string name="action_snooze">تعویق انداختن</string>
     <string name="action_stop">ایست</string>
+    <string name="options_stop_alarms_slider">لغزنده</string>
+    <string name="options_stop_alarms_error_min_one">لطفا حداقل یک ژست را انتخاب کنید.</string>
     <string name="alarm">هشدار</string>
     <string name="alarmFadeIn">افزایش آوا</string>
     <string name="alarmVolume">صدا</string>

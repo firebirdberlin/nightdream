@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -31,10 +32,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Set;
 
 
 public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
@@ -93,6 +97,21 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
         }
         setupAlarmClockPreferences();
         setupNotificationPermissionPreference();
+        setupStopAlarmOptionsPreference();
+    }
+
+    private void setupStopAlarmOptionsPreference() {
+        MultiSelectListPreference pref = findPreference("optionsStopAlarms");
+        if (pref != null) {
+            pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                Set<String> values = (Set<String>) newValue;
+                if (values.isEmpty()) {
+                    Toast.makeText(getContext(), R.string.options_stop_alarms_error_min_one, Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                return true;
+            });
+        }
     }
 
     private void setupAlarmClockPreferences() {

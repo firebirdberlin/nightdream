@@ -265,6 +265,8 @@ OR
     <string name="options_stop_alarms_tap">stuknięcie</string>
     <string name="options_stop_alarms_title">Gesty do wyłączenia alarmów</string>
     <string name="options_stop_alarms_long_press">długie przyciśnięcie</string>
+    <string name="options_stop_alarms_slider">suwak</string>
+    <string name="options_stop_alarms_error_min_one">Wybierz co najmniej jeden gest.</string>
     <string name="outer_circle_radius">Promień zewnętrznego koła</string>
     <string name="outer_circle_width">Szerokość zewnętrznego koła</string>
     <string name="permission_request">Prośba o uprawnienia</string>

@@ -265,6 +265,8 @@ OR
     <string name="options_stop_alarms_tap">tik</string>
     <string name="options_stop_alarms_title">Beweging om het alarm te stoppen</string>
     <string name="options_stop_alarms_long_press">Lang drukken</string>
+    <string name="options_stop_alarms_slider">schuifregelaar</string>
+    <string name="options_stop_alarms_error_min_one">Selecteer ten minste één gebaar.</string>
     <string name="outer_circle_radius">Straal van buitenste cirkel</string>
     <string name="outer_circle_width">Diameter van buitenste cirkel</string>
     <string name="permission_request">Verzoek om toestemming</string>
