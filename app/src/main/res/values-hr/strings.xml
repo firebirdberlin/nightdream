@@ -21,6 +21,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Preskočiti</string>
     <string name="action_snooze">Odgoda</string>
     <string name="action_stop">Prekini</string>
+    <string name="options_stop_alarms_slider">klizač</string>
+    <string name="options_stop_alarms_error_min_one">Odaberite barem jednu gestu.</string>
     <string name="activateDoNotDisturb">Aktivirajte DnD</string>
     <string name="activateDoNotDisturbAllowPriority">Dopustiti prioritet</string>
     <string name="activateDoNotDisturbSummary">Omogućite način rada do-net-poremećaj dok je aplikacija aktivna</string>

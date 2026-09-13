@@ -191,6 +191,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="options_stop_alarms_tap">Toque</string>
     <string name="options_stop_alarms_title">Parar alarmes por gestos</string>
     <string name="options_stop_alarms_long_press">Pressione longamente</string>
+    <string name="options_stop_alarms_slider">seletor</string>
+    <string name="options_stop_alarms_error_min_one">Selecione pelo menos um gesto.</string>
     <string name="outer_circle_radius">Tamanho do círculo externo</string>
     <string name="outer_circle_width">Expessura do círculo externo</string>
     <string name="permission_request_overlays">A permissão para mostrar sobreposições (inicialização automática) não é concedida. Conceda esta permissão!</string>

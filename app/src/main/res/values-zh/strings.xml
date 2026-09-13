@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">關关于</string>
     <string name="action_snooze">貪睡</string>
     <string name="action_stop">停止</string>
+    <string name="options_stop_alarms_slider">滑塊</string>
+    <string name="options_stop_alarms_error_min_one">請至少選擇一個手勢。</string>
     <string name="add_new_alarm">新增鬧鐘</string>
     <string name="add_custom_alarm_tone">加入鈴聲</string>
     <string name="add_custom_font">新增自訂字型</string>

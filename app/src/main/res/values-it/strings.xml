@@ -265,6 +265,8 @@ OR
     <string name="options_stop_alarms_tap">Tap</string>
     <string name="options_stop_alarms_title">Gesto per fermare gli allarmi</string>
     <string name="options_stop_alarms_long_press">premere a lungo</string>
+    <string name="options_stop_alarms_slider">cursore</string>
+    <string name="options_stop_alarms_error_min_one">Seleziona almeno un gesto.</string>
     <string name="outer_circle_radius">Raggio cerchio esterno</string>
     <string name="outer_circle_width">Larghezza cerchio esterno</string>
     <string name="permission_request">Richiesta di permesso</string>

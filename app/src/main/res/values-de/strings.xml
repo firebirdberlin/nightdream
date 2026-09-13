@@ -252,6 +252,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="numbers">Ziffern</string>
     <string name="options_stop_alarms_long_press">Langes Drücken</string>
     <string name="options_stop_alarms_tap">Tippen</string>
+    <string name="options_stop_alarms_slider">Schieberegler</string>
+    <string name="options_stop_alarms_error_min_one">Bitte wählen Sie mindestens eine Geste aus.</string>
     <string name="options_stop_alarms_title">Geste zum Beenden eines Alarms</string>
     <string name="other_apps">Andere Apps</string>
     <string name="other_apps_tinytimetracker">Zeiterfassung</string>

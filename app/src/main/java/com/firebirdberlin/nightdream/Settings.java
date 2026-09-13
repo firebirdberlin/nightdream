@@ -113,6 +113,7 @@ public class Settings {
     private boolean useDeviceLock = false;
     public boolean stopAlarmOnTap = true;
     public boolean stopAlarmOnLongPress = false;
+    public boolean stopAlarmWithSlider = false;
     public boolean useAlarmSwipeGesture = false;
     public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
@@ -576,7 +577,8 @@ public class Settings {
         Set<String> optionsStopAlarms = settings.getStringSet("optionsStopAlarms", defaultOptions);
         stopAlarmOnTap = optionsStopAlarms.contains("0");
         stopAlarmOnLongPress = optionsStopAlarms.contains("1");
-        if (!stopAlarmOnTap && !stopAlarmOnLongPress) {
+        stopAlarmWithSlider = optionsStopAlarms.contains("2");
+        if (!stopAlarmOnTap && !stopAlarmOnLongPress && !stopAlarmWithSlider) {
             stopAlarmOnTap = true;
         }
         setPowerSourceOptions();

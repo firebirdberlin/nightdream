@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">スキップ</string>
     <string name="action_snooze">スヌーズ</string>
     <string name="action_stop">ストップ</string>
+    <string name="options_stop_alarms_slider">スライダー</string>
+    <string name="options_stop_alarms_error_min_one">少なくとも1つのジェスチャーを選択してください。</string>
     <string name="activateDoNotDisturb">起こさないでください</string>
     <string name="activateDoNotDisturbSummary">アプリを起動している間は起こさないでモードを使用する</string>
     <string name="add_new_alarm">新しいアラーム</string>

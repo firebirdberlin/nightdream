@@ -3,12 +3,14 @@
      <string-array name="optionsStopAlarmsValues">
          <item>0</item>
          <item>1</item>
+         <item>2</item>
      </string-array>
 
 
     <string-array name="optionsStopAlarms">
         <item>@string/options_stop_alarms_tap</item>
         <item>@string/options_stop_alarms_long_press</item>
+        <item>@string/options_stop_alarms_slider</item>
      </string-array>
 
     <string-array name="optionsStopAlarmsValuesDefault">

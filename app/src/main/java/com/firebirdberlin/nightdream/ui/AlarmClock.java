@@ -175,16 +175,17 @@ public class AlarmClock extends RelativeLayout {
         lp.addRule(RelativeLayout.CENTER_VERTICAL);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
 
+        addView(alarmClockView, layoutAlarmClockView);
+        addView(alarmTimeTextView, lp);
+
         alarmClockView.setOnAlarmChangedListener(alarmString -> {
             Log.i(TAG, "onAlarmChanged() alarmString: " + alarmString);
             alarmTimeTextView.setText(alarmString);
             alarmTimeTextView.setVisibility(alarmString.isEmpty() ? GONE : VISIBLE);
             alarmTimeTextView.setSelected(true);
+            updateLabel();
             alarmTimeTextView.invalidate();
         });
-
-        addView(alarmClockView, layoutAlarmClockView);
-        addView(alarmTimeTextView, lp);
     }
 
     @Override
@@ -262,7 +263,53 @@ public class AlarmClock extends RelativeLayout {
     }
 
     public void activateAlarmUI() {
+        updateLabel();
         alarmClockView.activateAlarmUI();
+    }
+
+    public void setUseAlarmStopSlider(boolean enabled) {
+        alarmClockView.setUseAlarmStopSlider(enabled);
+        updateLabel();
+    }
+
+    private void updateLabel() {
+        LayoutParams lp = (LayoutParams) alarmTimeTextView.getLayoutParams();
+        if (lp == null) return;
+
+        if (AlarmHandlerService.alarmIsRunning() && alarmClockView.useAlarmStopSlider) {
+            int w = getWidth();
+            if (w == 0) {
+                post(this::updateLabel);
+                return;
+            }
+
+            int maxSliderWidth = Utility.dpToPx(getContext(), 400);
+            int actualSliderWidth = Math.min(w, maxSliderWidth);
+            int sliderLeft = (w - actualSliderWidth) / 2;
+
+            alarmTimeTextView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            int textWidth = alarmTimeTextView.getMeasuredWidth();
+            int margin = Utility.dpToPx(getContext(), 20);
+
+            if (textWidth + margin < sliderLeft) {
+                alarmTimeTextView.setVisibility(VISIBLE);
+                lp.removeRule(RelativeLayout.CENTER_IN_PARENT);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            } else {
+                alarmTimeTextView.setVisibility(GONE);
+            }
+        } else {
+            String alarmString = alarmClockView.getAlarmTimeFormatted();
+            if (alarmString.isEmpty()) {
+                alarmTimeTextView.setVisibility(GONE);
+            } else {
+                alarmTimeTextView.setVisibility(VISIBLE);
+                lp.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+            }
+        }
+        alarmTimeTextView.setLayoutParams(lp);
+        alarmTimeTextView.requestLayout();
     }
 
     public void snooze() {

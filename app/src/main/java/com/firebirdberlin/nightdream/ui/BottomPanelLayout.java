@@ -169,6 +169,13 @@ public class BottomPanelLayout extends FrameLayout {
         }
     }
 
+    public void setAlarmUseSlider(boolean enabled) {
+        if (view != null) {
+            view.setUseAlarmStopSlider(enabled);
+        }
+        setup();
+    }
+
     public void setShowAlarmsPersistently(boolean enabled) {
         showAlarmsPersistently = enabled;
     }

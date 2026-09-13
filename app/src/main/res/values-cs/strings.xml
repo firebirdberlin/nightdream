@@ -265,6 +265,8 @@ OR
     <string name="options_stop_alarms_tap">ťuknutí</string>
     <string name="options_stop_alarms_title">Gesto pro zastavení budíku</string>
     <string name="options_stop_alarms_long_press">dlouhý stisk</string>
+    <string name="options_stop_alarms_slider">posuvník</string>
+    <string name="options_stop_alarms_error_min_one">Vyberte prosím alespoň jedno gesto.</string>
     <string name="outer_circle_radius">Poloměr vnějšího kruhu</string>
     <string name="outer_circle_width">Tloušťka vnějšího kruhu</string>
     <string name="permission_request">Žádost o povolení</string>

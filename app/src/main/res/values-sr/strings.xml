@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">О нама</string>
     <string name="action_snooze">Oдлагање аларма</string>
     <string name="action_stop">Заустављање</string>
+    <string name="options_stop_alarms_slider">клизач</string>
+    <string name="options_stop_alarms_error_min_one">Молимо изаберите бар један гест.</string>
     <string name="add_new_alarm">Додај нови аларм</string>
     <string name="add_custom_alarm_tone">Додај подразумевани тон аларма</string>
     <string name="add_custom_font">Додај подразумевани фонт</string>

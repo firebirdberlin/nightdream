@@ -19,6 +19,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="about">Névjegy</string>
     <string name="action_snooze">Szundi</string>
     <string name="action_stop">Stop</string>
+    <string name="options_stop_alarms_slider">csúszka</string>
+    <string name="options_stop_alarms_error_min_one">Kérjük, válasszon ki legalább egy gesztust.</string>
     <string name="add_new_alarm">Új ébresztés hozzáadása</string>
     <string name="add_custom_alarm_tone">Egyéni hangjelzés hozzáadása</string>
     <string name="add_custom_font">Egyéni betűtípus hozzáadása</string>

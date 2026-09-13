@@ -20,6 +20,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="action_skip">Ohita</string>
     <string name="action_snooze">Torkku</string>
     <string name="action_stop">Pois</string>
+    <string name="options_stop_alarms_slider">liukusäädin</string>
+    <string name="options_stop_alarms_error_min_one">Valitse vähintään yksi ele.</string>
     <string name="activateDoNotDisturb">Aktivoi Älä häiritse -tila</string>
     <string name="add_new_alarm">Lisää uusi herätys</string>
     <string name="add_custom_alarm_tone">Lisää oma herätysääni</string>
