@@ -55,6 +55,10 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         getPreferenceManager().setSharedPreferencesName(PREFS_KEY);
         setPreferencesFromResource(R.xml.preferences_smarthome, rootKey);
+
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        SecurePreferenceDataStore dataStore = new SecurePreferenceDataStore(prefs);
+        getPreferenceManager().setPreferenceDataStore(dataStore);
     }
 
     @Override
