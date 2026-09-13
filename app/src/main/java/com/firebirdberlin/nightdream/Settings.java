@@ -203,6 +203,7 @@ public class Settings {
     boolean showBatteryWarning = false;
     int batteryTimeout = 5;
     SharedPreferences settings;
+    private final CryptoManager cryptoManager;
     private int background_mode = BACKGROUND_BLACK;
     private final Context mContext;
     private boolean reactivate_screen_on_noise = false;
@@ -214,12 +215,27 @@ public class Settings {
         this.mContext = context;
         purchaseManager = PurchaseManager.getInstance(context.getApplicationContext());
         settings = context.getSharedPreferences(PREFS_KEY, 0);
+        cryptoManager = new CryptoManager();
 
         reload();
     }
 
     public String getString(String key) {
-        return settings.getString(key, null);
+        String val = settings.getString(key, null);
+        if ("smart_home_avm_password".equals(key) && val != null) {
+            String decrypted = cryptoManager.decrypt(val);
+            if (decrypted != null) {
+                return decrypted;
+            }
+            // Migration: If decryption fails, it might be plaintext.
+            // Encrypt it now for next time.
+            String encrypted = cryptoManager.encrypt(val);
+            if (encrypted != null) {
+                settings.edit().putString(key, encrypted).apply();
+            }
+            return val;
+        }
+        return val;
     }
 
     private static FavoriteRadioStations getFavoriteRadioStations(SharedPreferences preferences) {
