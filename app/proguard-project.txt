@@ -19,10 +19,6 @@
 #   public *;
 #}
 
--optimizationpasses 5
-
--keep class * extends android.app.Activity
-
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);
@@ -40,8 +36,6 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
--keep class com.firebirdberlin.nightdream.events.** { *; }
--keep class com.firebirdberlin.nightdream.models.** { *; }
 
 -keepattributes *Annotation*
 -keepattributes Signature,RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations
@@ -49,25 +43,6 @@
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;
 }
-
--keepclassmembers class * extends android.app.Activity {
-    public void *(android.view.View);
-}
-
-# Keep generated data binding classes
--keep class * extends androidx.databinding.ViewDataBinding {
-    public <fields>;
-    public <methods>;
-}
--keep class com.firebirdberlin.nightdream.databinding.** { *; }
-# Keep BindingAdapters
--keep class * { @androidx.databinding.BindingAdapter <methods>; }
-
-
-# ProGuard rules for androidx.window library
--keep class androidx.window.** { *; }
--dontwarn androidx.window.extensions.**
--dontwarn androidx.window.sidecar.**
 
 # ProGuard rules for findbugs annotations (referenced by suncalc)
 -dontwarn edu.umd.cs.findbugs.annotations.**
