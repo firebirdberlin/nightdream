@@ -80,8 +80,14 @@ public class WeatherPreferenceFragment extends PreferenceFragmentCompat {
         settings = new Settings(getContext());
         setupWeatherProviderPreference();
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
-        updateOpenWeatherMapApiKeyVisibility(prefs);
+        if (prefs == null) {
+            prefs = getContext().getSharedPreferences(PREFS_KEY, 0);
+        }
+
+        if (prefs != null) {
+            prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+            updateOpenWeatherMapApiKeyVisibility(prefs);
+        }
     }
 
     private void setupWeatherProviderPreference() {

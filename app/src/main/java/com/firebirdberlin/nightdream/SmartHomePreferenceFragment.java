@@ -83,7 +83,13 @@ public class SmartHomePreferenceFragment extends PreferenceFragmentCompat {
     private void init() {
         settings = new Settings(getContext());
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        if (prefs == null) {
+            prefs = getContext().getSharedPreferences(PREFS_KEY, 0);
+        }
+
+        if (prefs != null) {
+            prefs.registerOnSharedPreferenceChangeListener(prefChangedListener);
+        }
 
         EditTextPreference passwordPreference = findPreference("smart_home_avm_password");
         if (passwordPreference != null) {
