@@ -54,6 +54,16 @@ public class AvmAhaRequestTask {
     private static final int READ_TIMEOUT = 10000;
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static XmlPullParserFactory xmlFactory;
+
+    static {
+        try {
+            xmlFactory = XmlPullParserFactory.newInstance();
+            xmlFactory.setNamespaceAware(true);
+        } catch (XmlPullParserException e) {
+            Log.e(TAG, "Error initializing XmlPullParserFactory", e);
+        }
+    }
 
     private final AsyncResponse delegate;
 
@@ -163,23 +173,35 @@ public class AvmAhaRequestTask {
         errorMessage = null;
         URL url = getUrl("login_sid.lua", null);
         HashMap<String, String> response = new HashMap<>();
-        InputStream inputStream = request(url);
 
-        if (inputStream == null) {return;}
+        try (InputStream inputStream = request(url)) {
+            if (inputStream == null) return;
+            getValues(inputStream, response);
+        } catch (IOException e) {
+            Log.e(TAG, "Login failed during challenge request", e);
+            return;
+        }
 
-        getValues(inputStream, response);
+        String challenge = response.get("Challenge");
+        if (challenge == null) {
+            errorMessage = "Invalid challenge received";
+            return;
+        }
 
         HashMap<String, String> params = new HashMap<>();
         params.put("username", credentials.username);
-        params.put("response", credentials.getSecret(response.get("Challenge")));
+        params.put("response", credentials.getSecret(challenge));
         url = getUrl("login_sid.lua", params);
 
         response.clear();
 
-        inputStream = request(url);
-        if (inputStream == null) {return;}
-
-        getValues(inputStream, response);
+        try (InputStream inputStream = request(url)) {
+            if (inputStream == null) return;
+            getValues(inputStream, response);
+        } catch (IOException e) {
+            Log.e(TAG, "Login failed during authentication request", e);
+            return;
+        }
 
         // Use static session_id directly
         session_id = response.get("SID");
@@ -201,17 +223,20 @@ public class AvmAhaRequestTask {
     }
 
     private List<AvmAhaDevice> getDeviceList() {
-
         HashMap<String, String> params = new HashMap<>();
         params.put("sid", session_id); // Use static session_id directly
         params.put("switchcmd", "getdevicelistinfos");
 
         URL url = getUrl("webservices/homeautoswitch.lua", params);
-        InputStream inputStream = request(url);
-        if (inputStream == null) {
+        try (InputStream inputStream = request(url)) {
+            if (inputStream == null) {
+                return null;
+            }
+            return parseDeviceList(inputStream);
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to get device list", e);
             return null;
         }
-        return parseDeviceList(inputStream);
     }
 
     private boolean toggleBulb(String ain, String newState) {
@@ -222,12 +247,16 @@ public class AvmAhaRequestTask {
         params.put("onoff", newState);
 
         URL url = getUrl("webservices/homeautoswitch.lua", params);
-        InputStream inputStream = request(url);
-        if (inputStream == null) return false;
-        String responseText = getResponseText(inputStream);
-        Log.d(TAG, "Response: '" + strip(responseText) + "'");
+        try (InputStream inputStream = request(url)) {
+            if (inputStream == null) return false;
+            String responseText = getResponseText(inputStream);
+            Log.d(TAG, "Response: '" + strip(responseText) + "'");
 
-        return newState.equals(strip(responseText));
+            return newState.equals(strip(responseText));
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to toggle bulb", e);
+            return false;
+        }
     }
 
     private String strip(String input) {
@@ -327,13 +356,11 @@ public class AvmAhaRequestTask {
     }
 
     private boolean getValues(InputStream inputStream, HashMap<String, String> map) {
-        if (inputStream == null) {
+        if (inputStream == null || xmlFactory == null) {
             return false;
         }
         try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            XmlPullParser xpp = factory.newPullParser();
+            XmlPullParser xpp = xmlFactory.newPullParser();
 
             xpp.setInput(new InputStreamReader(inputStream));
             int eventType = xpp.getEventType();
@@ -361,10 +388,9 @@ public class AvmAhaRequestTask {
 
     private List<AvmAhaDevice> parseDeviceList(InputStream inputStream) {
         deviceList.clear();
+        if (xmlFactory == null) return null;
         try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            XmlPullParser xpp = factory.newPullParser();
+            XmlPullParser xpp = xmlFactory.newPullParser();
 
             xpp.setInput(new InputStreamReader(inputStream));
             int eventType = xpp.getEventType();
