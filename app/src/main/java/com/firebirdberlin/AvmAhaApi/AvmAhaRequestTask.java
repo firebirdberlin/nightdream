@@ -53,6 +53,8 @@ public class AvmAhaRequestTask {
     private static final int CONNECT_TIMEOUT = 10000;
     private static final int READ_TIMEOUT = 10000;
 
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     private final AsyncResponse delegate;
 
     private static String session_id = null;
@@ -79,48 +81,51 @@ public class AvmAhaRequestTask {
     }
 
     public void fetchDeviceList() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> { //background thread
             List<AvmAhaDevice> devices;
             if (isDemoMode()) {
                 devices = getMockDevices();
             } else {
-                if (!sessionIsValid()) login();
                 devices = getDeviceList();
+                if (devices == null) { // Session might be expired
+                    login();
+                    devices = getDeviceList();
+                }
             }
+            final List<AvmAhaDevice> resultDevices = devices;
             handler.post(() -> { // main thread
-                if (errorMessage != null) {
+                if (errorMessage != null && resultDevices == null) {
                     delegate.onAhaConnectionError(errorMessage);
                 } else {
-                    delegate.onAhaDeviceListReceived(devices);
+                    delegate.onAhaDeviceListReceived(resultDevices);
                 }
             });
         });
-        // No explicit shutdown for this single-use executor, as per common patterns for short-lived tasks.
-        // If this task were to be reused, consider a more robust lifecycle management.
     }
 
     public void setSimpleOnOff(AvmAhaDevice device, String newState) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> { // background thread
             boolean result;
             if (isDemoMode()) {
                 result = true;
             } else {
-                if (!sessionIsValid()) login();
                 result = toggleBulb(device.ain, newState);
+                if (!result) { // Session might be expired
+                    login();
+                    result = toggleBulb(device.ain, newState);
+                }
             }
-            Log.i(TAG, "new_state: " + result);
-            if (result) {
+            final boolean finalResult = result;
+            Log.i(TAG, "new_state: " + finalResult);
+            if (finalResult) {
                 device.state = newState;
             }
             handler.post(() -> { // main thread
                 delegate.onAhaDeviceStateChanged(device);
             });
         });
-        // No explicit shutdown for this single-use executor.
     }
 
     private List<AvmAhaDevice> getMockDevices() {
@@ -144,11 +149,9 @@ public class AvmAhaRequestTask {
     }
 
     public void closeSession() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> { // background thread
             if (sessionIsValid()) logout();
         });
-        // No explicit shutdown for this single-use executor.
     }
 
 
@@ -157,9 +160,7 @@ public class AvmAhaRequestTask {
     }
 
     private void login() {
-        if (sessionIsValid()) {
-            logout();
-        }
+        errorMessage = null;
         URL url = getUrl("login_sid.lua", null);
         HashMap<String, String> response = new HashMap<>();
         InputStream inputStream = request(url);

@@ -122,7 +122,6 @@ public class SmartHomeActivity
     @Override
     protected void onPause() {
         super.onPause();
-        new AvmAhaRequestTask(this, credentials).closeSession();
     }
 
     @Override
