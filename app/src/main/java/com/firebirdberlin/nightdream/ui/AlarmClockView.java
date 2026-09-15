@@ -130,6 +130,9 @@ public class AlarmClockView extends View {
 
     public void setUseAlarmSwipeGesture(boolean enabled) {
         useAlarmSwipeGesture = enabled;
+        if (enabled) {
+            this.setUseLongPress(true);
+        }
     }
 
     public void setUseAlarmStopSlider(boolean enabled) {
@@ -141,7 +144,7 @@ public class AlarmClockView extends View {
     }
 
     public void setUseLongPress(boolean useLongPress) {
-        this.useLongPress = useLongPress;
+        this.useLongPress = useLongPress || this.useAlarmSwipeGesture;
     }
 
     public void setOnAlarmChangedListener(onAlarmChangeListener listener) {
