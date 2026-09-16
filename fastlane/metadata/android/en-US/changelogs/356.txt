@@ -1,0 +1,8 @@
+<ul>
+    <li>🚀 Android 17 Ready: Fully optimized for API 37!</li>
+    <li>✋ One-Hand Ease: New Right-Side Menu for quick Torch & Night Mode access.</li>
+    <li>📻 Stay Tuned: Radio streams can now continue after stopping an alarm.</li>
+    <li>Stop alarms using a slider</li>
+    <li><🌍 Truly Global: Translation updates for Spanish, French, Russian, Italian, and more./li>
+    <li>🛠️ Stability: Critical fixes for notification handling and permissions.</li>
+</ul>
