@@ -462,7 +462,13 @@ public class NightDreamUI {
 
         OnClickListener onMenuItemClickListener = v -> {
             if (locked) return;
-            sidePanelLeft.toggleMenu();
+            if (sidePanelLeft.isHidden() || sidePanelRight.isHidden()) {
+                sidePanelLeft.openMenu();
+                sidePanelRight.openMenu();
+            } else {
+                sidePanelLeft.closeMenu();
+                sidePanelRight.closeMenu();
+            }
         };
         menuIcon.setOnClickListener(onMenuItemClickListener);
         View.OnLongClickListener onMenuItemLongClickListener = v -> {

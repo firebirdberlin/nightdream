@@ -117,20 +117,6 @@ public class SidePanel extends FlexboxLayout {
         setIconBackgroundResource(mIconBackground);
     }
 
-    public void toggleMenu() {
-        Log.d(TAG, "toggleMenu()");
-        // Prevents opening and closing frenetically the menu
-        if (mLockedCLick) {
-            return;
-        }
-
-        if (menuIsOpen) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-    }
-
     public void closeMenu() {
         Log.d(TAG, "closeMenu(): " + menuIsOpen);
         if (menuIsOpen) {
