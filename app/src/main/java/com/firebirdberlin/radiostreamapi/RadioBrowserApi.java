@@ -70,6 +70,9 @@ public class RadioBrowserApi {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+        if (servers.isEmpty()) {
+            return "de1.api.radio-browser.info";
+        }
         return servers.get(new Random().nextInt(servers.size()));
     }
 
