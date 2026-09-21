@@ -80,6 +80,8 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClockLayout extends LinearLayout implements OnDateLongClickListener { // Implement OnDateSelectedListener
     public static final int LAYOUT_ID_DIGITAL = 0;
@@ -98,6 +100,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     private int layoutId = LAYOUT_ID_DIGITAL;
     private CustomDigitalClock clock = null;
     private MaterialCalendarView calendarView = null;
+    private static final ExecutorService eventLoaderExecutor = Executors.newSingleThreadExecutor();
     private AutoAdjustTextView clock_ampm = null;
     private CustomAnalogClock analog_clock = null;
     private AutoAdjustTextView date = null;
@@ -481,14 +484,14 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
 
         final float minFontSize = 8.f; // in sp
         if (layoutId == LAYOUT_ID_DIGITAL) {
-            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            setSize(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             if (displayInWidget) {
                 updateDigitalClockInWidget(parentWidth, parentHeight);
             } else {
                 updateDigitalClock(config, parentWidth);
             }
         } else if (layoutId == LAYOUT_ID_DIGITAL2) {
-            setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            setSize(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             updateDigitalClock2(parentWidth);
         } else if (layoutId == LAYOUT_ID_DIGITAL3) {
             updateDigitalClock3(displayInWidget, parentWidth);
@@ -596,7 +599,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         float sizeFactor = displayInWidget ? 1.f : 0.6f;
         setSize(
                 showWeather ? (int) (sizeFactor * parentWidth) : LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                LayoutParams.WRAP_CONTENT
         );
 
         {
@@ -723,7 +726,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     }
 
     void updateDigitalFlipClock(int parentWidth) {
-        setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        setSize(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         float fontSize = -1;
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null && layout.getVisibility() == VISIBLE) {
@@ -741,7 +744,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     }
 
     void updateDigitalClockCalendar(boolean displayInWidget, int parentWidth, int parentHeight, float minFontSize) {
-        setSize(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        setSize(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         int minWidth = Utility.dpToPx(context, 200);
         setMinimumWidth(minWidth);
         if (displayInWidget) {
@@ -913,10 +916,10 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
             }
         }
 
-        additionalHeight += notificationLayout.getVisibility() == VISIBLE ? getHeightOf(notificationLayout) : 0;
-        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
+        additionalHeight += notificationLayout.getVisibility() == VISIBLE ? (int) getHeightOf(notificationLayout) : 0;
+        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? (int) getHeightOf(mediaStyleLayout) : 0;
         additionalHeight += pollenLayout.getVisibility() == VISIBLE ? pollenLayout.getHeight() : 0;
-        setSize(LinearLayout.LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
+        setSize(LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);
 
@@ -1061,17 +1064,23 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
             return;
         }
 
-        CalendarEventLoader.CalendarEvents events = CalendarEventLoader.loadEvents(context);
-        // Calendar event related fields
-        // For one-time events
-        HashSet<CalendarDay> eventDays = events.oneTimeEvents;
-        // For recurring events
-        HashSet<CalendarDay> recurringEventDays = events.recurringEvents;
+        eventLoaderExecutor.execute(() -> {
+            CalendarEventLoader.CalendarEvents events = CalendarEventLoader.loadEvents(context);
 
-        calendarView.removeDecorators();
+            calendarView.post(() -> {
+                if (calendarView == null) return;
+                // Calendar event related fields
+                // For one-time events
+                HashSet<CalendarDay> eventDays = events.oneTimeEvents;
+                // For recurring events
+                HashSet<CalendarDay> recurringEventDays = events.recurringEvents;
 
-        calendarView.addDecorator(new EventDecorator(eventDays, primaryColor));
-        calendarView.addDecorator(new RecurringEventDecorator(recurringEventDays, Color.WHITE));
+                calendarView.removeDecorators();
+
+                calendarView.addDecorator(new EventDecorator(eventDays, primaryColor));
+                calendarView.addDecorator(new RecurringEventDecorator(recurringEventDays, Color.WHITE));
+            });
+        });
     }
 
     @Override
