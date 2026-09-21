@@ -55,7 +55,7 @@
     <!--
     calendar
     -->
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.kizitonwose.calendar.view.CalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,13 +63,8 @@
         android:clickable="false"
         android:scaleX="0.95"
         android:scaleY="0.95"
-        app:mcv_allowClickDaysOutsideCurrentMonth="false"
-        app:mcv_calendarMode="month"
-        app:mcv_dateTextAppearance="@style/TextAppearance.MaterialCalendarWidgetDate"
-        app:mcv_headerTextAppearance="@style/TextAppearance.MaterialCalendarWidgetHeader"
-        app:mcv_showOtherDates="defaults"
-        app:mcv_tileHeight="16sp"
-        app:mcv_weekDayTextAppearance="@style/TextAppearance.MaterialCalendarWidgetWeekDay" />
+        app:cv_dayViewResource="@layout/calendar_day"
+        app:cv_monthHeaderResource="@layout/calendar_month_header" />
 
     <!--
         weather

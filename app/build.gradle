@@ -60,6 +60,7 @@ android {
         unitTests.returnDefaultValues = true
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -103,7 +104,8 @@ dependencies {
     implementation 'com.github.firebirdberlin:android-preferences:36.0.5'
     implementation 'com.github.firebirdberlin:tab-digit:v36.0.3'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
-    implementation 'com.github.prolificinteractive:material-calendarview:1.6.1'
+    implementation 'com.kizitonwose.calendar:view:2.10.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
 
