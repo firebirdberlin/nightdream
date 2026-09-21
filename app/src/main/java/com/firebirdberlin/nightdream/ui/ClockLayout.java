@@ -46,6 +46,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -69,12 +70,20 @@ import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.util.CalendarEventLoader;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateLongClickListener;
-import com.prolificinteractive.materialcalendarview.spans.DotSpan;
+import com.kizitonwose.calendar.view.CalendarView;
+import com.kizitonwose.calendar.view.MonthDayBinder;
+import com.kizitonwose.calendar.view.MonthHeaderFooterBinder;
+import com.kizitonwose.calendar.view.ViewContainer;
+import com.kizitonwose.calendar.core.CalendarMonth;
+import com.kizitonwose.calendar.core.DayPosition;
+import java.time.YearMonth;
+import java.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 
 
 import java.util.Calendar;
@@ -83,7 +92,7 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ClockLayout extends LinearLayout implements OnDateLongClickListener { // Implement OnDateSelectedListener
+public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListener
     public static final int LAYOUT_ID_DIGITAL = 0;
     public static final int LAYOUT_ID_ANALOG = 1;
     public static final int LAYOUT_ID_ANALOG2 = 2;
@@ -99,7 +108,9 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
     private final Context context;
     private int layoutId = LAYOUT_ID_DIGITAL;
     private CustomDigitalClock clock = null;
-    private MaterialCalendarView calendarView = null;
+    private com.kizitonwose.calendar.view.CalendarView calendarView = null;
+    private HashSet<LocalDate> calendarOneTimeEvents = new HashSet<>();
+    private HashSet<LocalDate> calendarRecurringEvents = new HashSet<>();
     private static final ExecutorService eventLoaderExecutor = Executors.newSingleThreadExecutor();
     private AutoAdjustTextView clock_ampm = null;
     private CustomAnalogClock analog_clock = null;
@@ -197,12 +208,81 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         pollenLayout = findViewById(R.id.pollen_container);
 
         if (calendarView != null) {
-            calendarView.setTopbarVisible(true);
-            calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
-            calendarView.setLeftArrowMask(null);
-            calendarView.setRightArrowMask(null);
-            calendarView.setDynamicHeightEnabled(true);
-            calendarView.setOnDateLongClickListener(this);
+            calendarView.setDayBinder(new MonthDayBinder<DayViewContainer>() {
+                @NonNull
+                @Override
+                public DayViewContainer create(@NonNull View view) {
+                    return new DayViewContainer(view);
+                }
+
+                @Override
+                public void bind(@NonNull DayViewContainer container, @NonNull com.kizitonwose.calendar.core.CalendarDay data) {
+                    LocalDate date = data.getDate();
+                    container.textView.setText(String.valueOf(date.getDayOfMonth()));
+                    
+                    if (data.getPosition() == DayPosition.MonthDate) {
+                        if (date.equals(LocalDate.now())) {
+                            container.textView.setTextColor(primaryColor);
+                        } else {
+                            container.textView.setTextColor(Color.WHITE);
+                        }
+                        
+                        if (calendarOneTimeEvents.contains(date)) {
+                            container.eventIndicator.setVisibility(VISIBLE);
+                            container.eventIndicator.setBackgroundColor(primaryColor);
+                        } else if (calendarRecurringEvents.contains(date)) {
+                            container.eventIndicator.setVisibility(VISIBLE);
+                            container.eventIndicator.setBackgroundColor(Color.WHITE);
+                        } else {
+                            container.eventIndicator.setVisibility(INVISIBLE);
+                        }
+                    } else {
+                        container.textView.setTextColor(Color.GRAY);
+                        container.eventIndicator.setVisibility(INVISIBLE);
+                    }
+
+                    container.getView().setOnLongClickListener(v -> {
+                        handleDateLongClick(date);
+                        return true;
+                    });
+                }
+            });
+
+            calendarView.setMonthHeaderBinder(new MonthHeaderFooterBinder<MonthViewContainer>() {
+                @NonNull
+                @Override
+                public MonthViewContainer create(@NonNull View view) {
+                    return new MonthViewContainer(view);
+                }
+
+                @Override
+                public void bind(@NonNull MonthViewContainer container, @NonNull CalendarMonth month) {
+                    if (container.titlesContainer.getTag() == null) {
+                        container.titlesContainer.setTag(month.getYearMonth());
+                        TextStyle shortStyle = TextStyle.SHORT;
+                        Locale locale = Locale.getDefault();
+                        DayOfWeek[] daysOfWeek = {DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY};
+                        
+                        for (int i = 0; i < container.titlesContainer.getChildCount(); i++) {
+                            TextView tv = (TextView) container.titlesContainer.getChildAt(i);
+                            if (i < daysOfWeek.length) {
+                                tv.setText(daysOfWeek[i].getDisplayName(shortStyle, locale));
+                            }
+                        }
+                    }
+                    
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault());
+                    container.textView.setText(month.getYearMonth().format(formatter));
+                }
+            });
+
+            YearMonth currentMonth = YearMonth.now();
+            YearMonth startMonth = currentMonth.minusMonths(3);
+            YearMonth endMonth = currentMonth.plusMonths(12);
+            DayOfWeek firstDayOfWeek = WeekFields.of(Locale.getDefault()).getFirstDayOfWeek();
+            calendarView.setup(startMonth, endMonth, firstDayOfWeek);
+            calendarView.scrollToMonth(currentMonth);
+
             loadCalendarEvents();
         }
     }
@@ -296,7 +376,7 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
             layout.setPrimaryColor(color);
         }
         if (calendarView != null) {
-            calendarView.setSelectionColor(color);
+            calendarView.notifyCalendarChanged();
         }
     }
 
@@ -777,21 +857,8 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
             }
 
             if (calendarView != null) {
-                Calendar now = Calendar.getInstance();
-                try {
-                    Calendar selected = calendarView.getCurrentDate().getCalendar();
-                    if (selected.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
-                        calendarView.setCurrentDate(now);
-                        calendarView.setSelectedDate(now);
-                    }
-                } catch (NullPointerException ignored) {
-                }
-
                 calendarView.setMinimumWidth((int) (0.9 * parentWidth));
-                now.setMinimalDaysInFirstWeek(1);
-                int numWeeksInMonth = now.getActualMaximum(Calendar.WEEK_OF_MONTH);
-                int height = calendarView.getTileHeight() * (numWeeksInMonth + 1 + (calendarView.getTopbarVisible() ? 1 : 0));
-                calendarView.getLayoutParams().height = height + 10;
+                calendarView.notifyCalendarChanged();
             }
         }
     }
@@ -1013,49 +1080,25 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         return getHeight() * getScaleY();
     }
 
-    /**
-     * DayViewDecorator to display different indicators for recurring and one-time events.
-     */
-    private static class EventDecorator implements DayViewDecorator {
+    private static class DayViewContainer extends ViewContainer {
+        final TextView textView;
+        final View eventIndicator;
 
-        private final int highlightColor;
-        private final HashSet<CalendarDay> dates;
-
-        public EventDecorator(HashSet<CalendarDay> dates, int color) {
-            this.dates = dates;
-            this.highlightColor = color;
-        }
-
-        @Override
-        public boolean shouldDecorate(CalendarDay day) {
-            // Decorate if it's a recurring event OR a one-time event
-            return dates.contains(day);
-        }
-
-        @Override
-        public void decorate(DayViewFacade view) {
-            view.addSpan(new ForegroundColorSpan(highlightColor));
+        public DayViewContainer(@NonNull View view) {
+            super(view);
+            textView = view.findViewById(R.id.calendarDayText);
+            eventIndicator = view.findViewById(R.id.calendarDayEventIndicator);
         }
     }
 
-    private static class RecurringEventDecorator implements DayViewDecorator {
+    private static class MonthViewContainer extends ViewContainer {
+        final TextView textView;
+        final ViewGroup titlesContainer;
 
-        private final int highlightColor;
-        private final HashSet<CalendarDay> dates;
-
-        public RecurringEventDecorator(HashSet<CalendarDay> dates, int color) {
-            this.dates = dates;
-            this.highlightColor = color;
-        }
-
-        @Override
-        public boolean shouldDecorate(CalendarDay day) {
-            return dates.contains(day);
-        }
-
-        @Override
-        public void decorate(DayViewFacade view) {
-            view.addSpan(new DotSpan(5, this.highlightColor));
+        public MonthViewContainer(@NonNull View view) {
+            super(view);
+            textView = view.findViewById(R.id.headerText);
+            titlesContainer = view.findViewById(R.id.titlesContainer);
         }
     }
 
@@ -1067,41 +1110,35 @@ public class ClockLayout extends LinearLayout implements OnDateLongClickListener
         eventLoaderExecutor.execute(() -> {
             CalendarEventLoader.CalendarEvents events = CalendarEventLoader.loadEvents(context);
 
-            calendarView.post(() -> {
-                if (calendarView == null) return;
-                // Calendar event related fields
-                // For one-time events
-                HashSet<CalendarDay> eventDays = events.oneTimeEvents;
-                // For recurring events
-                HashSet<CalendarDay> recurringEventDays = events.recurringEvents;
+            if (events != null) {
+                calendarOneTimeEvents.clear();
+                calendarOneTimeEvents.addAll(events.oneTimeEvents);
+                calendarRecurringEvents.clear();
+                calendarRecurringEvents.addAll(events.recurringEvents);
+            }
 
-                calendarView.removeDecorators();
-
-                calendarView.addDecorator(new EventDecorator(eventDays, primaryColor));
-                calendarView.addDecorator(new RecurringEventDecorator(recurringEventDays, Color.WHITE));
-            });
+            if (calendarView != null) {
+                calendarView.post(() -> {
+                    if (calendarView == null) return;
+                    calendarView.notifyCalendarChanged();
+                });
+            }
         });
     }
 
-    @Override
-    public void onDateLongClick(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date) {
-
-        Log.i(TAG, "onDateLongClick: " + date);
-        long timeInMillis = date.getCalendar().getTimeInMillis();
+    private void handleDateLongClick(@NonNull LocalDate date) {
+        Log.i(TAG, "handleDateLongClick: " + date);
+        long timeInMillis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = Uri.parse("content://com.android.calendar/time/" + timeInMillis);
-//        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, timeInMillis);
         intent.setData(uri);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Check if there is a calendar app to handle the intent
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
         } else {
-            // Handle the case where no calendar app is found (optional)
             Log.w(TAG, "No calendar app found to handle the intent.");
-            // You might want to show a Toast message to the user here.
         }
     }
 }

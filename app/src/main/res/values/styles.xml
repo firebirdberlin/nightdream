@@ -45,17 +45,17 @@
         <item name="android:windowBackground">@color/grey_bg</item>
     </style>
 
-    <style name="TextAppearance.MaterialCalendarWidgetDate" parent="TextAppearance.MaterialCalendarWidget.Date">
+    <style name="TextAppearance.MaterialCalendarWidgetDate" parent="android:TextAppearance">
         <item name="android:textSize">9sp</item>
         <item name="android:textColor">#FFF</item>
     </style>
 
-    <style name="TextAppearance.MaterialCalendarWidgetWeekDay" parent="TextAppearance.MaterialCalendarWidget.WeekDay">
+    <style name="TextAppearance.MaterialCalendarWidgetWeekDay" parent="android:TextAppearance">
         <item name="android:textSize">10sp</item>
         <item name="android:textColor">#FFF</item>
 
     </style>
-    <style name="TextAppearance.MaterialCalendarWidgetHeader" parent="TextAppearance.MaterialCalendarWidget.Header">
+    <style name="TextAppearance.MaterialCalendarWidgetHeader" parent="android:TextAppearance">
         <item name="android:textSize">10sp</item>
         <item name="android:textColor">#FFF</item>
 

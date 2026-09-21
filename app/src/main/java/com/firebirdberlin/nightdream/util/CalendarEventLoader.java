@@ -10,8 +10,9 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
@@ -29,10 +30,10 @@ public class CalendarEventLoader {
 
 
     public static class CalendarEvents {
-        public final HashSet<CalendarDay> oneTimeEvents;
-        public final HashSet<CalendarDay> recurringEvents;
+        public final HashSet<LocalDate> oneTimeEvents;
+        public final HashSet<LocalDate> recurringEvents;
 
-        CalendarEvents(HashSet<CalendarDay> oneTimeEvents, HashSet<CalendarDay> recurringEvents) {
+        CalendarEvents(HashSet<LocalDate> oneTimeEvents, HashSet<LocalDate> recurringEvents) {
             this.oneTimeEvents = oneTimeEvents;
             this.recurringEvents = recurringEvents;
         }
@@ -60,8 +61,8 @@ public class CalendarEventLoader {
 
         Log.d(TAG, "Cache expired or permission granted. Fetching real calendar events.");
 
-        HashSet<CalendarDay> eventDays = new HashSet<>();
-        HashSet<CalendarDay> recurringEventDays = new HashSet<>();
+        HashSet<LocalDate> eventDays = new HashSet<>();
+        HashSet<LocalDate> recurringEventDays = new HashSet<>();
 
         // 1. Define the time range for which you want to load events.
         // Let's load events for the next 365 days and the past year.
@@ -93,9 +94,9 @@ public class CalendarEventLoader {
 
                     boolean isRecurring = (rrule != null && !rrule.isEmpty());
 
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(beginVal);
-                    CalendarDay day = CalendarDay.from(calendar);
+                    LocalDate day = Instant.ofEpochMilli(beginVal)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
 
                     if (isRecurring) {
                         recurringEventDays.add(day);
