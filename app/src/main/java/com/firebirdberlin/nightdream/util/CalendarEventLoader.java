@@ -1,11 +1,10 @@
 package com.firebirdberlin.nightdream.util;
 
+import android.Manifest;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 
@@ -14,7 +13,6 @@ import androidx.core.content.ContextCompat;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +52,7 @@ public class CalendarEventLoader {
             return cachedEvents;
         }
 
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CALENDAR)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.w(TAG, "READ_CALENDAR permission not granted. Cannot load events.");
             return new CalendarEvents(new HashSet<>(), new HashSet<>());
@@ -80,38 +78,20 @@ public class CalendarEventLoader {
         // 2. Define the columns you need from the Instances table.
         final String[] INSTANCE_PROJECTION = new String[]{
                 CalendarContract.Instances.BEGIN,          // 0: The start time of the instance
-                CalendarContract.Instances.EVENT_ID        // 1: The original event's ID
+                CalendarContract.Instances.EVENT_ID,       // 1: The original event's ID
+                CalendarContract.Events.RRULE              // 2: The recurrence rule
         };
 
         // 3. Query the Instances table for the specified time range.
         Cursor cursor = CalendarContract.Instances.query(cr, INSTANCE_PROJECTION, startMillis, endMillis);
 
-        // Use a map to cache the recurrence status of each event ID to avoid redundant queries.
-        HashMap<Long, Boolean> recurrenceStatusCache = new HashMap<>();
-
         if (cursor != null) {
             try {
                 while (cursor.moveToNext()) {
                     long beginVal = cursor.getLong(0);
-                    long eventId = cursor.getLong(1);
+                    String rrule = cursor.getString(2);
 
-                    boolean isRecurring;
-
-                    // Check cache first
-                    if (recurrenceStatusCache.containsKey(eventId)) {
-                        isRecurring = recurrenceStatusCache.get(eventId);
-                    } else {
-                        // If not in cache, query the Events table for this specific event's RRULE.
-                        Uri eventUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
-                        try (Cursor eventCursor = cr.query(eventUri, new String[]{CalendarContract.Events.RRULE}, null, null, null)) {
-                            isRecurring = false;
-                            if (eventCursor != null && eventCursor.moveToFirst()) {
-                                String rrule = eventCursor.getString(0);
-                                isRecurring = (rrule != null && !rrule.isEmpty());
-                            }
-                        }
-                        recurrenceStatusCache.put(eventId, isRecurring);
-                    }
+                    boolean isRecurring = (rrule != null && !rrule.isEmpty());
 
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(beginVal);
@@ -130,14 +110,5 @@ public class CalendarEventLoader {
         cachedEvents = new CalendarEvents(eventDays, recurringEventDays);
         lastCacheTimeMillis = currentTimeMillis;
         return cachedEvents;
-    }
-
-    /**
-     * Invalidates the cache, forcing a reload of events on the next call to loadEvents.
-     */
-    public static synchronized void invalidateCache() {
-        cachedEvents = null;
-        lastCacheTimeMillis = 0;
-        Log.d(TAG, "Calendar events cache invalidated.");
     }
 }
