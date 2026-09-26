@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ellipsize="none"
-            android:paddingTop="5sp"
+            android:paddingTop="1dp"
             android:singleLine="true"
             android:text="Sun, 30. October 2016"
             android:textColor="#C2C2C2"
