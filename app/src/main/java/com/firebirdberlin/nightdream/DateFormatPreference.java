@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.AttributeSet;
 
 import androidx.preference.ListPreference;
@@ -62,6 +63,16 @@ public class DateFormatPreference extends ListPreference {
                                                           "dMMM",
                                                           "dMMMyy",
                                                           "dMMMyyyy",
+                                                          "yyyyMMdd",
+                                                          "yyyyMMMdd",
+                                                          "yyyyMMMMdd",
+                                                          "yyyyMd",
+                                                          "MMddyyyy",
+                                                          "MMMddyyyy",
+                                                          "MMMMddyyyy",
+                                                          "MMddyy",
+                                                          "MMMddyy",
+                                                          "MMMMddyy",
                                                           "EEddMM",
                                                           "EEddMMM",
                                                           "EEddMMMyy",
@@ -81,7 +92,36 @@ public class DateFormatPreference extends ListPreference {
                                                           "EEEEddMMMMyy",
                                                           "EEEEddMMMMyyyy",
                                                           "EEEEddMMyy",
-                                                          "EEEEddMMyyyy");
+                                                          "EEEEddMMyyyy",
+                                                          "EEEEyyyyMMdd",
+                                                          "EEEEyyyyMMMdd",
+                                                          "EEEEyyyyMMMMdd",
+                                                          "EEEEMMddyyyy",
+                                                          "EEEEMMMddyyyy",
+                                                          "EEEEMMMMddyyyy");
+    static private final List<String> explicitFormats = Arrays.asList(
+                                                          "yyyy-MM-dd",
+                                                          "yyyy.MM.dd",
+                                                          "yyyy/MM/dd",
+                                                          "dd-MM-yyyy",
+                                                          "dd.MM.yyyy",
+                                                          "dd/MM/yyyy",
+                                                          "MM-dd-yyyy",
+                                                          "MM/dd/yyyy",
+                                                          "yyyy-MMM-dd",
+                                                          "dd-MMM-yyyy",
+                                                          "EEEE, yyyy-MM-dd",
+                                                          "EEE, yyyy-MM-dd",
+                                                          "EEEE, yyyy.MM.dd",
+                                                          "EEE, yyyy.MM.dd",
+                                                          "EEEE, dd-MM-yyyy",
+                                                          "EEE, dd-MM-yyyy",
+                                                          "EEEE, dd.MM.yyyy",
+                                                          "EEE, dd.MM.yyyy",
+                                                          "EEEE, MM-dd-yyyy",
+                                                          "EEE, MM-dd-yyyy",
+                                                          "EEEE yyyy-MM-dd",
+                                                          "EEE yyyy-MM-dd");
 
     public DateFormatPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,7 +133,7 @@ public class DateFormatPreference extends ListPreference {
         if ( FORMAT_TYPE_HOUR.equals(formatType) ) {
             FormatChangeObserver mFormatChangeObserver = new FormatChangeObserver();
             context.getContentResolver().registerContentObserver(
-                android.provider.Settings.System.CONTENT_URI, true, mFormatChangeObserver
+                Settings.System.CONTENT_URI, true, mFormatChangeObserver
             );
             initHourFormatType();
         } else {
@@ -152,6 +192,11 @@ public class DateFormatPreference extends ListPreference {
         // for newer api levels add custom formats
         for (String value : skeletons) {
             String format = getDateFormat(value);
+            valueList.add(format);
+        }
+
+        // add explicit formats directly without localization reordering
+        for (String format : explicitFormats) {
             valueList.add(format);
         }
 
