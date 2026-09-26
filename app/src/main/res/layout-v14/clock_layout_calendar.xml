@@ -63,6 +63,8 @@
         android:clickable="false"
         android:scaleX="0.95"
         android:scaleY="0.95"
+        app:cv_daySize="seventhWidth"
+        app:cv_outDateStyle="endOfGrid"
         app:cv_dayViewResource="@layout/calendar_day"
         app:cv_monthHeaderResource="@layout/calendar_month_header" />
 
