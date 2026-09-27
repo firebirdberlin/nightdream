@@ -22,12 +22,14 @@ import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.Toast;
+import androidx.core.content.FileProvider;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.PurchaseManager;
@@ -60,6 +73,13 @@ public class ClockLayoutPreviewPreference extends Preference {
     private View preferenceView = null;
     private LinearLayout preferencesContainer = null;
     private ImageButton resetButton = null;
+    private ImageButton exportButton = null;
+    private ImageButton importButton = null;
+    private Runnable importAction = null;
+
+    public void setImportAction(Runnable action) {
+        this.importAction = action;
+    }
 
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -99,6 +119,8 @@ public class ClockLayoutPreviewPreference extends Preference {
                 RelativeLayout previewContainer = summaryParent2.findViewById(R.id.previewContainer);
                 clockLayout = summaryParent2.findViewById(R.id.clockLayout);
                 resetButton = summaryParent2.findViewById(R.id.resetButton);
+                exportButton = summaryParent2.findViewById(R.id.exportButton);
+                importButton = summaryParent2.findViewById(R.id.importButton);
                 textViewPurchaseHint = summaryParent2.findViewById(R.id.textViewPurchaseHint);
                 preferencesContainer = summaryParent2.findViewById(R.id.preferencesContainer);
 
@@ -114,10 +136,15 @@ public class ClockLayoutPreviewPreference extends Preference {
         Settings settings = new Settings(getContext());
         int clockLayoutId = settings.getClockLayoutID(true);
         setupPurchaseHint(settings);
-        resetButton.setVisibility(showResetButton(settings) ? View.VISIBLE : View.GONE);
+        boolean showButtons = showResetButton(settings);
+        resetButton.setVisibility(showButtons ? View.VISIBLE : View.GONE);
+        exportButton.setVisibility(showButtons ? View.VISIBLE : View.GONE);
+        importButton.setVisibility(showButtons ? View.VISIBLE : View.GONE);
         updateClockLayout(clockLayoutId, settings);
         setupPreferencesFragment(clockLayoutId, settings);
         setupResetButton(clockLayoutId);
+        setupExportButton(clockLayoutId);
+        setupImportButton();
     }
 
     private void updateClockLayout(int clockLayoutId, Settings settings) {
@@ -271,6 +298,74 @@ public class ClockLayoutPreviewPreference extends Preference {
                     }).show();
         });
 
+    }
+
+    private void setupExportButton(final int clockLayoutID) {
+        exportButton.setOnClickListener(v -> {
+            Context context = getContext();
+            AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
+            AnalogClockConfig config = new AnalogClockConfig(context, preset);
+            String json = config.toJson();
+
+            File exportPath = new File(context.getFilesDir(), "export");
+            if (!exportPath.exists()) {
+                boolean ignored = exportPath.mkdirs();
+            }
+            String fileName = "nightdream_clock_" + preset.name().toLowerCase() + "_" + System.currentTimeMillis() + ".json";
+            File file = new File(exportPath, fileName);
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write(json.getBytes());
+                fos.close();
+
+                Uri contentUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".fileprovider", file);
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("application/json");
+                share.putExtra(Intent.EXTRA_STREAM, contentUri);
+                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(Intent.createChooser(share, "Export"));
+            } catch (IOException e) {
+                Log.e(TAG, "Export failed", e);
+                Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupImportButton() {
+        importButton.setOnClickListener(v -> {
+            if (importAction != null) {
+                importAction.run();
+            } else {
+                Toast.makeText(context, "Import not available", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void importConfigFromUri(Uri uri) {
+        Context ctx = getContext();
+        try {
+            InputStream inputStream = ctx.getContentResolver().openInputStream(uri);
+            if (inputStream != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                inputStream.close();
+
+                Settings settings = new Settings(ctx);
+                int clockLayoutId = settings.getClockLayoutID(true);
+                AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutId);
+                AnalogClockConfig config = new AnalogClockConfig(ctx, preset);
+                config.importFromJson(stringBuilder.toString());
+                updateView();
+                Toast.makeText(ctx, "Settings imported successfully", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Import failed", e);
+            Toast.makeText(ctx, "Import failed: invalid file", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private WeatherEntry getWeatherEntry(Settings settings) {
