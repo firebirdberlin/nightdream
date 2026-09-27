@@ -21,6 +21,7 @@ package com.firebirdberlin.nightdream;
 import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -270,6 +271,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
+    private final ActivityResultLauncher<String> importClockConfigLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    ClockLayoutPreviewPreference preview = findPreference("clockLayoutPreview");
+                    if (preview != null) {
+                        preview.importConfigFromUri(uri);
+                    }
+                }
+            }
+    );
+
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 // Callback is invoked after the user selects a media item or closes the
@@ -499,6 +512,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     break;
                 case "clock":
                     setPreferencesFromResource(R.xml.preferences_clock, rootKey);
+                    ClockLayoutPreviewPreference clockPreview = findPreference("clockLayoutPreview");
+                    if (clockPreview != null) {
+                        clockPreview.setImportAction(() -> importClockConfigLauncher.launch("application/json"));
+                    }
                     break;
                 case "background":
                     setPreferencesFromResource(R.xml.preferences_background, rootKey);
@@ -833,10 +850,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         String body = "https://firebirdberlin.github.io/nightdream/";
         String subject = getResources().getString(R.string.recommend_app_subject);
         String description = getResources().getString(R.string.recommend_app_desc);
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, body);
         startActivity(Intent.createChooser(sharingIntent, description));
     }
 
@@ -1273,7 +1290,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         intent.setData(Uri.parse(uriString));
         try {
             startActivity(intent);
-        } catch (android.content.ActivityNotFoundException ex) {
+        } catch (ActivityNotFoundException ex) {
             Toast.makeText(mContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
     }

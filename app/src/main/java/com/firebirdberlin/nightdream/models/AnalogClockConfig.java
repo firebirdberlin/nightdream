@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.firebirdberlin.nightdream.ui.ClockLayout;
+import com.google.gson.Gson;
 
 public class AnalogClockConfig {
     public Decoration decoration = Decoration.NONE;
@@ -48,8 +49,8 @@ public class AnalogClockConfig {
     public float outerCircleWidth = 0f;
     public float fontSize = 0.08f;
     public String fontUri = "file:///android_asset/fonts/dancingscript_regular.ttf";
-    Context context;
-    Style style;
+    transient Context context;
+    transient Style style;
     public AnalogClockConfig(Context context, Style style) {
         this.context = context;
         this.style = style;
@@ -157,6 +158,43 @@ public class AnalogClockConfig {
         editor.putString("tickStyleHours", tickStyleHours.name());
         editor.putString("tickStyleMinutes", tickStyleMinutes.name());
         editor.apply();
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public void importFromJson(String json) {
+        Gson gson = new Gson();
+        AnalogClockConfig other = gson.fromJson(json, AnalogClockConfig.class);
+        if (other != null) {
+            this.decoration = other.decoration;
+            this.digitPosition = other.digitPosition;
+            this.digitStyle = other.digitStyle;
+            this.emphasizeHour12 = other.emphasizeHour12;
+            this.showSecondHand = other.showSecondHand;
+            this.handShape = other.handShape;
+            this.handLengthHours = other.handLengthHours;
+            this.handLengthMinutes = other.handLengthMinutes;
+            this.handWidthHours = other.handWidthHours;
+            this.handWidthMinutes = other.handWidthMinutes;
+            this.highlightQuarterOfHour = other.highlightQuarterOfHour;
+            this.innerCircleRadius = other.innerCircleRadius;
+            this.tickStartMinutes = other.tickStartMinutes;
+            this.tickStyleMinutes = other.tickStyleMinutes;
+            this.tickLengthMinutes = other.tickLengthMinutes;
+            this.tickStartHours = other.tickStartHours;
+            this.tickWidthHours = other.tickWidthHours;
+            this.tickWidthMinutes = other.tickWidthMinutes;
+            this.tickStyleHours = other.tickStyleHours;
+            this.tickLengthHours = other.tickLengthHours;
+            this.outerCircleRadius = other.outerCircleRadius;
+            this.outerCircleWidth = other.outerCircleWidth;
+            this.fontSize = other.fontSize;
+            this.fontUri = other.fontUri;
+            save();
+        }
     }
 
     public void initStyle(Style style) {
