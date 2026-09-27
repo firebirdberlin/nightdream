@@ -27,10 +27,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
 import com.firebirdberlin.nightdream.PollenExposure;
-import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.PollenExposureBinding;
-import com.firebirdberlin.openweathermapapi.GeocoderApi;
-import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.lang.ref.WeakReference;

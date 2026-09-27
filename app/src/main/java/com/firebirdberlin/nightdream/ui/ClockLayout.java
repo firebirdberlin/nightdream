@@ -20,13 +20,9 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -37,9 +33,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.Build;
-import android.provider.CalendarContract;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -53,7 +46,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator;
 
@@ -70,7 +62,6 @@ import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.util.CalendarEventLoader;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
-import com.kizitonwose.calendar.view.CalendarView;
 import com.kizitonwose.calendar.view.MonthDayBinder;
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder;
 import com.kizitonwose.calendar.view.ViewContainer;
@@ -86,8 +77,6 @@ import java.time.temporal.WeekFields;
 import java.util.Locale;
 
 
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -907,8 +896,8 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
         int additionalHeight = 0;
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 24.f) : 0;
-        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? getHeightOf(mediaStyleLayout) : 0;
-        additionalHeight += pollenLayout.getVisibility() == VISIBLE ? pollenLayout.getHeight() : 0;
+        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? (int) getHeightOf(mediaStyleLayout) : 0;
+        additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
 
         int width = mediaStyleLayout.getVisibility() == VISIBLE ? LayoutParams.WRAP_CONTENT : widgetSize;
         setSize(width, widgetSize + additionalHeight);
@@ -985,7 +974,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? (int) getHeightOf(notificationLayout) : 0;
         additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? (int) getHeightOf(mediaStyleLayout) : 0;
-        additionalHeight += pollenLayout.getVisibility() == VISIBLE ? pollenLayout.getHeight() : 0;
+        additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
         setSize(LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
 
         int measuredHeight = Utility.getHeightOfView(this);
@@ -1002,7 +991,14 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
     private float getHeightOf(View view) {
         if (view == null || view.getVisibility() == GONE) return 0f;
-        float height = 1.2f * Utility.getHeightOfView(view);
+        int viewHeight = Utility.getHeightOfView(view);
+        if (view.getLayoutParams() != null && view.getLayoutParams().height > 0) {
+            viewHeight = Math.max(viewHeight, view.getLayoutParams().height);
+        }
+        if (view == pollenLayout && viewHeight <= 0) {
+            viewHeight = Utility.dpToPx(context, 30.f);
+        }
+        float height = 1.2f * viewHeight;
         Log.i(TAG, String.format("visibility %d", view.getVisibility()));
         Log.i(TAG, String.format("height %f", height));
         return height;
