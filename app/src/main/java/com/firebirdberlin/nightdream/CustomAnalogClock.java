@@ -226,7 +226,7 @@ public class CustomAnalogClock extends View {
     private void drawHands(Canvas canvas, float centerX, float centerY, int radius,
                            double hour_angle, double min_angle, double sec_angle) {
         if (isTextureDecoration()) {
-            applyPureTexture(paint);
+            applyPureTexture(paint, centerX, centerY, radius);
         }
         paint.setStyle(Paint.Style.FILL);
         if (!isTextureDecoration()) {
@@ -234,8 +234,10 @@ public class CustomAnalogClock extends View {
         }
         // minute hand
         canvas.save();
-        if (!isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
+        if (!isTextureDecoration()) {
             paint.setColorFilter(customColorFilter);
+        } else {
+            paint.setColorFilter(null);
         }
         canvas.rotate((float) radiansToDegrees(min_angle), centerX, centerY);
         drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthMinutes * radius),
@@ -245,8 +247,10 @@ public class CustomAnalogClock extends View {
         // second hand
         if (config.showSecondHand) {
             canvas.save();
-            if (!isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
+            if (!isTextureDecoration()) {
                 paint.setColorFilter(secondaryColorFilter);
+            } else {
+                paint.setColorFilter(null);
             }
             canvas.rotate((float) radiansToDegrees(sec_angle), centerX, centerY);
             drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthMinutes * radius),
@@ -255,8 +259,10 @@ public class CustomAnalogClock extends View {
         }
         // hour hand
         canvas.save();
-        if (!isTextureDecoration() || config.handShape.equals(AnalogClockConfig.HandShape.ARC)) {
+        if (!isTextureDecoration()) {
             paint.setColorFilter(secondaryColorFilter);
+        } else {
+            paint.setColorFilter(null);
         }
         canvas.rotate((float) radiansToDegrees(hour_angle), centerX, centerY);
         drawHand(canvas, paint, centerX, centerY, (int) (config.handLengthHours * radius),
@@ -305,9 +311,14 @@ public class CustomAnalogClock extends View {
         final int[] colors = {Color.TRANSPARENT, Color.WHITE};
         final float[] positions = {0.2f, 1.f};
         Shader gradient = new SweepGradient(centerX, centerY, colors, positions);
-        paint.setShader(gradient);
+        Shader currentShader = paint.getShader();
+        if (currentShader != null) {
+            paint.setShader(new ComposeShader(currentShader, gradient, PorterDuff.Mode.MULTIPLY));
+        } else {
+            paint.setShader(gradient);
+        }
         canvas.drawCircle(centerX, centerY, length, paint);
-        paint.setShader(null);
+        paint.setShader(currentShader);
         canvas.restore();
     }
 
@@ -379,11 +390,38 @@ public class CustomAnalogClock extends View {
                 config.decoration == AnalogClockConfig.Decoration.GOLD
                         || config.decoration == AnalogClockConfig.Decoration.COPPER
                         || config.decoration == AnalogClockConfig.Decoration.RUST
+                        || config.decoration == AnalogClockConfig.Decoration.RAINBOW
         );
+    }
+
+    private void applyRainbowShader(Paint paint, float centerX, float centerY, int radius) {
+        int x1 = (int) (centerX - radius), y1 = (int) (centerY - radius);
+        int x2 = (int) (centerX + radius), y2 = (int) (centerY + radius);
+        int[] rainbowColors = new int[] {
+            Color.RED,
+            Color.rgb(255, 127, 0),   // Orange
+            Color.YELLOW,
+            Color.GREEN,
+            Color.BLUE,
+            Color.rgb(75, 0, 130),    // Indigo
+            Color.rgb(148, 0, 211)    // Violet
+        };
+        Shader rainbowShader = new LinearGradient(
+            x1, y1, x2, y2,
+            rainbowColors,
+            null,
+            Shader.TileMode.CLAMP
+        );
+        paint.setShader(rainbowShader);
     }
 
     private void applyGoldShader(Paint paint, float centerX, float centerY, int radius) {
         if (!isTextureDecoration()) return;
+
+        if (config.decoration == AnalogClockConfig.Decoration.RAINBOW) {
+            applyRainbowShader(paint, centerX, centerY, radius);
+            return;
+        }
 
         int resID = R.drawable.gold;
         switch (config.decoration) {
@@ -410,8 +448,13 @@ public class CustomAnalogClock extends View {
         paint.setShader(composed);
     }
 
-    private void applyPureTexture(Paint paint) {
+    private void applyPureTexture(Paint paint, float centerX, float centerY, int radius) {
         if (!isTextureDecoration()) return;
+
+        if (config.decoration == AnalogClockConfig.Decoration.RAINBOW) {
+            applyRainbowShader(paint, centerX, centerY, radius);
+            return;
+        }
 
         int resID = R.drawable.gold;
         switch (config.decoration) {

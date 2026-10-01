@@ -394,7 +394,7 @@ public class Settings {
     }
 
     public static int getNotificationContainerResourceId(Context context) {
-        return Settings.useNotificationStatusBar(context) ?  R.id.notificationstatusbar: R.id.notificationbar;
+        return useNotificationStatusBar(context) ?  R.id.notificationstatusbar: R.id.notificationbar;
     }
 
     public static int getMinNotificationImportance(Context context) {
@@ -726,18 +726,29 @@ public class Settings {
         return settings.getInt(key, 0);
     }
 
+    public static final int TEXTURE_NONE = 0;
+    public static final int TEXTURE_GOLD = 1;
+    public static final int TEXTURE_COPPER = 2;
+    public static final int TEXTURE_RUST = 3;
+    public static final int TEXTURE_RAINBOW = 4;
+
+    public static final int TEXTURE_RES_ID_NONE = -1;
+    public static final int TEXTURE_RES_ID_RAINBOW = -2;
+
     public int getTextureResId(int clockLayoutId) {
         int textureId = getTextureId(clockLayoutId);
         switch (textureId) {
-            case 1:
+            case TEXTURE_GOLD:
                 return R.drawable.gold;
-            case 2:
+            case TEXTURE_COPPER:
                 return R.drawable.copper;
-            case 3:
+            case TEXTURE_RUST:
                 return R.drawable.rust;
-            case 0:
+            case TEXTURE_RAINBOW:
+                return TEXTURE_RES_ID_RAINBOW;
+            case TEXTURE_NONE:
             default:
-                return -1;
+                return TEXTURE_RES_ID_NONE;
         }
     }
 

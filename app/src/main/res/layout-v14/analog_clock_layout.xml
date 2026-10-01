@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="12dp">
+    android:paddingBottom="4dp">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="#C2C2C2"
             android:textSize="20sp"
             android:textStyle="bold"

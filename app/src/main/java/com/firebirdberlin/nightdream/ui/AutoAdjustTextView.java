@@ -45,7 +45,6 @@ public class AutoAdjustTextView extends AppCompatTextView {
 
     private String fontPath = null;
     private String sampleText = null;
-    private Rect bounds = null;
 
     public AutoAdjustTextView(Context context) {
         super(context);
@@ -88,7 +87,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
         try {
             int size = getAdjustedTextSize();
             if (size > 0) {
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, size - 1);
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
                 this.currentFontSizeSp = size;
             }
         } catch (NullPointerException e) {
@@ -110,7 +109,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
             paint.setTextSize(Utility.spToPx(getContext(), size));
             if (measureText(paint) > maxWidth ||
                     (maxHeight > -1 && measureTextHeight(paint) > maxHeight)) {
-                return size;
+                return Math.max(minFontSizeSp, size - 1);
             }
         }
         return maxFontSizeSp;
@@ -140,11 +139,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
     }
 
     private float measureTextHeight(Paint paint) {
-        if (bounds == null) {
-            bounds = new Rect();
-        }
-        String text = (sampleText != null) ? sampleText : getText().toString();
-        paint.getTextBounds(text, 0, text.length(), bounds);
-        return bounds.height();
+        Paint.FontMetrics fm = paint.getFontMetrics();
+        return fm.bottom - fm.top;
     }
 }

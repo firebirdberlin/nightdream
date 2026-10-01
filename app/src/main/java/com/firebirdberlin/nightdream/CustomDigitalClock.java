@@ -101,7 +101,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         // https://stackoverflow.com/questions/6253528/font-size-too-large-to-fit-in-cache
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-        setIncludeFontPadding(false);
+        setIncludeFontPadding(true);
         setFormat();
         setClickable(false);
     }
