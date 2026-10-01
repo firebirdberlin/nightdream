@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="12dp">
+    android:paddingBottom="4dp">
 
     <!--
             time
@@ -34,7 +34,7 @@
         android:translationY="0px"
         android:visibility="gone"
         custom:format12Hr="dd. MMMM yyyy"
-        android:singleLine="true"
+        android:maxLines="1"
         custom:format24Hr="dd. MMMM yyyy"
         custom:capitalize="true"
         />

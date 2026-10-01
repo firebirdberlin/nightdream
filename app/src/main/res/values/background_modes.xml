@@ -79,6 +79,7 @@
         <item>@string/decoration_style_gold</item>
         <item>@string/decoration_style_copper</item>
         <item>@string/decoration_style_rust</item>
+        <item>@string/decoration_style_rainbow</item>
     </string-array>
 
     <string-array name="textures">
@@ -86,6 +87,7 @@
         <item>@string/decoration_style_gold</item>
         <item>@string/decoration_style_copper</item>
         <item>@string/decoration_style_rust</item>
+        <item>@string/decoration_style_rainbow</item>
     </string-array>
 
     <string-array name="handShapes">

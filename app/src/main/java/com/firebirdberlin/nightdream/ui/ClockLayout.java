@@ -27,6 +27,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -62,6 +64,8 @@ import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.util.CalendarEventLoader;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
+import com.kizitonwose.calendar.core.CalendarDay;
+import com.kizitonwose.calendar.view.CalendarView;
 import com.kizitonwose.calendar.view.MonthDayBinder;
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder;
 import com.kizitonwose.calendar.view.ViewContainer;
@@ -97,7 +101,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     private final Context context;
     private int layoutId = LAYOUT_ID_DIGITAL;
     private CustomDigitalClock clock = null;
-    private com.kizitonwose.calendar.view.CalendarView calendarView = null;
+    private CalendarView calendarView = null;
     private HashSet<LocalDate> calendarOneTimeEvents = new HashSet<>();
     private HashSet<LocalDate> calendarRecurringEvents = new HashSet<>();
     private static final ExecutorService eventLoaderExecutor = Executors.newSingleThreadExecutor();
@@ -205,7 +209,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
                 }
 
                 @Override
-                public void bind(@NonNull DayViewContainer container, @NonNull com.kizitonwose.calendar.core.CalendarDay data) {
+                public void bind(@NonNull DayViewContainer container, @NonNull CalendarDay data) {
                     LocalDate date = data.getDate();
                     container.textView.setText(String.valueOf(date.getDayOfMonth()));
                     
@@ -375,16 +379,41 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         }
         try {
             view.setShadowLayer(glowRadius, 0, 0, glowColor);
-            if (resId > 0) {
+            if (resId == Settings.TEXTURE_RES_ID_RAINBOW) {
+                applyRainbowShader(view);
+            } else if (resId > 0) {
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
                 BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
                 view.getPaint().setShader(shader);
+            } else {
+                view.getPaint().setShader(null);
             }
         } catch (OutOfMemoryError e) {
             view.getPaint().setShader(null);
         }
         //view.setLayerType((glowRadius > 24) ? LAYER_TYPE_SOFTWARE : LAYER_TYPE_HARDWARE, null);
         view.setLayerType(LAYER_TYPE_SOFTWARE, null);
+    }
+
+    private void applyRainbowShader(TextView view) {
+        int width = Math.max(view.getWidth(), 500);
+        int height = Math.max(view.getHeight(), 200);
+        int[] rainbowColors = new int[] {
+            Color.RED,
+            Color.rgb(255, 127, 0),   // Orange
+            Color.YELLOW,
+            Color.GREEN,
+            Color.BLUE,
+            Color.rgb(75, 0, 130),    // Indigo
+            Color.rgb(148, 0, 211)    // Violet
+        };
+        LinearGradient rainbowShader = new LinearGradient(
+            0, 0, width, height,
+            rainbowColors,
+            null,
+            Shader.TileMode.CLAMP
+        );
+        view.getPaint().setShader(rainbowShader);
     }
     private int secondaryColor = 0;
     public void setSecondaryColor(int color) {
@@ -955,6 +984,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         }
 
         int additionalHeight = (int) getHeightOf(date);
+        Log.i(TAG, "additionalHeight=" + additionalHeight);
         float fontSize = -1;
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null && layout.getVisibility() == VISIBLE) {
@@ -991,14 +1021,19 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
     private float getHeightOf(View view) {
         if (view == null || view.getVisibility() == GONE) return 0f;
+        if (view == date) {
+            Paint paint = ((TextView) view).getPaint();
+            Paint.FontMetrics fm = paint.getFontMetrics();
+            return fm.bottom - fm.top;
+        }
         int viewHeight = Utility.getHeightOfView(view);
         if (view.getLayoutParams() != null && view.getLayoutParams().height > 0) {
             viewHeight = Math.max(viewHeight, view.getLayoutParams().height);
         }
-        if (view == pollenLayout && viewHeight <= 0) {
-            viewHeight = Utility.dpToPx(context, 30.f);
+        if (viewHeight <= 0) {
+            viewHeight = Utility.dpToPx(context, 20.f);
         }
-        float height = 1.2f * viewHeight;
+        float height = viewHeight;
         Log.i(TAG, String.format("visibility %d", view.getVisibility()));
         Log.i(TAG, String.format("height %f", height));
         return height;
