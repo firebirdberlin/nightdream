@@ -169,6 +169,8 @@ OR
     <string name="decoration_style_rust">Óxido</string>
     <string name="decoration_weather_icon_size">Tamaño de icono Meteorológico</string>
     <string name="decoration_style_rainbow">Arcoíris</string>
+    <string name="decoration_style_pride">Bandera del orgullo</string>
+    <string name="decoration_style_progress_pride">Bandera Progress Pride</string>
     <string name="donate">Donar</string>
     <string name="doubleTapToFinishSummary">Finalizar la aplicación pulsando dos veces la pantalla.</string>
     <string name="doubleTapToFinishTitle">Doble pulsación para salir</string>

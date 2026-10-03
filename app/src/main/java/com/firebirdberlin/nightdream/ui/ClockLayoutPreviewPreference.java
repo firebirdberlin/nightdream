@@ -21,7 +21,6 @@ package com.firebirdberlin.nightdream.ui;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -45,7 +44,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 import androidx.core.content.FileProvider;

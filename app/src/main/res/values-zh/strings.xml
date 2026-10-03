@@ -72,6 +72,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_message_thank_you">十分感謝！</string>
     <string name="dialog_title_thank_you">謝謝</string>
     <string name="decoration_style_rainbow">彩虹</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">贊助</string>
     <string name="doubleTapToFinishSummary">雙擊螢幕以完成應用程式</string>
     <string name="doubleTapToFinishTitle">雙擊以完成</string>

@@ -33,4 +33,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_keep_running">Mantenir la ràdio en funcionament</string>
     <string name="radio_stream_keep_running_summary">Continuar reproduint el flux de ràdio després d\'aturar l\'alarma.</string>
     <string name="decoration_style_rainbow">Arc de Sant Martí</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
 </resources>

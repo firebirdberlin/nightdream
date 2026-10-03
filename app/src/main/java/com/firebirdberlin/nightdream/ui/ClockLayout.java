@@ -26,14 +26,18 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -380,7 +384,13 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         try {
             view.setShadowLayer(glowRadius, 0, 0, glowColor);
             if (resId == Settings.TEXTURE_RES_ID_RAINBOW) {
-                applyRainbowShader(view);
+                view.post(() -> applyRainbowShader(view));
+            }
+            else if (resId == Settings.TEXTURE_RES_ID_PRIDE) {
+                view.post(() -> applyPrideShader(view, false));
+            }
+            else if (resId == Settings.TEXTURE_RES_ID_PROGRESS_PRIDE) {
+                view.post(() -> applyPrideShader(view, true));
             } else if (resId > 0) {
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resId);
                 BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
@@ -396,8 +406,14 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     }
 
     private void applyRainbowShader(TextView view) {
-        int width = Math.max(view.getWidth(), 500);
-        int height = Math.max(view.getHeight(), 200);
+//        int width = Math.max(view.getWidth(), 500);
+//        int height = Math.max(view.getHeight(), 200);
+        int width = view.getWidth();
+        int height = view.getHeight();
+
+        if (width <= 0 || height <= 0) {
+            return;
+        }
         LinearGradient rainbowShader = new LinearGradient(
             0, 0, width, height,
             Settings.RAINBOW_COLORS,
@@ -406,6 +422,150 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         );
         view.getPaint().setShader(rainbowShader);
     }
+
+    private static class ShaderCache {
+        String text;
+        int width;
+        int height;
+        boolean showChevron;
+        int resId;
+        BitmapShader shader;
+    }
+
+    private void applyPrideShader(TextView view, boolean showChevron) {
+        Paint paint = view.getPaint();
+
+        int width = view.getWidth();
+        int height = view.getHeight();
+
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+
+        String text = view.getText().toString();
+
+        if (text.isEmpty()) {
+            return;
+        }
+
+        // Actual bounds of the glyphs relative to the baseline.
+        Rect bounds = new Rect();
+        paint.getTextBounds(
+                text,
+                0,
+                text.length(),
+                bounds
+        );
+
+        int textWidth = Math.max(1, bounds.width());
+        int textHeight = Math.max(1, bounds.height());
+        int resId = showChevron ? Settings.TEXTURE_RES_ID_PROGRESS_PRIDE : Settings.TEXTURE_RES_ID_PRIDE;
+
+        ShaderCache cache = (ShaderCache) view.getTag();
+        BitmapShader shader;
+
+        if (cache != null &&
+                cache.text != null &&
+                cache.text.equals(text) &&
+                cache.width == textWidth &&
+                cache.height == textHeight &&
+                cache.showChevron == showChevron &&
+                cache.resId == resId &&
+                cache.shader != null) {
+            shader = cache.shader;
+        } else {
+            Bitmap bitmap = Bitmap.createBitmap(
+                    textWidth,
+                    textHeight,
+                    Bitmap.Config.ARGB_8888
+            );
+
+            Canvas canvas = new Canvas(bitmap);
+            Paint shaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            // Rainbow background
+            float stripeHeight = textHeight / 6.0f;
+
+            for (int i = 0; i < Settings.PRIDE_RAINBOW_COLORS.length; i++) {
+                shaderPaint.setColor(Settings.PRIDE_RAINBOW_COLORS[i]);
+
+                canvas.drawRect(
+                        0,
+                        i * stripeHeight,
+                        textWidth,
+                        (i + 1) * stripeHeight,
+                        shaderPaint
+                );
+            }
+
+            if (showChevron) {
+                // Progress Pride chevron
+                float chevronWidth = textHeight * 0.35f;
+                float stripeWidth = chevronWidth / Settings.PROGRESS_PRIDE_COLORS.length;
+
+                Path chevron = new Path();
+
+                for (int i = Settings.PROGRESS_PRIDE_COLORS.length - 1; i >= 0; i--) {
+                    float x = stripeWidth * i;
+                    float w = stripeWidth;
+
+                    shaderPaint.setColor(
+                            Settings.PROGRESS_PRIDE_COLORS[i]
+                    );
+
+                    chevron.reset();
+
+                    chevron.moveTo(x, 0);
+                    chevron.lineTo(x + w, 0);
+
+                    chevron.lineTo(
+                            chevronWidth + x + w,
+                            textHeight / 2.0f
+                    );
+
+                    chevron.lineTo(x + w, textHeight);
+                    chevron.lineTo(x, textHeight);
+
+                    chevron.lineTo(
+                            chevronWidth + x,
+                            textHeight / 2.0f
+                    );
+
+                    chevron.close();
+
+                    canvas.drawPath(chevron, shaderPaint);
+                }
+            }
+
+            shader = new BitmapShader(
+                    bitmap,
+                    Shader.TileMode.CLAMP,
+                    Shader.TileMode.CLAMP
+            );
+
+            cache = new ShaderCache();
+            cache.text = text;
+            cache.width = textWidth;
+            cache.height = textHeight;
+            cache.showChevron = showChevron;
+            cache.resId = resId;
+            cache.shader = shader;
+            view.setTag(cache);
+        }
+
+        // Move the shader from bitmap coordinates to
+        // the actual position of the glyphs.
+        Matrix matrix = new Matrix();
+
+        float shaderX = bounds.left;
+        float shaderY = view.getBaseline() + bounds.top;
+
+        matrix.setTranslate(shaderX, shaderY);
+        shader.setLocalMatrix(matrix);
+
+        paint.setShader(shader);
+    }
+
     private int secondaryColor = 0;
     public void setSecondaryColor(int color) {
         this.secondaryColor = color;
