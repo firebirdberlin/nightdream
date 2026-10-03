@@ -71,6 +71,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Törlés</string>
     <string name="dialog_message_thank_you">Nagyon szépen köszönöm!</string>
     <string name="dialog_title_thank_you">Köszi</string>
+    <string name="decoration_style_rainbow">Szivárvány</string>
     <string name="donate">Adomány</string>
     <string name="doubleTapToFinishSummary">Bezárja az alkalmazást a képernyő kettős megérintésével.</string>
     <string name="doubleTapToFinishTitle">Koppintson duplán a befejezéshez</string>

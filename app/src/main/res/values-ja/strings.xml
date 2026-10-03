@@ -96,6 +96,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">ありがとう</string>
     <string name="decoration">装飾</string>
     <string name="decoration_style_none">装飾なし</string>
+    <string name="decoration_style_rainbow">虹</string>
     <string name="donate">寄付する</string>
     <string name="doubleTapToFinishSummary">終了させるには画面をダブルタップします</string>
     <string name="doubleTapToFinishTitle">ダブルタップで終了</string>

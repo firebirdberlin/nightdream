@@ -397,18 +397,9 @@ public class CustomAnalogClock extends View {
     private void applyRainbowShader(Paint paint, float centerX, float centerY, int radius) {
         int x1 = (int) (centerX - radius), y1 = (int) (centerY - radius);
         int x2 = (int) (centerX + radius), y2 = (int) (centerY + radius);
-        int[] rainbowColors = new int[] {
-            Color.RED,
-            Color.rgb(255, 127, 0),   // Orange
-            Color.YELLOW,
-            Color.GREEN,
-            Color.BLUE,
-            Color.rgb(75, 0, 130),    // Indigo
-            Color.rgb(148, 0, 211)    // Violet
-        };
         Shader rainbowShader = new LinearGradient(
             x1, y1, x2, y2,
-            rainbowColors,
+            Settings.RAINBOW_COLORS,
             null,
             Shader.TileMode.CLAMP
         );

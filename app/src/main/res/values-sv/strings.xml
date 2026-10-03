@@ -153,6 +153,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_labels">Siffror</string>
     <string name="decoration_style_rust">Rost</string>
     <string name="decoration_weather_icon_size">Storlek väderikon</string>
+    <string name="decoration_style_rainbow">Regnbåge</string>
     <string name="donate">Donation</string>
     <string name="doubleTapToFinishSummary">Slutför genom att dubbelklicka på skärmen</string>
     <string name="doubleTapToFinishTitle">Dubbelklicka för att slutföra</string>

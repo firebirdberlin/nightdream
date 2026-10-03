@@ -66,6 +66,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="date_format">Format datuma</string>
     <string name="dialog_message_thank_you">Puno Vam hvala!</string>
     <string name="dialog_title_thank_you">Hvala</string>
+    <string name="decoration_style_rainbow">Дуга</string>
     <string name="donate">Donirajte</string>
     <string name="handle_power_ac">Napajanje</string>
     <string name="handle_power">Automatsko pokretanje</string>

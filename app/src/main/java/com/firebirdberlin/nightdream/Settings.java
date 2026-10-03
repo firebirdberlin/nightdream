@@ -735,6 +735,17 @@ public class Settings {
     public static final int TEXTURE_RES_ID_NONE = -1;
     public static final int TEXTURE_RES_ID_RAINBOW = -2;
 
+    public static final int[] RAINBOW_COLORS = new int[] {
+        Color.rgb(255, 70, 70),   // Red
+        Color.rgb(255, 150, 0),  // Orange
+        Color.rgb(255, 230, 0),  // Yellow
+        Color.rgb(60, 230, 120), // Green
+        Color.rgb(0, 210, 255),  // Cyan
+        Color.rgb(80, 150, 255), // Bright Blue
+        Color.rgb(170, 90, 255), // Indigo / Purple
+        Color.rgb(230, 120, 255) // Violet
+    };
+
     public int getTextureResId(int clockLayoutId) {
         int textureId = getTextureId(clockLayoutId);
         switch (textureId) {
