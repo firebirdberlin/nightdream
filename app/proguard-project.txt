@@ -36,6 +36,9 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+-keep class com.firebirdberlin.nightdream.MyEventBusIndex { *; }
+
+-dontwarn android.app.PictureInPictureUiState
 
 -keepattributes *Annotation*
 -keepattributes Signature,RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations

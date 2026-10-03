@@ -38,10 +38,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
         vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ eventBusIndex : 'com.firebirdberlin.nightdream.MyEventBusIndex' ]
+            }
+        }
     }
 
     buildTypes {
         release {
+//            Use debug signing for local testing of minified builds (do not use for production/Play Store)
+//            signingConfig signingConfigs.debug
             lintOptions {
                 checkReleaseBuilds = false
                 disable 'MissingTranslation'
@@ -107,6 +115,7 @@ dependencies {
     implementation 'com.kizitonwose.calendar:view:2.10.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation 'org.greenrobot:eventbus:3.3.1'
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
 
     // Full flavor specific dependencies
