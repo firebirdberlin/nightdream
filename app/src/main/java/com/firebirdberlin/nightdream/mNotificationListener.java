@@ -44,10 +44,12 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 
@@ -62,6 +64,7 @@ public class mNotificationListener extends NotificationListenerService {
     public static boolean running = false;
     private static final String STAG = "mNotificationListener";
     private final String TAG = this.getClass().getSimpleName();
+    private final ExecutorService notificationExecutor = Executors.newSingleThreadExecutor();
     private final List<com.firebirdberlin.nightdream.NotificationList.Notification> notifications = new ArrayList<>();
     private final List<NotificationApp> notificationApps = new ArrayList<>();
     int minNotificationImportance = 2;
@@ -173,9 +176,6 @@ public class mNotificationListener extends NotificationListenerService {
             return true;
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return (notification.priority < minNotificationImportance - 3); // Deprecated
-        }
         int importance = getImportance(sbn);
         return (importance < minNotificationImportance);
     }
@@ -256,73 +256,75 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
-        minNotificationImportance = Settings.getMinNotificationImportance(this);
-        notifications.clear();
-        notificationApps.clear();
+        notificationExecutor.execute(() -> {
+            minNotificationImportance = Settings.getMinNotificationImportance(this);
+            notifications.clear();
+            notificationApps.clear();
 
-        clearNotificationUI();
-        StatusBarNotification[] notificationList = null;
-        try {
-            notificationList = mNotificationListener.this.getActiveNotifications();
-        } catch (RuntimeException | OutOfMemoryError ignored) {
-            Log.e(TAG, "Error getting active notifications", ignored);
-        }
-
-        if (notificationList == null) return;
-
-        for (StatusBarNotification sbn : notificationList) {
-            Notification notification = sbn.getNotification();
-            if (notification == null) continue;
-
-            logNotification(sbn);
-
-            if (shallIgnoreNotification(sbn)) {
-                continue;
+            clearNotificationUI();
+            StatusBarNotification[] notificationList = null;
+            try {
+                notificationList = mNotificationListener.this.getActiveNotifications();
+            } catch (RuntimeException | OutOfMemoryError ignored) {
+                Log.e(TAG, "Error getting active notifications", ignored);
             }
 
-            Intent i = getIntentForBroadCast(sbn);
-            if (i == null) {
-                continue;
-            }
-            String template = (String) i.getSerializableExtra("template");
-            if (template == null) {
-                continue;
-            }
-            if (template.contains("MediaStyle")) {
-                i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
-                i.putExtra("action", "added_media");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(i);
-                continue;
-            }
-            notifications.add(
-                    new com.firebirdberlin.nightdream.NotificationList.Notification(
-                            getApplicationContext(), i
-                    )
-            );
+            if (notificationList == null) return;
 
-            String applicationName = i.getStringExtra("applicationName");
-            boolean addApp = true;
-            for (NotificationApp app : notificationApps) {
-                addApp = addApp && !app.getName().equals(applicationName);
-                if (app.getName().equals(applicationName)) {
-                    if (app.getPostTimestamp() < sbn.getPostTime()) {
-                        app.setPostTimestamp(sbn.getPostTime());
+            for (StatusBarNotification sbn : notificationList) {
+                Notification notification = sbn.getNotification();
+                if (notification == null) continue;
+
+                logNotification(sbn);
+
+                if (shallIgnoreNotification(sbn)) {
+                    continue;
+                }
+
+                Intent i = getIntentForBroadCast(sbn);
+                if (i == null) {
+                    continue;
+                }
+                String template = (String) i.getSerializableExtra("template");
+                if (template == null) {
+                    continue;
+                }
+                if (template.contains("MediaStyle")) {
+                    i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
+                    i.putExtra("action", "added_media");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+                    continue;
+                }
+                notifications.add(
+                        new com.firebirdberlin.nightdream.NotificationList.Notification(
+                                getApplicationContext(), i
+                        )
+                );
+
+                String applicationName = i.getStringExtra("applicationName");
+                boolean addApp = true;
+                for (NotificationApp app : notificationApps) {
+                    addApp = addApp && !app.getName().equals(applicationName);
+                    if (app.getName().equals(applicationName)) {
+                        if (app.getPostTimestamp() < sbn.getPostTime()) {
+                            app.setPostTimestamp(sbn.getPostTime());
+                        }
                     }
                 }
-            }
-            if (addApp) {
-                notificationApps.add(new NotificationApp(i));
-            }
+                if (addApp) {
+                    notificationApps.add(new NotificationApp(i));
+                }
 
-        }
-        Intent intentList = new Intent("Notification.Action.notificationList");
-        intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
+            }
+            Intent intentList = new Intent("Notification.Action.notificationList");
+            intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
 
-        Intent intentAppsList = new Intent(Config.ACTION_NOTIFICATION_APPS_LISTENER);
-        intentAppsList.putExtra("action", "scan");
-        intentAppsList.putParcelableArrayListExtra("notificationApps", (ArrayList<? extends Parcelable>) notificationApps);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intentAppsList);
+            Intent intentAppsList = new Intent(Config.ACTION_NOTIFICATION_APPS_LISTENER);
+            intentAppsList.putExtra("action", "scan");
+            intentAppsList.putParcelableArrayListExtra("notificationApps", (ArrayList<? extends Parcelable>) notificationApps);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intentAppsList);
+        });
     }
 
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
@@ -476,19 +478,10 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private Bitmap getSmallIconBitmap(Context context, StatusBarNotification sbn) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Notification notification = sbn.getNotification();
-            Icon icon = notification.getSmallIcon();
-            if (icon == null) return null;
-            return drawableToBitMap(icon.loadDrawable(context));
-        } else {
-            // Deprecated EXTRA_SMALL_ICON usage
-            return drawableToBitMap(
-                    getNotificationIconFromPackage(
-                            context, sbn.getPackageName(), getIconId(sbn.getNotification())
-                    )
-            );
-        }
+        Notification notification = sbn.getNotification();
+        Icon icon = notification.getSmallIcon();
+        if (icon == null) return null;
+        return drawableToBitMap(icon.loadDrawable(context));
     }
 
     private Drawable getNotificationIconFromPackage(Context context, String packageName, int id) {
@@ -524,11 +517,9 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     int getImportance(StatusBarNotification sbn) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Ranking ranking = getRanking(sbn);
-            if (ranking != null) {
-                return ranking.getImportance();
-            }
+        Ranking ranking = getRanking(sbn);
+        if (ranking != null) {
+            return ranking.getImportance();
         }
         return android.app.NotificationManager.IMPORTANCE_DEFAULT;
     }
@@ -596,20 +587,9 @@ public class mNotificationListener extends NotificationListenerService {
     private Bitmap getLargeIconBitmap(Context context, StatusBarNotification sbn) {
         Notification notification = sbn.getNotification();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Icon largeIcon = notification.getLargeIcon();
-            if (largeIcon != null) {
-                return drawableToBitMap(largeIcon.loadDrawable(context));
-            }
-        } else {
-            Bundle extras = notification.extras;
-            if (extras.containsKey(Notification.EXTRA_PICTURE)) {
-                // Note: EXTRA_PICTURE might return null if not set.
-                Object picture = extras.get(Notification.EXTRA_PICTURE);
-                if (picture instanceof Bitmap) {
-                    return (Bitmap) picture;
-                }
-            }
+        Icon largeIcon = notification.getLargeIcon();
+        if (largeIcon != null) {
+            return drawableToBitMap(largeIcon.loadDrawable(context));
         }
         return null;
     }
