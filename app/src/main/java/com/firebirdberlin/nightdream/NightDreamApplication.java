@@ -38,6 +38,18 @@ public class NightDreamApplication extends Application {
     private static final String TAG = "NightDreamApplication";
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        try {
+            org.greenrobot.eventbus.EventBus.builder()
+                    .addIndex(new MyEventBusIndex())
+                    .installDefaultEventBus();
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to install default EventBus index", e);
+        }
+    }
+
+    @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
     }

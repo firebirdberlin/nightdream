@@ -778,14 +778,25 @@ public class Utility {
     }
 
     public static void registerEventBus(Object subscriber) {
-        EventBus bus = EventBus.getDefault();
-        if (!bus.isRegistered(subscriber)) {
-            bus.register(subscriber);
+        try {
+            EventBus bus = EventBus.getDefault();
+            if (!bus.isRegistered(subscriber)) {
+                bus.register(subscriber);
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "Failed to register EventBus subscriber: " + subscriber.getClass().getName(), t);
         }
     }
 
     public static void unregisterEventBus(Object subscriber) {
-        EventBus.getDefault().unregister(subscriber);
+        try {
+            EventBus bus = EventBus.getDefault();
+            if (bus.isRegistered(subscriber)) {
+                bus.unregister(subscriber);
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "Failed to unregister EventBus subscriber: " + subscriber.getClass().getName(), t);
+        }
     }
 
     public static void startForegroundService(Context context, Intent i) {
