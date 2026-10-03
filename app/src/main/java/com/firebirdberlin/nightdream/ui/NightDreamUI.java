@@ -91,7 +91,7 @@ import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
 
-import org.greenrobot.eventbus.Subscribe;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,6 +102,13 @@ import java.util.concurrent.Executors;
 
 public class NightDreamUI {
     private static final int SWIPE_MIN_DISTANCE = 120;
+    private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (event instanceof OnNewLightSensorValue) {
+            onEvent((OnNewLightSensorValue) event);
+        } else if (event instanceof OnLightSensorValueTimeout) {
+            onEvent((OnLightSensorValueTimeout) event);
+        }
+    };
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private static final String TAG = "NightDreamUI";
@@ -684,7 +691,7 @@ public class NightDreamUI {
         setupScreenAnimation();
         lockUI(this.locked);
 
-        Utility.registerEventBus(this);
+        AppEventBus.addListener(eventListener);
         broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
     }
@@ -1219,7 +1226,7 @@ public class NightDreamUI {
 
     public void onPause() {
         PollenExposureUpdate.cancelUpdate();
-        Utility.unregisterEventBus(this);
+        AppEventBus.removeListener(eventListener);
         if (lightSensorEventListener != null) {
             lightSensorEventListener.unregister();
         }
@@ -1839,14 +1846,12 @@ public class NightDreamUI {
 
     }
 
-    @Subscribe
     public void onEvent(OnNewLightSensorValue event) {
         Log.i(TAG, "onEvent(OnNewLightSensorValue) = " + event.value);
         last_ambient = event.value;
         dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
     }
 
-    @Subscribe
     public void onEvent(OnLightSensorValueTimeout event) {
         Log.i(TAG, "onEvent(OnLightSensorValueTimeout) = " + event.value);
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;

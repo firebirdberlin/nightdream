@@ -24,14 +24,14 @@ import android.app.NotificationManager;
 import android.os.Build;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 public class mAudioManager{
     final static String TAG = "mAudioManager";
     private Context mContext;
     private AudioManager audiomanage;
     private int currentRingerMode;
-    private EventBus bus = EventBus.getDefault();
+
 
     private class OnSetRingerModeSilent {
          private int currentRingerMode;
@@ -66,12 +66,12 @@ public class mAudioManager{
         Log.i(TAG, "setRingerModeSilent()");
         audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
-        bus.postSticky(new OnSetRingerModeSilent(currentRingerMode));
+        AppEventBus.postSticky(new OnSetRingerModeSilent(currentRingerMode));
     }
 
     public void restoreRingerMode(){
         Log.i(TAG, "restoreRingerMode()");
-        OnSetRingerModeSilent event = bus.removeStickyEvent(OnSetRingerModeSilent.class);
+        OnSetRingerModeSilent event = AppEventBus.removeStickyEvent(OnSetRingerModeSilent.class);
         // nothing to do
         if (event == null) return;
 

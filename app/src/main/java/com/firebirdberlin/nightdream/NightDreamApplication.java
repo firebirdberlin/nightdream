@@ -40,13 +40,6 @@ public class NightDreamApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        try {
-            org.greenrobot.eventbus.EventBus.builder()
-                    .addIndex(new MyEventBusIndex())
-                    .installDefaultEventBus();
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to install default EventBus index", e);
-        }
     }
 
     @Override

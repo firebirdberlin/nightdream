@@ -53,8 +53,7 @@ import com.firebirdberlin.nightdream.ui.AlarmClockLayout;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -120,10 +119,18 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         return false;
     }
 
+    private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (event instanceof OnAlarmEntryChanged) {
+            onAlarmEntryChanged((OnAlarmEntryChanged) event);
+        } else if (event instanceof OnAlarmEntryDeleted) {
+            onAlarmEntryDeleted((OnAlarmEntryDeleted) event);
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
-        Utility.registerEventBus(this);
+        AppEventBus.addListener(eventListener);
         Settings settings = new Settings(this);
         timeFormat = settings.getFullTimeFormat();
         dateFormat = settings.dateFormat;
@@ -157,8 +164,8 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
 
     @Override
     public void onDestroy() {
+        AppEventBus.removeListener(eventListener);
         super.onDestroy();
-        Utility.unregisterEventBus(this);
     }
 
     private void init() {
@@ -369,7 +376,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         SqliteIntentService.scheduleAlarm(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAlarmEntryChanged(OnAlarmEntryChanged event) {
         Log.d(TAG, "onAlarmEntryChanged");
         AlarmClockLayout layout = layoutHashMap.get(event.entry.id);
@@ -378,7 +384,6 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAlarmEntryDeleted(OnAlarmEntryDeleted event) {
         Log.d(TAG, "onAlarmEntryDeleted");
         int id = -1;

@@ -244,16 +244,7 @@ vi - Phong Nguyen"/>
                 android:data="https://github.com/kizitonwose/Calendar"
                 />
         </Preference>
-        <Preference
-            app:iconSpaceReserved="false"
-            app:key="about_eventbus"
-            app:summary="by Greenrobot"
-            app:title="EventBus">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/greenrobot/EventBus"
-                />
-        </Preference>
+
         <Preference
             app:iconSpaceReserved="false"
             app:key="about_gson"
