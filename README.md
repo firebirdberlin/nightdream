@@ -1,5 +1,5 @@
 # nightdream
-Open-source clock, screensaver & radio with dynamic brightness & custom features.
+Open-source clock, screensaver & radio with dynamic brightness & custom features. Trusted and actively developed since 2013.
 
 <div align="center" style="display: flex; gap: 12px; justify-content: center; align-items: center;">
   <a href="https://play.google.com/store/apps/details?id=com.firebirdberlin.nightdream">
@@ -11,7 +11,7 @@ Open-source clock, screensaver & radio with dynamic brightness & custom features
 
 ![image](docs/demoxl.png)
 
-An open-source desk clock and screensaver, perfect for day and night. It shows a digital clock with auto-brightness, battery level, date, and notifications. Night mode offers a dark display (pure black on AMOLED). Adjust font size with a two-finger zoom.
+An open-source desk clock and screensaver, perfect for day and night. Actively maintained and refined since 2013, it shows a digital clock with auto-brightness, battery level, date, and notifications. Night mode offers a dark display (pure black on AMOLED). Adjust font size with a two-finger zoom.
 
 ## Customizable Design
 Adapt colors, fonts, and analog watch faces. Resize the clock with a two-finger zoom.

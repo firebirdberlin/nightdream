@@ -21,6 +21,7 @@ If your question is not listed here, please try to post it to the
      * [AM/PM indicator not working properly](#ampm-indicator-not-working-properly)
      * [Custom fonts](#custom-fonts)
      * [What do the markings in the calendar mean?](#what-do-the-markings-in-the-calendar-mean-)
+     * [Where have the night mode and flashlight icons moved?](#where-have-the-night-mode-and-flashlight-icons-moved)
   * [Weather](#weather)
      * [Weather status line](#weather-status-line)
      * [Weather preferences](#weather-preferences)
@@ -122,6 +123,10 @@ There are sources of free fonts in the web, such as
 ### What do the markings in the calendar mean?
 
 A dot on a day indicates a recurring event. If the color matches the highlight color, there is a one-time entry on that day. A long press on a day opens your system's calendar app. To display these events, the app needs permission to access your calendar.
+
+### Where have the night mode and flashlight icons moved?
+
+The night mode and flashlight (torch) icons have moved to the **right-side menu**. You can access them by **swiping left** anywhere on the main screen to open the side panel.
 
 [Top](#table-of-contents)
 

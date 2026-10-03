@@ -22,6 +22,7 @@ der öffentlichen [Mailingliste](https://groups.google.com/d/forum/night-clock):
      * [AM / PM-Anzeige funktioniert nicht richtig](#am--pm-anzeige-funktioniert-nicht-richtig)
      * [Benutzerdefinierte Schriftarten](#benutzerdefinierte-schriftarten)
      * [Was bedeuten die Markierungen im Kalender?](#was-bedeuten-die-markierungen-im-kalender-)
+     * [Wo sind das Nachtmodus-Symbol und das Taschenlampe-Symbol hin?](#wo-sind-das-nachtmodus-symbol-und-das-taschenlampe-symbol-hin)
   * [Wetter](#wetter)
      * [Wetter - Statuszeile](#wetter---statuszeile)
      * [Weather - Einstellungen](#weather---einstellungen)
@@ -125,6 +126,10 @@ Quellen für kostenlose Schriftarten im Web sind z.B.:
 Ein Punkt an einem Tag bedeutet ein wiederkehrendes Event. Wenn die Farbe der Highlightfarbe
 entspricht, ist an dem Tag ein einmaliger Eintrag. Ein langer Druck auf den Tag öffnet die Kalender
 App. Um diese Events anzuzeigen, benötigt die App die Berechtigung auf Ihren Kalender zuzugreifen.
+
+### Wo sind das Nachtmodus-Symbol und das Taschenlampe-Symbol hin?
+
+Die Steuerelemente für den Nachtmodus und die Taschenlampe befinden sich nun im **Menü auf der rechten Seite** (Side Panel). Sie können dieses Menü öffnen, indem Sie auf dem Hauptbildschirm **nach links wischen**.
 
 [nach oben](#inhaltsverzeichnis)
 

@@ -92,7 +92,8 @@
             app:enabled="true"
             app:key="credits"
             app:selectable="false"
-            app:title="Stefan Fruhner (2025)"
+            app:title="Stefan Fruhner (2013–2026)"
+            app:summary="Active &amp; continuously maintained since 2013"
             app:enableCopying="true"/>
 
         <Preference
@@ -235,12 +236,42 @@ vi - Phong Nguyen"/>
         </Preference>
         <Preference
             app:iconSpaceReserved="false"
-            app:key="about_material_calendar_view"
-            app:summary="by Prolific Interactive"
-            app:title="Material Calendar View">
+            app:key="about_kizitonwose_calendar"
+            app:summary="by Kizito Nwose"
+            app:title="Kizitonwose Calendar View">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/prolificinteractive/material-calendarview"
+                android:data="https://github.com/kizitonwose/Calendar"
+                />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_eventbus"
+            app:summary="by Greenrobot"
+            app:title="EventBus">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/greenrobot/EventBus"
+                />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_gson"
+            app:summary="by Google"
+            app:title="Gson">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/google/gson"
+                />
+        </Preference>
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="about_volley"
+            app:summary="by Google"
+            app:title="Volley">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/google/volley"
                 />
         </Preference>
         <Preference
