@@ -530,15 +530,21 @@ public class mNotificationListener extends NotificationListenerService {
                 return ranking.getImportance();
             }
         }
-        return 0;
+        return android.app.NotificationManager.IMPORTANCE_DEFAULT;
     }
 
     Ranking getRanking(StatusBarNotification sbn) {
+        if (sbn == null) return null;
         String notificationKey = sbn.getKey();
         RankingMap rankingMap = getCurrentRanking();
+        if (rankingMap == null) {
+            return null;
+        }
         Ranking ranking = new Ranking();
-        rankingMap.getRanking(notificationKey, ranking);
-        return ranking;
+        if (rankingMap.getRanking(notificationKey, ranking)) {
+            return ranking;
+        }
+        return null;
     }
 
     private void logNotification(StatusBarNotification sbn) {
