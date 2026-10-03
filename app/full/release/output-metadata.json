@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 356,
-      "versionName": "2.11.34",
+      "versionCode": 358,
+      "versionName": "2.11.36",
       "outputFile": "app-full-release.apk"
     }
   ],
