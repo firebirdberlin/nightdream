@@ -73,6 +73,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Vymazať</string>
     <string name="dialog_message_thank_you">Ďakujem Vám veľmi pekne!</string>
     <string name="dialog_title_thank_you">Poďakovanie</string>
+    <string name="decoration_style_rainbow">Duha</string>
     <string name="donate">Darovať</string>
     <string name="doubleTapToFinishSummary">Dokončite aplikáciu dvojitým poklepaním na obrazovku.</string>
     <string name="doubleTapToFinishTitle">Dvojitým klepnutím dokončíte</string>

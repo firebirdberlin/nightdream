@@ -114,6 +114,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minutt-hånd</string>
     <string name="decoration_style_labels">Nummer-effekt</string>
     <string name="decoration_style_rust">Rust</string>
+    <string name="decoration_style_rainbow">Regnbue</string>
     <string name="donate">Doner</string>
     <string name="doubleTapToFinishSummary">Avslutt programmet ved å dobbeltklikke på skjermen</string>
     <string name="doubleTapToFinishTitle">Dobbeltklikk for å avslutte</string>

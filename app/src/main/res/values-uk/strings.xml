@@ -168,6 +168,7 @@ OR
     <string name="decoration_style_labels">Цифри</string>
     <string name="decoration_style_rust">Іржа</string>
     <string name="decoration_weather_icon_size">Розмір іконки погоди</string>
+    <string name="decoration_style_rainbow">Веселка</string>
     <string name="donate">Пожертвувати</string>
     <string name="doubleTapToFinishSummary">Щоб закрити додаток, двічі торкніться екрану.</string>
     <string name="doubleTapToFinishTitle">Торкніться двічі, щоб закрити</string>

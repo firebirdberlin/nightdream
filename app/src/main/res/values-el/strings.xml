@@ -72,6 +72,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">Διαγραφή</string>
     <string name="dialog_message_thank_you">Σας ευχαριστώ πάρα πολύ </string>
     <string name="dialog_title_thank_you">Ευχαριστώ </string>
+    <string name="decoration_style_rainbow">Ουράνιο τόξο</string>
     <string name="donate">Δώρισε</string>
     <string name="doubleTapToFinishSummary">Διπλό άγγιγμα για τερματισμό της εφαρμογής</string>
     <string name="doubleTapToFinishTitle">Διπλό άγγιγμα για τερματισμό</string>

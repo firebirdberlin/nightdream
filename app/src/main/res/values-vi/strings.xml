@@ -68,6 +68,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="delete">xoá</string>
     <string name="dialog_message_thank_you">Cám ơn bạn rất nhiều!</string>
     <string name="dialog_title_thank_you">Cám ơn</string>
+    <string name="decoration_style_rainbow">Cầu vồng</string>
     <string name="donate">Hổ trợ</string>
     <string name="doubleTapToFinishSummary">Hoàn tất ứng dụng bằng cách nhấn đúp vào màn hình.</string>
     <string name="doubleTapToFinishTitle">Nhấn đúp để kết thúc</string>

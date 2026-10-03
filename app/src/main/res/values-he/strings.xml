@@ -70,6 +70,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="date_format">פורמט תאריך</string>
     <string name="dialog_message_thank_you">תודה רבה! </string>
     <string name="dialog_title_thank_you">תודה</string>
+    <string name="decoration_style_rainbow">קשת בענן</string>
     <string name="donate">תרומה</string>
     <string name="doubleTapToFinishSummary">סיים את הישומון על ידי לחיצה כפולה על המסך</string>
     <string name="doubleTapToFinishTitle">לחיצה כפולה לסיום</string>

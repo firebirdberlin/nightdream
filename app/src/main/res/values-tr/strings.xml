@@ -95,6 +95,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_none">Hiçbiri</string>
     <string name="decoration_style_minute_hand">Yelkovan</string>
     <string name="decoration_style_labels">Rakamlar</string>
+    <string name="decoration_style_rainbow">Gökkuşağı</string>
     <string name="donate">Bağış yapmak</string>
     <string name="doubleTapToFinishSummary">Uygulamadan çıkmak için ekrana çift tıkla</string>
     <string name="doubleTapToFinishTitle">Bitirmek için çift tıkla</string>

@@ -60,6 +60,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="date_format">شکل تاریخ</string>
     <string name="dialog_message_thank_you">سپاس فراوان از شما</string>
     <string name="dialog_title_thank_you">سپاس</string>
+    <string name="decoration_style_rainbow">رنگین کمان</string>
     <string name="donate">کمک کردن</string>
     <string name="doubleTapToFinishSummary">با دو ضربه روی صفحه برنامه را خاتمه دهید</string>
     <string name="doubleTapToFinishTitle">دو ضربه بزنید تا تمام شود</string>

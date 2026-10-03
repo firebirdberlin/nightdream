@@ -398,18 +398,9 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     private void applyRainbowShader(TextView view) {
         int width = Math.max(view.getWidth(), 500);
         int height = Math.max(view.getHeight(), 200);
-        int[] rainbowColors = new int[] {
-            Color.RED,
-            Color.rgb(255, 127, 0),   // Orange
-            Color.YELLOW,
-            Color.GREEN,
-            Color.BLUE,
-            Color.rgb(75, 0, 130),    // Indigo
-            Color.rgb(148, 0, 211)    // Violet
-        };
         LinearGradient rainbowShader = new LinearGradient(
             0, 0, width, height,
-            rainbowColors,
+            Settings.RAINBOW_COLORS,
             null,
             Shader.TileMode.CLAMP
         );
