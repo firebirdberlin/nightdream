@@ -34,7 +34,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.google.gson.Gson;
 
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 public class SqliteIntentService {
 
@@ -115,8 +115,7 @@ public class SqliteIntentService {
     }
 
     static SimpleTime getLastActivatedAlarmTime() {
-        EventBus bus = EventBus.getDefault();
-        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        OnAlarmStarted event = AppEventBus.getStickyEvent(OnAlarmStarted.class);
         return (event != null) ? event.entry : null;
     }
 }

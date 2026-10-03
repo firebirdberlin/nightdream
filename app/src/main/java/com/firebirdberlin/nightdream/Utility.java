@@ -89,7 +89,7 @@ import androidx.core.view.WindowCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
-import org.greenrobot.eventbus.EventBus;
+
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -779,27 +779,7 @@ public class Utility {
         }
     }
 
-    public static void registerEventBus(Object subscriber) {
-        try {
-            EventBus bus = EventBus.getDefault();
-            if (!bus.isRegistered(subscriber)) {
-                bus.register(subscriber);
-            }
-        } catch (Throwable t) {
-            Log.e(TAG, "Failed to register EventBus subscriber: " + subscriber.getClass().getName(), t);
-        }
-    }
 
-    public static void unregisterEventBus(Object subscriber) {
-        try {
-            EventBus bus = EventBus.getDefault();
-            if (bus.isRegistered(subscriber)) {
-                bus.unregister(subscriber);
-            }
-        } catch (Throwable t) {
-            Log.e(TAG, "Failed to unregister EventBus subscriber: " + subscriber.getClass().getName(), t);
-        }
-    }
 
     public static void startForegroundService(Context context, Intent i) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -28,7 +28,7 @@ import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
 import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class DataSource {
 
         db.update(SQLiteDBHelper.AlarmEntry.TABLE_NAME, values, selection, selectionArgs);
         if (raise_event) {
-            EventBus.getDefault().post(new OnAlarmEntryChanged(time));
+            AppEventBus.publish(new OnAlarmEntryChanged(time));
         }
         return time;
     }
@@ -109,7 +109,7 @@ public class DataSource {
         String[] selectionArgs = {String.valueOf(time.id)};
 
         db.delete(SQLiteDBHelper.AlarmEntry.TABLE_NAME, selection, selectionArgs);
-        EventBus.getDefault().post(new OnAlarmEntryDeleted(time));
+        AppEventBus.publish(new OnAlarmEntryDeleted(time));
     }
 
     public void updateNextEventAfter(long alarmTimeId, long nextEventAfter) {
@@ -122,7 +122,7 @@ public class DataSource {
         db.update(SQLiteDBHelper.AlarmEntry.TABLE_NAME, values, selection, selectionArgs);
         SimpleTime time = getAlarmEntry(alarmTimeId);
         if (time != null) {
-            EventBus.getDefault().post(new OnAlarmEntryChanged(time));
+            AppEventBus.publish(new OnAlarmEntryChanged(time));
         }
     }
 

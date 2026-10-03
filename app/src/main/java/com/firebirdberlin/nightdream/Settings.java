@@ -49,7 +49,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -1179,7 +1179,7 @@ public class Settings {
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putLong("sleepTimeInMillis", sleepTimeInMillis);
         prefEditor.apply();
-        EventBus.getDefault().post(new OnSleepTimeChanged(sleepTimeInMillis));
+        AppEventBus.publish(new OnSleepTimeChanged(sleepTimeInMillis));
     }
 
     public boolean isWithinAlwaysOnTime(int batteryLevel) {
