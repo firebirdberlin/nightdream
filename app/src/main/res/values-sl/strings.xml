@@ -86,6 +86,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_minute_hand">Minutni kazalec</string>
     <string name="decoration_style_labels">Številke</string>
     <string name="decoration_style_rainbow">Mavrica</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Doniraj</string>
     <string name="doubleTapToFinishSummary">Zaključi aplikacijo z dvojnim klikom na zaslon</string>
     <string name="doubleTapToFinishTitle">Dvojni klik za zaključek</string>

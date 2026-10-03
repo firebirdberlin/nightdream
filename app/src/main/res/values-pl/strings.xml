@@ -169,6 +169,8 @@ OR
     <string name="decoration_style_rust">Rdzawy</string>
     <string name="decoration_weather_icon_size">Rozmiar ikony pogody</string>
     <string name="decoration_style_rainbow">Tęcza</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Wspomóż</string>
     <string name="doubleTapToFinishSummary">Zakończ działanie aplikacji przez podwójnie puknięcie w ekran.</string>
     <string name="doubleTapToFinishTitle">Podwójnie puknij w ekrany, aby zakończyć.</string>

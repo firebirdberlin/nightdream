@@ -169,6 +169,8 @@ OR
     <string name="decoration_style_rust">Roest</string>
     <string name="decoration_weather_icon_size">Weer icoon grootte</string>
     <string name="decoration_style_rainbow">Regenboog</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Doneren</string>
     <string name="doubleTapToFinishSummary">Dubbeltik op het scherm om de app te sluiten.</string>
     <string name="doubleTapToFinishTitle">Dubbeltikken om te sluiten</string>

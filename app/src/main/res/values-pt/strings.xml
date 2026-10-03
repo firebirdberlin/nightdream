@@ -154,6 +154,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_rust">Ferrugem</string>
     <string name="decoration_weather_icon_size">Tamanho do icone de tempo</string>
     <string name="decoration_style_rainbow">Arco-íris</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Faça uma doação</string>
     <string name="doubleTapToFinishSummary">Faça duplo toque no ecrã para fechar a Aplicação</string>
     <string name="doubleTapToFinishTitle">Duplo toque para terminar</string>

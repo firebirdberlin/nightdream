@@ -95,6 +95,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Kiitos</string>
     <string name="digit_emphasize_quarters">Korosta neljännestunnit</string>
     <string name="decoration_style_rainbow">Sateenkaari</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Lahjoita</string>
     <string name="doubleTapToFinishSummary">Lopeta sovellus tuplaklikkaamalla näyttöä</string>
     <string name="doubleTapToFinishTitle">Lopeta tuplaklikkaamalla</string>

@@ -169,6 +169,8 @@ OR
     <string name="decoration_style_rust">Rezavá</string>
     <string name="decoration_weather_icon_size">Velikost ikony počasí</string>
     <string name="decoration_style_rainbow">Duha</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Darovat</string>
     <string name="doubleTapToFinishSummary">Ukončit aplikaci dvojitým kliknutím</string>
     <string name="doubleTapToFinishTitle">Pokliknutím dokončíte</string>

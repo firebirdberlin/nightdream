@@ -165,6 +165,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="digit_emphasize_quarters">Viertel hervorheben</string>
     <string name="directory_background_image_select">Bilder auswählen</string>
     <string name="decoration_style_rainbow">Regenbogen</string>
+    <string name="decoration_style_pride">Pride-Flagge</string>
+    <string name="decoration_style_progress_pride">Progress Pride-Flagge</string>
     <string name="donate">Spenden</string>
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>

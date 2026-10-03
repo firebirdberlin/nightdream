@@ -731,9 +731,13 @@ public class Settings {
     public static final int TEXTURE_COPPER = 2;
     public static final int TEXTURE_RUST = 3;
     public static final int TEXTURE_RAINBOW = 4;
+    public static final int TEXTURE_PRIDE = 5;
+    public static final int TEXTURE_PROGRESS_PRIDE = 6;
 
     public static final int TEXTURE_RES_ID_NONE = -1;
     public static final int TEXTURE_RES_ID_RAINBOW = -2;
+    public static final int TEXTURE_RES_ID_PRIDE = -3;
+    public static final int TEXTURE_RES_ID_PROGRESS_PRIDE = -4;
 
     public static final int[] RAINBOW_COLORS = new int[] {
         Color.rgb(255, 70, 70),   // Red
@@ -744,6 +748,23 @@ public class Settings {
         Color.rgb(80, 150, 255), // Bright Blue
         Color.rgb(170, 90, 255), // Indigo / Purple
         Color.rgb(230, 120, 255) // Violet
+    };
+
+    public static final int[] PRIDE_RAINBOW_COLORS = {
+            0xFFE52E2E, // red
+            0xFFF08A28, // orange
+            0xFFF0DF18, // yellow
+            0xFF29934F, // green
+            0xFF356FD9, // blue
+            0xFF85409D  // violet
+    };
+
+    public static final int[] PROGRESS_PRIDE_COLORS = {
+            0xFFF0F0F0, // white
+            0xFFF09DBD, // pink
+            0xFF72C8DD, // light blue
+            0xFF704B32, // brown
+            0xFF252525  // dark gray
     };
 
     public int getTextureResId(int clockLayoutId) {
@@ -757,6 +778,10 @@ public class Settings {
                 return R.drawable.rust;
             case TEXTURE_RAINBOW:
                 return TEXTURE_RES_ID_RAINBOW;
+            case TEXTURE_PRIDE:
+                return TEXTURE_RES_ID_PRIDE;
+            case TEXTURE_PROGRESS_PRIDE:
+                return TEXTURE_RES_ID_PROGRESS_PRIDE;
             case TEXTURE_NONE:
             default:
                 return TEXTURE_RES_ID_NONE;

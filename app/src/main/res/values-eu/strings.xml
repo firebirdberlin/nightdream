@@ -72,6 +72,8 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="dialog_message_thank_you">Eskerrik asko!</string>
 <string name="dialog_title_thank_you">Eskerrik asko!</string>
     <string name="decoration_style_rainbow">Ostadar</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Donatu</string>
 <string name="doubleTapToFinishSummary">APPa itzali pantailan bi bider ukituta</string>
 <string name="doubleTapToFinishTitle">Pantaila bi bider ukitu amaitzeko</string>

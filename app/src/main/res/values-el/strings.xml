@@ -73,6 +73,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_message_thank_you">Σας ευχαριστώ πάρα πολύ </string>
     <string name="dialog_title_thank_you">Ευχαριστώ </string>
     <string name="decoration_style_rainbow">Ουράνιο τόξο</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
+
+    <string name="show_pride_chevron">Show chevron</string>
     <string name="donate">Δώρισε</string>
     <string name="doubleTapToFinishSummary">Διπλό άγγιγμα για τερματισμό της εφαρμογής</string>
     <string name="doubleTapToFinishTitle">Διπλό άγγιγμα για τερματισμό</string>
