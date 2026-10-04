@@ -256,12 +256,12 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
-        notificationExecutor.execute(() -> {
-            minNotificationImportance = Settings.getMinNotificationImportance(this);
-            notifications.clear();
-            notificationApps.clear();
+        minNotificationImportance = Settings.getMinNotificationImportance(this);
+        notifications.clear();
+        notificationApps.clear();
 
-            clearNotificationUI();
+        clearNotificationUI();
+        notificationExecutor.execute(() -> {
             StatusBarNotification[] notificationList = null;
             try {
                 notificationList = mNotificationListener.this.getActiveNotifications();
