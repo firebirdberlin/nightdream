@@ -124,19 +124,13 @@ public class NotificationReceiver extends BroadcastReceiver {
                     }
                     break;
                 case "added_media":
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        setupMediaControls(context, intent);
-                    }
+                    setupMediaControls(context, intent);
                     break;
                 case "removed_media":
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        removeMediaControls();
-                    }
+                    removeMediaControls();
                     break;
                 case "added_preview":
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        setupNotificationPreview(context, intent);
-                    }
+                    setupNotificationPreview(context, intent);
                     break;
                 default:
             }
