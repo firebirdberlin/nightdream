@@ -4,8 +4,21 @@ plugins {
 
 def getApiKeyOWM() {
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty("apikey.owm")
+    File localPropertiesFile = project.rootProject.file('local.properties')
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.newDataInputStream())
+    }
+    return properties.getProperty("apikey.owm", "")
+}
+
+def isMediaLocationEnabled() {
+    Properties properties = new Properties()
+    File localPropertiesFile = project.rootProject.file('local.properties')
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.newDataInputStream())
+        return "true".equalsIgnoreCase(properties.getProperty("enable.media.location"))
+    }
+    return false
 }
 
 android {
@@ -37,6 +50,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
+        boolean enableMediaLocation = isMediaLocationEnabled()
+        buildConfigField "boolean", "ENABLE_MEDIA_LOCATION", "${enableMediaLocation}"
+        manifestPlaceholders = [
+            mediaLocationPermission: enableMediaLocation ? "android.permission.ACCESS_MEDIA_LOCATION" : "com.firebirdberlin.nightdream.MEDIA_LOCATION_DISABLED"
+        ]
         vectorDrawables.useSupportLibrary = true
 
         javaCompileOptions {
