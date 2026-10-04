@@ -75,7 +75,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
 
 import java.io.File;
-import java.util.List;
 import java.util.Vector;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
@@ -299,45 +298,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
-    // Registers a photo picker activity launcher in multi-select mode.
-    // In this example, the app lets the user select up to 5 media files.
-
-    /*
-    ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
-            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(getMaxNumImages()), uris -> {
-                // Callback is invoked after the user selects media items or closes the
-                // photo picker.
-                if (!uris.isEmpty()) {
-                    Log.d("PhotoPicker", "Number of items selected: " + uris.size());
-                    File directory = new File(mContext.getFilesDir() + "/backgroundImages");
-                    Utility.prepareDirectory(directory);
-
-                    //Binding a service is asynchronous, therefore we need to check this
-                    if (bound && copyService != null) {
-
-                        //Start the copying service
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            mContext.startForegroundService(intentImageCopyService);
-                        } else {
-                            mContext.startService(intentImageCopyService);
-                        }
-
-                        //Start copying images
-                        copyService.copyImages(uris, directory);
-                    } else {
-                        Log.e(TAG, "Service not bound. Bound: "+bound+" copyService: "+copyService);
-                        Toast.makeText(getActivity(), getString(R.string.images_background_service_unbound),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                } else {
-                    Log.d("PhotoPicker", "No media selected");
-                }
-            });
-     */
-
-    // We use OpenMultipleDocuments instead of PickMultipleVisualMedia to get the exif location
-    private final ActivityResultLauncher<String[]> pickMultipleMedia =
+    // Registers a photo picker activity launcher
+    // We use OpenMultipleDocuments instead of PickMultipleVisualMedia to allow "select all" and access to the exif location
+    private final ActivityResultLauncher<String[]> pickBackgroundImages =
             registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), uris -> {
                 if (uris != null && !uris.isEmpty()) {
                     Log.d("OpenMultipleDocuments", "Number of items selected: " + uris.size());
@@ -352,9 +315,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     // Launcher for the permission
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                // start with or without permission
-                pickMultipleMedia.launch(new String[]{"image/*"});
+                pickBackgroundImages.launch(new String[]{"image/*"});
             });
+
 
     private void updateChooseDirectoryEnabledState() {
         Preference chooseDirectory = findPreference("chooseDirectoryBackgroundImage");
@@ -711,26 +674,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 });
 
                 chooseDirectory.setOnPreferenceClickListener(preference -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (com.firebirdberlin.nightdream.BuildConfig.ENABLE_MEDIA_LOCATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_MEDIA_LOCATION)
                                 == PackageManager.PERMISSION_GRANTED) {
                             // permission granted
-                            pickMultipleMedia.launch(new String[]{"image/*"});
+                            pickBackgroundImages.launch(new String[]{"image/*"});
                         } else {
                             // permission not granted
                             requestPermissionLauncher.launch(Manifest.permission.ACCESS_MEDIA_LOCATION);
                         }
+                    } else {
+                        pickBackgroundImages.launch(new String[]{"image/*"});
                     }
-                    else {
-                        pickMultipleMedia.launch(new String[]{"image/*"});
-                    }
-
-                    /*
-                    pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                            .build());
-                            
-                     */
                     return true;
                 });
             } else{
