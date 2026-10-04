@@ -144,6 +144,9 @@ public class NightDreamUI {
     private final mAudioManager AudioManage;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
+    private int lastPointerCount = 0;
+    private float lastThreeFingerX = 0f;
+    private float lastThreeFingerY = 0f;
     private final Settings settings;
     private final Window window;
     private final Runnable fadeClock = new Runnable() {
@@ -1672,6 +1675,66 @@ public class NightDreamUI {
     }
 
     public boolean onTouch(View view, MotionEvent e) {
+        if (mScaleDetector != null && mScaleDetector.isInProgress()) {
+            lastPointerCount = e.getPointerCount();
+            return mScaleDetector.onTouchEvent(e);
+        }
+
+        int pointerCount = e.getPointerCount();
+        if (!locked && pointerCount >= 3) {
+            float currentX = 0f;
+            float currentY = 0f;
+            int count = 3;
+            for (int i = 0; i < count; i++) {
+                currentX += e.getX(i);
+                currentY += e.getY(i);
+            }
+            currentX /= count;
+            currentY /= count;
+
+            int action = e.getActionMasked();
+            if (lastPointerCount < 3 || action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+                lastThreeFingerX = currentX;
+                lastThreeFingerY = currentY;
+            }
+
+            if (action == MotionEvent.ACTION_MOVE) {
+                float deltaX = currentX - lastThreeFingerX;
+                float deltaY = currentY - lastThreeFingerY;
+                lastThreeFingerX = currentX;
+                lastThreeFingerY = currentY;
+
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 0.5f) {
+                    if (clockLayoutContainer != null && brightnessProgress != null) {
+                        Point size = Utility.getDisplaySize(mContext);
+                        float dx = 2.0f * (deltaX / size.x);
+                        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                        value += dx;
+                        value = to_range(value, -0.6f, 1.f);
+
+                        removeCallbacks(hideBrightnessLevel);
+                        removeCallbacks(hideBrightnessView);
+                        setAlpha(brightnessProgress, 1.f, 0);
+                        brightnessProgress.setVisibility(View.VISIBLE);
+
+                        dimScreen(0, last_ambient, value);
+                        if (mode != 0) {
+                            settings.setBrightnessOffset(value);
+                        } else {
+                            settings.setNightModeBrightness(value);
+                        }
+                        setBrightnessProgress();
+
+                        handler.postDelayed(hideBrightnessLevel, 1000);
+                    }
+                }
+            }
+            lastPointerCount = pointerCount;
+            return true;
+        } else {
+            lastPointerCount = pointerCount;
+        }
+
         lastTouchTime = System.currentTimeMillis();
 
         if (locked) {
