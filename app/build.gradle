@@ -32,8 +32,8 @@ android {
         applicationId "com.firebirdberlin.nightdream"
         minSdk 24
         targetSdk 37
-        versionCode 359
-        versionName "2.11.37"
+        versionCode 360
+        versionName "2.11.38"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_KEY_OWM", "\""+getApiKeyOWM()+"\""
