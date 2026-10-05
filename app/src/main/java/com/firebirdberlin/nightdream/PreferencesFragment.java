@@ -51,6 +51,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -297,38 +298,24 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 }
             });
 
-    // Registers a photo picker activity launcher in multi-select mode.
-    // In this example, the app lets the user select up to 5 media files.
-    ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
-            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(getMaxNumImages()), uris -> {
-                // Callback is invoked after the user selects media items or closes the
-                // photo picker.
-                if (!uris.isEmpty()) {
-                    Log.d("PhotoPicker", "Number of items selected: " + uris.size());
+    // Registers a photo picker activity launcher
+    // We use OpenMultipleDocuments instead of PickMultipleVisualMedia to allow "select all" and access to the exif location
+    private final ActivityResultLauncher<String[]> pickBackgroundImages =
+            registerForActivityResult(new ActivityResultContracts.OpenMultipleDocuments(), uris -> {
+                if (uris != null && !uris.isEmpty()) {
+                    Log.d("OpenMultipleDocuments", "Number of items selected: " + uris.size());
                     File directory = new File(mContext.getFilesDir() + "/backgroundImages");
                     Utility.prepareDirectory(directory);
-
-                    //Binding a service is asynchronous, therefore we need to check this
-                    if (bound && copyService != null) {
-
-                        //Start the copying service
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            mContext.startForegroundService(intentImageCopyService);
-                        } else {
-                            mContext.startService(intentImageCopyService);
-                        }
-
-                        //Start copying images
-                        copyService.copyImages(uris, directory);
-                    } else {
-                        Log.e(TAG, "Service not bound. Bound: "+bound+" copyService: "+copyService);
-                        Toast.makeText(getActivity(), getString(R.string.images_background_service_unbound),
-                                Toast.LENGTH_LONG).show();
-                    }
-
+                    copyService.copyImages(uris, directory);
                 } else {
-                    Log.d("PhotoPicker", "No media selected");
+                    Log.d("OpenMultipleDocuments", "No media selected");
                 }
+            });
+
+    // Launcher for the permission
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                pickBackgroundImages.launch(new String[]{"image/*"});
             });
 
 
@@ -687,9 +674,18 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 });
 
                 chooseDirectory.setOnPreferenceClickListener(preference -> {
-                    pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                            .build());
+                    if (com.firebirdberlin.nightdream.BuildConfig.ENABLE_MEDIA_LOCATION && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_MEDIA_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+                            // permission granted
+                            pickBackgroundImages.launch(new String[]{"image/*"});
+                        } else {
+                            // permission not granted
+                            requestPermissionLauncher.launch(Manifest.permission.ACCESS_MEDIA_LOCATION);
+                        }
+                    } else {
+                        pickBackgroundImages.launch(new String[]{"image/*"});
+                    }
                     return true;
                 });
             } else{
