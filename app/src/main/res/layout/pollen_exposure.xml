@@ -4,6 +4,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="com.firebirdberlin.nightdream.Utility"/>
         <variable name="model" type="com.firebirdberlin.nightdream.ui.PollenExposureLayout" />
     </data>
 
@@ -52,8 +53,8 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginBottom="4dp"
-                            android:src="@{model.pollenImages.size() >= 1 ? model.pollenImages.get(0) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 1  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 0)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 0)}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -65,8 +66,8 @@
                             android:layout_marginBottom="4dp"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@{model.pollenImages.size() >= 2 ? model.pollenImages.get(1) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 2  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 1)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 1)}"
                             app:layout_constraintEnd_toStartOf="@+id/pollen_3"
                             app:layout_constraintStart_toEndOf="@+id/pollen_1"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -78,8 +79,8 @@
                             android:layout_marginBottom="4dp"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@{model.pollenImages.size() >= 3 ? model.pollenImages.get(2) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 3  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 2)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 2)}"
                             app:layout_constraintEnd_toStartOf="@+id/pollen_4"
                             app:layout_constraintStart_toEndOf="@+id/pollen_2"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -91,8 +92,8 @@
                             android:layout_marginBottom="4dp"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@{model.pollenImages.size() >= 4 ? model.pollenImages.get(3) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 4  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 3)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 3)}"
                             app:layout_constraintEnd_toStartOf="@+id/pollen_5"
                             app:layout_constraintStart_toEndOf="@+id/pollen_3"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -104,8 +105,8 @@
                             android:layout_marginBottom="4dp"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@{model.pollenImages.size() >= 5 ? model.pollenImages.get(4) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 5  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 4)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 4)}"
                             app:layout_constraintEnd_toStartOf="@+id/pollen_6"
                             app:layout_constraintStart_toEndOf="@+id/pollen_4"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -117,8 +118,8 @@
                             android:layout_marginBottom="4dp"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@{model.pollenImages.size() >= 6 ? model.pollenImages.get(5) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 6  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 5)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 5)}"
                             app:layout_constraintEnd_toStartOf="@+id/pollen_7"
                             app:layout_constraintStart_toEndOf="@+id/pollen_5"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -130,8 +131,8 @@
                             android:layout_marginBottom="4dp"
                             android:layout_marginStart="2dp"
                             android:layout_marginEnd="2dp"
-                            android:src="@{model.pollenImages.size() >= 7 ? model.pollenImages.get(6) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 7  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 6)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 6)}"
                             app:layout_constraintEnd_toStartOf="@+id/pollen_8"
                             app:layout_constraintStart_toEndOf="@+id/pollen_6"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -141,8 +142,8 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginBottom="4dp"
-                            android:src="@{model.pollenImages.size() >= 8 ? model.pollenImages.get(7) : null}"
-                            android:visibility="@{model.pollenImages.size() >= 8  ? View.VISIBLE : View.GONE}"
+                            android:src="@{Utility.getDrawableOrNull(model.pollenImages, 7)}"
+                            android:visibility="@{Utility.getVisibility(model.pollenImages, 7)}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>

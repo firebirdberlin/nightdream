@@ -5,6 +5,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="com.firebirdberlin.nightdream.Utility"/>
         <variable name="model" type="com.firebirdberlin.nightdream.ui.MediaControlLayout" />
     </data>
 
@@ -124,9 +125,9 @@
                             android:id="@+id/notify_actionview1"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:onClick="@{model.actionIntent.size() >= 1 ? model.actionIntent.get(0) : null}"
-                            android:src="@{model.actionImages.size() >= 1 ? model.actionImages.get(0) : null}"
-                            android:visibility="@{model.actionImages.size() >= 1  ? View.VISIBLE : View.GONE}"
+                            android:onClick="@{Utility.getOnClickListenerOrNull(model.actionIntent, 0)}"
+                            android:src="@{Utility.getDrawableOrNull(model.actionImages, 0)}"
+                            android:visibility="@{Utility.getVisibility(model.actionImages, 0)}"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -136,9 +137,9 @@
                             android:layout_height="20dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
-                            android:onClick="@{model.actionIntent.size() >= 2 ? model.actionIntent.get(1) : null}"
-                            android:src="@{model.actionImages.size() >= 2 ? model.actionImages.get(1) : null}"
-                            android:visibility="@{model.actionImages.size() >= 2  ? View.VISIBLE : View.GONE}"
+                            android:onClick="@{Utility.getOnClickListenerOrNull(model.actionIntent, 1)}"
+                            android:src="@{Utility.getDrawableOrNull(model.actionImages, 1)}"
+                            android:visibility="@{Utility.getVisibility(model.actionImages, 1)}"
                             app:layout_constraintEnd_toStartOf="@+id/notify_actionview3"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview1"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -149,9 +150,9 @@
                             android:layout_height="20dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
-                            android:onClick="@{model.actionIntent.size() >= 3 ? model.actionIntent.get(2) : null}"
-                            android:src="@{model.actionImages.size() >= 3 ? model.actionImages.get(2) : null}"
-                            android:visibility="@{model.actionImages.size() >= 3  ? View.VISIBLE : View.GONE}"
+                            android:onClick="@{Utility.getOnClickListenerOrNull(model.actionIntent, 2)}"
+                            android:src="@{Utility.getDrawableOrNull(model.actionImages, 2)}"
+                            android:visibility="@{Utility.getVisibility(model.actionImages, 2)}"
                             app:layout_constraintEnd_toStartOf="@+id/notify_actionview4"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview2"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -162,9 +163,9 @@
                             android:layout_height="20dp"
                             android:layout_marginStart="8dp"
                             android:layout_marginEnd="8dp"
-                            android:onClick="@{model.actionIntent.size() >= 4 ? model.actionIntent.get(3) : null}"
-                            android:src="@{model.actionImages.size() >= 4 ? model.actionImages.get(3) : null }"
-                            android:visibility="@{model.actionImages.size() >= 4  ? View.VISIBLE : View.GONE}"
+                            android:onClick="@{Utility.getOnClickListenerOrNull(model.actionIntent, 3)}"
+                            android:src="@{Utility.getDrawableOrNull(model.actionImages, 3)}"
+                            android:visibility="@{Utility.getVisibility(model.actionImages, 3)}"
                             app:layout_constraintEnd_toStartOf="@+id/notify_actionview5"
                             app:layout_constraintStart_toEndOf="@+id/notify_actionview3"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -173,9 +174,9 @@
                             android:id="@+id/notify_actionview5"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:onClick="@{model.actionIntent.size() == 5 ? model.actionIntent.get(4) : null}"
-                            android:src="@{model.actionImages.size() == 5 ? model.actionImages.get(4) : null }"
-                            android:visibility="@{model.actionImages.size() == 5  ? View.VISIBLE : View.GONE}"
+                            android:onClick="@{Utility.getOnClickListenerOrNull(model.actionIntent, 4)}"
+                            android:src="@{Utility.getDrawableOrNull(model.actionImages, 4)}"
+                            android:visibility="@{Utility.getVisibility(model.actionImages, 4)}"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>

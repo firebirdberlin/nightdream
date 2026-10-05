@@ -47,6 +47,8 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
@@ -1185,5 +1187,26 @@ public class Utility {
                 android.provider.Settings.Global.TRANSITION_ANIMATION_SCALE, 1
         );
         return (duration != 0 && transition != 0);
+    }
+
+    public static Drawable getDrawableOrNull(List<Drawable> list, int index) {
+        if (list != null && index >= 0 && index < list.size()) {
+            return list.get(index);
+        }
+        return null;
+    }
+
+    public static View.OnClickListener getOnClickListenerOrNull(List<View.OnClickListener> list, int index) {
+        if (list != null && index >= 0 && index < list.size()) {
+            return list.get(index);
+        }
+        return null;
+    }
+
+    public static int getVisibility(List<?> list, int index) {
+        if (list != null && index >= 0 && index < list.size()) {
+            return android.view.View.VISIBLE;
+        }
+        return android.view.View.GONE;
     }
 }
