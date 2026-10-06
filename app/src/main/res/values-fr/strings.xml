@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">Je voudrais vous recommander cette application d\'horloge nocturne.</string>
     <string name="recommend">Recommander l\'application</string>
     <string name="export_preferences">Exporter les informations de l\'application</string>
+    <string name="export_preferences_file">Exporter les paramètres vers un fichier</string>
+    <string name="export_preferences_email">Envoyer les informations de l\'application par e-mail</string>
+    <string name="import_preferences">Importer les paramètres</string>
+    <string name="import_preferences_confirm">Voulez-vous importer les paramètres à partir de ce fichier de sauvegarde ?</string>
+    <string name="import_preferences_success">Paramètres importés avec succès.</string>
+    <string name="import_preferences_failed">Échec de l\'importation des paramètres.</string>
+    <string name="import_preferences_requires_pro">L\'importation des paramètres nécessite Pro ou Actions.</string>
     <string name="rate">Noter cette application</string>
     <string name="rate_summary">Nous souhaiterions savoir si vous avez apprécié cette application</string>
     <string name="remaining">rest.</string>

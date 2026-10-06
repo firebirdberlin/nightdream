@@ -100,6 +100,6 @@ public class PollenExposureLayout extends ViewModel {
             }
         }
 
-        this.pollenImages.setValue(setupPollenImages);
+        this.pollenImages.postValue(setupPollenImages);
     }
 }

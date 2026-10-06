@@ -75,7 +75,7 @@ public class MediaControlLayout extends ViewModel {
     }
 
     private void setColor() {
-        this.textColor.setValue(this.color);
+        this.textColor.postValue(this.color);
 
         if (this.smallIcon.getValue() != null) {
             this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
@@ -187,14 +187,14 @@ public class MediaControlLayout extends ViewModel {
             }
         }
 
-        this.smallIcon.setValue(smallIcon);
-        this.appName.setValue(intent.getStringExtra("applicationName"));
-        this.timeStamp.setValue(intent.getStringExtra("postTime"));
-        this.title.setValue(intent.getStringExtra("title"));
-        this.text.setValue(intent.getStringExtra("text"));
-        this.largeIcon.setValue(new BitmapDrawable(context.getResources(), coverBitmap));
-        this.actionImages.setValue(notificationActionImages);
-        this.actionIntent.setValue(notificationActionClick);
+        this.smallIcon.postValue(smallIcon);
+        this.appName.postValue(intent.getStringExtra("applicationName"));
+        this.timeStamp.postValue(intent.getStringExtra("postTime"));
+        this.title.postValue(intent.getStringExtra("title"));
+        this.text.postValue(intent.getStringExtra("text"));
+        this.largeIcon.postValue(new BitmapDrawable(context.getResources(), coverBitmap));
+        this.actionImages.postValue(notificationActionImages);
+        this.actionIntent.postValue(notificationActionClick);
         setColor();
     }
 }

@@ -286,6 +286,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Eu gostaria de recomendar o Relógio Noturno para você.</string>
     <string name="recommend">Recomende este aplicativo</string>
     <string name="export_preferences">exportar informação da app</string>
+    <string name="export_preferences_file">Exportar definições para ficheiro</string>
+    <string name="export_preferences_email">Enviar informação da app por e-mail</string>
+    <string name="import_preferences">Importar definições</string>
+    <string name="import_preferences_confirm">Deseja importar as definições deste ficheiro de cópia de segurança?</string>
+    <string name="import_preferences_success">Definições importadas com sucesso.</string>
+    <string name="import_preferences_failed">Falha ao importar definições.</string>
+    <string name="import_preferences_requires_pro">A importação de definições requer Pro ou Actions.</string>
     <string name="rate">Avalie este aplicativo</string>
     <string name="rate_summary">Gostaríamos de saber se você gosta de nosso aplicativo</string>
     <string name="remaining">restantes</string>

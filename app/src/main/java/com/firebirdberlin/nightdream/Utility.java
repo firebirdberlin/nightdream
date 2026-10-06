@@ -120,7 +120,7 @@ public class Utility {
     private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private static String TAG = "NightDreamUtility";
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
-    private Context mContext;
+    private final Context mContext;
 
     public Utility(Context context) {
         this.mContext = context;

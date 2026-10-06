@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">Vorrei raccomandati questo orologio notturno</string>
     <string name="recommend">App raccomandata</string>
     <string name="export_preferences">Esporta le informazioni dalla APP</string>
+    <string name="export_preferences_file">Esporta le impostazioni su file</string>
+    <string name="export_preferences_email">Invia le informazioni sull\'app via e-mail</string>
+    <string name="import_preferences">Importa le impostazioni</string>
+    <string name="import_preferences_confirm">Vuoi importare le impostazioni da questo file di backup?</string>
+    <string name="import_preferences_success">Impostazioni importate con successo.</string>
+    <string name="import_preferences_failed">Impossibile importare le impostazioni.</string>
+    <string name="import_preferences_requires_pro">L\'importazione delle impostazioni richiede Pro o Actions.</string>
     <string name="rate">Valuta questa applicazione</string>
     <string name="rate_summary">Ci piacerebbe conoscere se ti piace la nostra applicazione</string>
     <string name="remaining">Residuo</string>

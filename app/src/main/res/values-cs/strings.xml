@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">Rád bych vám doporučil tuto aplikaci pro zobrazení hodin v noci.</string>
     <string name="recommend">Doporučit aplikaci</string>
     <string name="export_preferences">Exportovat informace o aplikaci</string>
+    <string name="export_preferences_file">Exportovat nastavení do souboru</string>
+    <string name="export_preferences_email">Odeslat informace o aplikaci e-mailem</string>
+    <string name="import_preferences">Importovat nastavení</string>
+    <string name="import_preferences_confirm">Chcete importovat nastavení z tohoto záložního souboru?</string>
+    <string name="import_preferences_success">Nastavení byla úspěšně importována.</string>
+    <string name="import_preferences_failed">Import nastavení se nezdařil.</string>
+    <string name="import_preferences_requires_pro">Import nastavení vyžaduje Pro nebo Actions.</string>
     <string name="rate">Ohodnotit tuto aplikaci</string>
     <string name="rate_summary">Rádi bychom věděli, zda se vám naše aplikace líbí</string>
     <string name="remaining">zbývá</string>

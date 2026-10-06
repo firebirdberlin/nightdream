@@ -24,12 +24,6 @@
         app:key="recommendApp"
         app:title="@string/recommend"/>
 
-    <Preference
-        app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_export"
-        app:key="exportPreferences"
-        app:title="@string/export_preferences"/>
-
     <de.firebirdberlin.preference.AppDetailsPreference
         app:key="appDetails"
         app:icon="@drawable/ic_info"
@@ -38,17 +32,42 @@
 
     <Preference
         app:iconSpaceReserved="false"
-        app:icon="@drawable/ic_undo"
-        app:key="reset_to_defaults"
-        app:title="@string/reset_to_defaults"/>
-
-    <Preference
-        app:iconSpaceReserved="false"
         app:icon="@drawable/ic_delete"
         app:key="uninstallApp"
         app:title="@string/uninstall"/>
 
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/export_preferences">
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_export"
+            app:key="exportPreferences"
+            app:title="@string/export_preferences_file"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_export"
+            app:key="importPreferences"
+            app:title="@string/import_preferences"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_email"
+            app:key="sendPreferencesEmail"
+            app:title="@string/export_preferences_email"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:icon="@drawable/ic_undo"
+            app:key="reset_to_defaults"
+            app:title="@string/reset_to_defaults"/>
+    </PreferenceCategory>
+
     <Preference
+        app:allowDividerAbove="true"
         app:iconSpaceReserved="false"
         app:title="@string/titlePrivacyPolicy">
         <intent
