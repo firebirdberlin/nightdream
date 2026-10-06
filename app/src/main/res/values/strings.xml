@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="recommend">Recommend app</string>
     <string name="export_preferences">Export app information</string>
+    <string name="export_preferences_file">Export settings to file</string>
+    <string name="export_preferences_email">Send app info via email</string>
+    <string name="import_preferences">Import settings</string>
+    <string name="import_preferences_confirm">Do you want to import settings from this backup file?</string>
+    <string name="import_preferences_success">Settings imported successfully.</string>
+    <string name="import_preferences_failed">Failed to import settings.</string>
+    <string name="import_preferences_requires_pro">Importing settings requires Pro or Actions.</string>
     <string name="rate">Rate this app</string>
     <string name="rate_summary">We would like to know if you like our app</string>
     <string name="remaining">rem.</string>

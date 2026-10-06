@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">Я хочу порекомендовать Вам это приложение-часы</string>
     <string name="recommend">Рекомендовать приложение</string>
     <string name="export_preferences">Экспорт информации о приложении</string>
+    <string name="export_preferences_file">Экспорт настроек в файл</string>
+    <string name="export_preferences_email">Отправить информацию о приложении по e-mail</string>
+    <string name="import_preferences">Импорт настроек</string>
+    <string name="import_preferences_confirm">Импортировать настройки из этого файла резервной копии?</string>
+    <string name="import_preferences_success">Настройки успешно импортированы.</string>
+    <string name="import_preferences_failed">Не удалось импортировать настройки.</string>
+    <string name="import_preferences_requires_pro">Для импорта настроек требуется Pro или Actions.</string>
     <string name="rate">Оценить это приложение</string>
     <string name="rate_summary">Мы хотели бы знать, нравится ли вам наше приложение</string>
     <string name="remaining">осталось</string>

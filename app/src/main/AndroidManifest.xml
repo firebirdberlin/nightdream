@@ -143,7 +143,27 @@
             android:excludeFromRecents="true"
             android:exported="true"
             android:parentActivityName=".NightDreamActivity"
-            android:theme="@style/PreferencesTheme" />
+            android:theme="@style/PreferencesTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="*/*" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.ndb" />
+                <data android:pathPattern=".*\\.nightdream" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/x-nightdream-backup" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".AlarmsPreferenceActivity"
             android:configChanges="orientation|keyboard|screenSize"

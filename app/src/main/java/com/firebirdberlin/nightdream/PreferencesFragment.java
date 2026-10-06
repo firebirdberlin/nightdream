@@ -75,6 +75,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rarepebble.colorpicker.ColorPreference;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Vector;
 
 import de.firebirdberlin.preference.InlineSeekBarPreference;
@@ -316,6 +319,28 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 pickBackgroundImages.launch(new String[]{"image/*"});
+            });
+
+    private final ActivityResultLauncher<Intent> exportFileLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    Uri uri = result.getData().getData();
+                    ExportPreferences export = new ExportPreferences(getActivity());
+                    export.exportToFile(uri);
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> importFileLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    Uri uri = result.getData().getData();
+                    ImportPreferences importPrefs = new ImportPreferences(getActivity());
+                    importPrefs.executeImport(uri, () -> {
+                        if (getActivity() != null) {
+                            getActivity().recreate();
+                        }
+                    });
+                }
             });
 
 
@@ -758,8 +783,40 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         Preference exportPreferences = findPreference("exportPreferences");
         if (exportPreferences != null) {
             exportPreferences.setOnPreferenceClickListener(preference -> {
+                String date = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault()).format(new Date());
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/x-nightdream-backup");
+                intent.putExtra(Intent.EXTRA_TITLE, String.format("nightdream_backup_%s.ndb", date));
+                exportFileLauncher.launch(intent);
+                return true;
+            });
+        }
+
+        Preference sendPreferencesEmail = findPreference("sendPreferencesEmail");
+        if (sendPreferencesEmail != null) {
+            sendPreferencesEmail.setOnPreferenceClickListener(preference -> {
                 ExportPreferences export = new ExportPreferences(getActivity());
-                export.executeExport();
+                export.sendViaEmail();
+                return true;
+            });
+        }
+
+        Preference importPreferences = findPreference("importPreferences");
+        if (importPreferences != null) {
+            importPreferences.setOnPreferenceClickListener(preference -> {
+                ImportPreferences importPrefs = new ImportPreferences(getActivity());
+                if (!importPrefs.canImport()) {
+                    PreferencesActivity activity = ((PreferencesActivity) mContext);
+                    if (activity != null) {
+                        activity.showSubscriptionDialog();
+                    }
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                    importFileLauncher.launch(intent);
+                }
                 return true;
             });
         }
