@@ -45,6 +45,7 @@ public class PreferencesActivity extends BillingHelperActivity
     public static final String TAG = "PreferencesActivity";
     private static final String ROOT_KEY = "rootKey";
     private static final String KEY_TITLE = "title";
+    private static final String KEY_LAUNCHED_EXTERNALLY = "launched_externally";
     private static final String FRAGMENT_TAG_1 = "f1"; // For master/single pane fragment
     private static final String FRAGMENT_TAG_2 = "f2"; // For detail pane fragment in landscape
 
@@ -53,6 +54,7 @@ public class PreferencesActivity extends BillingHelperActivity
     String rootKey = "";
     private OnBackPressedCallback onBackPressedCallback;
     private CharSequence currentTitle;
+    private boolean wasLaunchedExternally = false;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PreferencesActivity.class);
@@ -107,6 +109,7 @@ public class PreferencesActivity extends BillingHelperActivity
         if (savedInstanceState == null) {
             Log.d(TAG, "onCreate: savedInstanceState is null. Initial setup.");
             // Activity is creating for the first time, not rotating
+            wasLaunchedExternally = Intent.ACTION_VIEW.equals(getIntent().getAction());
             currentTitle = getString(R.string.preferences);
             setupInitialFragments(); // Sets up the master fragment
 
@@ -123,6 +126,7 @@ public class PreferencesActivity extends BillingHelperActivity
             // Activity is being recreated (e.g., rotation)
             rootKey = savedInstanceState.getString(ROOT_KEY, "");
             currentTitle = savedInstanceState.getCharSequence(KEY_TITLE);
+            wasLaunchedExternally = savedInstanceState.getBoolean(KEY_LAUNCHED_EXTERNALLY, false);
             Log.d(TAG, "onCreate: Restored rootKey = " + rootKey + ", currentTitle = " + currentTitle);
 
             FragmentManager fm = getSupportFragmentManager();
@@ -201,6 +205,9 @@ public class PreferencesActivity extends BillingHelperActivity
         Uri data = intent.getData();
 
         if (Intent.ACTION_VIEW.equals(action) && data != null) {
+            intent.setAction(null);
+            intent.setData(null);
+
             ImportPreferences importPrefs = new ImportPreferences(this);
             if (!importPrefs.canImport()) {
                 showSubscriptionDialog();
@@ -398,11 +405,22 @@ public class PreferencesActivity extends BillingHelperActivity
     }
 
     @Override
+    public void finish() {
+        if (wasLaunchedExternally) {
+            Intent intent = new Intent(this, NightDreamActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }
+        super.finish();
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         Log.d(TAG, "onSaveInstanceState()");
         savedInstanceState.putString(ROOT_KEY, rootKey);
         savedInstanceState.putCharSequence(KEY_TITLE, currentTitle);
+        savedInstanceState.putBoolean(KEY_LAUNCHED_EXTERNALLY, wasLaunchedExternally);
     }
 
     @Override
