@@ -80,13 +80,13 @@ public class ExportPreferences {
                 if (outputStream != null) {
                     outputStream.write(rootJson.toString(2).getBytes(StandardCharsets.UTF_8));
                     outputStream.close();
-                    mainExecutor.execute(() -> Toast.makeText(context, R.string.import_preferences_success, Toast.LENGTH_LONG).show());
+                    mainExecutor.execute(() -> Toast.makeText(context, "Settings exported successfully", Toast.LENGTH_LONG).show());
                 } else {
                     throw new IOException("Failed to open output stream for destination Uri.");
                 }
             } catch (Exception ex) {
                 Log.e(TAG, "Export to file failed", ex);
-                mainExecutor.execute(() -> Toast.makeText(context, R.string.import_preferences_failed, Toast.LENGTH_LONG).show());
+                mainExecutor.execute(() -> Toast.makeText(context, "Failed to export settings", Toast.LENGTH_LONG).show());
             }
         });
     }
