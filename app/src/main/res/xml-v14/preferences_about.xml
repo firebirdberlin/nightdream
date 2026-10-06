@@ -49,7 +49,7 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:icon="@drawable/ic_export"
+            app:icon="@drawable/ic_import"
             app:key="importPreferences"
             app:title="@string/import_preferences"/>
 
