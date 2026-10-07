@@ -28,7 +28,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 public class LightSensorEventListener implements SensorEventListener {
 
@@ -36,7 +36,7 @@ public class LightSensorEventListener implements SensorEventListener {
     final private Handler handler = new Handler();
     private boolean isRegistered = false;
     private boolean pending = false;
-    private final EventBus bus;
+
     private float ambient_mean = 0.f;
     private float last_value = -1.f;
     private Sensor lightSensor = null;
@@ -51,7 +51,7 @@ public class LightSensorEventListener implements SensorEventListener {
         } else {
             Log.e(TAG, "SensorManager is null");
         }
-        bus = EventBus.getDefault();
+
     }
 
     @Override
@@ -124,7 +124,7 @@ public class LightSensorEventListener implements SensorEventListener {
             pending = false;
             if (count == 0) return;
             ambient_mean /= (float) count;
-            bus.post(new OnNewLightSensorValue(ambient_mean, count));
+            AppEventBus.publish(new OnNewLightSensorValue(ambient_mean, count));
             count = 0;
             ambient_mean = 0.f;
         }
@@ -133,7 +133,7 @@ public class LightSensorEventListener implements SensorEventListener {
     private final Runnable sensorTimeout = new Runnable() {
         @Override
         public void run() {
-            bus.post(new OnLightSensorValueTimeout(last_value));
+            AppEventBus.publish(new OnLightSensorValueTimeout(last_value));
         }
     };
 }

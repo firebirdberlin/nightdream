@@ -32,11 +32,6 @@
 # keep classes with @Keep annotation
 -keep @androidx.annotation.Keep class * { *; }
 
--keepclassmembers class * {
-    @org.greenrobot.eventbus.Subscribe <methods>;
-}
--keep enum org.greenrobot.eventbus.ThreadMode { *; }
--keep class com.firebirdberlin.nightdream.MyEventBusIndex { *; }
 
 -dontwarn android.app.PictureInPictureUiState
 

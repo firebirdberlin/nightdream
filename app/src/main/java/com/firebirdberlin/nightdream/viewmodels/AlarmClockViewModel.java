@@ -35,7 +35,7 @@ public class AlarmClockViewModel extends ViewModel {
     private static final MutableLiveData<SimpleTime> nextAlarm = new MutableLiveData<>();
 
     public static void setNextAlarm(SimpleTime time) {
-        nextAlarm.setValue(time);
+        nextAlarm.postValue(time);
     }
 
     private MutableLiveData<SimpleTime> getNextAlarm() {

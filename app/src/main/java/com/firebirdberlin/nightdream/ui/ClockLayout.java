@@ -500,38 +500,45 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
             if (showChevron) {
                 // Progress Pride chevron
-                float chevronWidth = textHeight * 0.35f;
-                float stripeWidth = chevronWidth / Settings.PROGRESS_PRIDE_COLORS.length;
+                float whiteApexX = textHeight / 2.0f;
+                float stripeWidth = textHeight / 10.0f;
 
                 Path chevron = new Path();
 
-                for (int i = Settings.PROGRESS_PRIDE_COLORS.length - 1; i >= 0; i--) {
-                    float x = stripeWidth * i;
-                    float w = stripeWidth;
-
+                for (int i = 0; i < Settings.PROGRESS_PRIDE_COLORS.length; i++) {
                     shaderPaint.setColor(
                             Settings.PROGRESS_PRIDE_COLORS[i]
                     );
 
                     chevron.reset();
 
-                    chevron.moveTo(x, 0);
-                    chevron.lineTo(x + w, 0);
+                    if (i == 0) {
+                        // White triangle at the left edge
+                        chevron.moveTo(0, 0);
+                        chevron.lineTo(
+                                whiteApexX,
+                                textHeight / 2.0f
+                        );
+                        chevron.lineTo(0, textHeight);
+                        chevron.close();
+                    } else {
+                        // V-shaped chevron stripes (Pink, Light Blue, Brown, Black)
+                        float x = (i - 1) * stripeWidth;
 
-                    chevron.lineTo(
-                            chevronWidth + x + w,
-                            textHeight / 2.0f
-                    );
-
-                    chevron.lineTo(x + w, textHeight);
-                    chevron.lineTo(x, textHeight);
-
-                    chevron.lineTo(
-                            chevronWidth + x,
-                            textHeight / 2.0f
-                    );
-
-                    chevron.close();
+                        chevron.moveTo(x, 0);
+                        chevron.lineTo(x + stripeWidth, 0);
+                        chevron.lineTo(
+                                whiteApexX + x + stripeWidth,
+                                textHeight / 2.0f
+                        );
+                        chevron.lineTo(x + stripeWidth, textHeight);
+                        chevron.lineTo(x, textHeight);
+                        chevron.lineTo(
+                                whiteApexX + x,
+                                textHeight / 2.0f
+                        );
+                        chevron.close();
+                    }
 
                     canvas.drawPath(chevron, shaderPaint);
                 }

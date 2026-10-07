@@ -48,7 +48,7 @@ import com.firebirdberlin.nightdream.viewmodels.AlarmClockViewModel;
 import com.firebirdberlin.nightdream.widget.AlarmClockWidgetProvider;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,8 +105,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     }
 
     public static void cancelAlarm(Context context) {
-        EventBus bus = EventBus.getDefault();
-        bus.removeStickyEvent(OnAlarmStarted.class);
+        AppEventBus.removeStickyEvent(OnAlarmStarted.class);
 
         PendingIntent pI = WakeUpReceiver.getPendingIntent(context, null, 0);
         AlarmManager am = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
@@ -160,9 +159,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
     private void deleteCurrentlyActiveAlarm(Context context, Intent intent) {
         Bundle extras = (intent != null) ? intent.getExtras() : null;
         SimpleTime next = (extras != null) ? new SimpleTime(extras) : null;
-        EventBus bus = EventBus.getDefault();
-
-        bus.postSticky(new OnAlarmStarted(next));
+        AppEventBus.postSticky(new OnAlarmStarted(next));
         SqliteIntentService.deleteAlarm(context, next);
     }
 

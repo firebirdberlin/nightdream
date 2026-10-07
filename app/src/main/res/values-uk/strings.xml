@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">Рекомендую тобі цей нічний годинник.</string>
     <string name="recommend">Рекомендувати додаток</string>
     <string name="export_preferences">Експортувати інформацію про програму</string>
+    <string name="export_preferences_file">Експортувати налаштування у файл</string>
+    <string name="export_preferences_email">Надіслати інформацію про програму електронною поштою</string>
+    <string name="import_preferences">Імпортувати налаштування</string>
+    <string name="import_preferences_confirm">Бажаєте імпортувати налаштування з цього файлу резервної копії?</string>
+    <string name="import_preferences_success">Налаштування успішно імпортовано.</string>
+    <string name="import_preferences_failed">Не вдалося імпортувати налаштування.</string>
+    <string name="import_preferences_requires_pro">Імпорт налаштувань вимагає Pro або Actions.</string>
     <string name="rate">Оцінити програму</string>
     <string name="rate_summary">Ми хотіли б знати, чи подобається вам наша програма</string>
     <string name="remaining">залиш.</string>

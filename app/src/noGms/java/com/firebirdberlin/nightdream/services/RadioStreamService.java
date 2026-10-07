@@ -70,10 +70,16 @@ import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
-import org.greenrobot.eventbus.Subscribe;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 public class RadioStreamService extends Service implements HttpStatusCheckTask.AsyncResponse,
         PlaylistRequestTask.AsyncResponse {
+
+    private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (event instanceof OnSleepTimeChanged) {
+            onEvent((OnSleepTimeChanged) event);
+        }
+    };
 
     protected static final int NOTIFY_ID = 1337;
     private static final String TAG = "RadioStreamService";
@@ -233,7 +239,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         vibrator = new VibrationHandler(this);
 
         startForeground();
-        Utility.registerEventBus(this);
+        AppEventBus.addListener(eventListener);
     }
 
     private void startForeground() {
@@ -465,7 +471,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy() called.");
-        Utility.unregisterEventBus(this);
+        AppEventBus.removeListener(eventListener);
         sleepTimeInMillis = 0L;
 
         if (statusCheckTask != null) {
@@ -799,7 +805,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
     }
 
-    @Subscribe
     public void onEvent(OnSleepTimeChanged event) {
         sleepTimeInMillis = event.sleepTimeInMillis;
         initSleepTime();
