@@ -760,11 +760,11 @@ public class Settings {
     };
 
     public static final int[] PROGRESS_PRIDE_COLORS = {
-            0xFFF0F0F0, // white
+            0xFFFFFFFF, // white
             0xFFF09DBD, // pink
             0xFF72C8DD, // light blue
             0xFF704B32, // brown
-            0xFF252525  // dark gray
+            0xFF000000  // black
     };
 
     public int getTextureResId(int clockLayoutId) {
