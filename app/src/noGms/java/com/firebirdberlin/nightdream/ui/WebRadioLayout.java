@@ -257,6 +257,9 @@ public class WebRadioLayout extends RelativeLayout {
                 }
                 preferredCountry = s.countryCode;
             }
+            if (preferredCountry == null || preferredCountry.isEmpty()) {
+                preferredCountry = java.util.Locale.getDefault().getCountry();
+            }
         }
         RadioStreamDialogFragment.showDialog(
                 (AppCompatActivity) getContext(), stationIndex, station, preferredCountry, listener
