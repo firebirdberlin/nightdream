@@ -30,12 +30,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.core.widget.ContentLoadingProgressBar;
@@ -68,7 +68,7 @@ public class RadioStreamDialog
     private final ArrayList<RadioStreamDialogItem> stationItem = new ArrayList<>();
     private EditText queryText = null;
     private ListView stationListView;
-    private Spinner countrySpinner;
+    private AutoCompleteTextView countryAutoComplete;
     private TextView noResultsText;
     private TextView noDataConnectionText;
     private ContentLoadingProgressBar spinner;
@@ -97,7 +97,13 @@ public class RadioStreamDialog
         queryText = (v.findViewById(R.id.query_string));
         spinner = v.findViewById(R.id.progress_bar);
         stationListView = v.findViewById(R.id.radio_stream_list_view);
-        countrySpinner = v.findViewById(R.id.countrySpinner);
+        countryAutoComplete = v.findViewById(R.id.countryAutoComplete);
+        countryAutoComplete.setOnClickListener(v1 -> countryAutoComplete.showDropDown());
+        countryAutoComplete.setOnFocusChangeListener((v1, hasFocus) -> {
+            if (hasFocus) {
+                countryAutoComplete.showDropDown();
+            }
+        });
         noResultsText = v.findViewById(R.id.no_results);
         noResultsText.setVisibility(View.GONE);
         Button directInputHintText = v.findViewById(R.id.direct_input_hint);
@@ -136,19 +142,35 @@ public class RadioStreamDialog
 
         });
 
-        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-
-        });
         searchButton = (v.findViewById(R.id.start_search));
         searchButton.setEnabled(false);
         searchButton.setOnClickListener(v12 -> startSearch());
+
+        ImageButton clearCountryButton = v.findViewById(R.id.clear_country_button);
+        clearCountryButton.setVisibility(countryAutoComplete.getText().length() > 0 ? View.VISIBLE : View.GONE);
+        clearCountryButton.setOnClickListener(v1 -> {
+            countryAutoComplete.setText("");
+            countryAutoComplete.showDropDown();
+        });
+
+        countryAutoComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                clearCountryButton.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        ImageButton clearQueryButton = v.findViewById(R.id.clear_query_button);
+        clearQueryButton.setVisibility(queryText.getText().length() > 0 ? View.VISIBLE : View.GONE);
+        clearQueryButton.setOnClickListener(v1 -> queryText.setText(""));
 
         queryText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -163,7 +185,8 @@ public class RadioStreamDialog
 
             @Override
             public void afterTextChanged(Editable s) {
-                searchButton.setEnabled(queryText.getText().length() > 0);
+                searchButton.setEnabled(s.length() > 0);
+                clearQueryButton.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -230,22 +253,18 @@ public class RadioStreamDialog
     }
 
     private String getSelectedCountry() {
-
-        // first item means "all countries", no country restriction
-        if (countrySpinner.getSelectedItemPosition() == 0) {
+        if (countryAutoComplete == null) {
             return null;
         }
-
-        String item = (String) countrySpinner.getSelectedItem();
-        if (item != null && !item.isEmpty()) {
-            return item;
-        } else {
+        String item = countryAutoComplete.getText().toString().trim();
+        if (item.isEmpty()) {
             return null;
         }
+        return item;
     }
 
     private String getCountryCodeForCountry(String country) {
-        if (country == null || country.isEmpty()) {
+        if (country == null || country.isEmpty() || countryNameToCodeMap == null) {
             return null;
         }
         return countryNameToCodeMap.get(country);
@@ -271,40 +290,36 @@ public class RadioStreamDialog
     }
 
     private boolean isCountrySelected() {
-        return (countrySpinner != null && countrySpinner.getSelectedItemPosition() > 0);
+        if (countryAutoComplete == null) {
+            return false;
+        }
+        String country = getSelectedCountry();
+        return country != null && getCountryCodeForCountry(country) != null;
     }
 
     private void updateCountrySpinner(List<Country> countries, String preferredCountry) {
 
         List<String> countryList = new ArrayList<>();
+        String selectedCountryName = null;
 
-        // first add empty entry meaning "any country"
-        countryList.add("");
-
-        int selectedItemIndex = -1;
-
-        // now add all countries (including preferred country, so they are duplicates, but no problem)
         for (Country c : countries) {
             countryList.add(c.name);
-            // if radio station is already configured selects its country as default
-            if (c.countryCode != null && c.countryCode.equals(preferredCountry)) {
-                //  c.name.equals(persistedRadioStation.countryCode)) {
-                selectedItemIndex = countryList.size() - 1;
+            if (c.countryCode != null && c.countryCode.equalsIgnoreCase(preferredCountry)) {
+                selectedCountryName = c.name;
             }
         }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(
-                context, android.R.layout.simple_spinner_item, countryList
+                context, android.R.layout.simple_dropdown_item_1line, countryList
         );
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        countrySpinner.setAdapter(dataAdapter);
-        if (selectedItemIndex > -1) {
-            countrySpinner.setSelection(selectedItemIndex);
+        countryAutoComplete.setAdapter(dataAdapter);
+        if (selectedCountryName != null) {
+            countryAutoComplete.setText(selectedCountryName, false);
         }
         GradientDrawable border = new GradientDrawable();
         border.setColor(Color.parseColor("#F2212121"));
-        countrySpinner.setPopupBackgroundDrawable(border);
+        countryAutoComplete.setDropDownBackgroundDrawable(border);
     }
 
     public void clearLastSearchResult() {

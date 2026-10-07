@@ -11,34 +11,74 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/country"
             android:textColor="@color/primary_text_color_selector"/>
-        <Spinner
-            android:id="@+id/countrySpinner"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"/>
+            android:layout_marginStart="5dp"
+            android:layout_weight="1">
+            <AutoCompleteTextView
+                android:id="@+id/countryAutoComplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/clear_country_button"
+                android:completionThreshold="1"
+                android:hint="@string/country"
+                android:imeOptions="actionNext"
+                android:inputType="text" />
+            <ImageButton
+                android:id="@+id/clear_country_button"
+                style="@android:style/Widget.DeviceDefault.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@android:string/cancel"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:visibility="gone" />
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/query_string"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/radio_stream_query_hint"
-            android:imeOptions="actionSearch"
-            android:inputType="text" />
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/query_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/clear_query_button"
+                android:hint="@string/radio_stream_query_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/clear_query_button"
+                style="@android:style/Widget.DeviceDefault.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@android:string/cancel"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/start_search"
