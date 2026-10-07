@@ -63,7 +63,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
 import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
-import com.firebirdberlin.nightdream.events.OnNewAmbientNoiseValue;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -100,7 +100,7 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 
-import org.greenrobot.eventbus.Subscribe;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -117,6 +117,13 @@ public class NightDreamActivity extends BillingHelperActivity
         SleepTimerDialogFragment.SleepTimerDialogListener {
     private static final int PENDING_INTENT_STOP_APP = 1;
     private static final int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
+    private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (event instanceof OnNewLightSensorValue) {
+            onEvent((OnNewLightSensorValue) event);
+        } else if (event instanceof OnLightSensorValueTimeout) {
+            onEvent((OnLightSensorValueTimeout) event);
+        }
+    };
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
@@ -414,7 +421,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onStart()");
 
         setExcludeFromRecents();
-        Utility.registerEventBus(this);
+        AppEventBus.addListener(eventListener);
         nightDreamUI.onStart();
 
         lightSensor = Utility.getLightSensor(this);
@@ -667,7 +674,7 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.i(TAG, "onStop()");
 
         nightDreamUI.onStop();
-        Utility.unregisterEventBus(this);
+        AppEventBus.removeListener(eventListener);
     }
 
     @Override
@@ -921,30 +928,19 @@ public class NightDreamActivity extends BillingHelperActivity
         return false;
     }
 
-    @Subscribe
     public void onEvent(OnNewLightSensorValue event) {
         Log.i(TAG, event.value + " lux, n=" + event.n);
         last_ambient = event.value;
         handleBrightnessChange();
     }
 
-    @Subscribe
     public void onEvent(OnLightSensorValueTimeout event) {
         last_ambient = (event.value >= 0.f) ? event.value : mySettings.minIlluminance;
         Log.i(TAG, "Static for 15s: " + last_ambient + " lux.");
         handleBrightnessChange();
     }
 
-    @Subscribe
-    public void onEvent(OnNewAmbientNoiseValue event) {
-        double ambient_noise_threshold = (mode == 0) ?
-                mySettings.NOISE_AMPLITUDE_WAKE : mySettings.NOISE_AMPLITUDE_SLEEP;
-        if (event.value > ambient_noise_threshold) {
-            lastNoiseTime = System.currentTimeMillis();
-            Log.i(TAG, "Sound is noisy! " + event.value);
-        }
-        handleBrightnessChange();
-    }
+
 
     private void handleBrightnessChange() {
         if (mySettings.nightModeActivationMode == Settings.NIGHT_MODE_ACTIVATION_AUTOMATIC) {

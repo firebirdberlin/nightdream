@@ -135,9 +135,10 @@ public class ClockLayoutPreviewPreference extends Preference {
         int clockLayoutId = settings.getClockLayoutID(true);
         setupPurchaseHint(settings);
         boolean showButtons = showResetButton(settings);
+        boolean isPurchased = purchased(PurchaseManager.ITEM_ACTIONS);
         resetButton.setVisibility(showButtons ? View.VISIBLE : View.GONE);
-        exportButton.setVisibility(showButtons ? View.VISIBLE : View.GONE);
-        importButton.setVisibility(showButtons ? View.VISIBLE : View.GONE);
+        exportButton.setVisibility(showButtons && isPurchased ? View.VISIBLE : View.GONE);
+        importButton.setVisibility(showButtons && isPurchased ? View.VISIBLE : View.GONE);
         updateClockLayout(clockLayoutId, settings);
         setupPreferencesFragment(clockLayoutId, settings);
         setupResetButton(clockLayoutId);
@@ -301,6 +302,10 @@ public class ClockLayoutPreviewPreference extends Preference {
     private void setupExportButton(final int clockLayoutID) {
         exportButton.setOnClickListener(v -> {
             Context context = getContext();
+            if (!purchased(PurchaseManager.ITEM_ACTIONS)) {
+                Toast.makeText(context, R.string.import_preferences_requires_pro, Toast.LENGTH_SHORT).show();
+                return;
+            }
             AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
             AnalogClockConfig config = new AnalogClockConfig(context, preset);
             String json = config.toJson();
@@ -331,6 +336,11 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     private void setupImportButton() {
         importButton.setOnClickListener(v -> {
+            Context context = getContext();
+            if (!purchased(PurchaseManager.ITEM_ACTIONS)) {
+                Toast.makeText(context, R.string.import_preferences_requires_pro, Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (importAction != null) {
                 importAction.run();
             } else {
@@ -341,6 +351,10 @@ public class ClockLayoutPreviewPreference extends Preference {
 
     public void importConfigFromUri(Uri uri) {
         Context ctx = getContext();
+        if (!purchased(PurchaseManager.ITEM_ACTIONS)) {
+            Toast.makeText(ctx, R.string.import_preferences_requires_pro, Toast.LENGTH_SHORT).show();
+            return;
+        }
         try {
             InputStream inputStream = ctx.getContentResolver().openInputStream(uri);
             if (inputStream != null) {

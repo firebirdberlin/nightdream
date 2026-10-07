@@ -332,6 +332,13 @@ OR
     <string name="recommend_app_subject">Chciałem żeby zarekomendowaleś night clock app</string>
     <string name="recommend">Zarekomenduj</string>
     <string name="export_preferences">Eksportuj informacje o aplikacji</string>
+    <string name="export_preferences_file">Eksportuj ustawienia do pliku</string>
+    <string name="export_preferences_email">Wyślij informacje o aplikacji e-mailem</string>
+    <string name="import_preferences">Importuj ustawienia</string>
+    <string name="import_preferences_confirm">Czy chcesz zaimportować ustawienia z tego pliku kopii zapasowej?</string>
+    <string name="import_preferences_success">Ustawienia pomyślnie zaimportowane.</string>
+    <string name="import_preferences_failed">Nie udało się zaimportować ustawień.</string>
+    <string name="import_preferences_requires_pro">Importowanie ustawień wymaga Pro lub Actions.</string>
     <string name="rate">Oceń tę aplikację</string>
     <string name="rate_summary">Chcielibyśmy wiedzieć, czy podoba Ci się nasza aplikacja</string>
     <string name="remaining">Pozostało</string>

@@ -57,11 +57,7 @@ android {
         ]
         vectorDrawables.useSupportLibrary = true
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [ eventBusIndex : 'com.firebirdberlin.nightdream.MyEventBusIndex' ]
-            }
-        }
+
     }
 
     buildTypes {
@@ -132,8 +128,7 @@ dependencies {
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.1.0'
     implementation 'com.kizitonwose.calendar:view:2.10.1'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
-    implementation 'org.greenrobot:eventbus:3.3.1'
-    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0'
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
 
     // Full flavor specific dependencies

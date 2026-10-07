@@ -60,15 +60,15 @@ public class RSSViewModel extends ViewModel {
     }
 
     public static void setTickerSpeed(Long speed) {
-        tickerAnimationSpeed.setValue(speed);
+        tickerAnimationSpeed.postValue(speed);
     }
 
     public static void setIntervalMode(int interval) {
-        intervalMode.setValue(interval);
+        intervalMode.postValue(interval);
     }
 
     public static void setTextSize(float interval) {
-        textSize.setValue(interval);
+        textSize.postValue(interval);
     }
 
     public static void refreshDataFromWorker(Context context) {

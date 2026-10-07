@@ -171,6 +171,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
     <string name="export_preferences">Informationen zur App exportieren</string>
+    <string name="export_preferences_file">Einstellungen in Datei exportieren</string>
+    <string name="export_preferences_email">App-Informationen per E-Mail senden</string>
+    <string name="import_preferences">Einstellungen importieren</string>
+    <string name="import_preferences_confirm">Möchten Sie die Einstellungen aus dieser Sicherungsdatei importieren?</string>
+    <string name="import_preferences_success">Einstellungen erfolgreich importiert.</string>
+    <string name="import_preferences_failed">Fehler beim Importieren der Einstellungen.</string>
+    <string name="import_preferences_requires_pro">Das Importieren von Einstellungen erfordert Pro oder Actions.</string>
     <string name="flashlight">Taschenlampe</string>
     <string name="forecast">Vorhersage</string>
     <string name="frequently_asked_questions">Häufig gestellte Fragen</string>

@@ -37,7 +37,7 @@ import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 
-import org.greenrobot.eventbus.EventBus;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.util.Calendar;
 
@@ -130,8 +130,7 @@ public class AlarmHandlerService extends BroadcastReceiver {
     }
 
     public static SimpleTime getCurrentlyActiveAlarm() {
-        EventBus bus = EventBus.getDefault();
-        OnAlarmStarted event = bus.getStickyEvent(OnAlarmStarted.class);
+        OnAlarmStarted event = AppEventBus.getStickyEvent(OnAlarmStarted.class);
         return (event != null) ? event.entry : null;
     }
 

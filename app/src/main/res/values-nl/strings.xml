@@ -333,6 +333,13 @@ OR
     <string name="recommend_app_subject">Ik wil je deze nachtklok-app aanbevelen.</string>
     <string name="recommend">App aanbevelen</string>
     <string name="export_preferences">Exporteer voorkeuren</string>
+    <string name="export_preferences_file">Instellingen naar bestand exporteren</string>
+    <string name="export_preferences_email">App-informatie via e-mail verzenden</string>
+    <string name="import_preferences">Instellingen importeren</string>
+    <string name="import_preferences_confirm">Wilt u instellingen uit dit reservekopiebestand importeren?</string>
+    <string name="import_preferences_success">Instellingen met succes geïmporteerd.</string>
+    <string name="import_preferences_failed">Instellingen importeren mislukt.</string>
+    <string name="import_preferences_requires_pro">Instellingen importeren vereist Pro of Actions.</string>
     <string name="rate">Beoordeel deze app</string>
     <string name="rate_summary">We willen graag weten of je onze app leuk vindt</string>
     <string name="remaining">rest.</string>

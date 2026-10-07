@@ -287,6 +287,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_subject">Jag rekommenderar den här nattklocksappen till dig.</string>
     <string name="recommend">Rekommendera app</string>
     <string name="export_preferences">Exportera appens inställningar</string>
+    <string name="export_preferences_file">Exportera inställningar till fil</string>
+    <string name="export_preferences_email">Skicka appinformation via e-post</string>
+    <string name="import_preferences">Importera inställningar</string>
+    <string name="import_preferences_confirm">Vill du importera inställningar från den här säkerhetskopian?</string>
+    <string name="import_preferences_success">Inställningarna har importerats.</string>
+    <string name="import_preferences_failed">Det gick inte att importera inställningarna.</string>
+    <string name="import_preferences_requires_pro">Import av inställningar kräver Pro eller Actions.</string>
     <string name="rate">Ge omdöme om denna app</string>
     <string name="rate_summary">vi vill veta om du gillar vår app</string>
     <string name="remaining">återstående.</string>
