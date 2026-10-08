@@ -205,6 +205,9 @@ public class BottomPanelLayout extends FrameLayout {
         removeAllViews();
         clearViews();
         addView(view);
+        if (self != null) {
+            self.setAlpha(1.0f);
+        }
         invalidate();
     }
 
@@ -222,6 +225,9 @@ public class BottomPanelLayout extends FrameLayout {
         handler.removeCallbacks(hidePanel);
         isVisible = true;
         setClickable(!locked);
+        if (self != null) {
+            self.setAlpha(1.0f);
+        }
         if (tickerLayout != null) {
             tickerLayout.resume();
         }

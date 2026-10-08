@@ -123,6 +123,7 @@ public class NightDreamUI {
     private final RelativeLayout parentLayout;
     private final ExifView exifView;
     private final ImageViewExtended[] backgroundImages = new ImageViewExtended[2];
+    private final View backgroundScrim;
     private final ImageView menuIcon;
     private final ImageView nightModeIcon;
     private final ImageView radioIcon;
@@ -416,7 +417,7 @@ public class NightDreamUI {
                         float dx = -2.f * (distanceX / size.x);
                         float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
                         value += dx;
-                        value = to_range(value, -0.6f, 1.f);
+                        value = to_range(value, -0.9f, 1.f);
 
                         setAlpha(brightnessProgress, 1.f, 0);
 
@@ -461,6 +462,7 @@ public class NightDreamUI {
 
         backgroundImages[0] = rootView.findViewById(R.id.background_view);
         backgroundImages[1] = rootView.findViewById(R.id.background_view2);
+        backgroundScrim = rootView.findViewById(R.id.background_scrim);
         activeBackgroundImage = 1;
 
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
@@ -1417,49 +1419,28 @@ public class NightDreamUI {
             }
         }
 
-        float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
+        float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.001f);
         v = to_range(v, minBrightness, 1.f);
-        int backgroundMode = settings.getBackgroundMode();
-        if (
-                backgroundMode == Settings.BACKGROUND_IMAGE
-                        || backgroundMode == Settings.BACKGROUND_SLIDESHOW
-        ) {
-            v = to_range(v, 0.5f, 1.f);
-        }
 
         brightness = getValidBrightnessValue(brightness);
         setBrightness(brightness);
 
-        //if ( showcaseView == null && !AlarmHandlerService.alarmIsRunning()) {
-        long now = System.currentTimeMillis();
-        if (!AlarmHandlerService.alarmIsRunning() || now > lastTouchTime + 1000) {
-            setAlpha(clockLayout, v, millis);
-        }
-
-        if (bottomPanelLayout.isClickable()) {
-            setAlpha(bottomPanelLayout, v, millis);
-            v = to_range(v, 0.6f, 1.f);
-            setAlpha(menuIcon, v, millis);
-            setAlpha(unlockHint, v, millis);
-        }
-
-        if (batteryViewShallBeVisible()) {
-            v = to_range(v, 0.6f, 1.f);
-            setAlpha(batteryIconView, v, millis);
-        } else {
+        if (!batteryViewShallBeVisible()) {
             hideBatteryView(millis);
         }
 
         if (mode == 0 && !controlsVisible) {
             setAlpha(notificationStatusBar, 0.0f, millis);
-        } else {
-            // increase minimum alpha value for the notification bar
-            v = to_range(v, 0.6f, 1.f);
-            setAlpha(notificationStatusBar, v, millis);
         }
 
         if (light_value + 0.2f < settings.minIlluminance) {
             settings.setMinIlluminance(light_value + 0.2f);
+        }
+
+        // Dim down the entire screen uniformly using the top-level scrim
+        if (backgroundScrim != null) {
+            float scrimAlpha = to_range(1.0f - v, 0.0f, 0.98f);
+            setAlpha(backgroundScrim, scrimAlpha, millis);
         }
     }
 
@@ -1472,7 +1453,7 @@ public class NightDreamUI {
     private float getMinAllowedBrightness() {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore a minimum value must be set to preserve the visibility of the clock.
-        float minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
+        float minBrightness = Math.max(settings.nightModeBrightness, 0.001f);
         if (settings.autoBrightness) {
             minBrightness = Math.min(minBrightness, 0.1f);
         }
@@ -1717,7 +1698,7 @@ public class NightDreamUI {
                         float dx = 2.0f * (deltaX / size.x);
                         float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
                         value += dx;
-                        value = to_range(value, -0.6f, 1.f);
+                        value = to_range(value, -0.9f, 1.f);
 
                         removeCallbacks(hideBrightnessLevel);
                         removeCallbacks(hideBrightnessView);
