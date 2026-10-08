@@ -29,6 +29,7 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -88,6 +89,12 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView.setSingleLine();
 
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        alarmTimeTextView.setShadowLayer(8f, 2f, 2f, Color.BLACK);
+        alarmTimeTextView.setPadding(32, 16, 32, 16);
+        GradientDrawable badgeBg = new GradientDrawable();
+        badgeBg.setColor(Color.parseColor("#99000000")); // Semi-transparent dark backing
+        badgeBg.setCornerRadius(24f);
+        alarmTimeTextView.setBackground(badgeBg);
         alarmTimeTextView.setHapticFeedbackEnabled(true);
         alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
             final Handler handler = new Handler();
