@@ -183,4 +183,13 @@
             android:textSize="26sp"/>
     </LinearLayout>
 
+    <View
+        android:id="@+id/background_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:alpha="0.0"
+        android:clickable="false"
+        android:focusable="false" />
+
 </FrameLayout>
