@@ -444,10 +444,9 @@ public class AlarmClockView extends View {
         // Draw Engraved Pill Background
         RectF pillRect = new RectF(sliderLeft + 10, centerY - handleRadius, sliderLeft + actualSliderWidth - 10, centerY + handleRadius);
 
-        // Dark inner fill
+        // Dark inner fill with semi-transparent dark rounded pill background (#99000000)
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.BLACK);
-        paint.setAlpha(25);
+        paint.setColor(Color.parseColor("#99000000"));
         canvas.drawRoundRect(pillRect, handleRadius, handleRadius, paint);
 
         // Engraved effect (subtle top shadow and bottom highlight)
@@ -467,18 +466,20 @@ public class AlarmClockView extends View {
         canvas.drawRoundRect(pillRect, handleRadius, handleRadius, paint);
         canvas.restore();
 
-        // Draw labels
+        // Draw labels with soft text drop-shadow
         paint.setStyle(Paint.Style.FILL);
-        paint.setAlpha(180);
+        paint.setAlpha(255);
         paint.setTextSize(h / 3.2f);
         paint.setTextAlign(Paint.Align.LEFT);
         float labelY = centerY + (paint.getTextSize() / 3.0f); // Center vertically
         float trackPadding = sliderLeft + handleRadius + 20;
 
         paint.setColor(Color.WHITE);
+        paint.setShadowLayer(8f, 2f, 2f, Color.BLACK);
         canvas.drawText(ctx.getString(R.string.action_snooze), trackPadding, labelY, paint);
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(ctx.getString(R.string.action_stop), sliderLeft + actualSliderWidth - handleRadius - 20, labelY, paint);
+        paint.clearShadowLayer();
 
         // Draw Handle
         float handleX = isSliding ? sliderHandleX : centerX;
