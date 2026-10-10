@@ -25,6 +25,7 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.nightdream.models.ThemePreset;
 
@@ -42,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ThemePresetManager {
-    private static final String TAG = "ThemePresetManager";
+    private static final String TAG = ThemePresetManager.class.getSimpleName();
     public static final String PREF_ACTIVE_PRESET = "activeThemePreset";
 
     private static final Map<String, ThemePreset> PRESETS = new HashMap<>();
@@ -271,7 +272,7 @@ public class ThemePresetManager {
         editor.putBoolean("theme_animation_enabled", true);
         editor.putString("theme_particle_effect", String.valueOf(preset.particleEffect));
 
-        if (preset.fontPath != null && !preset.fontPath.isEmpty()) {
+        if (!Utility.isEmpty(preset.fontPath)) {
             editor.putString("font", preset.fontPath);
         } else {
             editor.remove("font");
@@ -419,7 +420,7 @@ public class ThemePresetManager {
     }
 
     private static void restorePreferencesFromJson(Context context, String jsonString) {
-        if (jsonString == null || jsonString.isEmpty()) return;
+        if (Utility.isEmpty(jsonString)) return;
         try {
             JSONObject rootJson = new JSONObject(jsonString);
             if (!rootJson.has("preferences")) return;

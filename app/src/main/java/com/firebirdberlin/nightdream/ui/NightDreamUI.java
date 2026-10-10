@@ -46,9 +46,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
-import android.os.BatteryManager;
 import android.os.Looper;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -59,7 +59,6 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -84,11 +83,12 @@ import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.models.ThemePreset;
-import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.models.ThemePreset;
+import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 import com.firebirdberlin.nightdream.ui.background.PulsingStarsOverlayView;
@@ -96,8 +96,6 @@ import com.firebirdberlin.nightdream.ui.background.SnowOverlayView;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
-
-import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -117,7 +115,7 @@ public class NightDreamUI {
     };
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    private static final String TAG = "NightDreamUI";
+    private static final String TAG = NightDreamUI.class.getSimpleName();
     final private Handler handler = new Handler();
     final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
@@ -204,7 +202,7 @@ public class NightDreamUI {
     private final float LIGHT_VALUE_DAYLIGHT = 10000.0f;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
+        public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
             Log.d(TAG, "onScaleBegin");
             return true;
         }
@@ -218,7 +216,7 @@ public class NightDreamUI {
         }
 
         @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
+        public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
             Log.d(TAG, "onScaleEnd");
             float s = clockLayout.getAbsScaleFactor();
             Configuration config = getConfiguration();
@@ -226,7 +224,6 @@ public class NightDreamUI {
         }
     };
     private int screen_alpha_animation_duration = 3000;
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
     private boolean controlsVisible = false;
@@ -330,8 +327,7 @@ public class NightDreamUI {
         mContext = context;
         settings = new Settings(context);
 
-        // right to left swipe
-        // left to right swipe
+        // right to left swipe and opposite
         GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
             final int[] rect = new int[2];
             final int[] size = new int[2];
@@ -475,6 +471,7 @@ public class NightDreamUI {
         starsOverlayView = rootView.findViewById(R.id.stars_overlay_view);
         activeBackgroundImage = 1;
 
+        UserInteractionObserver bottomPanelUserInteractionObserver = this::resetAlarmClockHideDelay;
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
 
@@ -625,7 +622,7 @@ public class NightDreamUI {
             setColor();
             checkAndClearWeatherEntry();
 
-            //Update Notifications in Clocklayout
+            //Update Notifications in ClockLayout
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "list");
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
@@ -760,10 +757,10 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_IMAGE: {
                     Log.d(TAG, "BACKGROUND_IMAGE");
                     loadBackgroundImageFiles();
-                    if (files == null || files.isEmpty()) {
+                    if (Utility.isEmpty(files)) {
                         String activePresetId = ThemePresetManager.getActivePresetId(mContext);
                         ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
-                        if (preset != null && preset.drawableResName != null && !preset.drawableResName.isEmpty()) {
+                        if (preset != null && !Utility.isEmpty(preset.drawableResName)) {
                             int resId = mContext.getResources().getIdentifier(preset.drawableResName, "drawable", mContext.getPackageName());
                             if (resId != 0) {
                                 setImageScale();
@@ -776,7 +773,7 @@ public class NightDreamUI {
                         }
                     }
 
-                    if (files != null && !files.isEmpty()) {
+                    if (!Utility.isEmpty(files)) {
                         setImageScale();
 
                         int other = (activeBackgroundImage + 1) % 2;
@@ -813,7 +810,7 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_SLIDESHOW:
                     Log.d(TAG, "BACKGROUND_SLIDESHOW");
                     loadBackgroundImageFiles();
-                    if (files != null && !files.isEmpty()) {
+                    if (!Utility.isEmpty(files)) {
                         preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
                         AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
                         runningTask.execute(preloadBackgroundImageFile);
@@ -1501,7 +1498,7 @@ public class NightDreamUI {
 
     private float getMinAllowedBrightness() {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
-        // Therefore a minimum value must be set to preserve the visibility of the clock.
+        // Therefore, a minimum value must be set to preserve the visibility of the clock.
         float minBrightness = Math.max(settings.nightModeBrightness, 0.001f);
         if (settings.autoBrightness) {
             minBrightness = Math.min(minBrightness, 0.1f);
@@ -1891,7 +1888,7 @@ public class NightDreamUI {
         }
         final Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+        if (!mContext.getPackageManager().queryIntentActivities(intent, 0).isEmpty()) {
             PendingIntent pIntent = Utility.getImmutableActivity(mContext, 0, intent);
 
             // build notification
@@ -1912,7 +1909,7 @@ public class NightDreamUI {
             notificationManager.notify(0, n);
 
         }
-        /* else handle your error case: the device has no way to handle market urls */
+        /* else handle your error case: the device has no way to handle market URLs */
 
     }
 
@@ -1964,7 +1961,7 @@ public class NightDreamUI {
                 return Graphics.sketch(bitmap);
             case 7:
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
-                    // blur has bin mirgrated away from renderscript
+                    // blur has been migrated away from renderscript
                     // older android versions no longer support blurring the image
                     return bitmap;
                 }
