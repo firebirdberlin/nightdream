@@ -48,7 +48,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
@@ -89,8 +88,6 @@ import androidx.core.view.WindowCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
-
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -101,11 +98,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -118,7 +115,7 @@ public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
     private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    private static String TAG = "NightDreamUtility";
+    private static final String TAG = "NightDreamUtility";
     int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
     private final Context mContext;
 
@@ -195,9 +192,7 @@ public class Utility {
     }
 
     static public PendingIntent getImmutableBroadcast(Context context, int requestCode, Intent intent, int flags) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        flags |= PendingIntent.FLAG_IMMUTABLE;
         return PendingIntent.getBroadcast(
                 context,
                 requestCode,
@@ -207,9 +202,7 @@ public class Utility {
     }
 
     static public PendingIntent getImmutableService(Context context, int requestCode, Intent intent, int flags) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        flags |= PendingIntent.FLAG_IMMUTABLE;
         return PendingIntent.getService(
                 context,
                 requestCode,
@@ -220,10 +213,7 @@ public class Utility {
 
     static public PendingIntent getImmutableBroadcast(Context context, int requestCode, Intent intent) {
         //https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability
-        int flag = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            flag = PendingIntent.FLAG_IMMUTABLE;
-        }
+        int flag = PendingIntent.FLAG_IMMUTABLE;
 
         return PendingIntent.getBroadcast(
                 context,
@@ -235,10 +225,7 @@ public class Utility {
 
     static public PendingIntent getImmutableActivity(Context context, int requestCode, Intent intent) {
         //https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability
-        int flag = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            flag = PendingIntent.FLAG_IMMUTABLE;
-        }
+        int flag = PendingIntent.FLAG_IMMUTABLE;
 
         return PendingIntent.getActivity(
                 context,
@@ -260,15 +247,10 @@ public class Utility {
             return "";
         }
         String localPattern;
-        if (Build.VERSION.SDK_INT >= 18) {
-            if (is24HourFormat(context)) {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
-            } else {
-                localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
-            }
+        if (is24HourFormat(context)) {
+            localPattern = getBestDateTimePattern(Locale.getDefault(), "EE HH:mm");
         } else {
-            DateFormat formatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-            localPattern = ((SimpleDateFormat) formatter).toLocalizedPattern();
+            localPattern = getBestDateTimePattern(Locale.getDefault(), "EE hh:mm a");
         }
 
         SimpleDateFormat hourDateFormat = new SimpleDateFormat(localPattern, Locale.getDefault());
@@ -430,9 +412,7 @@ public class Utility {
         if (capabilities != null) {
             if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 return true;
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                return true;
-            }
+            } else return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
         }
         return false;
     }
@@ -545,6 +525,14 @@ public class Utility {
 
     public static boolean isEmpty(String string) {
         return (string == null || string.isEmpty());
+    }
+
+    public static boolean isEmpty(Collection<?> collection) {
+        return (collection == null || collection.isEmpty());
+    }
+
+    public static boolean isEmpty(Map<?, ?> map) {
+        return (map == null || map.isEmpty());
     }
 
     public static boolean contains(String haystack, String needle) {
@@ -672,11 +660,7 @@ public class Utility {
 
     public static int getSmallestDisplaySize(Context context) {
         Point size = getDisplaySize(context);
-        if (size.x < size.y) {
-            return size.x;
-        } else {
-            return size.y;
-        }
+        return Math.min(size.x, size.y);
     }
 
     public static void logToFile(Context context, String logFileName, String text) {

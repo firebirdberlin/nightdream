@@ -69,11 +69,11 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
             return;
         }
 
-        if (newVersion >= 3 && oldVersion < 3) {
+        if (oldVersion < 3) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_ALARM_SOUND_URI + " text");
             // migrate the current setting of the alarm tone uri
             Settings settings = new Settings(this.context);
-            if (settings.AlarmToneUri != null && !settings.AlarmToneUri.isEmpty()) {
+            if (!Utility.isEmpty(settings.AlarmToneUri)) {
                 db.execSQL("UPDATE " + AlarmEntry.TABLE_NAME + " SET " +
                         AlarmEntry.COLUMN_ALARM_SOUND_URI + " = '" + settings.AlarmToneUri + "';");
             }
@@ -148,7 +148,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         if (json != null) {
             try {
                 return RadioStation.fromJson(json);
-            } catch (JSONException e) {}
+            } catch (JSONException ignored) {}
         }
         return null;
     }
