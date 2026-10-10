@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:key="themes"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="Theme Presets">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Active Theme">
+
+        <ListPreference
+            app:defaultValue="none"
+            app:entries="@array/themeEntries"
+            app:entryValues="@array/themeValues"
+            app:iconSpaceReserved="false"
+            app:key="activeThemePreset"
+            app:title="Active Theme"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="reset_theme_defaults"
+            app:summary="Reset customizations for the active theme to default."
+            app:title="Reset to defaults" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Animations">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="theme_animation_enabled"
+            app:summary="Show falling snow or golden stars animation."
+            app:title="Enable Particle Overlays" />
+
+        <ListPreference
+            app:defaultValue="1"
+            app:dependency="theme_animation_enabled"
+            app:entries="@array/particleEffectEntries"
+            app:entryValues="@array/particleEffectValues"
+            app:iconSpaceReserved="false"
+            app:key="theme_particle_effect"
+            app:title="Particle Effect"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:dependency="theme_animation_enabled"
+            app:iconSpaceReserved="false"
+            app:key="theme_animation_only_charging"
+            app:summary="Pauses animations when running on battery to conserve power."
+            app:title="Only Animate When Charging" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

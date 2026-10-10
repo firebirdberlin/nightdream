@@ -61,7 +61,10 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebirdberlin.nightdream.BillingHelperActivity;
 import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
+import com.firebirdberlin.nightdream.models.ThemePreset;
+import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ImageCopyService;
@@ -223,6 +226,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             if (settings.getShowCalendarEvents(ClockLayout.LAYOUT_ID_CALENDAR) && !settings.hasPermission(Manifest.permission.READ_CALENDAR)) {
                                 readCalendarPermission.launch(Manifest.permission.READ_CALENDAR);
                             }
+                            break;
+                        case "activeThemePreset":
+                            setupThemeControls();
+                            break;
                     }
 
                     Log.i(TAG, "prefChangedListener called. Key: " + key);
@@ -295,7 +302,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     Log.d("PhotoPicker", "Selected URI: " + uri);
                     File directory = new File(mContext.getFilesDir() + "/backgroundImages");
                     Utility.prepareDirectory(directory);
-                    Utility.copyToDirectory(mContext, uri, directory, "image_0.jpg");
+                    String activeThemeId = ThemePresetManager.getActivePresetId(mContext);
+                    String prefix = ThemePreset.PRESET_NONE.equals(activeThemeId) ? "" : "theme_" + activeThemeId + "_";
+                    Utility.copyToDirectory(mContext, uri, directory, prefix + "image_0.jpg");
                 } else {
                     Log.d("PhotoPicker", "No media selected");
                 }
@@ -574,6 +583,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     break;
                 case "help":
                     setPreferencesFromResource(R.xml.preferences_help_feedback, rootKey);
+                    break;
+                case "themes":
+                    setPreferencesFromResource(R.xml.preferences_themes, rootKey);
+                    setupThemeControls();
                     break;
                 case "about":
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
@@ -1377,6 +1390,59 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 activity.showSubscriptionDialog();
 
             }
+        }
+    }
+
+    private void setupThemeControls() {
+        ListPreference activeThemePref = findPreference("activeThemePreset");
+        Preference resetPref = findPreference("reset_theme_defaults");
+        SwitchPreferenceCompat animEnabledPref = findPreference("theme_animation_enabled");
+        ListPreference particleEffectPref = findPreference("theme_particle_effect");
+        SwitchPreferenceCompat animOnlyChargingPref = findPreference("theme_animation_only_charging");
+
+        SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
+        if (animEnabledPref != null) {
+            animEnabledPref.setChecked(prefs.getBoolean("theme_animation_enabled", false));
+        }
+        if (particleEffectPref != null) {
+            particleEffectPref.setValue(prefs.getString("theme_particle_effect", "0"));
+        }
+        if (animOnlyChargingPref != null) {
+            animOnlyChargingPref.setChecked(prefs.getBoolean("theme_animation_only_charging", false));
+        }
+
+        boolean isEligible = ThemePresetManager.isUserEligible(mContext);
+
+        if (activeThemePref != null) {
+            String activeId = ThemePresetManager.getActivePresetId(mContext);
+            activeThemePref.setValue(activeId);
+            activeThemePref.setOnPreferenceChangeListener((preference, newValue) -> {
+                String newThemeId = (String) newValue;
+                if (!ThemePreset.PRESET_NONE.equals(newThemeId) && !isEligible) {
+                    if (getActivity() instanceof BillingHelperActivity) {
+                        ((BillingHelperActivity) getActivity()).showSubscriptionDialog();
+                    }
+                    return false;
+                }
+
+                ThemePresetManager.switchTheme(mContext, newThemeId);
+                setupThemeControls();
+                if (getView() != null) {
+                    Snackbar.make(getView(), "Theme updated!", Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+            });
+        }
+
+        if (resetPref != null) {
+            resetPref.setOnPreferenceClickListener(p -> {
+                ThemePresetManager.resetActiveThemeDefaults(mContext);
+                setupThemeControls();
+                if (getView() != null) {
+                    Snackbar.make(getView(), "Theme reset to defaults", Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+            });
         }
     }
 }
