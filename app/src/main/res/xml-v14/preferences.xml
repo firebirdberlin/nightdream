@@ -22,6 +22,12 @@
         app:title="@string/handle_power"/>
 
     <Preference
+        app:icon="@drawable/ic_background"
+        app:key="themes"
+        app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+        app:title="Theme Presets"/>
+
+    <Preference
         app:icon="@drawable/ic_clock_icon"
         app:key="clock"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"

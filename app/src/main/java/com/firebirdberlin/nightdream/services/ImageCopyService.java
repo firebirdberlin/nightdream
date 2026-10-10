@@ -19,6 +19,8 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
+import com.firebirdberlin.nightdream.models.ThemePreset;
+import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 
 import java.io.File;
 import java.util.List;
@@ -119,7 +121,9 @@ public class ImageCopyService extends Service {
                 for (Uri uri : uris) {
                     imageProcessed += 1;
                     CopyImagesDataHolder.getInstance().updateImageProcessed(imageProcessed);
-                    String name = "image_" + imageProcessed + ".jpg";
+                    String activeThemeId = ThemePresetManager.getActivePresetId(getApplicationContext());
+                    String prefix = (activeThemeId == null || ThemePreset.PRESET_NONE.equals(activeThemeId)) ? "" : "theme_" + activeThemeId + "_";
+                    String name = prefix + "image_" + imageProcessed + ".jpg";
                     Utility.copyToDirectory(getApplicationContext(), uri, directory, name);
 
                     Log.d(TAG, "Copy Image: " + imageProcessed + " / " + urisSize);

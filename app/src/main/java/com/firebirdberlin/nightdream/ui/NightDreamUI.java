@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -47,6 +48,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.BatteryManager;
 import android.os.Looper;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -82,11 +84,15 @@ import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.models.ThemePreset;
+import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
+import com.firebirdberlin.nightdream.ui.background.PulsingStarsOverlayView;
+import com.firebirdberlin.nightdream.ui.background.SnowOverlayView;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
@@ -123,6 +129,8 @@ public class NightDreamUI {
     private final RelativeLayout parentLayout;
     private final ExifView exifView;
     private final ImageViewExtended[] backgroundImages = new ImageViewExtended[2];
+    private final SnowOverlayView snowOverlayView;
+    private final PulsingStarsOverlayView starsOverlayView;
     private final View backgroundScrim;
     private final ImageView menuIcon;
     private final ImageView nightModeIcon;
@@ -463,6 +471,8 @@ public class NightDreamUI {
         backgroundImages[0] = rootView.findViewById(R.id.background_view);
         backgroundImages[1] = rootView.findViewById(R.id.background_view2);
         backgroundScrim = rootView.findViewById(R.id.background_scrim);
+        snowOverlayView = rootView.findViewById(R.id.snow_overlay_view);
+        starsOverlayView = rootView.findViewById(R.id.stars_overlay_view);
         activeBackgroundImage = 1;
 
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
@@ -701,6 +711,8 @@ public class NightDreamUI {
     private void initBackground() {
         if (mode == 0) return;
 
+        updateThemeOverlays();
+
         preloadBackgroundImage = null;
         preloadBackgroundImageFile = null;
         exifLayoutContainer.setVisibility(View.GONE);
@@ -748,6 +760,22 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_IMAGE: {
                     Log.d(TAG, "BACKGROUND_IMAGE");
                     loadBackgroundImageFiles();
+                    if (files == null || files.isEmpty()) {
+                        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+                        ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
+                        if (preset != null && preset.drawableResName != null && !preset.drawableResName.isEmpty()) {
+                            int resId = mContext.getResources().getIdentifier(preset.drawableResName, "drawable", mContext.getPackageName());
+                            if (resId != 0) {
+                                setImageScale();
+                                int other = (activeBackgroundImage + 1) % 2;
+                                backgroundImages[activeBackgroundImage].setImageResource(resId);
+                                backgroundImages[activeBackgroundImage].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                backgroundImages[other].setImageDrawable(colorBlack);
+                                break;
+                            }
+                        }
+                    }
+
                     if (files != null && !files.isEmpty()) {
                         setImageScale();
 
@@ -1124,12 +1152,31 @@ public class NightDreamUI {
     private void loadBackgroundImageFiles() {
         File path = new File(mContext.getFilesDir() + "/backgroundImages");
         Log.d(TAG, "path:" + path);
+        ArrayList<File> allFiles;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            files = Utility.listFiles(path, null);
+            allFiles = Utility.listFiles(path, null);
         } else {
-            files = Utility.listFiles(path, ".png");
-            files.addAll(Utility.listFiles(path, ".jpg"));
-            files.addAll(Utility.listFiles(path, ".jpeg"));
+            allFiles = Utility.listFiles(path, ".png");
+            allFiles.addAll(Utility.listFiles(path, ".jpg"));
+            allFiles.addAll(Utility.listFiles(path, ".jpeg"));
+        }
+
+        files = new ArrayList<>();
+        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+        if (allFiles != null) {
+            for (File file : allFiles) {
+                String name = file.getName();
+                boolean isPrefixed = name.startsWith("theme_");
+                if (ThemePreset.PRESET_NONE.equals(activePresetId)) {
+                    if (!isPrefixed) {
+                        files.add(file);
+                    }
+                } else {
+                    if (isPrefixed && name.startsWith("theme_" + activePresetId + "_")) {
+                        files.add(file);
+                    }
+                }
+            }
         }
 
         Log.d(TAG, "success:" + files.toString());
@@ -1224,6 +1271,8 @@ public class NightDreamUI {
     public void reconfigure() {
         hideSystemUI();
         bottomPanelLayout.invalidate();
+        updateThemeOverlays();
+        setColor();
     }
 
     public void onPause() {
@@ -1580,11 +1629,69 @@ public class NightDreamUI {
     public void onPowerConnected() {
         setupScreenAnimation();
         showAlarmClock();
+        updateThemeOverlays();
     }
 
     public void onPowerDisconnected() {
         setupScreenAnimation();
         showAlarmClock();
+        updateThemeOverlays();
+    }
+
+    public void updateThemeOverlays() {
+        if (snowOverlayView == null || starsOverlayView == null) return;
+
+        SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
+        boolean animEnabled = prefs.getBoolean("theme_animation_enabled", true);
+        int particleEffect = 1;
+        try {
+            String particleEffectStr = prefs.getString("theme_particle_effect", "1");
+            particleEffect = Integer.parseInt(particleEffectStr);
+        } catch (ClassCastException e1) {
+            try {
+                particleEffect = prefs.getInt("theme_particle_effect", 1);
+            } catch (Exception e2) {
+                particleEffect = 1;
+            }
+        } catch (Exception e) {
+            particleEffect = 1;
+        }
+
+        boolean snowEnabled = animEnabled && (particleEffect == 1);
+        boolean starsEnabled = animEnabled && (particleEffect == 2);
+        boolean animOnlyCharging = prefs.getBoolean("theme_animation_only_charging", false);
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = mContext.registerReceiver(null, filter);
+        boolean isCharging = false;
+        if (batteryStatus != null) {
+            int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                         status == BatteryManager.BATTERY_STATUS_FULL;
+        }
+
+        snowOverlayView.setSnowEnabled(snowEnabled);
+
+        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+        ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
+        if (preset != null) {
+            starsOverlayView.setMaxYRatio(preset.starMaxYRatio > 0 ? preset.starMaxYRatio : 0.75f);
+            starsOverlayView.setStarSizeScale(preset.starSizeScale > 0 ? preset.starSizeScale : 1.0f);
+            starsOverlayView.setNumStars(preset.starCount > 0 ? preset.starCount : 25);
+        } else {
+            starsOverlayView.setMaxYRatio(0.75f);
+            starsOverlayView.setStarSizeScale(1.0f);
+            starsOverlayView.setNumStars(25);
+        }
+
+        starsOverlayView.setStarsEnabled(starsEnabled);
+
+        boolean pauseForBattery = animOnlyCharging && !isCharging;
+        snowOverlayView.setPausedByPowerSetting(pauseForBattery);
+        starsOverlayView.setPausedByPowerSetting(pauseForBattery);
+
+        if (snowEnabled) snowOverlayView.invalidate();
+        if (starsEnabled) starsOverlayView.invalidate();
     }
 
     private void blinkIfLocked() {

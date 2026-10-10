@@ -491,4 +491,30 @@ OR
     <string name="unit_months">Months</string>
     <string name="unit_year">Year</string>
     <string name="unit_years">Years</string>
+
+    <string-array name="particleEffectEntries">
+        <item>None</item>
+        <item>Falling Snow</item>
+        <item>Golden Stars</item>
+    </string-array>
+    <string-array name="particleEffectValues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="themeEntries">
+        <item>Standard</item>
+        <item>Halloween Analog</item>
+        <item>Halloween Digital</item>
+        <item>Christmas Analog</item>
+        <item>Christmas Digital</item>
+    </string-array>
+    <string-array name="themeValues">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
 </resources>

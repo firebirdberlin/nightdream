@@ -36,6 +36,18 @@
                 android:contentDescription="Background Image"
                 tools:ignore="HardcodedText"/>
 
+            <com.firebirdberlin.nightdream.ui.background.PulsingStarsOverlayView
+                android:id="@+id/stars_overlay_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <com.firebirdberlin.nightdream.ui.background.SnowOverlayView
+                android:id="@+id/snow_overlay_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
         </FrameLayout>
 
         <FrameLayout
