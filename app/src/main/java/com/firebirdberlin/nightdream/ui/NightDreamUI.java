@@ -899,6 +899,7 @@ public class NightDreamUI {
         clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
+        clockLayout.showMediaStyleLayout(Settings.showMediaStyleNotification(mContext));
         Configuration config = getConfiguration();
         WeatherEntry weatherEntry = settings.getWeatherEntry();
         clockLayout.update(weatherEntry, false);
