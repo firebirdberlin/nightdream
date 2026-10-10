@@ -679,8 +679,15 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
 
     public void showPollenExposure(boolean on) {
+        Log.d(TAG, "showPollenExposure(" + on + ");");
         if (pollenLayout != null) {
             pollenLayout.setVisibility((on) ? View.VISIBLE : GONE);
+        }
+    }
+    public void showMediaStyleLayout(boolean on) {
+        Log.d(TAG, "showMediaStyleLayout(" + on + ");");
+        if (mediaStyleLayout != null) {
+            mediaStyleLayout.setVisibility((on) ? View.VISIBLE : GONE);
         }
     }
 
