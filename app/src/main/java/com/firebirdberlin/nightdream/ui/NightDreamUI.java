@@ -87,6 +87,7 @@ import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.models.ParticleEffect;
 import com.firebirdberlin.nightdream.models.ThemePreset;
 import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
@@ -1641,22 +1642,10 @@ public class NightDreamUI {
 
         SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
         boolean animEnabled = prefs.getBoolean("theme_animation_enabled", true);
-        int particleEffect = 1;
-        try {
-            String particleEffectStr = prefs.getString("theme_particle_effect", "1");
-            particleEffect = Integer.parseInt(particleEffectStr);
-        } catch (ClassCastException e1) {
-            try {
-                particleEffect = prefs.getInt("theme_particle_effect", 1);
-            } catch (Exception e2) {
-                particleEffect = 1;
-            }
-        } catch (Exception e) {
-            particleEffect = 1;
-        }
+        ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.SNOW);
 
-        boolean snowEnabled = animEnabled && (particleEffect == 1);
-        boolean starsEnabled = animEnabled && (particleEffect == 2);
+        boolean snowEnabled = animEnabled && (particleEffect == ParticleEffect.SNOW);
+        boolean starsEnabled = animEnabled && (particleEffect == ParticleEffect.GOLDEN_STARS);
         boolean animOnlyCharging = prefs.getBoolean("theme_animation_only_charging", false);
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);

@@ -63,6 +63,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.BillingHelperActivity;
 import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
+import com.firebirdberlin.nightdream.models.ParticleEffect;
 import com.firebirdberlin.nightdream.models.ThemePreset;
 import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
@@ -1405,7 +1406,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             animEnabledPref.setChecked(prefs.getBoolean("theme_animation_enabled", false));
         }
         if (particleEffectPref != null) {
-            particleEffectPref.setValue(prefs.getString("theme_particle_effect", "0"));
+            ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.NONE);
+            particleEffectPref.setValue(String.valueOf(particleEffect.getValue()));
         }
         if (animOnlyChargingPref != null) {
             animOnlyChargingPref.setChecked(prefs.getBoolean("theme_animation_only_charging", false));
