@@ -83,20 +83,22 @@ public class BrowseNotificationApps extends RecyclerView.Adapter<NotificationApp
     }
 
     @Override
-    public void onBindViewHolder(NotificationAppsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NotificationAppsViewHolder holder, int position) {
 
         // get notification in notificationlist via position
         final NotificationApp app = this.notificationAppList.get(position);
+        if (app == null) return;
 
         // Bind data to viewholder
-        holder.item.setTag(app.getPackageName());
+        final String pkgName = app.getPackageName();
+        holder.item.setTag(pkgName);
 
         //get application packageName
         final PackageManager pm = context.getApplicationContext().getPackageManager();
         ApplicationInfo ai;
 
         try {
-            ai = pm.getApplicationInfo(app.getPackageName(), 0);
+            ai = pm.getApplicationInfo(pkgName, 0);
             if (ai != null) {
                 holder.appicon.setImageDrawable(pm.getApplicationIcon(ai));
             }

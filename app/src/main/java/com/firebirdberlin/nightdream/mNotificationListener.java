@@ -304,8 +304,11 @@ public class mNotificationListener extends NotificationListenerService {
                 String applicationName = i.getStringExtra("applicationName");
                 boolean addApp = true;
                 for (NotificationApp app : notificationApps) {
-                    addApp = addApp && !app.getName().equals(applicationName);
-                    if (app.getName().equals(applicationName)) {
+                    if (app == null) continue;
+                    String appName = app.getName();
+                    if (appName == null) appName = "";
+                    addApp = addApp && !appName.equals(applicationName);
+                    if (appName.equals(applicationName)) {
                         if (app.getPostTimestamp() < sbn.getPostTime()) {
                             app.setPostTimestamp(sbn.getPostTime());
                         }

@@ -118,6 +118,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     if (notificationApps == null) break;
                     for (Iterator<NotificationApp> iterator = notificationApps.iterator(); iterator.hasNext(); ) {
                         NotificationApp app = iterator.next();
+                        if (app == null) continue;
                         Log.d(TAG, app.getName() + ": " + app.getIconId());
                         Drawable icon = getIcon(context, app);
                         addNotificationIcon(context, container, icon);
