@@ -173,4 +173,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">čas predpovede počasia</string>
     <string name="weather_city_id_title">Identifikácia mesta</string>
     <string name="weather_info_title">Informácie</string>
+
+    <string name="themes">Témy</string>
+    <string name="active_theme">Aktívna téma</string>
+    <string name="reset_theme_defaults_summary">Obnoviť prispôsobenia pre aktívnu tému na predvolené.</string>
+    <string name="animations">Animácie</string>
+    <string name="enable_particle_overlays">Povolit časticové prekrytia</string>
+    <string name="theme_animation_enabled_summary">Zobraziť animáciu padajúceho snehu alebo zlatých hviezd.</string>
+    <string name="particle_effect">Časticový efekt</string>
+    <string name="only_animate_when_charging">Animovať iba pri nabíjaní</string>
+    <string name="theme_animation_only_charging_summary">Pozastaví animácie pri prevádzke na batériu pre úsporu energie.</string>
+    <string name="theme_updated">Téma aktualizovaná!</string>
+    <string name="theme_reset_to_defaults">Téma obnovená na predvolené</string>
 </resources>

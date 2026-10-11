@@ -205,4 +205,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">Hava durumu hesaplama zamanı</string>
     <string name="weather_city_id_title">Bölge ara</string>
     <string name="weather_info_title">Bilgi</string>
+
+    <string name="themes">Temalar</string>
+    <string name="active_theme">Etkin tema</string>
+    <string name="reset_theme_defaults_summary">Etkin tema için özelleştirmeleri varsayılana sıfırla.</string>
+    <string name="animations">Animasyonlar</string>
+    <string name="enable_particle_overlays">Parçacık Katmanlarını Etkinleştir</string>
+    <string name="theme_animation_enabled_summary">Düşen kar veya altın yıldızlar animasyonunu göster.</string>
+    <string name="particle_effect">Parçacık Efekti</string>
+    <string name="only_animate_when_charging">Yalnızca Şarj Ederken Animasyon Yap</string>
+    <string name="theme_animation_only_charging_summary">Güç tasarrufu için pilde çalışırken animasyonları duraklatır.</string>
+    <string name="theme_updated">Tema güncellendi!</string>
+    <string name="theme_reset_to_defaults">Tema varsayılanlara sıfırlandı</string>
 </resources>

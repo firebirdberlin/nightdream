@@ -152,4 +152,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">מזהה עיר</string>
     <string name="weather_info_title">מידע</string>
     <string name="weather">מזג אוויר</string>
+
+    <string name="themes">ערכות נושא</string>
+    <string name="active_theme">ערכת נושא פעילה</string>
+    <string name="reset_theme_defaults_summary">אפס התאמות אישיות עבור ערכת הנושא הפעילה לברירת המחדל.</string>
+    <string name="animations">אנימציות</string>
+    <string name="enable_particle_overlays">אפשר שכבות חלקיקים</string>
+    <string name="theme_animation_enabled_summary">הצג אנימציה של שלג יורד או כוכבים מוזהבים.</string>
+    <string name="particle_effect">אפקט חלקיקים</string>
+    <string name="only_animate_when_charging">הנפש רק בזמן טעינה</string>
+    <string name="theme_animation_only_charging_summary">משהה אנימציות בעת שימוש בסוללה כדי לחסוך בחשמל.</string>
+    <string name="theme_updated">ערכת הנושא עודכנה!</string>
+    <string name="theme_reset_to_defaults">ערכת הנושא אופסה לברירת המחדל</string>
 </resources>

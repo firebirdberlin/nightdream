@@ -486,4 +486,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="unit_months">Monate</string>
     <string name="unit_year">Jahr</string>
     <string name="unit_years">Jahre</string>
+
+    <string name="themes">Themen</string>
+    <string name="active_theme">Aktives Thema</string>
+    <string name="reset_theme_defaults_summary">Anpassungen für das aktive Thema auf Standard zurücksetzen.</string>
+    <string name="animations">Animationen</string>
+    <string name="enable_particle_overlays">Partikel-Overlays aktivieren</string>
+    <string name="theme_animation_enabled_summary">Animation für fallenden Schnee oder goldene Sterne anzeigen.</string>
+    <string name="particle_effect">Partikeleffekt</string>
+    <string name="only_animate_when_charging">Nur beim Laden animieren</string>
+    <string name="theme_animation_only_charging_summary">Pausiert Animationen im Akkubetrieb, um Energie zu sparen.</string>
+    <string name="theme_updated">Thema aktualisiert!</string>
+    <string name="theme_reset_to_defaults">Thema auf Standard zurückgesetzt</string>
 </resources>

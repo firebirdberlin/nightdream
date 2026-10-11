@@ -25,7 +25,7 @@
         app:icon="@drawable/ic_background"
         app:key="themes"
         app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-        app:title="Theme Presets"/>
+        app:title="@string/themes"/>
 
     <Preference
         app:icon="@drawable/ic_clock_icon"

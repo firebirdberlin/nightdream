@@ -487,4 +487,16 @@ OR
     <string name="unit_year">Rok</string>
     <string name="unit_years">Roky</string>
     <string name="remaining_alarm_time_end">&#160;</string>
+
+    <string name="themes">Témata</string>
+    <string name="active_theme">Aktivní téma</string>
+    <string name="reset_theme_defaults_summary">Obnovit přizpůsobení aktivního tématu na výchozí.</string>
+    <string name="animations">Animace</string>
+    <string name="enable_particle_overlays">Povolit částicové překryvy</string>
+    <string name="theme_animation_enabled_summary">Zobrazit animaci padajícího sněhu nebo zlatých hvězd.</string>
+    <string name="particle_effect">Částicový efekt</string>
+    <string name="only_animate_when_charging">Animovat pouze při nabíjení</string>
+    <string name="theme_animation_only_charging_summary">Pozastaví animace při provozu na baterii pro úsporu energie.</string>
+    <string name="theme_updated">Téma aktualizováno!</string>
+    <string name="theme_reset_to_defaults">Téma obnoveno na výchozí</string>
 </resources>

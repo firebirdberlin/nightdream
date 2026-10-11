@@ -488,4 +488,16 @@ OR
     <string name="unit_months">Maanden</string>
     <string name="unit_year">Jaar</string>
     <string name="unit_years">Jaren</string>
+
+    <string name="themes">Thema\'s</string>
+    <string name="active_theme">Actief thema</string>
+    <string name="reset_theme_defaults_summary">Aanpassungen voor het actieve thema herstellen naar standaard.</string>
+    <string name="animations">Animaties</string>
+    <string name="enable_particle_overlays">Deeltjes-overlays inschakelen</string>
+    <string name="theme_animation_enabled_summary">Animatie voor vallende sneeuw of gouden sterren tonen.</string>
+    <string name="particle_effect">Deeltjeseffect</string>
+    <string name="only_animate_when_charging">Alleen animeren tijdens opladen</string>
+    <string name="theme_animation_only_charging_summary">Pauzeert animaties op batterij om stroom te besparen.</string>
+    <string name="theme_updated">Thema bijgewerkt!</string>
+    <string name="theme_reset_to_defaults">Thema hersteld naar standaardwaarden</string>
 </resources>
