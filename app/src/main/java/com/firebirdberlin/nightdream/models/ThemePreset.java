@@ -18,6 +18,8 @@
 
 package com.firebirdberlin.nightdream.models;
 
+import androidx.annotation.NonNull;
+
 public class ThemePreset {
     public static final String PRESET_NONE = "none";
     public static final String PRESET_HALLOWEEN_ANALOG = "halloween_analog";
@@ -27,58 +29,58 @@ public class ThemePreset {
 
     public final String id;
     public final String title;
-    public final int clockLayoutType; // e.g. 0 = Digital, 1 = Analog
+    public final ClockLayoutType clockLayoutType;
     public final int primaryColor;
     public final int secondaryColor;
     public final int backgroundMode; // Settings.BACKGROUND_IMAGE
     public final String drawableResName; // "bg_christmas"
     public final int clockBackgroundTransparency;
     public final String fontPath;
-    public final int particleEffect; // 0 = None, 1 = Snow, 2 = Golden Stars
+    public final ParticleEffect particleEffect;
     public final float starMaxYRatio;
     public final float starSizeScale;
     public final int starCount;
 
-    public ThemePreset(String id,
-                       String title,
-                       int clockLayoutType,
+    public ThemePreset(@NonNull String id,
+                       @NonNull String title,
+                       @NonNull ClockLayoutType clockLayoutType,
                        int primaryColor,
                        int secondaryColor,
                        int backgroundMode,
                        String drawableResName,
                        int clockBackgroundTransparency,
                        String fontPath,
-                       int particleEffect) {
+                       @NonNull ParticleEffect particleEffect) {
         this(id, title, clockLayoutType, primaryColor, secondaryColor, backgroundMode,
              drawableResName, clockBackgroundTransparency, fontPath, particleEffect, 0.75f, 1.0f, 25);
     }
 
-    public ThemePreset(String id,
-                       String title,
-                       int clockLayoutType,
+    public ThemePreset(@NonNull String id,
+                       @NonNull String title,
+                       @NonNull ClockLayoutType clockLayoutType,
                        int primaryColor,
                        int secondaryColor,
                        int backgroundMode,
                        String drawableResName,
                        int clockBackgroundTransparency,
                        String fontPath,
-                       int particleEffect,
+                       @NonNull ParticleEffect particleEffect,
                        float starMaxYRatio,
                        float starSizeScale) {
         this(id, title, clockLayoutType, primaryColor, secondaryColor, backgroundMode,
              drawableResName, clockBackgroundTransparency, fontPath, particleEffect, starMaxYRatio, starSizeScale, 25);
     }
 
-    public ThemePreset(String id,
-                       String title,
-                       int clockLayoutType,
+    public ThemePreset(@NonNull String id,
+                       @NonNull String title,
+                       @NonNull ClockLayoutType clockLayoutType,
                        int primaryColor,
                        int secondaryColor,
                        int backgroundMode,
                        String drawableResName,
                        int clockBackgroundTransparency,
                        String fontPath,
-                       int particleEffect,
+                       @NonNull ParticleEffect particleEffect,
                        float starMaxYRatio,
                        float starSizeScale,
                        int starCount) {
@@ -95,5 +97,52 @@ public class ThemePreset {
         this.starMaxYRatio = starMaxYRatio;
         this.starSizeScale = starSizeScale;
         this.starCount = starCount;
+    }
+
+    public ThemePreset(@NonNull String id,
+                       @NonNull String title,
+                       int clockLayoutType,
+                       int primaryColor,
+                       int secondaryColor,
+                       int backgroundMode,
+                       String drawableResName,
+                       int clockBackgroundTransparency,
+                       String fontPath,
+                       int particleEffect) {
+        this(id, title, ClockLayoutType.fromValue(clockLayoutType), primaryColor, secondaryColor, backgroundMode,
+             drawableResName, clockBackgroundTransparency, fontPath, ParticleEffect.fromValue(particleEffect), 0.75f, 1.0f, 25);
+    }
+
+    public ThemePreset(@NonNull String id,
+                       @NonNull String title,
+                       int clockLayoutType,
+                       int primaryColor,
+                       int secondaryColor,
+                       int backgroundMode,
+                       String drawableResName,
+                       int clockBackgroundTransparency,
+                       String fontPath,
+                       int particleEffect,
+                       float starMaxYRatio,
+                       float starSizeScale) {
+        this(id, title, ClockLayoutType.fromValue(clockLayoutType), primaryColor, secondaryColor, backgroundMode,
+             drawableResName, clockBackgroundTransparency, fontPath, ParticleEffect.fromValue(particleEffect), starMaxYRatio, starSizeScale, 25);
+    }
+
+    public ThemePreset(@NonNull String id,
+                       @NonNull String title,
+                       int clockLayoutType,
+                       int primaryColor,
+                       int secondaryColor,
+                       int backgroundMode,
+                       String drawableResName,
+                       int clockBackgroundTransparency,
+                       String fontPath,
+                       int particleEffect,
+                       float starMaxYRatio,
+                       float starSizeScale,
+                       int starCount) {
+        this(id, title, ClockLayoutType.fromValue(clockLayoutType), primaryColor, secondaryColor, backgroundMode,
+             drawableResName, clockBackgroundTransparency, fontPath, ParticleEffect.fromValue(particleEffect), starMaxYRatio, starSizeScale, starCount);
     }
 }

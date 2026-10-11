@@ -1093,6 +1093,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? (int) getHeightOf(mediaStyleLayout) : 0;
         additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
 
+        Log.d(TAG, "mediaStyleLayout = " + getHeightOf(mediaStyleLayout));
         int width = mediaStyleLayout.getVisibility() == VISIBLE ? LayoutParams.WRAP_CONTENT : widgetSize;
         setSize(width, widgetSize + additionalHeight);
 

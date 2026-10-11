@@ -27,6 +27,8 @@ import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
+import com.firebirdberlin.nightdream.models.ClockLayoutType;
+import com.firebirdberlin.nightdream.models.ParticleEffect;
 import com.firebirdberlin.nightdream.models.ThemePreset;
 
 import org.json.JSONArray;
@@ -53,21 +55,21 @@ public class ThemePresetManager {
         int dayGold = Color.rgb(229, 193, 88);
         int daySecondary = Color.rgb(200, 168, 70);
 
-        // Jack-o'-lantern Orange: #FF7518, Ghost Violet: #BA68C8
+        // Jack-o'-lantern Orange: #FF7518, Ghost Violet: #C88000
         int halloweenPrimary = Color.rgb(255, 117, 24);
-        int halloweenSecondary = Color.rgb(186, 104, 200);
+        int halloweenSecondary = Color.rgb(200, 128, 0);
 
         ThemePreset halloweenAnalog = new ThemePreset(
                 ThemePreset.PRESET_HALLOWEEN_ANALOG,
                 "Halloween (Analog Clock)",
-                1, // Analog Clock
+                ClockLayoutType.ANALOG,
                 halloweenPrimary,
                 halloweenSecondary,
                 Settings.BACKGROUND_IMAGE,
                 "bg_halloween",
                 50, // translucent card
                 "",
-                2,     // Golden Stars
+                ParticleEffect.GOLDEN_STARS,
                 0.45f, // sky region (upper 45%)
                 1.4f,  // star size scale
                 50     // 50 stars
@@ -76,14 +78,14 @@ public class ThemePresetManager {
         ThemePreset halloweenDigital = new ThemePreset(
                 ThemePreset.PRESET_HALLOWEEN_DIGITAL,
                 "Halloween (Digital Clock)",
-                0, // Digital Clock
+                ClockLayoutType.DIGITAL,
                 halloweenPrimary,
                 halloweenSecondary,
                 Settings.BACKGROUND_IMAGE,
                 "bg_halloween",
                 50, // translucent card
                 "fonts/dancingscript_regular.ttf",
-                2,     // Golden Stars
+                ParticleEffect.GOLDEN_STARS,
                 0.45f, // sky region (upper 45%)
                 1.4f,  // star size scale
                 50     // 50 stars
@@ -92,27 +94,27 @@ public class ThemePresetManager {
         ThemePreset xmasAnalog = new ThemePreset(
                 ThemePreset.PRESET_CHRISTMAS_ANALOG,
                 "Christmas (Analog Clock)",
-                1, // Analog Clock
+                ClockLayoutType.ANALOG,
                 dayGold,
                 daySecondary,
                 Settings.BACKGROUND_IMAGE,
                 "bg_christmas",
                 50, // translucent card
                 "",
-                1  // Falling Snow
+                ParticleEffect.SNOW
         );
 
         ThemePreset xmasDigital = new ThemePreset(
                 ThemePreset.PRESET_CHRISTMAS_DIGITAL,
                 "Christmas (Digital Clock)",
-                0, // Digital Clock
+                ClockLayoutType.DIGITAL,
                 dayGold,
                 daySecondary,
                 Settings.BACKGROUND_IMAGE,
                 "bg_christmas",
                 50, // translucent card
                 "fonts/dancingscript_regular.ttf",
-                2  // Golden Stars
+                ParticleEffect.GOLDEN_STARS
         );
 
         PRESETS.put(halloweenAnalog.id, halloweenAnalog);
@@ -184,7 +186,7 @@ public class ThemePresetManager {
                 editor.remove("font");
                 editor.putInt("clockBackgroundTransparency", 100);
                 editor.putBoolean("theme_animation_enabled", false);
-                editor.putString("theme_particle_effect", "0");
+                editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.NONE.getValue()));
             }
             editor.putString(PREF_ACTIVE_PRESET, ThemePreset.PRESET_NONE);
         } else {
@@ -222,7 +224,7 @@ public class ThemePresetManager {
             editor.remove("font");
             editor.putInt("clockBackgroundTransparency", 100);
             editor.putBoolean("theme_animation_enabled", false);
-            editor.putString("theme_particle_effect", "0");
+            editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.NONE.getValue()));
         } else {
             ThemePreset preset = getPreset(activeThemeId);
             if (preset != null) {
@@ -265,12 +267,12 @@ public class ThemePresetManager {
             editor.putInt("secondaryColorNight", Color.rgb(120, 95, 42));
         }
         editor.putInt("secondaryColor", preset.secondaryColor);
-        editor.putString("clockLayout", String.valueOf(preset.clockLayoutType));
+        editor.putString("clockLayout", String.valueOf(preset.clockLayoutType.getValue()));
         editor.putString("backgroundMode", String.valueOf(preset.backgroundMode));
         editor.putInt("clockBackgroundTransparency", preset.clockBackgroundTransparency);
         editor.putBoolean("autoAccentColor", false);
         editor.putBoolean("theme_animation_enabled", true);
-        editor.putString("theme_particle_effect", String.valueOf(preset.particleEffect));
+        editor.putString("theme_particle_effect", String.valueOf(preset.particleEffect.getValue()));
 
         if (!Utility.isEmpty(preset.fontPath)) {
             editor.putString("font", preset.fontPath);
