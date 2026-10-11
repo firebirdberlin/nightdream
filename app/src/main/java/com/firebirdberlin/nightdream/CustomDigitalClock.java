@@ -348,7 +348,6 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
     @Override
     public void setTextColor(int color) {
-        Log.d("CustomDigitalClock", "setTextColor called with color: " + color);
         this.primaryColor = color;
         super.setTextColor(color);
         updateTextView();
