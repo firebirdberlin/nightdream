@@ -573,7 +573,7 @@ public class NightDreamUI {
                         || (displaySize.x - safeRect.right) > 0
         ) {
             // reposition the clock
-            bottomPanelLayout.post(initClockLayout);
+            setClockPosition(getConfiguration());
         }
     }
 
@@ -624,9 +624,11 @@ public class NightDreamUI {
             checkAndClearWeatherEntry();
 
             //Update Notifications in ClockLayout
-            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-            i.putExtra("command", "list");
-            LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+            if (Settings.showNotification(mContext)) {
+                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                i.putExtra("command", "list");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+            }
 
             controlsVisible = true;
 
@@ -1130,10 +1132,8 @@ public class NightDreamUI {
         backgroundImages[activeBackgroundImage].setTranslationX(0);
         backgroundImages[activeBackgroundImage].setTranslationY(0);
         backgroundImages[activeBackgroundImage].bringToFront();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            backgroundImages[(activeBackgroundImage + 1) % 2].setZ(4);
-            backgroundImages[activeBackgroundImage].setZ(5);
-        }
+        backgroundImages[(activeBackgroundImage + 1) % 2].setZ(4);
+        backgroundImages[activeBackgroundImage].setZ(5);
         backgroundImages[activeBackgroundImage].startAnimation(animationSet);
 
         parentLayout.bringChildToFront(backgroundImages[activeBackgroundImage]);

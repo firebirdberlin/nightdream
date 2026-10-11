@@ -98,11 +98,7 @@ public class AlarmNotificationService extends JobService {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void cancelJob(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler == null) {
             return;
@@ -111,9 +107,6 @@ public class AlarmNotificationService extends JobService {
     }
 
     public static void cancelNotification(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(
                 Context.NOTIFICATION_SERVICE
         );

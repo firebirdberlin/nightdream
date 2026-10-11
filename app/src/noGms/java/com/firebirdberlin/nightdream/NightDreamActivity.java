@@ -413,15 +413,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
             showToastIfNotCharging();
 
-            final Context context = this;
-            clockLayoutContainer.post(() -> {
-                if (Settings.showNotification(this)) {
-                    Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                    i.putExtra("command", "list");
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-                }
-            });
-
             if (mySettings.getWeatherAutoLocationEnabled() && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 Handler handler = new Handler(Looper.getMainLooper());

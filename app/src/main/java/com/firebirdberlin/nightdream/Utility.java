@@ -1173,4 +1173,34 @@ public class Utility {
         }
         return android.view.View.GONE;
     }
+
+    public static int getVisibility(Drawable drawable) {
+        if (drawable != null) {
+            if (drawable instanceof android.graphics.drawable.BitmapDrawable) {
+                Bitmap bmp = ((android.graphics.drawable.BitmapDrawable) drawable).getBitmap();
+                if (bmp != null && !bmp.isRecycled()) {
+                    return android.view.View.VISIBLE;
+                }
+            } else {
+                return android.view.View.VISIBLE;
+            }
+        }
+        return android.view.View.GONE;
+    }
+
+    public static Bitmap getBitmapFromUri(Context context, String uriString) {
+        if (isEmpty(uriString) || context == null) return null;
+        try {
+            android.net.Uri uri = android.net.Uri.parse(uriString);
+            java.io.InputStream is = context.getContentResolver().openInputStream(uri);
+            if (is != null) {
+                Bitmap bitmap = android.graphics.BitmapFactory.decodeStream(is);
+                is.close();
+                return bitmap;
+            }
+        } catch (Exception e) {
+            Log.e("Utility", "Failed to load bitmap from uri: " + uriString, e);
+        }
+        return null;
+    }
 }

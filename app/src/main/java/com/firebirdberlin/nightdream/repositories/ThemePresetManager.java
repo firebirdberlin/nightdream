@@ -50,21 +50,25 @@ public class ThemePresetManager {
 
     private static final Map<String, ThemePreset> PRESETS = new HashMap<>();
 
+    // Halloween theme colors
+    private static final int HALLOWEEN_PRIMARY = Color.rgb(255, 117, 24);
+    private static final int HALLOWEEN_SECONDARY = Color.rgb(200, 128, 0);
+    private static final int HALLOWEEN_PRIMARY_NIGHT = Color.rgb(160, 72, 15);
+    private static final int HALLOWEEN_SECONDARY_NIGHT = Color.rgb(124, 79, 0);
+
+    // Christmas theme colors
+    private static final int CHRISTMAS_PRIMARY = Color.rgb(229, 193, 88);
+    private static final int CHRISTMAS_SECONDARY = Color.rgb(200, 168, 70);
+    private static final int CHRISTMAS_PRIMARY_NIGHT = Color.rgb(156, 124, 56);
+    private static final int CHRISTMAS_SECONDARY_NIGHT = Color.rgb(120, 95, 42);
+
     static {
-        // Warm Champagne Gold: #E5C158, Secondary Warm: #C8A846
-        int dayGold = Color.rgb(229, 193, 88);
-        int daySecondary = Color.rgb(200, 168, 70);
-
-        // Jack-o'-lantern Orange: #FF7518, Ghost Violet: #C88000
-        int halloweenPrimary = Color.rgb(255, 117, 24);
-        int halloweenSecondary = Color.rgb(200, 128, 0);
-
         ThemePreset halloweenAnalog = new ThemePreset(
                 ThemePreset.PRESET_HALLOWEEN_ANALOG,
                 "Halloween (Analog Clock)",
                 ClockLayoutType.ANALOG,
-                halloweenPrimary,
-                halloweenSecondary,
+                HALLOWEEN_PRIMARY,
+                HALLOWEEN_SECONDARY,
                 Settings.BACKGROUND_IMAGE,
                 "bg_halloween",
                 50, // translucent card
@@ -79,8 +83,8 @@ public class ThemePresetManager {
                 ThemePreset.PRESET_HALLOWEEN_DIGITAL,
                 "Halloween (Digital Clock)",
                 ClockLayoutType.DIGITAL,
-                halloweenPrimary,
-                halloweenSecondary,
+                HALLOWEEN_PRIMARY,
+                HALLOWEEN_SECONDARY,
                 Settings.BACKGROUND_IMAGE,
                 "bg_halloween",
                 50, // translucent card
@@ -95,8 +99,8 @@ public class ThemePresetManager {
                 ThemePreset.PRESET_CHRISTMAS_ANALOG,
                 "Christmas (Analog Clock)",
                 ClockLayoutType.ANALOG,
-                dayGold,
-                daySecondary,
+                CHRISTMAS_PRIMARY,
+                CHRISTMAS_SECONDARY,
                 Settings.BACKGROUND_IMAGE,
                 "bg_christmas",
                 50, // translucent card
@@ -108,8 +112,8 @@ public class ThemePresetManager {
                 ThemePreset.PRESET_CHRISTMAS_DIGITAL,
                 "Christmas (Digital Clock)",
                 ClockLayoutType.DIGITAL,
-                dayGold,
-                daySecondary,
+                CHRISTMAS_PRIMARY,
+                CHRISTMAS_SECONDARY,
                 Settings.BACKGROUND_IMAGE,
                 "bg_christmas",
                 50, // translucent card
@@ -260,11 +264,11 @@ public class ThemePresetManager {
 
         editor.putInt("clockColor", preset.primaryColor);
         if (ThemePreset.PRESET_HALLOWEEN_ANALOG.equals(preset.id) || ThemePreset.PRESET_HALLOWEEN_DIGITAL.equals(preset.id)) {
-            editor.putInt("primaryColorNight", Color.rgb(204, 88, 3));   // #CC5803
-            editor.putInt("secondaryColorNight", Color.rgb(123, 31, 162)); // #7B1FA2
+            editor.putInt("primaryColorNight", HALLOWEEN_PRIMARY_NIGHT);
+            editor.putInt("secondaryColorNight", HALLOWEEN_SECONDARY_NIGHT);
         } else {
-            editor.putInt("primaryColorNight", Color.rgb(156, 124, 56));
-            editor.putInt("secondaryColorNight", Color.rgb(120, 95, 42));
+            editor.putInt("primaryColorNight", CHRISTMAS_PRIMARY_NIGHT);
+            editor.putInt("secondaryColorNight", CHRISTMAS_SECONDARY_NIGHT);
         }
         editor.putInt("secondaryColor", preset.secondaryColor);
         editor.putString("clockLayout", String.valueOf(preset.clockLayoutType.getValue()));

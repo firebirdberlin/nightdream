@@ -28,19 +28,18 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 
 import java.util.ArrayList;
@@ -56,17 +55,24 @@ public class MediaControlLayout extends ViewModel {
     private final MutableLiveData<String> text = new MediatorLiveData<>();
     private final MutableLiveData<ArrayList<Drawable>> actionImages = new MediatorLiveData<>();
     private final MutableLiveData<ArrayList<View.OnClickListener>> actionIntent = new MediatorLiveData<>();
-    private final NotificationMediacontrolBinding mediacontrolBinding;
+    private final NotificationMediacontrolBinding mediaControlBinding;
     private int color = -1543;
+    private android.media.session.MediaController activeMediaController = null;
+    private android.media.session.MediaController.Callback mediaControllerCallback = null;
 
-    public MediaControlLayout(ConstraintLayout mediaStyleContainer) {
+    public MediaControlLayout(NightDreamActivity activity, ConstraintLayout mediaStyleContainer) {
         LayoutInflater inflater = LayoutInflater.from(mediaStyleContainer.getContext());
-        mediacontrolBinding = NotificationMediacontrolBinding.inflate(inflater, mediaStyleContainer, false);
-        mediacontrolBinding.setModel(this);
+
+        mediaControlBinding = NotificationMediacontrolBinding.inflate(
+                inflater, mediaStyleContainer, false
+        );
+
+        mediaControlBinding.setModel(this);
+        mediaControlBinding.setLifecycleOwner(activity);
     }
 
     public View getView() {
-        return mediacontrolBinding.getRoot();
+        return mediaControlBinding.getRoot();
     }
 
     public void setColor(int color) {
@@ -126,7 +132,34 @@ public class MediaControlLayout extends ViewModel {
         return actionIntent;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void extractAndPostMetadata(Context context, android.media.MediaMetadata metadata) {
+        if (metadata == null || context == null) return;
+        Bitmap art = metadata.getBitmap(android.media.MediaMetadata.METADATA_KEY_ALBUM_ART);
+        if (art == null) {
+            art = metadata.getBitmap(android.media.MediaMetadata.METADATA_KEY_ART);
+        }
+        if (art == null) {
+            String uriStr = metadata.getString(android.media.MediaMetadata.METADATA_KEY_ALBUM_ART_URI);
+            if (Utility.isEmpty(uriStr)) {
+                uriStr = metadata.getString(android.media.MediaMetadata.METADATA_KEY_ART_URI);
+            }
+            if (!Utility.isEmpty(uriStr)) {
+                art = Utility.getBitmapFromUri(context, uriStr);
+            }
+        }
+        if (art != null) {
+            this.largeIcon.postValue(new BitmapDrawable(context.getResources(), art));
+        }
+        String trackTitle = metadata.getString(android.media.MediaMetadata.METADATA_KEY_TITLE);
+        if (!Utility.isEmpty(trackTitle)) {
+            this.title.postValue(trackTitle);
+        }
+        String trackArtist = metadata.getString(android.media.MediaMetadata.METADATA_KEY_ARTIST);
+        if (!Utility.isEmpty(trackArtist)) {
+            this.text.postValue(trackArtist);
+        }
+    }
+
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
         Log.d(TAG, "setupFromNotificationIntent");
 
@@ -158,29 +191,21 @@ public class MediaControlLayout extends ViewModel {
         if (actions != null) {
             for (final Notification.Action action : actions) {
                 Drawable notificationDrawableIcon = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    Icon icon = action.getIcon();
-                    if (icon != null) {
-                        notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
-                        notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                    }
-                } else {
-                    int iconResId = action.icon;
-                    notificationDrawableIcon = ContextCompat.getDrawable(remotePackageContext, iconResId);
+                Icon icon = action.getIcon();
+                if (icon != null) {
+                    notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
                     notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
                 }
                 notificationActionImages.add(notificationDrawableIcon);
 
                 notificationActionClick.add(
-                        new View.OnClickListener() {
-                            public void onClick(View v) {
-                                try {
-                                    if (action.actionIntent != null) {
-                                        action.actionIntent.send();
-                                    }
-                                } catch (PendingIntent.CanceledException ex) {
-                                    Log.e(TAG, "MediaStyle - Notification set actionIntent");
+                        v -> {
+                            try {
+                                if (action.actionIntent != null) {
+                                    action.actionIntent.send();
                                 }
+                            } catch (PendingIntent.CanceledException ex) {
+                                Log.e(TAG, "MediaStyle - Notification set actionIntent");
                             }
                         }
                 );
@@ -192,9 +217,40 @@ public class MediaControlLayout extends ViewModel {
         this.timeStamp.postValue(intent.getStringExtra("postTime"));
         this.title.postValue(intent.getStringExtra("title"));
         this.text.postValue(intent.getStringExtra("text"));
-        this.largeIcon.postValue(new BitmapDrawable(context.getResources(), coverBitmap));
+
+        android.media.session.MediaSession.Token token = null;
+        if (intent.hasExtra("mediaSessionToken")) {
+            token = intent.getParcelableExtra("mediaSessionToken");
+        }
+
+        if (token != null) {
+            try {
+                if (activeMediaController != null && mediaControllerCallback != null) {
+                    activeMediaController.unregisterCallback(mediaControllerCallback);
+                }
+                activeMediaController = new android.media.session.MediaController(context, token);
+                mediaControllerCallback = new android.media.session.MediaController.Callback() {
+                    @Override
+                    public void onMetadataChanged(android.media.MediaMetadata metadata) {
+                        extractAndPostMetadata(context, metadata);
+                    }
+                };
+                activeMediaController.registerCallback(mediaControllerCallback);
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (coverBitmap != null) {
+            this.largeIcon.postValue(new BitmapDrawable(context.getResources(), coverBitmap));
+        } else if (activeMediaController != null && activeMediaController.getMetadata() != null) {
+            extractAndPostMetadata(context, activeMediaController.getMetadata());
+        } else {
+            this.largeIcon.postValue(null);
+        }
+
         this.actionImages.postValue(notificationActionImages);
         this.actionIntent.postValue(notificationActionClick);
         setColor();
+        Log.d(TAG, "setupFromNotificationIntent done: " + intent.getStringExtra("title"));
     }
 }
