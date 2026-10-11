@@ -60,12 +60,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notification_mediacontrol_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="2dp">
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
+        layout="@layout/notification_bar"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:layout_marginTop="2dp"
-        layout="@layout/notification_bar" />
+        android:layout_marginTop="2dp" />
 </LinearLayout>

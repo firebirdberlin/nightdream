@@ -25,14 +25,12 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -179,7 +177,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         return new BitmapDrawable(context.getResources(), smallIcon);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void removeMediaControls() {
         ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
 
@@ -187,48 +184,44 @@ public class NotificationReceiver extends BroadcastReceiver {
             mediaStyleContainer.removeAllViews();
         }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setupMediaControls(Context context, Intent intent) {
         if (!Settings.showMediaStyleNotification(context) || activity == null) {
             return;
         }
-        // TODO: media control area is too wide
-        // TODO: adjust the text color of the media controls according to the secondary text color
+
         String template = intent.getStringExtra("template");
         if (template == null || !template.contains("MediaStyle")) {
             return;
         }
+
         Log.i(TAG, "Show MediaStyle notification");
-        Log.i(TAG, "template = " + template);
 
         Drawable notificationMessageSmallIcon = getNotificationIcon(context, intent);
 
-        ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
+        ConstraintLayout mediaStyleContainer =
+                contentView.findViewById(R.id.notification_mediacontrol_bar);
 
-        if (mediaStyleContainer != null) {
-            View boundView = mediaStyleContainer.getChildAt(0);
-            NotificationMediacontrolBinding mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
-
-            if (mediaControlLayoutBinding != null) {
-                mediaControlLayoutBinding.getModel().setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
-            } else {
-                MediaControlLayout mediaControlLayout = new MediaControlLayout(mediaStyleContainer);
-                mediaStyleContainer.removeAllViews();
-                mediaStyleContainer.addView(mediaControlLayout.getView());
-                mediaControlLayout.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
-                boundView = mediaStyleContainer.getChildAt(0);
-                mediaControlLayoutBinding = DataBindingUtil.getBinding(boundView);
-                mediaControlLayoutBinding.getModel().setColor(color);
-            }
-            mediaControlLayoutBinding.invalidateAll();
+        if (mediaStyleContainer == null) {
+            return;
         }
 
-        View clockLayout = contentView.findViewById(R.id.clockLayout);
-        clockLayout.postDelayed(
-                () -> activity.onConfigurationChanged(activity.getResources().getConfiguration()),
-                500
-        );
+        View boundView = mediaStyleContainer.getChildAt(0);
+        NotificationMediacontrolBinding binding =
+                boundView != null ? DataBindingUtil.getBinding(boundView) : null;
+
+        MediaControlLayout model;
+
+        if (binding != null) {
+            model = binding.getModel();
+        } else {
+            model = new MediaControlLayout(activity, mediaStyleContainer);
+
+            mediaStyleContainer.removeAllViews();
+            mediaStyleContainer.addView(model.getView());
+        }
+
+        model.setColor(color);
+        model.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
     }
 
     private void setupNotificationPreview(Context context, Intent intent) {

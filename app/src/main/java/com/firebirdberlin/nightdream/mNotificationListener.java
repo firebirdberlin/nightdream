@@ -39,6 +39,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -48,9 +50,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 
 import java.text.SimpleDateFormat;
@@ -58,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class mNotificationListener extends NotificationListenerService {
 
@@ -84,23 +85,31 @@ public class mNotificationListener extends NotificationListenerService {
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
-            return bitmapDrawable.getBitmap();
-        } else {
-            try {
-                Bitmap bitmap = Bitmap.createBitmap(
-                        drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
-                        drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565
-                );
-                Canvas canvas = new Canvas(bitmap);
-                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                drawable.draw(canvas);
-                return bitmap;
-            } catch (IllegalArgumentException e) {
-                Log.e(STAG, "Error converting drawable to bitmap", e);
-                return null;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
             }
         }
+
+        try {
+            int width = drawable.getIntrinsicWidth() > 0 ? drawable.getIntrinsicWidth() : 128;
+            int height = drawable.getIntrinsicHeight() > 0 ? drawable.getIntrinsicHeight() : 128;
+            Bitmap bitmap = Bitmap.createBitmap(
+                    width, height,
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565
+            );
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, width, height);
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (Exception e) {
+            Log.e(STAG, "Error converting drawable to bitmap", e);
+            return null;
+        }
     }
+
+    public static boolean debugMediaStyleNotification = false;
+    private final Handler debugHandler = new Handler(Looper.getMainLooper());
+    private Runnable debugRunnable;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -119,6 +128,17 @@ public class mNotificationListener extends NotificationListenerService {
         LocalBroadcastManager.getInstance(this).registerReceiver(nlServiceReceiver, filter);
         Log.i(TAG, "**********  Notification listener STARTED");
         running = true;
+
+        if (debugMediaStyleNotification) {
+            debugRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    sendDebugMediaNotification();
+                    debugHandler.postDelayed(this, 30000);
+                }
+            };
+            debugHandler.postDelayed(debugRunnable, 3000);
+        }
     }
 
     @Override
@@ -127,6 +147,29 @@ public class mNotificationListener extends NotificationListenerService {
         running = false;
         Log.i(TAG, "**********  Notification listener STOPPED");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(nlServiceReceiver);
+
+        if (debugRunnable != null) {
+            debugHandler.removeCallbacks(debugRunnable);
+        }
+    }
+
+    private void sendDebugMediaNotification() {
+        Log.d(TAG, "Sending debug media style notification");
+        Intent intent = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+        intent.putExtra("action", "added_media");
+        intent.putExtra("template", "MediaStyle");
+        intent.putExtra("packageName", "com.spotify.music");
+        intent.putExtra("applicationName", "Spotify");
+        intent.putExtra("title", "Virtual Insanity (" + (System.currentTimeMillis() / 1000 % 100) + ")");
+        intent.putExtra("text", "Jamiroquai");
+        intent.putExtra("postTime", new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+
+        Bitmap dummyBitmap = Bitmap.createBitmap(60, 60, Bitmap.Config.ARGB_8888);
+        dummyBitmap.eraseColor(android.graphics.Color.GRAY);
+        intent.putExtra("smallIconBitmap", dummyBitmap);
+        intent.putExtra("largeIconBitmap", dummyBitmap);
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
@@ -256,6 +299,7 @@ public class mNotificationListener extends NotificationListenerService {
     }
 
     private void listNotifications() {
+        Log.d(TAG, "listNotifications()");
         minNotificationImportance = Settings.getMinNotificationImportance(this);
         notifications.clear();
         notificationApps.clear();
@@ -327,6 +371,10 @@ public class mNotificationListener extends NotificationListenerService {
             intentAppsList.putExtra("action", "scan");
             intentAppsList.putParcelableArrayListExtra("notificationApps", (ArrayList<? extends Parcelable>) notificationApps);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intentAppsList);
+
+            if (debugMediaStyleNotification) {
+                sendDebugMediaNotification();
+            }
         });
     }
 
@@ -449,6 +497,13 @@ public class mNotificationListener extends NotificationListenerService {
 
         Intent intent = new Intent();
         intent.putExtra("actions", actions);
+        if (extras != null && extras.containsKey(Notification.EXTRA_MEDIA_SESSION)) {
+            Object tokenObj = extras.get(Notification.EXTRA_MEDIA_SESSION);
+            if (tokenObj instanceof android.media.session.MediaSession.Token) {
+                intent.putExtra("mediaSessionToken", (android.media.session.MediaSession.Token) tokenObj);
+            }
+        }
+
         intent.putExtra("applicationName", applicationName);
         intent.putExtra("bigPicture", bigPicture);
         intent.putExtra("bigContentView", notification.bigContentView);
@@ -592,8 +647,86 @@ public class mNotificationListener extends NotificationListenerService {
 
         Icon largeIcon = notification.getLargeIcon();
         if (largeIcon != null) {
-            return drawableToBitMap(largeIcon.loadDrawable(context));
+            try {
+                Drawable d = largeIcon.loadDrawable(context);
+                if (d != null) {
+                    Bitmap bmp = drawableToBitMap(d);
+                    if (bmp != null) return bmp;
+                }
+            } catch (Exception ignored) {
+            }
         }
+
+        Bundle extras = notification.extras;
+        if (extras != null) {
+            try {
+                Object largeIconObj = extras.get(Notification.EXTRA_LARGE_ICON);
+                if (largeIconObj instanceof Bitmap) {
+                    return (Bitmap) largeIconObj;
+                } else if (largeIconObj instanceof Icon) {
+                    Drawable d = ((Icon) largeIconObj).loadDrawable(context);
+                    if (d != null) {
+                        Bitmap bmp = drawableToBitMap(d);
+                        if (bmp != null) return bmp;
+                    }
+                }
+
+                Object largeIconBigObj = extras.get(Notification.EXTRA_LARGE_ICON_BIG);
+                if (largeIconBigObj instanceof Bitmap) {
+                    return (Bitmap) largeIconBigObj;
+                } else if (largeIconBigObj instanceof Icon) {
+                    Drawable d = ((Icon) largeIconBigObj).loadDrawable(context);
+                    if (d != null) {
+                        Bitmap bmp = drawableToBitMap(d);
+                        if (bmp != null) return bmp;
+                    }
+                }
+
+                Object pictureObj = extras.get(Notification.EXTRA_PICTURE);
+                if (pictureObj instanceof Bitmap) {
+                    return (Bitmap) pictureObj;
+                } else if (pictureObj instanceof Icon) {
+                    Drawable d = ((Icon) pictureObj).loadDrawable(context);
+                    if (d != null) {
+                        Bitmap bmp = drawableToBitMap(d);
+                        if (bmp != null) return bmp;
+                    }
+                }
+
+                if (extras.containsKey(Notification.EXTRA_MEDIA_SESSION)) {
+                    Object tokenObj = extras.get(Notification.EXTRA_MEDIA_SESSION);
+                    if (tokenObj instanceof android.media.session.MediaSession.Token) {
+                        android.media.session.MediaSession.Token token = (android.media.session.MediaSession.Token) tokenObj;
+                        android.media.session.MediaController controller = new android.media.session.MediaController(context, token);
+                        android.media.MediaMetadata metadata = controller.getMetadata();
+                        if (metadata != null) {
+                            Bitmap art = metadata.getBitmap(android.media.MediaMetadata.METADATA_KEY_ALBUM_ART);
+                            if (art == null) {
+                                art = metadata.getBitmap(android.media.MediaMetadata.METADATA_KEY_ART);
+                            }
+                            if (art == null) {
+                                String uriStr = metadata.getString(android.media.MediaMetadata.METADATA_KEY_ALBUM_ART_URI);
+                                if (Utility.isEmpty(uriStr)) {
+                                    uriStr = metadata.getString(android.media.MediaMetadata.METADATA_KEY_ART_URI);
+                                }
+                                if (!Utility.isEmpty(uriStr)) {
+                                    art = Utility.getBitmapFromUri(context, uriStr);
+                                }
+                            }
+                            if (art != null) {
+                                return art;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (notification.largeIcon != null) {
+            return notification.largeIcon;
+        }
+
         return null;
     }
 
@@ -613,6 +746,7 @@ public class mNotificationListener extends NotificationListenerService {
                     mNotificationListener.this.cancelAllNotifications();
                     break;
                 case "list":
+                    Log.d(TAG, "calling listNotifications()");
                     listNotifications();
                     break;
                 case "release":
