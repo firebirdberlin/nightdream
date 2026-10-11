@@ -488,4 +488,16 @@ OR
     <string name="unit_months">Mois</string>
     <string name="unit_year">An</string>
     <string name="unit_years">Ans</string>
+
+    <string name="themes">Thèmes</string>
+    <string name="active_theme">Thème actif</string>
+    <string name="reset_theme_defaults_summary">Réinitialiser les personnalisations du thème actif aux valeurs par défaut.</string>
+    <string name="animations">Animations</string>
+    <string name="enable_particle_overlays">Activer les superpositions de particules</string>
+    <string name="theme_animation_enabled_summary">Afficher l\'animation de neige tombante ou d\'étoiles dorées.</string>
+    <string name="particle_effect">Effet de particules</string>
+    <string name="only_animate_when_charging">Animer uniquement lors de la charge</string>
+    <string name="theme_animation_only_charging_summary">Met en pause les animations sur batterie pour économiser l\'énergie.</string>
+    <string name="theme_updated">Thème mis à jour !</string>
+    <string name="theme_reset_to_defaults">Thème réinitialisé aux valeurs par défaut</string>
 </resources>

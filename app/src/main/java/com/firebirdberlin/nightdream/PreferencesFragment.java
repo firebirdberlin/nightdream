@@ -1430,7 +1430,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 ThemePresetManager.switchTheme(mContext, newThemeId);
                 setupThemeControls();
                 if (getView() != null) {
-                    Snackbar.make(getView(), "Theme updated!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.theme_updated, Snackbar.LENGTH_SHORT).show();
                 }
                 return true;
             });
@@ -1441,7 +1441,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 ThemePresetManager.resetActiveThemeDefaults(mContext);
                 setupThemeControls();
                 if (getView() != null) {
-                    Snackbar.make(getView(), "Theme reset to defaults", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.theme_reset_to_defaults, Snackbar.LENGTH_SHORT).show();
                 }
                 return true;
             });

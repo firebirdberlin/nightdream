@@ -517,4 +517,16 @@ OR
         <item>christmas_analog</item>
         <item>christmas_digital</item>
     </string-array>
+
+    <string name="themes">Themes</string>
+    <string name="active_theme">Active Theme</string>
+    <string name="reset_theme_defaults_summary">Reset customizations for the active theme to default.</string>
+    <string name="animations">Animations</string>
+    <string name="enable_particle_overlays">Enable Particle Overlays</string>
+    <string name="theme_animation_enabled_summary">Show falling snow or golden stars animation.</string>
+    <string name="particle_effect">Particle Effect</string>
+    <string name="only_animate_when_charging">Only Animate When Charging</string>
+    <string name="theme_animation_only_charging_summary">Pauses animations when running on battery to conserve power.</string>
+    <string name="theme_updated">Theme updated!</string>
+    <string name="theme_reset_to_defaults">Theme reset to defaults</string>
 </resources>

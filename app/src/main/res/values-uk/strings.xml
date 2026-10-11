@@ -488,4 +488,16 @@ OR
     <string name="unit_months">Місяців</string>
     <string name="unit_year">Рік</string>
     <string name="unit_years">Років</string>
+
+    <string name="themes">Теми</string>
+    <string name="active_theme">Активна тема</string>
+    <string name="reset_theme_defaults_summary">Скинути налаштування активної теми за замовчуванням.</string>
+    <string name="animations">Анімації</string>
+    <string name="enable_particle_overlays">Увімкнути частинки</string>
+    <string name="theme_animation_enabled_summary">Показувати анімацію падаючого снігу або золотих зірок.</string>
+    <string name="particle_effect">Ефект частинок</string>
+    <string name="only_animate_when_charging">Анімація лише під час заряджання</string>
+    <string name="theme_animation_only_charging_summary">Призупиняє анімацію при роботі від батареї для економії енергії.</string>
+    <string name="theme_updated">Тему оновлено!</string>
+    <string name="theme_reset_to_defaults">Тему скинуто до налаштувань за замовчуванням</string>
 </resources>

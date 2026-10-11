@@ -296,4 +296,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informasjon</string>
     <string name="weekdays">Ukedager</string>
     <string name="width">Bredde</string>
+
+    <string name="themes">Temaer</string>
+    <string name="active_theme">Aktivt tema</string>
+    <string name="reset_theme_defaults_summary">Tilbakestill tilpasninger for det aktive temaet til standard.</string>
+    <string name="animations">Animasjoner</string>
+    <string name="enable_particle_overlays">Aktiver partikkeloverlegg</string>
+    <string name="theme_animation_enabled_summary">Vis animasjon med fallende snø eller gylne stjerner.</string>
+    <string name="particle_effect">Partikkeleffekt</string>
+    <string name="only_animate_when_charging">Animer kun ved lading</string>
+    <string name="theme_animation_only_charging_summary">Pausere animasjoner på batteri for å spare strøm.</string>
+    <string name="theme_updated">Tema oppdatert!</string>
+    <string name="theme_reset_to_defaults">Tema tilbakestilt til standard</string>
 </resources>

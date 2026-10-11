@@ -196,4 +196,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Koda Mesta</string>
     <string name="weather_info_title">Informacije</string>
     <string name="weather">Vreme</string>
+
+    <string name="themes">Teme</string>
+    <string name="active_theme">Aktivna tema</string>
+    <string name="reset_theme_defaults_summary">Ponastavi prilagoditve aktivne teme na privzete.</string>
+    <string name="animations">Animacije</string>
+    <string name="enable_particle_overlays">Omogoči prekritja delcev</string>
+    <string name="theme_animation_enabled_summary">Prikaži animacijo padajočega snega ali zlatih zvezd.</string>
+    <string name="particle_effect">Učinek delcev</string>
+    <string name="only_animate_when_charging">Animiraj samo med polnjenjem</string>
+    <string name="theme_animation_only_charging_summary">Zaustavi animacije pri delovanju na baterijo za varčevanje z energijo.</string>
+    <string name="theme_updated">Tema posodobljena!</string>
+    <string name="theme_reset_to_defaults">Tema ponastavljena na privzete nastavitve</string>
 </resources>

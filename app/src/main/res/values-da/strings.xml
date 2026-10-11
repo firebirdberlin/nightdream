@@ -315,4 +315,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Information</string>
     <string name="weekdays">Ugedage</string>
     <string name="width">med</string>
+
+    <string name="themes">Temaer</string>
+    <string name="active_theme">Aktivt tema</string>
+    <string name="reset_theme_defaults_summary">Nulstil tilpasninger for det aktive tema til standard.</string>
+    <string name="animations">Animationer</string>
+    <string name="enable_particle_overlays">Aktiver partikeloverlejringer</string>
+    <string name="theme_animation_enabled_summary">Vis animation af faldende sne eller gyldne stjerner.</string>
+    <string name="particle_effect">Partikeleffekt</string>
+    <string name="only_animate_when_charging">Animer kun under opladning</string>
+    <string name="theme_animation_only_charging_summary">Pausaer animationer på batteri for at spare strøm.</string>
+    <string name="theme_updated">Tema opdateret!</string>
+    <string name="theme_reset_to_defaults">Tema nulstillet til standard</string>
 </resources>

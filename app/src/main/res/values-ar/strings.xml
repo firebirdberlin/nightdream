@@ -289,4 +289,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather">الطقس</string>
     <string name="weatherProvider">مزود الطقس</string>
     <string name="width">عرض</string>
+
+    <string name="themes">السمات</string>
+    <string name="active_theme">السمة النشطة</string>
+    <string name="reset_theme_defaults_summary">إعادة تعيين تخصيصات السمة النشطة إلى الافتراضية.</string>
+    <string name="animations">الرسوم المتحركة</string>
+    <string name="enable_particle_overlays">تفعيل تراكبات الجسيمات</string>
+    <string name="theme_animation_enabled_summary">إظهار رسوم تساقط الثلج أو النجوم الذهبية.</string>
+    <string name="particle_effect">تأثير الجسيمات</string>
+    <string name="only_animate_when_charging">التحريك فقط أثناء الشحن</string>
+    <string name="theme_animation_only_charging_summary">إيقاف الرسوم المتحركة مؤقتًا أثناء استخدام البطارية لتوفير الطاقة.</string>
+    <string name="theme_updated">تم تحديث السمة!</string>
+    <string name="theme_reset_to_defaults">تمت إعادة تعيين السمة إلى الافتراضية</string>
 </resources>

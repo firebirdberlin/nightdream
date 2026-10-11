@@ -153,4 +153,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi">WiFi</string>
     <string name="review_request">Kiitos kun arvostelet tämän sovelluksen!</string>
     <string name="show_calendar_events">Korosta tapahtumia</string>
+
+    <string name="themes">Teemat</string>
+    <string name="active_theme">Aktiivinen teema</string>
+    <string name="reset_theme_defaults_summary">Palauta aktiivisen teeman mukautukset oletusarvoihin.</string>
+    <string name="animations">Animaatiot</string>
+    <string name="enable_particle_overlays">Ota hiukkaskerrokset käyttöön</string>
+    <string name="theme_animation_enabled_summary">Näytä satavan lumen tai kultaisten tähtien animaatio.</string>
+    <string name="particle_effect">Hiukkasefekti</string>
+    <string name="only_animate_when_charging">Animoiti vain ladattaessa</string>
+    <string name="theme_animation_only_charging_summary">Keskeyttää animaatiot akkukäytössä virran säästämiseksi.</string>
+    <string name="theme_updated">Teema päivitetty!</string>
+    <string name="theme_reset_to_defaults">Teema palautettu oletusarvoihin</string>
 </resources>

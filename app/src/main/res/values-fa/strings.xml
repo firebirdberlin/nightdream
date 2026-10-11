@@ -126,4 +126,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather">آب و هوا</string>
     <string name="weather_city_id_title">جستوجوی موقعیت</string>
     <string name="weather_info_title">اطلاعات</string>
+
+    <string name="themes">تم‌ها</string>
+    <string name="active_theme">تم فعال</string>
+    <string name="reset_theme_defaults_summary">بازنشانی سفارشی‌سازی‌های تم فعال به حالت پیش‌فرض.</string>
+    <string name="animations">پویانمایی‌ها</string>
+    <string name="enable_particle_overlays">فعال‌سازی لایه‌های ذرات</string>
+    <string name="theme_animation_enabled_summary">نمایش پویانمایی بارش برف یا ستاره‌های طلایی.</string>
+    <string name="particle_effect">جلوه ذرات</string>
+    <string name="only_animate_when_charging">پویانمایی فقط هنگام شارژ</string>
+    <string name="theme_animation_only_charging_summary">مکث پویانمایی‌ها هنگام استفاده از باتری برای صرفه‌جویی در مصرف انرژی.</string>
+    <string name="theme_updated">تم به‌روزرسانی شد!</string>
+    <string name="theme_reset_to_defaults">تم به حالت پیش‌فرض بازنشانی شد</string>
 </resources>

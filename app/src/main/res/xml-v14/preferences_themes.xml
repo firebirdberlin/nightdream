@@ -4,11 +4,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     app:key="themes"
     app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
-    app:title="Theme Presets">
+    app:title="@string/themes">
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="Active Theme">
+        app:title="@string/active_theme">
 
         <ListPreference
             app:defaultValue="none"
@@ -16,26 +16,26 @@
             app:entryValues="@array/themeValues"
             app:iconSpaceReserved="false"
             app:key="activeThemePreset"
-            app:title="Active Theme"
+            app:title="@string/active_theme"
             app:useSimpleSummaryProvider="true" />
 
         <Preference
             app:iconSpaceReserved="false"
             app:key="reset_theme_defaults"
-            app:summary="Reset customizations for the active theme to default."
-            app:title="Reset to defaults" />
+            app:summary="@string/reset_theme_defaults_summary"
+            app:title="@string/reset_to_defaults" />
     </PreferenceCategory>
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="Animations">
+        app:title="@string/animations">
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="theme_animation_enabled"
-            app:summary="Show falling snow or golden stars animation."
-            app:title="Enable Particle Overlays" />
+            app:summary="@string/theme_animation_enabled_summary"
+            app:title="@string/enable_particle_overlays" />
 
         <ListPreference
             app:defaultValue="1"
@@ -44,7 +44,7 @@
             app:entryValues="@array/particleEffectValues"
             app:iconSpaceReserved="false"
             app:key="theme_particle_effect"
-            app:title="Particle Effect"
+            app:title="@string/particle_effect"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
@@ -52,8 +52,8 @@
             app:dependency="theme_animation_enabled"
             app:iconSpaceReserved="false"
             app:key="theme_animation_only_charging"
-            app:summary="Pauses animations when running on battery to conserve power."
-            app:title="Only Animate When Charging" />
+            app:summary="@string/theme_animation_only_charging_summary"
+            app:title="@string/only_animate_when_charging" />
     </PreferenceCategory>
 
 </PreferenceScreen>

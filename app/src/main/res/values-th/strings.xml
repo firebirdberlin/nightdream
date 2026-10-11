@@ -59,4 +59,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_rainbow">สายรุ้ง</string>
     <string name="decoration_style_pride">Pride flag</string>
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
+
+    <string name="themes">ธีม</string>
+    <string name="active_theme">ธีมที่ใช้งาน</string>
+    <string name="reset_theme_defaults_summary">รีเซ็ตการปรับแต่งสำหรับธีมที่ใช้งานเป็นค่าเริ่มต้น</string>
+    <string name="animations">แอนิเมชัน</string>
+    <string name="enable_particle_overlays">เปิดใช้งานการซ้อนทับอนุภาค</string>
+    <string name="theme_animation_enabled_summary">แสดงแอนิเมชันหิมะตกหรือดาวสีทอง</string>
+    <string name="particle_effect">เอฟเฟกต์อนุภาค</string>
+    <string name="only_animate_when_charging">เล่นแอนิเมชันเมื่อชาร์จเท่านั้น</string>
+    <string name="theme_animation_only_charging_summary">หยุดแอนิเมชันชั่วคราวเมื่อใช้แบตเตอรี่เพื่อประหยัดพลังงาน</string>
+    <string name="theme_updated">อัปเดตธีมแล้ว!</string>
+    <string name="theme_reset_to_defaults">รีเซ็ตธีมเป็นค่าเริ่มต้นแล้ว</string>
 </resources>

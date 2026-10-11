@@ -158,4 +158,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">zadnje ažuriranje:</string>
     <string name="weather_city_id_title">ID grada</string>
     <string name="weather_info_title">Informacije</string>
+
+    <string name="themes">Teme</string>
+    <string name="active_theme">Aktivna tema</string>
+    <string name="reset_theme_defaults_summary">Vrati prilagodbe za aktivnu temu na zadano.</string>
+    <string name="animations">Animacije</string>
+    <string name="enable_particle_overlays">Omogući prekrivanje česticama</string>
+    <string name="theme_animation_enabled_summary">Prikaži animaciju padajućeg snijega ili zlatnih zvijezda.</string>
+    <string name="particle_effect">Efekt čestica</string>
+    <string name="only_animate_when_charging">Animiraj samo pri punjenju</string>
+    <string name="theme_animation_only_charging_summary">Zaustavlja animacije tijekom rada na bateriji radi uštede energije.</string>
+    <string name="theme_updated">Tema ažurirana!</string>
+    <string name="theme_reset_to_defaults">Tema vraćena na zadane postavke</string>
 </resources>

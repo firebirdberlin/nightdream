@@ -385,4 +385,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informação</string>
     <string name="weekdays">dias da semana</string>
     <string name="width">largura</string>
+
+    <string name="themes">Temas</string>
+    <string name="active_theme">Tema ativo</string>
+    <string name="reset_theme_defaults_summary">Redefinir as personalizações do tema ativo para o padrão.</string>
+    <string name="animations">Animações</string>
+    <string name="enable_particle_overlays">Ativar sobreposições de partículas</string>
+    <string name="theme_animation_enabled_summary">Mostrar animação de neve caindo ou estrelas douradas.</string>
+    <string name="particle_effect">Efeito de partículas</string>
+    <string name="only_animate_when_charging">Animar apenas ao carregar</string>
+    <string name="theme_animation_only_charging_summary">Pausa as animações na bateria para economizar energia.</string>
+    <string name="theme_updated">Tema atualizado!</string>
+    <string name="theme_reset_to_defaults">Tema redefinido para os padrões</string>
 </resources>

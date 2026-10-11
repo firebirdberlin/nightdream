@@ -44,4 +44,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_calendar_events">캘린더 이벤트 강조</string>
     <string name="radio_stream_keep_running">라디오 계속 재생</string>
     <string name="radio_stream_keep_running_summary">알람이 중지된 후에도 라디오 스트리밍을 계속 재생합니다.</string>
+
+    <string name="themes">테마</string>
+    <string name="active_theme">활성 테마</string>
+    <string name="reset_theme_defaults_summary">활성 테마의 사용자 지정 설정을 기본값으로 복원합니다.</string>
+    <string name="animations">애니메이션</string>
+    <string name="enable_particle_overlays">입자 오버레이 활성화</string>
+    <string name="theme_animation_enabled_summary">내리는 눈 또는 황금 별 애니메이션을 표시합니다.</string>
+    <string name="particle_effect">입자 효과</string>
+    <string name="only_animate_when_charging">충전 중일 때만 애니메이션</string>
+    <string name="theme_animation_only_charging_summary">전력을 절약하기 위해 배터리 사용 시 애니메이션을 일시 정지합니다.</string>
+    <string name="theme_updated">테마가 업데이트되었습니다!</string>
+    <string name="theme_reset_to_defaults">테마가 기본값으로 복원되었습니다</string>
 </resources>

@@ -135,4 +135,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">Timpul de calcul al vremii</string>
     <string name="weather_city_id_title">Cauta Locatie</string>
     <string name="weather_info_title">Informatii</string>
+
+    <string name="themes">Teme</string>
+    <string name="active_theme">Tema activă</string>
+    <string name="reset_theme_defaults_summary">Resetează personalizările pentru tema activă la cele implicite.</string>
+    <string name="animations">Animații</string>
+    <string name="enable_particle_overlays">Activează suprapunerile de particule</string>
+    <string name="theme_animation_enabled_summary">Afișează animația cu ninsoare sau stele aurii.</string>
+    <string name="particle_effect">Efect de particule</string>
+    <string name="only_animate_when_charging">Animează doar la încărcare</string>
+    <string name="theme_animation_only_charging_summary">Pune pauză animațiilor pe baterie pentru a economisi energie.</string>
+    <string name="theme_updated">Tema a fost actualizată!</string>
+    <string name="theme_reset_to_defaults">Tema a fost resetată la valorile implicite</string>
 </resources>

@@ -171,4 +171,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">天氣計算時間</string>
     <string name="weather_city_id_title">搜尋地區</string>
     <string name="weather_info_title">資訊</string>
+
+    <string name="themes">主題</string>
+    <string name="active_theme">當前主題</string>
+    <string name="reset_theme_defaults_summary">將當前主題的自定義重置為預設值。</string>
+    <string name="animations">動畫</string>
+    <string name="enable_particle_overlays">啟用粒子疊加</string>
+    <string name="theme_animation_enabled_summary">顯示降雪或金星動畫。</string>
+    <string name="particle_effect">粒子效果</string>
+    <string name="only_animate_when_charging">僅在充電時播放動畫</string>
+    <string name="theme_animation_only_charging_summary">使用電池運行時暫停動畫以節省電量。</string>
+    <string name="theme_updated">主題已更新！</string>
+    <string name="theme_reset_to_defaults">主題已重置為預設值</string>
 </resources>

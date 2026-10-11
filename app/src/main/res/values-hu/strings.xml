@@ -172,4 +172,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_calculation_time">Időjárás számítási idő</string>
     <string name="weather_city_id_title">Város azonosítója</string>
     <string name="weather_info_title">Információ</string>
+
+    <string name="themes">Témák</string>
+    <string name="active_theme">Aktív téma</string>
+    <string name="reset_theme_defaults_summary">Az aktív téma testreszabásainak visszaállítása alapértelmezettre.</string>
+    <string name="animations">Animációk</string>
+    <string name="enable_particle_overlays">Részecskék engedélyezése</string>
+    <string name="theme_animation_enabled_summary">Hulló hó vagy arany csillagok animációjának megjelenítése.</string>
+    <string name="particle_effect">Részecske effektus</string>
+    <string name="only_animate_when_charging">Animáció csak töltés közben</string>
+    <string name="theme_animation_only_charging_summary">Szünetelteti az animációkat akkumulátorról az energiatakarékosság érdekében.</string>
+    <string name="theme_updated">Téma frissítve!</string>
+    <string name="theme_reset_to_defaults">Téma visszaállítva az alapértelmezettekre</string>
 </resources>

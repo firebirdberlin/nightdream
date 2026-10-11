@@ -487,4 +487,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="unit_months">Meses</string>
     <string name="unit_year">Año</string>
     <string name="unit_years">Años</string>
+
+    <string name="themes">Temas</string>
+    <string name="active_theme">Tema activo</string>
+    <string name="reset_theme_defaults_summary">Restablecer las personalizaciones del tema activo a los valores predeterminados.</string>
+    <string name="animations">Animaciones</string>
+    <string name="enable_particle_overlays">Habilitar superposiciones de partículas</string>
+    <string name="theme_animation_enabled_summary">Mostrar animación de nieve cayendo o estrellas doradas.</string>
+    <string name="particle_effect">Efecto de partículas</string>
+    <string name="only_animate_when_charging">Animar solo al cargar</string>
+    <string name="theme_animation_only_charging_summary">Pausa las animaciones con batería para ahorrar energía.</string>
+    <string name="theme_updated">¡Tema actualizado!</string>
+    <string name="theme_reset_to_defaults">Tema restablecido a valores predeterminados</string>
 </resources>

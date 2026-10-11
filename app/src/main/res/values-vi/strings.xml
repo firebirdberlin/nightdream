@@ -147,4 +147,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Hiển thị tốc độ gió</string>
     <string name="sleep_time_dialog_title">Hẹn giờ ngủ</string>
     <string name="snoozeTime">Thời gian ngủ thêm</string>
+
+    <string name="themes">Chủ đề</string>
+    <string name="active_theme">Chủ đề đang hoạt động</string>
+    <string name="reset_theme_defaults_summary">Đặt lại tùy chỉnh cho chủ đề đang hoạt động về mặc định.</string>
+    <string name="animations">Hiệu ứng động</string>
+    <string name="enable_particle_overlays">Bật hiệu ứng hạt</string>
+    <string name="theme_animation_enabled_summary">Hiển thị hiệu ứng tuyết rơi hoặc sao vàng.</string>
+    <string name="particle_effect">Hiệu ứng hạt</string>
+    <string name="only_animate_when_charging">Chỉ hoạt ảnh khi đang sạc</string>
+    <string name="theme_animation_only_charging_summary">Tạm dừng hiệu ứng khi dùng pin để tiết kiệm điện.</string>
+    <string name="theme_updated">Đã cập nhật chủ đề!</string>
+    <string name="theme_reset_to_defaults">Chủ đề đã được đặt lại về mặc định</string>
 </resources>

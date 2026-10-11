@@ -170,4 +170,16 @@ Please preserve the xml tags and the utf8 encoding.
 <string name="weather_city_id_title">Kokapena bilatu</string>
 <string name="weather_info_title">Informazioa</string>
 <string name="weather">Eguraldia</string>
+
+    <string name="themes">Gaiak</string>
+    <string name="active_theme">Gai aktiboa</string>
+    <string name="reset_theme_defaults_summary">Berrezarri gai aktiboaren pertsonalizazioak lehenetsitakora.</string>
+    <string name="animations">Animazioak</string>
+    <string name="enable_particle_overlays">Gaitu partikulen gainjarpenak</string>
+    <string name="theme_animation_enabled_summary">Erakutsi elur erorketa edo urrezko izarren animazioa.</string>
+    <string name="particle_effect">Partikula-efektua</string>
+    <string name="only_animate_when_charging">Kargatzean bakarrik animatu</string>
+    <string name="theme_animation_only_charging_summary">Bateriarekin animazioak geldiarazten ditu energia aurrezteko.</string>
+    <string name="theme_updated">Gaia eguneratuta!</string>
+    <string name="theme_reset_to_defaults">Gaia berrezarri da lehenetsitakora</string>
 </resources>

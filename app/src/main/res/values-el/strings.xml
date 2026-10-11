@@ -174,4 +174,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">Αναζήτηση τοποθεσίας</string>
     <string name="weather_info_title">Πληροφορίες</string>
     <string name="weather">Καιρός</string>
+
+    <string name="themes">Θέματα</string>
+    <string name="active_theme">Ενεργό θέμα</string>
+    <string name="reset_theme_defaults_summary">Επαναφορά προσαρμογών για το ενεργό θέμα στις προεπιλογές.</string>
+    <string name="animations">Κινούμενα σχέδια</string>
+    <string name="enable_particle_overlays">Ενεργοποίηση επικαλύψεων σωματιδίων</string>
+    <string name="theme_animation_enabled_summary">Εμφάνιση κινουμένων σχεδίων χιονιού που πέφτει ή χρυσών αστεριών.</string>
+    <string name="particle_effect">Εφέ σωματιδίων</string>
+    <string name="only_animate_when_charging">Κίνηση μόνο κατά τη φόρτιση</string>
+    <string name="theme_animation_only_charging_summary">Παύση των κινουμένων σχεδίων στην μπαταρία για εξοικονόμηση ενέργειας.</string>
+    <string name="theme_updated">Το θέμα ενημερώθηκε!</string>
+    <string name="theme_reset_to_defaults">Το θέμα επανήλθε στις προεπιλογές</string>
 </resources>

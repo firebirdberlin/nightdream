@@ -488,4 +488,16 @@ OR
     <string name="unit_months">Месяцев</string>
     <string name="unit_year">Год</string>
     <string name="unit_years">Лет</string>
+
+    <string name="themes">Темы</string>
+    <string name="active_theme">Активная тема</string>
+    <string name="reset_theme_defaults_summary">Сбросить настройки активной темы по умолчанию.</string>
+    <string name="animations">Анимации</string>
+    <string name="enable_particle_overlays">Включить частицы</string>
+    <string name="theme_animation_enabled_summary">Показывать анимацию падающего снега или золотых звезд.</string>
+    <string name="particle_effect">Эффект частиц</string>
+    <string name="only_animate_when_charging">Анимация только при зарядке</string>
+    <string name="theme_animation_only_charging_summary">Приостанавливает анимацию при работе от батареи для экономии энергии.</string>
+    <string name="theme_updated">Тема обновлена!</string>
+    <string name="theme_reset_to_defaults">Тема сброшена на настройки по умолчанию</string>
 </resources>

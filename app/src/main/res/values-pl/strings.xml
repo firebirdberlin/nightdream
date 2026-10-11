@@ -487,4 +487,16 @@ OR
     <string name="unit_months">Miesiące</string>
     <string name="unit_year">Rok</string>
     <string name="unit_years">Lata</string>
+
+    <string name="themes">Motywy</string>
+    <string name="active_theme">Aktywny motyw</string>
+    <string name="reset_theme_defaults_summary">Przywróć domyślne dostosowania aktywnego motywu.</string>
+    <string name="animations">Animacje</string>
+    <string name="enable_particle_overlays">Włącz nakładki cząsteczek</string>
+    <string name="theme_animation_enabled_summary">Pokaż animację padającego śniegu lub złotych gwiazd.</string>
+    <string name="particle_effect">Efekt cząsteczek</string>
+    <string name="only_animate_when_charging">Animuj tylko podczas ładowania</string>
+    <string name="theme_animation_only_charging_summary">Wstrzymuje animacje podczas pracy na baterii, aby oszczędzać energię.</string>
+    <string name="theme_updated">Motyw zaktualizowany!</string>
+    <string name="theme_reset_to_defaults">Motyw przywrócony do ustawień domyślnych</string>
 </resources>

@@ -212,4 +212,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">情報</string>
     <string name="weather">天気</string>
     <string name="width">幅</string>
+
+    <string name="themes">テーマ</string>
+    <string name="active_theme">アクティブなテーマ</string>
+    <string name="reset_theme_defaults_summary">アクティブなテーマのカスタマイズをデフォルトに戻す。</string>
+    <string name="animations">アニメーション</string>
+    <string name="enable_particle_overlays">パーティクルオーバーレイを有効化</string>
+    <string name="theme_animation_enabled_summary">降る雪や金の星のアニメーションを表示します。</string>
+    <string name="particle_effect">パーティクルエフェクト</string>
+    <string name="only_animate_when_charging">充電中のみアニメーション</string>
+    <string name="theme_animation_only_charging_summary">バッテリー駆動時は省電力のためアニメーションを一時停止します。</string>
+    <string name="theme_updated">テーマが更新されました！</string>
+    <string name="theme_reset_to_defaults">テーマがデフォルトにリセットされました</string>
 </resources>

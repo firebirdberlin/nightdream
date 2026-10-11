@@ -145,4 +145,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_city_id_title">ID grada</string>
     <string name="weather_info_title">Informacije</string>
     <string name="weather">Vremenske prilike</string>
+
+    <string name="themes">Теме</string>
+    <string name="active_theme">Активна тема</string>
+    <string name="reset_theme_defaults_summary">Врати прилагођавања за активну тему на поддразумевано.</string>
+    <string name="animations">Анимације</string>
+    <string name="enable_particle_overlays">Омогући прекривање честицама</string>
+    <string name="theme_animation_enabled_summary">Прикажи анимацију падајућег снега или златних звезда.</string>
+    <string name="particle_effect">Ефект честица</string>
+    <string name="only_animate_when_charging">Анимирај само при пуњењу</string>
+    <string name="theme_animation_only_charging_summary">Зауставља анимације током рада на батерији ради уштеде енергије.</string>
+    <string name="theme_updated">Тема ажурирана!</string>
+    <string name="theme_reset_to_defaults">Тема враћена на почетна подешавања</string>
 </resources>
