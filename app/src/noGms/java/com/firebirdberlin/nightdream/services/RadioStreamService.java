@@ -82,7 +82,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     };
 
     protected static final int NOTIFY_ID = 1337;
-    private static final String TAG = "RadioStreamService";
+    private static final String TAG = RadioStreamService.class.getSimpleName();
     private static final String ACTION_START = "start";
     private static final String ACTION_START_STREAM = "start stream";
     private static final String ACTION_STOP = "stop";
@@ -631,7 +631,8 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 handler.postDelayed(fadeIn, muteDelayInMillis);
                 updateNotification(getResources().getString(R.string.radio_muting));
 
-                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime != null
+                        && alarmTime.vibrate && vibrator != null) {
                     vibrator.startVibration();
                 }
 

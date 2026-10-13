@@ -34,7 +34,15 @@
 - Point out when a change compiles in only one flavor.
 
 ## Coding Standards & Utilities
+- Don't exceed a line length of 100 characters.
+- Add {} even for one line statements, except for return statements., e.g. 
+```java
+  if (condition) {
+    statement;
+  }
+  if (condition) return;
 
+```
 - **String Emptiness Checks**: Avoid manual null and empty checks such as `str != null && !str.isEmpty()`. Instead, use `Utility.isEmpty(str)` or `!Utility.isEmpty(str)`.
   - **Specific Rule**: Replace the pattern:
     ```java
