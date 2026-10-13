@@ -117,7 +117,7 @@ public class NightDreamUI {
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private static final String TAG = NightDreamUI.class.getSimpleName();
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
     private final Context mContext;
@@ -316,6 +316,7 @@ public class NightDreamUI {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                    v.performClick();
                     disableMoveClock();
                     break;
             }
@@ -356,7 +357,7 @@ public class NightDreamUI {
             }
 
             @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
                 if (e1 == null || e2 == null) return false;
                 Log.i(TAG, "onFling");
                 clockLayoutContainer.getLocationInWindow(rect);
@@ -1141,7 +1142,7 @@ public class NightDreamUI {
         parentLayout.requestLayout();
         parentLayout.invalidate();
 
-        if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
+        if (!Utility.isEmpty(files) && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
             AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
             runningTask.execute(preloadBackgroundImageFile);
