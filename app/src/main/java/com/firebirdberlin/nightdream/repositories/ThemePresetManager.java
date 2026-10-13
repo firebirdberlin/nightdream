@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
@@ -132,11 +133,13 @@ public class ThemePresetManager {
     }
 
     public static boolean isUserEligible(Context context) {
+        if (BuildConfig.FLAVOR == "noGms") {
+            return true;
+        }
         PurchaseManager pm = PurchaseManager.getInstance(context);
-        return pm.isPurchased(PurchaseManager.ITEM_PRO)
+        return pm.isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)
+                || pm.isPurchased(PurchaseManager.ITEM_PRO)
                 || pm.isPurchased(PurchaseManager.ITEM_DONATION)
-                || pm.isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)
-                || pm.isPurchased(PurchaseManager.ITEM_ACTIONS)
                 || pm.isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
     }
 
@@ -152,7 +155,18 @@ public class ThemePresetManager {
         return !ThemePreset.PRESET_NONE.equals(getActivePresetId(context));
     }
 
+    public static void validateActiveTheme(Context context) {
+        if (context == null) return;
+        SharedPreferences prefs = getPreferences(context);
+        String activePreset = prefs.getString(PREF_ACTIVE_PRESET, ThemePreset.PRESET_NONE);
+        if (!ThemePreset.PRESET_NONE.equals(activePreset) && !isUserEligible(context)) {
+            Log.w(TAG, "Subscription or eligibility ended. Switching to standard theme and disabling animations.");
+            switchTheme(context, ThemePreset.PRESET_NONE);
+        }
+    }
+
     public static String getActivePresetId(Context context) {
+        validateActiveTheme(context);
         SharedPreferences prefs = getPreferences(context);
         return prefs.getString(PREF_ACTIVE_PRESET, ThemePreset.PRESET_NONE);
     }

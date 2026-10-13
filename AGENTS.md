@@ -30,6 +30,7 @@
 - Shared code (`src/main`) must **not** reference Google Play Services, Billing, Cast or
   Play Review classes. Put such code in `src/full` and provide an alternative or stub in
   `src/noGms`.
+- The `noGms` flavor has no purchase management. All features shall be available.
 - Point out when a change compiles in only one flavor.
 
 ## Coding Standards & Utilities

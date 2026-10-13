@@ -498,6 +498,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("purchaseActions2", !isPurchasedActions);
         showPreference("purchaseActions3", !isPurchasedActions);
         showPreference("purchaseProRss", !isPurchasedActions);
+
+        boolean isEligibleThemes = ThemePresetManager.isUserEligible(mContext);
+        showPreference("purchaseThemes", !isEligibleThemes);
+        enablePreference("activeThemePreset", isEligibleThemes);
+        enablePreference("reset_theme_defaults", isEligibleThemes);
+        enablePreference("theme_animation_enabled", isEligibleThemes);
+        enablePreference("theme_particle_effect", isEligibleThemes);
+        enablePreference("theme_animation_only_charging", isEligibleThemes);
     }
 
     private boolean isPurchased(String sku) {
@@ -609,6 +617,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseDesignPackage");
         initPurchasePreference("purchaseDesignPackageBackground");
+        initPurchasePreference("purchaseThemes");
     }
 
     @Override
@@ -1402,6 +1411,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         SwitchPreferenceCompat animOnlyChargingPref = findPreference("theme_animation_only_charging");
 
         SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
+        boolean isEligible = ThemePresetManager.isUserEligible(mContext);
+
+        showPreference("purchaseThemes", !isEligible);
+        enablePreference("activeThemePreset", isEligible);
+        enablePreference("reset_theme_defaults", isEligible);
+        enablePreference("theme_animation_enabled", isEligible);
+        enablePreference("theme_particle_effect", isEligible);
+        enablePreference("theme_animation_only_charging", isEligible);
+
         if (animEnabledPref != null) {
             animEnabledPref.setChecked(prefs.getBoolean("theme_animation_enabled", false));
         }
@@ -1413,20 +1431,11 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             animOnlyChargingPref.setChecked(prefs.getBoolean("theme_animation_only_charging", false));
         }
 
-        boolean isEligible = ThemePresetManager.isUserEligible(mContext);
-
         if (activeThemePref != null) {
             String activeId = ThemePresetManager.getActivePresetId(mContext);
             activeThemePref.setValue(activeId);
             activeThemePref.setOnPreferenceChangeListener((preference, newValue) -> {
                 String newThemeId = (String) newValue;
-                if (!ThemePreset.PRESET_NONE.equals(newThemeId) && !isEligible) {
-                    if (getActivity() instanceof BillingHelperActivity) {
-                        ((BillingHelperActivity) getActivity()).showSubscriptionDialog();
-                    }
-                    return false;
-                }
-
                 ThemePresetManager.switchTheme(mContext, newThemeId);
                 setupThemeControls();
                 if (getView() != null) {
