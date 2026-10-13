@@ -18,7 +18,8 @@
 
 package com.firebirdberlin.nightdream;
 
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.IOException;
@@ -26,12 +27,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class HttpStatusCheckTask extends AsyncTask<String, Void, HttpStatusCheckTask.HttpStatusCheckResult> {
-    private static String TAG = "NightDream.HttpStatusCheckTask";
+public class HttpStatusCheckTask {
+    private static String TAG = HttpStatusCheckTask.class.getSimpleName();
     private static int MAX_NUM_REDIRECTS = 5;
     private static int READ_TIMEOUT = 10000;
     private static int CONNECT_TIMEOUT = 10000;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean cancelled = false;
 
     public interface AsyncResponse {
         void onStatusCheckFinished(HttpStatusCheckTask.HttpStatusCheckResult checkResult);
@@ -65,24 +71,29 @@ public class HttpStatusCheckTask extends AsyncTask<String, Void, HttpStatusCheck
         this.delegate = listener;
     }
 
-    @Override
-    protected HttpStatusCheckTask.HttpStatusCheckResult doInBackground(String... urls) {
-        String url = urls[0];
-        numRedirects = 0;
-        responseCode = 0;
-        try {
-            getFinalURL(new URL(url));
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
-        }
-        //return responseCode == HttpURLConnection.HTTP_OK;
-        return new HttpStatusCheckTask.HttpStatusCheckResult(latestURL, responseCode, responseHeaders, numRedirects);
+    public void execute(String url) {
+        executor.execute(() -> {
+            if (cancelled) return;
+            numRedirects = 0;
+            responseCode = 0;
+            try {
+                getFinalURL(new URL(url));
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+                e.printStackTrace();
+            }
+            if (cancelled) return;
+            HttpStatusCheckResult result = new HttpStatusCheckResult(latestURL, responseCode, responseHeaders, numRedirects);
+            mainHandler.post(() -> {
+                if (!cancelled && delegate != null) {
+                    delegate.onStatusCheckFinished(result);
+                }
+            });
+        });
     }
 
-    @Override
-    protected void onPostExecute(HttpStatusCheckTask.HttpStatusCheckResult result) {
-        delegate.onStatusCheckFinished(result);
+    public void cancel(boolean mayInterruptIfRunning) {
+        this.cancelled = true;
     }
 
     private void getFinalURL(URL url) throws IOException {

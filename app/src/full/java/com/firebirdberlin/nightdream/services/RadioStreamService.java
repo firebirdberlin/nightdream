@@ -30,15 +30,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.session.MediaSession;
 import androidx.media3.session.MediaStyleNotificationHelper;
-import androidx.media3.session.SessionResult;
+
 import android.util.Log;
 import android.util.LruCache;
 import android.util.Patterns;
@@ -109,14 +111,13 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     public static String EXTRA_TITLE = "title";
     static RadioStreamService mRadioStreamService = null;
-    private static boolean readyForPlayback = false;
     static private int radioStationIndex;
     static private RadioStation radioStation;
     private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
     private static long muteDelayInMillis = 0;
     private static MediaSession mediaSession;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
@@ -136,7 +137,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             if (RadioStreamService.streamingMode == StreamingMode.INACTIVE) {
                 stop(getApplicationContext());
             }
-            currentVolume -= 0.01;
+            currentVolume -= 0.01f;
             if (currentVolume > 0.) {
                 exoPlayer.setVolume(currentVolume);
                 handler.postDelayed(fadeOut, 50);
@@ -179,9 +180,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Utility.startForegroundService(context, i);
     }
 
-    public static boolean isReadyForPlayback() {
-        return readyForPlayback;
-    }
+
 
     public static int getCurrentRadioStationIndex() {
         if (streamingMode != StreamingMode.RADIO) {
@@ -305,9 +304,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Log.d(TAG, "enableMediaSession()");
         if (exoPlayer == null || mediaSession != null) return;
 
-        mediaSession = new MediaSession.Builder(this, exoPlayer)
-                .setCallback(new SessionCallback())
-                .build();
+        mediaSession = new MediaSession.Builder(this, exoPlayer).build();
     }
 
     @Override
@@ -359,12 +356,10 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                             ContextCompat.registerReceiver(this, myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
                         }
 
-                        readyForPlayback = false;
                         checkStreamAndStart(radioStationIndex);
                     }
                     break;
                 case ACTION_STOP:
-                    readyForPlayback = false;
                     Log.d(TAG, "stopself");
                     stopSelf();
                     break;
@@ -454,7 +449,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
         streamURL = "";
-        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_audiotrack_dark);
+        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_radio);
 
         if (radioStationIndex > -1) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
@@ -545,7 +540,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        stopForeground(false); // bool: true = remove Notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            stopForeground(Service.STOP_FOREGROUND_DETACH);
+        } else {
+            stopForeground(false);
+        }
     }
 
     public void setAlarmVolume(int volume, boolean useMusicStream) {
@@ -748,6 +747,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void stopPlaying() {
         Log.d(TAG, "stopPlaying()");
 
@@ -859,7 +859,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         );
 
         return new NotificationCompat.Action.Builder(
-                R.drawable.exo_icon_stop,
+                R.drawable.ic_radio,
                 getString(R.string.action_stop),
                 pi
         ).build();
@@ -1044,21 +1044,5 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         return Utility.getImmutableBroadcast(context, keyCode, intent);
     }
 
-    private class SessionCallback implements MediaSession.Callback {
-        @Override
-        public int onPlayerCommandRequest(
-                @NonNull MediaSession session,
-                @NonNull MediaSession.ControllerInfo controller,
-                int playerCommand
-        ) {
-            if (playerCommand == Player.COMMAND_SEEK_TO_NEXT) {
-                skipToNextStation();
-                return SessionResult.RESULT_SUCCESS;
-            } else if (playerCommand == Player.COMMAND_SEEK_TO_PREVIOUS) {
-                skipToPreviousStation();
-                return SessionResult.RESULT_SUCCESS;
-            }
-            return MediaSession.Callback.super.onPlayerCommandRequest(session, controller, playerCommand);
-        }
-    }
+
 }
