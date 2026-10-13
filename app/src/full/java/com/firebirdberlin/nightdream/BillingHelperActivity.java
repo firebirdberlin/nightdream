@@ -362,6 +362,7 @@ private String getProductWithPrice(int resId, String sku) {
             boolean isPurchased = purchaseManager.rawIsPurchased(sku);
             Log.i(TAG, String.format("onPurchasesInitialized(%s, %s)", sku, isPurchased));
         }
+        com.firebirdberlin.nightdream.repositories.ThemePresetManager.validateActiveTheme(this);
     }
 
     protected void onItemPurchased(String sku) {
