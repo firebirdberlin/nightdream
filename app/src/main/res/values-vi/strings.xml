@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,23 +14,21 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Giới thiệu</string>
     <string name="action_snooze">Ngủ thêm</string>
     <string name="action_stop">Dừng</string>
-    <string name="options_stop_alarms_slider">thanh trượt</string>
-    <string name="options_stop_alarms_error_min_one">Vui lòng chọn ít nhất một cử chỉ.</string>
+    <string name="active_theme">Chủ đề đang hoạt động</string>
     <string name="add_custom_alarm_tone">Thêm âm thanh báo thức</string>
     <string name="alarmFadeIn">Tăng âm lượng</string>
     <string name="alarmVolume">Âm lượng</string>
-    <string name="allow_screen_off_summary">Tắt màn hình vào ban đêm</string>
     <string name="allow_screen_off">Tắt màn hình</string>
+    <string name="allow_screen_off_summary">Tắt màn hình vào ban đêm</string>
     <string name="ambient_noise">Dò tiếng ồn</string>
     <string name="ambient_noise_summary">Tiếng ồn xung quanh sẽ ngăn không cho chế độ ban đêm được kích hoạt?</string>
-    <string name="appearance">Hiển thị</string>
+    <string name="animations">Hiệu ứng động</string>
     <string name="app_name">Đồng hồ ban đêm</string>
+    <string name="appearance">Hiển thị</string>
     <string name="auto_brightness">Độ sáng tự động</string>
     <string name="autostart_message_disabled">Vui lòng tắt trình bảo vệ màn hình (Daydream) để kích hoạt tùy chọn tự khởi động.</string>
     <string name="autostart_timerange_label_end">Thời gian kết thúc</string>
@@ -49,15 +48,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Accent màu</string>
     <string name="choose_secondary_color">Màu chữ số</string>
     <string name="clear">Xoá</string>
+    <string name="clock_layout">lớp</string>
     <string name="clock_layout_analog">Đồng hồ kim</string>
+    <string name="clock_layout_digit_analog">đồng hồ kim với chữ số</string>
     <string name="clock_layout_digital">Đồng hồ số</string>
     <string name="clock_layout_elegant_analog">đồng hồ thanh lịch</string>
-    <string name="clock_layout_digit_analog">đồng hồ kim với chữ số</string>
-    <string name="clock_layout">lớp</string>
     <string name="clock_layout_modern_analog">đồng hồ kim hiện đại</string>
     <string name="colors">Màu</string>
-    <string name="confirm_reset_question">Bạn muốn đặt lại tất cả các cài đặt?</string>
     <string name="confirm_reset">Đặt lại</string>
+    <string name="confirm_reset_question">Bạn muốn đặt lại tất cả các cài đặt?</string>
     <string name="contribute">Đóng góp</string>
     <string name="contribute_source_code">Mã nguồn</string>
     <string name="contribute_translation">Người dịch</string>
@@ -65,18 +64,19 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits">Tín dụng</string>
     <string name="credits_pull_requests">Đầy đủ yêu cầu</string>
     <string name="date_format">Định dạng ngày</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Cầu vồng</string>
     <string name="delete">xoá</string>
     <string name="dialog_message_thank_you">Cám ơn bạn rất nhiều!</string>
     <string name="dialog_title_thank_you">Cám ơn</string>
-    <string name="decoration_style_rainbow">Cầu vồng</string>
-    <string name="decoration_style_pride">Pride flag</string>
-    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Hổ trợ</string>
     <string name="doubleTapToFinishSummary">Hoàn tất ứng dụng bằng cách nhấn đúp vào màn hình.</string>
     <string name="doubleTapToFinishTitle">Nhấn đúp để kết thúc</string>
+    <string name="enable_particle_overlays">Bật hiệu ứng hạt</string>
     <string name="forecast">Dự báo thời tiết 5 ngày</string>
-    <string name="handle_power_ac">Nguồn AC</string>
     <string name="handle_power">Tự khởi động</string>
+    <string name="handle_power_ac">Nguồn AC</string>
     <string name="handle_power_car">Chế độ trên xe</string>
     <string name="handle_power_desk">Chế độ để bàn</string>
     <string name="handle_power_disconnection">Tự động dừng</string>
@@ -89,34 +89,38 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="location_time">Múi giờ</string>
     <string name="maxBrightness">Độ sáng tối đa</string>
     <string name="maxBrightnessBattery">Độ sáng tối đa khi dùng pin</string>
-    <string name="message_mobile_data_connection_confirmation">Bạn đã kết nối với mạng di động. Phát stream radio?</string>
     <string name="message_mobile_data_connection">Kết nối dữ liệu di động</string>
+    <string name="message_mobile_data_connection_confirmation">Bạn đã kết nối với mạng di động. Phát stream radio?</string>
     <string name="message_no_data_connection">Không có kết nối dữ liệu</string>
     <string name="minBrightness">Độ sáng màn hình tối thiểu</string>
     <string name="minute">m</string>
     <string name="mute_ringer">tắt chuông</string>
+    <string name="night_mode">chế độ ban đêm</string>
     <string name="night_mode_activation_auto">tự động</string>
     <string name="night_mode_activation_manual">bằng tay</string>
     <string name="night_mode_activation_mode">Chế độ kích hoạt</string>
     <string name="night_mode_activation_scheduled">Báo thức</string>
-    <string name="night_mode">chế độ ban đêm</string>
     <string name="night_mode_timerange_label_end">Thời gian kết thúc</string>
     <string name="night_mode_timerange_label_start">Thời gian bắt đầu</string>
     <string name="night_mode_timerange_title">Ban đêm</string>
     <string name="noise_sensitivity">Độ nhạy micro</string>
+    <string name="only_animate_when_charging">Chỉ hoạt ảnh khi đang sạc</string>
+    <string name="options_stop_alarms_error_min_one">Vui lòng chọn ít nhất một cử chỉ.</string>
+    <string name="options_stop_alarms_slider">thanh trượt</string>
     <string name="other_apps">Ứng dụng khác</string>
-    <string name="other_apps_tinytimetracker_summary">Theo dõi thời gian làm việc hàng ngày của bạn.</string>
     <string name="other_apps_tinytimetracker">Thời gian theo dõi nhỏ nhất</string>
+    <string name="other_apps_tinytimetracker_summary">Theo dõi thời gian làm việc hàng ngày của bạn.</string>
+    <string name="particle_effect">Hiệu ứng hạt</string>
     <string name="persistent_battery_value_while_charging">Trạng thái pin liên tục</string>
     <string name="persistent_battery_value_while_charging_summary">Luôn hiển thị trạng thái pin khi sạc.</string>
     <string name="preview">Xem lại</string>
     <string name="product_name_donation">Quyên góp</string>
     <string name="product_name_pro">Full ver</string>
     <string name="radio">Radio</string>
-    <string name="radio_stream_keep_running">Duy trì radio</string>
-    <string name="radio_stream_keep_running_summary">Tiếp tục phát luồng radio sau khi báo thức đã dừng.</string>
     <string name="radio_stream">luồng phát thanh</string>
     <string name="radio_stream_failure">Lỗi luồng phát thanh</string>
+    <string name="radio_stream_keep_running">Duy trì radio</string>
+    <string name="radio_stream_keep_running_summary">Tiếp tục phát luồng radio sau khi báo thức đã dừng.</string>
     <string name="radio_stream_manual_input_description">Tên kênh</string>
     <string name="radio_stream_manual_input_hint">Cài đặt kênh bằng tay</string>
     <string name="radio_stream_manual_input_url">Địa chỉ net</string>
@@ -125,13 +129,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Chuỗi tìm kiếm</string>
     <string name="radio_stream_search">Tìm kiếm</string>
     <string name="radio_stream_unreachable_url">URL không thể truy cập.</string>
+    <string name="recommend">Đề xuất ứng dụng</string>
     <string name="recommend_app_desc">Chọn ứng dụng để chia sẻ đề xuất của bạn.</string>
     <string name="recommend_app_subject">Tôi muốn giới thiệu ứng dụng đồng hồ ban đêm này cho bạn.</string>
-    <string name="recommend">Đề xuất ứng dụng</string>
     <string name="remaining">rem.</string>
     <string name="repeat">lặp lại</string>
+    <string name="reset_theme_defaults_summary">Đặt lại tùy chỉnh cho chủ đề đang hoạt động về mặc định.</string>
     <string name="reset_to_defaults">Cài về mặc định</string>
-    <string name="screenProtectionMove">Đi chuyển đồng hồ chung quanh</string>
     <string name="review_request">Vui lòng đánh giá ứng dụng này. Cảm ơn !</string>
     <string name="screen_orientation_automatic">Tự động</string>
     <string name="screen_orientation_landscape">Hướng ngang</string>
@@ -139,6 +143,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Hướng ngang 180°</string>
     <string name="screen_orientation_reverse_portrait">Hướng dọc 180°</string>
     <string name="screenOrientation">Định hướng màn hình</string>
+    <string name="screenProtectionMove">Đi chuyển đồng hồ chung quanh</string>
     <string name="set_alarm">Cài đặt báo thức</string>
     <string name="show_calendar_events">Nổi bật sự kiện</string>
     <string name="show_date">Hiển thị ngày</string>
@@ -147,16 +152,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Hiển thị tốc độ gió</string>
     <string name="sleep_time_dialog_title">Hẹn giờ ngủ</string>
     <string name="snoozeTime">Thời gian ngủ thêm</string>
-
-    <string name="themes">Chủ đề</string>
-    <string name="active_theme">Chủ đề đang hoạt động</string>
-    <string name="reset_theme_defaults_summary">Đặt lại tùy chỉnh cho chủ đề đang hoạt động về mặc định.</string>
-    <string name="animations">Hiệu ứng động</string>
-    <string name="enable_particle_overlays">Bật hiệu ứng hạt</string>
     <string name="theme_animation_enabled_summary">Hiển thị hiệu ứng tuyết rơi hoặc sao vàng.</string>
-    <string name="particle_effect">Hiệu ứng hạt</string>
-    <string name="only_animate_when_charging">Chỉ hoạt ảnh khi đang sạc</string>
     <string name="theme_animation_only_charging_summary">Tạm dừng hiệu ứng khi dùng pin để tiết kiệm điện.</string>
-    <string name="theme_updated">Đã cập nhật chủ đề!</string>
     <string name="theme_reset_to_defaults">Chủ đề đã được đặt lại về mặc định</string>
+    <string name="theme_updated">Đã cập nhật chủ đề!</string>
+    <string name="themes">Chủ đề</string>
 </resources>
