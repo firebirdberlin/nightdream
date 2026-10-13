@@ -37,6 +37,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
+import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
 import com.google.android.flexbox.FlexboxLayout;
@@ -182,6 +183,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         if (mediaStyleContainer != null) {
             mediaStyleContainer.removeAllViews();
+            mediaStyleContainer.setVisibility(View.GONE);
+            ClockLayout clockLayout = contentView.findViewById(R.id.clockLayout);
+            if (clockLayout != null) {
+                clockLayout.updateLayout();
+            }
         }
     }
     private void setupMediaControls(Context context, Intent intent) {
@@ -222,6 +228,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         model.setColor(color);
         model.setupFromNotificationIntent(context, intent, notificationMessageSmallIcon);
+        mediaStyleContainer.setVisibility(View.VISIBLE);
+        ClockLayout clockLayout = contentView.findViewById(R.id.clockLayout);
+        if (clockLayout != null) {
+            clockLayout.updateLayout();
+        }
     }
 
     private void setupNotificationPreview(Context context, Intent intent) {

@@ -50,7 +50,7 @@ public class AlarmService extends Service
         implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnCompletionListener {
-    private static final String TAG = "NightDream.AlarmService";
+    private static final String TAG = AlarmService.class.getSimpleName();
     static public boolean isRunning = false;
     final private Handler handler = new Handler();
     PowerManager.WakeLock wakelock;
@@ -323,9 +323,11 @@ public class AlarmService extends Service
         }
 
         mMediaPlayer.start();
-        Log.i(TAG, "vibrate = " + alarmTime.vibrate);
-        if (alarmTime.vibrate) {
-            vibrator.startVibration();
+        if (alarmTime != null) {
+            Log.i(TAG, "vibrate = " + alarmTime.vibrate);
+            if (alarmTime.vibrate) {
+                vibrator.startVibration();
+            }
         }
     }
 

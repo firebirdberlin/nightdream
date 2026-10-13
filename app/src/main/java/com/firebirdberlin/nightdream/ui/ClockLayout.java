@@ -689,7 +689,8 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     public void showMediaStyleLayout(boolean on) {
         Log.d(TAG, "showMediaStyleLayout(" + on + ");");
         if (mediaStyleLayout != null) {
-            mediaStyleLayout.setVisibility((on) ? View.VISIBLE : GONE);
+            boolean show = on && mediaStyleLayout.getChildCount() > 0;
+            mediaStyleLayout.setVisibility(show ? View.VISIBLE : GONE);
         }
     }
 
@@ -729,6 +730,14 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
             color = Graphics.setColorWithAlpha(color, backgroundTransparency);
             shape.setColor(color);
             setBackground(shape);
+        }
+    }
+
+    public void updateLayout() {
+        if (lastParentWidth > 0 && lastConfiguration != null) {
+            updateLayout(lastParentWidth, lastConfiguration);
+        } else {
+            requestLayout();
         }
     }
 
@@ -1104,7 +1113,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         int additionalHeight = 0;
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 24.f) : 0;
         Log.d(TAG, "1 additionalHeight = " + additionalHeight);
-        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 48) : 0;
+        additionalHeight += (mediaStyleLayout.getVisibility() == VISIBLE && mediaStyleLayout.getChildCount() > 0) ? Utility.dpToPx(context, 48) : 0;
         Log.d(TAG, "2 additionalHeight = " + additionalHeight);
         additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
         Log.d(TAG, "3 additionalHeight = " + additionalHeight);
@@ -1184,7 +1193,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         }
 
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? (int) getHeightOf(notificationLayout) : 0;
-        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 48) : 0;
+        additionalHeight += (mediaStyleLayout.getVisibility() == VISIBLE && mediaStyleLayout.getChildCount() > 0) ? Utility.dpToPx(context, 48) : 0;
         additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
         setSize(LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
 

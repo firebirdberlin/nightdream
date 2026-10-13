@@ -18,6 +18,7 @@
 
 package com.firebirdberlin.nightdream.ui;
 
+import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -28,6 +29,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MediaControlLayout extends ViewModel {
     private static final String TAG = "MediaControlLayout";
@@ -160,6 +164,77 @@ public class MediaControlLayout extends ViewModel {
         }
     }
 
+    private boolean triggerMediaSessionAction(Notification.Action action) {
+        if (activeMediaController == null) {
+            return false;
+        }
+        android.media.session.MediaController.TransportControls controls =
+                activeMediaController.getTransportControls();
+        if (controls == null) {
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= 28) {
+            int semanticAction = action.getSemanticAction();
+            switch (semanticAction) {
+                case Notification.Action.SEMANTIC_ACTION_PLAY:
+                    Log.d(TAG, "Triggering MediaController.play()");
+                    controls.play();
+                    return true;
+                case Notification.Action.SEMANTIC_ACTION_PAUSE:
+                    Log.d(TAG, "Triggering MediaController.pause()");
+                    controls.pause();
+                    return true;
+                case Notification.Action.SEMANTIC_ACTION_STOP:
+                    Log.d(TAG, "Triggering MediaController.stop()");
+                    controls.stop();
+                    return true;
+                default:
+                    break;
+            }
+        }
+
+        CharSequence actionTitle = action.title;
+        if (actionTitle != null) {
+            String titleStr = actionTitle.toString().toLowerCase(Locale.ROOT);
+            if (titleStr.contains("pause") || titleStr.contains("anhalten")) {
+                Log.d(TAG, "Triggering MediaController.pause() based on title");
+                controls.pause();
+                return true;
+            } else if (titleStr.contains("play") || titleStr.contains("abspielen")
+                    || titleStr.contains("wiedergabe")) {
+                Log.d(TAG, "Triggering MediaController.play() based on title");
+                controls.play();
+                return true;
+            } else if (titleStr.contains("zurückspulen") || titleStr.contains("zurueckspulen")
+                    || titleStr.contains("rewind") || titleStr.contains("sekunden zurück")
+                    || titleStr.contains("sekunden zurueck") || titleStr.contains("s zurück")
+                    || titleStr.contains("s zurueck")) {
+                Log.d(TAG, "Triggering MediaController.rewind() based on title");
+                controls.rewind();
+                return true;
+            } else if (titleStr.contains("vorspulen") || titleStr.contains("fast forward")
+                    || titleStr.contains("forward") || titleStr.contains("sekunden vor")
+                    || titleStr.contains("s vor")) {
+                Log.d(TAG, "Triggering MediaController.fastForward() based on title");
+                controls.fastForward();
+                return true;
+            } else if (titleStr.contains("next") || titleStr.contains("weiter")
+                    || titleStr.contains("nächster") || titleStr.contains("naechster")) {
+                Log.d(TAG, "Triggering MediaController.skipToNext() based on title");
+                controls.skipToNext();
+                return true;
+            } else if (titleStr.contains("prev") || titleStr.contains("zurück")
+                    || titleStr.contains("zurueck") || titleStr.contains("vorheriger")) {
+                Log.d(TAG, "Triggering MediaController.skipToPrevious() based on title");
+                controls.skipToPrevious();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void setupFromNotificationIntent(Context context, Intent intent, Drawable smallIcon) {
         Log.d(TAG, "setupFromNotificationIntent");
 
@@ -189,23 +264,78 @@ public class MediaControlLayout extends ViewModel {
         Notification.Action[] actions =
                 (Notification.Action[]) intent.getParcelableArrayExtra("actions");
         if (actions != null) {
+            int index = 0;
             for (final Notification.Action action : actions) {
+                final int actionIndex = index++;
                 Drawable notificationDrawableIcon = null;
                 Icon icon = action.getIcon();
                 if (icon != null) {
                     notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
-                    notificationDrawableIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                    if (notificationDrawableIcon != null) {
+                        notificationDrawableIcon.setColorFilter(
+                                color, PorterDuff.Mode.SRC_ATOP
+                        );
+                    }
                 }
                 notificationActionImages.add(notificationDrawableIcon);
 
                 notificationActionClick.add(
                         v -> {
-                            try {
-                                if (action.actionIntent != null) {
-                                    action.actionIntent.send();
+                            Log.d(
+                                    TAG,
+                                    "MediaControl action clicked: index=" + actionIndex
+                                            + ", title='" + action.title + "'"
+                                            + ", intent=" + action.actionIntent
+                            );
+                            if (triggerMediaSessionAction(action)) {
+                                Log.d(
+                                        TAG,
+                                        "Handled action via MediaController transport controls"
+                                );
+                                return;
+                            }
+
+                            Context sendContext = context.getApplicationContext();
+                            if (action.actionIntent != null) {
+                                try {
+                                    Bundle optionsBundle = null;
+                                    if (Build.VERSION.SDK_INT >= 34) {
+                                        ActivityOptions options = ActivityOptions.makeBasic();
+                                        options.setPendingIntentBackgroundActivityStartMode(
+                                                ActivityOptions
+                                                        .MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                                        );
+                                        optionsBundle = options.toBundle();
+                                    }
+                                    action.actionIntent.send(
+                                            sendContext, 0, null, null, null, null, optionsBundle
+                                    );
+                                    Log.d(
+                                            TAG,
+                                            "MediaControl actionIntent.send() success for index="
+                                                    + actionIndex
+                                    );
+                                } catch (PendingIntent.CanceledException ex) {
+                                    Log.e(
+                                            TAG,
+                                            "MediaControl actionIntent canceled for index="
+                                                    + actionIndex,
+                                            ex
+                                    );
+                                } catch (Exception ex) {
+                                    Log.e(
+                                            TAG,
+                                            "MediaControl actionIntent failed for index="
+                                                    + actionIndex,
+                                            ex
+                                    );
                                 }
-                            } catch (PendingIntent.CanceledException ex) {
-                                Log.e(TAG, "MediaStyle - Notification set actionIntent");
+                            } else {
+                                Log.w(
+                                        TAG,
+                                        "MediaControl actionIntent is null for index="
+                                                + actionIndex
+                                );
                             }
                         }
                 );
