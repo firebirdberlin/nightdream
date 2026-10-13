@@ -84,6 +84,9 @@
 
 - All user-visible text goes into `strings.xml`. Missing translations do not fail the build
   (lint `MissingTranslation` is disabled), but mention when translations are missing.
+- New strings shall be introduced via string resources in `strings.xml`. Once the feature is
+  fully implemented (ask the user) missing translations shall be added. The keys in
+  `strings.xml` files shall be sorted alphabetically.
 - Use `Utility.dpToPx(context, ...)` or `dimens.xml` instead of hardcoded pixel values.
   Colors belong in `colors.xml` or themes.
 - Do not allocate objects in `onDraw`. Scale bitmaps and be aware of out-of-memory risks.

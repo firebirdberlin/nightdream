@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,8 +14,6 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Über</string>
     <string name="action_change">Ändern</string>
@@ -24,40 +23,37 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="activateDoNotDisturb">\"Nicht stören\" aktivieren</string>
     <string name="activateDoNotDisturbAllowPriority">wichtige Meldungen zulassen</string>
     <string name="activateDoNotDisturbSummary">\"Nicht stören\" aktivieren, solange die App aktiv ist.</string>
+    <string name="active_theme">Aktives Thema</string>
     <string name="add_custom_alarm_tone">Weckton hinzufügen</string>
     <string name="add_custom_font">Schriftart hinzufügen</string>
     <string name="add_new_alarm">neuen Wecker hinzufügen</string>
     <string name="alarm">Wecker</string>
-    <string name="alarmName">Name des Weckers</string>
     <string name="alarmFadeIn">Ansteigende Lautstärke</string>
     <string name="alarmFadeInDurationSeconds">Dauer</string>
     <string name="alarmFadeInMaxVolumePercent">maximale Lautstärke</string>
+    <string name="alarmName">Name des Weckers</string>
     <string name="alarmStartDate">Nächster Alarm am</string>
     <string name="alarmStartsFrom">ab</string>
     <string name="alarmUpcoming">Anstehende Weckzeit</string>
     <string name="alarmVolume">Lautstärke</string>
     <string name="allow_screen_off">Bildschirm aus</string>
     <string name="allow_screen_off_summary">Der Bildschirm darf sich während der Nacht abschalten.</string>
+    <string name="always_on">Always on</string>
     <string name="alwaysOnBatteryLevel">Akkustand ist über</string>
     <string name="alwaysOnStartWithLockedUI">Gegen Berührungen sperren</string>
     <string name="alwaysOnStartWithLockedUIDesc">Beim automatischen Start die App gegen Berührungen sperren. Ein langer Druck auf das Schloss-Symbol entsperrt die App wieder.</string>
-    <string name="always_on">Always on</string>
     <string name="ambient_noise">Umgebungslautstärke messen</string>
     <string name="ambient_noise_summary">Verhindert das Abschalten bei Umgebungsgeräuschen.</string>
+    <string name="animations">Animationen</string>
     <string name="app_name">Nachtuhr</string>
     <string name="appearance">Aussehen</string>
     <string name="auto_brightness">Automatische Helligkeit</string>
-    <string name="autostartForNotificationsSummary">Die App bei neuen Benachrichtigungen starten.</string>
-    <string name="autostartForNotificationsTitle">Benachrichtigungen</string>
     <string name="autostart_message_disabled">Bitte deaktivieren Sie Bildschirmschoner (Daydream), um die Autostart-Option zu aktivieren.</string>
     <string name="autostart_timerange_label_end">Endzeit</string>
     <string name="autostart_timerange_label_start">Startzeit</string>
+    <string name="autostartForNotificationsSummary">Die App bei neuen Benachrichtigungen starten.</string>
+    <string name="autostartForNotificationsTitle">Benachrichtigungen</string>
     <string name="background">Hintergrund</string>
-    <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart und Standby-Modus ausgeschaltet. Fortfahren?</string>
-    <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
-    <string name="backgroundServiceNotificationText">Der Hintergrundservice ist aktiv.</string>
-    <string name="backgroundServiceNotificationTextLocation">Der Standort wird bestimmt.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Der Nachtmodus ist aktiv.</string>
     <string name="background_auto_accent_color">Automatische Farbauswahl</string>
     <string name="background_auto_accent_summary">Die Akzentfarbe automatisch bestimmen lassen</string>
     <string name="background_black">Schwarz</string>
@@ -89,6 +85,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="background_transparent">Transparent</string>
     <string name="background_zoomin">Zoom</string>
     <string name="background_zoomin_summary">Automatischer Zoom ins Hintergrundbild</string>
+    <string name="backgroundServiceDialogMessage">Ohne Hintergrundservice werden Autostart und Standby-Modus ausgeschaltet. Fortfahren?</string>
+    <string name="backgroundServiceDialogTitle">Hintergrundservice beenden</string>
+    <string name="backgroundServiceNotificationText">Der Hintergrundservice ist aktiv.</string>
+    <string name="backgroundServiceNotificationTextLocation">Der Standort wird bestimmt.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Der Nachtmodus ist aktiv.</string>
     <string name="battery">Akku</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min</string>
@@ -121,7 +122,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_secondary_color">Textfarbe</string>
     <string name="clear">löschen</string>
     <string name="clock">Uhr</string>
-    <string name="clockBackgroundTransparency">Transparenz des Hintergrundes</string>
     <string name="clock_hands">Zeiger</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_analog">Analoguhr</string>
@@ -135,6 +135,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="clock_layout_elegant_analog">elegante Analoguhr</string>
     <string name="clock_layout_mirror_text">Text spiegeln</string>
     <string name="clock_layout_modern_analog">moderne Analoguhr</string>
+    <string name="clockBackgroundTransparency">Transparenz des Hintergrundes</string>
     <string name="colors">Farben</string>
     <string name="confirm_reset">Zurücksetzen</string>
     <string name="confirm_reset_question">Möchten Sie wirklich alle Einstellungen zurücksetzen?</string>
@@ -155,6 +156,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_labels">Ziffern</string>
     <string name="decoration_style_minute_hand">Minutenzeiger</string>
     <string name="decoration_style_none">Keiner</string>
+    <string name="decoration_style_pride">Pride-Flagge</string>
+    <string name="decoration_style_progress_pride">Progress Pride-Flagge</string>
+    <string name="decoration_style_rainbow">Regenbogen</string>
     <string name="decoration_style_rust">Rost</string>
     <string name="decoration_weather_icon_size">Größe der Wettericons</string>
     <string name="delete">löschen</string>
@@ -164,20 +168,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="dialog_title_thank_you">Dankeschön!</string>
     <string name="digit_emphasize_quarters">Viertel hervorheben</string>
     <string name="directory_background_image_select">Bilder auswählen</string>
-    <string name="decoration_style_rainbow">Regenbogen</string>
-    <string name="decoration_style_pride">Pride-Flagge</string>
-    <string name="decoration_style_progress_pride">Progress Pride-Flagge</string>
     <string name="donate">Spenden</string>
     <string name="doubleTapToFinishSummary">Beenden Sie die App durch doppeltes Tippen auf den Bildschirm.</string>
     <string name="doubleTapToFinishTitle">Doppeltipp zum Beenden</string>
+    <string name="enable_particle_overlays">Partikel-Overlays aktivieren</string>
     <string name="export_preferences">Informationen zur App exportieren</string>
-    <string name="export_preferences_file">Einstellungen in Datei exportieren</string>
     <string name="export_preferences_email">App-Informationen per E-Mail senden</string>
-    <string name="import_preferences">Einstellungen importieren</string>
-    <string name="import_preferences_confirm">Möchten Sie die Einstellungen aus dieser Sicherungsdatei importieren?</string>
-    <string name="import_preferences_success">Einstellungen erfolgreich importiert.</string>
-    <string name="import_preferences_failed">Fehler beim Importieren der Einstellungen.</string>
-    <string name="import_preferences_requires_pro">Das Importieren von Einstellungen erfordert Pro oder Actions.</string>
+    <string name="export_preferences_file">Einstellungen in Datei exportieren</string>
     <string name="flashlight">Taschenlampe</string>
     <string name="forecast">Vorhersage</string>
     <string name="frequently_asked_questions">Häufig gestellte Fragen</string>
@@ -201,9 +198,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hour">h</string>
     <string name="ignoreBatteryOptimisation">Akkuoptimierung</string>
     <string name="ignoreBatteryOptimisation_summary">Es wird empfohlen, die App von der Akkuoptimierung auszuschließen.</string>
-    <string name="inner_circle_radius">Radius des inneren Kreises</string>
     <string name="images_background_copy">Verarbeite Bilder im Hintergrund</string>
     <string name="images_background_service_unbound">Fehler beim Verarbeiten der Bilder. Bitte probieren Sie es noch einmal.</string>
+    <string name="import_preferences">Einstellungen importieren</string>
+    <string name="import_preferences_confirm">Möchten Sie die Einstellungen aus dieser Sicherungsdatei importieren?</string>
+    <string name="import_preferences_failed">Fehler beim Importieren der Einstellungen.</string>
+    <string name="import_preferences_requires_pro">Das Importieren von Einstellungen erfordert Pro oder Actions.</string>
+    <string name="import_preferences_success">Einstellungen erfolgreich importiert.</string>
+    <string name="inner_circle_radius">Radius des inneren Kreises</string>
     <string name="length">Länge</string>
     <string name="location_time">Zeit der letzten Standortbestimmung</string>
     <string name="mailing_list">Öffentliche Mailingliste</string>
@@ -228,9 +230,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_title">Nachtzeit</string>
     <string name="no_alarm_set">kein Wecker</string>
     <string name="noise_sensitivity">Mikrofonempfindlichkeit</string>
-    <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
-    <string name="notifyForUpcomingAlarmsSummary">Rechtzeitig vor dem Alarm eine Benachrichtigung senden.</string>
-    <string name="notifyForUpcomingAlarmsTitle">Vorher benachrichtigen</string>
     <string name="notification_channel_desc_alarms">Benachrichtigung, die einen aktiven Weckalarm anzeigt.</string>
     <string name="notification_channel_desc_devmsg">Benachrichtigungen, die die Nachtuhr betreffen.</string>
     <string name="notification_channel_desc_radio">Benachrichtigung, die einen aktiven Radiostream anzeigt.</string>
@@ -252,28 +251,33 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_show_mediastyle_title">Medienplayer anzeigen</string>
     <string name="notification_show_preview_summary">Zeige Vorschau von eingehenden Benachrichtigungen</string>
     <string name="notification_show_preview_title">Benachrichtigungsvorschau</string>
+    <string name="notificationListenerService">Benachrichtigungsservice verwalten</string>
     <string name="notifications">Benachrichtigungen</string>
+    <string name="notifications_options">Benachrichtigungsoptionen</string>
     <string name="notificationsInStatusBarSummary">Zeige Benachrichtigungen in der Statuszeile an. Andernfalls werden Benachrichtigungen unter der Uhrzeit dargestellt.</string>
     <string name="notificationsInStatusBarTitle">In Statuszeile anzeigen</string>
-    <string name="notifications_options">Benachrichtigungsoptionen</string>
+    <string name="notifyForUpcomingAlarmsSummary">Rechtzeitig vor dem Alarm eine Benachrichtigung senden.</string>
+    <string name="notifyForUpcomingAlarmsTitle">Vorher benachrichtigen</string>
+    <string name="numbers">Ziffern</string>
     <string name="numberStyleArabic">Arabisch</string>
     <string name="numberStyleNone">Keiner</string>
     <string name="numberStyleRoman">Römisch</string>
-    <string name="numbers">Ziffern</string>
-    <string name="options_stop_alarms_long_press">Langes Drücken</string>
-    <string name="options_stop_alarms_tap">Tippen</string>
-    <string name="options_stop_alarms_slider">Schieberegler</string>
+    <string name="only_animate_when_charging">Nur beim Laden animieren</string>
     <string name="options_stop_alarms_error_min_one">Bitte wählen Sie mindestens eine Geste aus.</string>
+    <string name="options_stop_alarms_long_press">Langes Drücken</string>
+    <string name="options_stop_alarms_slider">Schieberegler</string>
+    <string name="options_stop_alarms_tap">Tippen</string>
     <string name="options_stop_alarms_title">Geste zum Beenden eines Alarms</string>
     <string name="other_apps">Andere Apps</string>
     <string name="other_apps_tinytimetracker">Zeiterfassung</string>
     <string name="other_apps_tinytimetracker_summary">Erfassen Sie Ihre tägliche Arbeitszeit.</string>
     <string name="outer_circle_radius">Radius des äußeren Kreises</string>
     <string name="outer_circle_width">Dicke des äußeren Kreises</string>
+    <string name="particle_effect">Partikeleffekt</string>
     <string name="permission_request">Berechtigung benötigt</string>
-    <string name="permission_request_post_notifications">Zum Senden von Benachrichtigungen wird eine Berechtigung benötigt.</string>
-    <string name="permission_request_overlays">Damit die App richtig funktioniert, geben Sie bitte die Berechtigung \"Über anderen Apps einblenden\".</string>
     <string name="permission_request_location_mode">Die Standortbestimmung ist zur Zeit deaktiviert.</string>
+    <string name="permission_request_overlays">Damit die App richtig funktioniert, geben Sie bitte die Berechtigung \"Über anderen Apps einblenden\".</string>
+    <string name="permission_request_post_notifications">Zum Senden von Benachrichtigungen wird eine Berechtigung benötigt.</string>
     <string name="permission_request_storage">Berechtigung für Medien wurde nicht erteilt.</string>
     <string name="persistent_battery_value_while_charging">Dauerhafter Akkustatus</string>
     <string name="persistent_battery_value_while_charging_summary">Zeige den Akkustand dauerhaft, wenn der Akku geladen wird.</string>
@@ -289,21 +293,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="preferences">Einstellungen</string>
     <string name="prev">vorheriges</string>
     <string name="preview">Vorschau</string>
-    <string name="seconds_15">15 Sekunden</string>
-    <string name="seconds_30">30 Sekunden</string>
-    <string name="seconds_60">60 Sekunden</string>
-    <string name="showNotifications">Benachrichtigungen anzeigen</string>
-    <string name="showNotificationsAccessGranted">Benachrichtigungszugriff erteilt</string>
-    <string name="showNotificationsAccessNotGranted">Benachrichtigungszugriff nicht erteilt!</string>
-    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung in den Android-Einstellungen erteilt werden.</string>
     <string name="product_description_weather">\nEin Upgrade enthält\n
-    \n- Anzeige der aktuellen Wetterbedingungen
-    \n- Pollenvorhersage für Deutschland
-    \n- Wettervorhersage
-    \n- mehr Uhrendesigns
-    </string>
+        \n- Anzeige der aktuellen Wetterbedingungen
+        \n- Pollenvorhersage für Deutschland
+        \n- Wettervorhersage
+        \n- mehr Uhrendesigns
+        </string>
     <string name="product_name_donation">Spende</string>
     <string name="product_name_pro">Vollversion</string>
+    <string name="product_name_subscription">Jahresabo</string>
     <string name="radio">Radio</string>
     <string name="radio_connecting">verbinde</string>
     <string name="radio_muting">Werbung stummschalten</string>
@@ -312,8 +310,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_paused">Radio angehalten</string>
     <string name="radio_play">Radio starten</string>
     <string name="radio_playing">Stream läuft</string>
-    <string name="radio_stream_keep_running">Radio anlassen</string>
-    <string name="radio_stream_keep_running_summary">Den Radiostream nach dem Beenden des Alarms weiterlaufen lassen.</string>
     <string name="radio_previous">vorheriger Radiosender</string>
     <string name="radio_station">Sender</string>
     <string name="radio_station_dialog_title">Radiosender auswählen</string>
@@ -322,6 +318,8 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_activate_wifi">WLAN</string>
     <string name="radio_stream_activate_wifi_desc">WLAN wird einige Minuten vor dem Wecker aktiviert.</string>
     <string name="radio_stream_failure">Radiostation zur Zeit nicht erreichbar.</string>
+    <string name="radio_stream_keep_running">Radio anlassen</string>
+    <string name="radio_stream_keep_running_summary">Den Radiostream nach dem Beenden des Alarms weiterlaufen lassen.</string>
     <string name="radio_stream_manual_edit">Sender bearbeiten</string>
     <string name="radio_stream_manual_input_description">Sendername</string>
     <string name="radio_stream_manual_input_hint">Sender hinzufügen</string>
@@ -341,10 +339,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="recommend_app_desc">Wählen Sie eine App aus, mit der Sie Ihre Empfehlung posten möchten.</string>
     <string name="recommend_app_subject">Die App gefällt mir, schau sie dir doch auch mal an. Austesten kostet ja nichts…</string>
     <string name="remaining">übrig</string>
-    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_end"> </string>
     <string name="remaining_alarm_time_now">Dieser Wecker klingelt gleich.</string>
-    <string name="remaining_alarm_time_start">Dieser Wecker klingelt in&#160;</string>
+    <string name="remaining_alarm_time_start">Dieser Wecker klingelt in </string>
     <string name="repeat">wiederholen</string>
+    <string name="reset_theme_defaults_summary">Anpassungen für das aktive Thema auf Standard zurücksetzen.</string>
     <string name="reset_to_defaults">Einstellungen zurücksetzen</string>
     <string name="review_request">Bitte bewerten Sie diese App. Danke.</string>
     <string name="rss">RSS Ticker</string>
@@ -361,23 +360,40 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="scheduledAutoStartEnabledTitle">Geplanter Autostart</string>
     <string name="scheduledAutoStartTimeRange">Zeitraum</string>
     <string name="screen">Bildschirm</string>
-    <string name="screenOrientation">Bildschirmausrichtung</string>
-    <string name="screenProtection">Bildschirmschutz</string>
-    <string name="screenProtectionFade">Uhr automatisch ein / ausblenden</string>
-    <string name="screenProtectionMove">Uhr bewegen</string>
-    <string name="screenProtectionNone">Aus</string>
     <string name="screen_orientation_automatic">automatisch</string>
     <string name="screen_orientation_landscape">Querformat</string>
     <string name="screen_orientation_portrait">Hochformat</string>
     <string name="screen_orientation_reverse_landscape">Querformat (gedreht)</string>
     <string name="screen_orientation_reverse_portrait">Hochformat (gedreht)</string>
+    <string name="screenOrientation">Bildschirmausrichtung</string>
+    <string name="screenProtection">Bildschirmschutz</string>
+    <string name="screenProtectionFade">Uhr automatisch ein / ausblenden</string>
+    <string name="screenProtectionMove">Uhr bewegen</string>
+    <string name="screenProtectionNone">Aus</string>
+    <string name="seconds_15">15 Sekunden</string>
+    <string name="seconds_30">30 Sekunden</string>
+    <string name="seconds_60">60 Sekunden</string>
     <string name="set_alarm">Alarm einstellen</string>
+    <string name="show_alarm">Wecker anzeigen</string>
+    <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
+    <string name="show_calendar_events">Ereignisse hervorheben</string>
+    <string name="show_date">Datum anzeigen</string>
+    <string name="show_divider">Trennlinie anzeigen</string>
+    <string name="show_second_hand">Sekundenzeiger anzeigen</string>
+    <string name="show_seconds">Sekunden anzeigen</string>
+    <string name="show_temperature">Temperatur anzeigen</string>
+    <string name="show_weather">Wetter anzeigen</string>
+    <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
     <string name="showAlarmsPersistently">Dauerhaft anzeigen</string>
     <string name="showAlarmsPersistentlySummary">Die nächste Weckzeit wird dauerhaft angezeigt und nicht ausgeblendet.</string>
     <string name="showBattery">Akkustand anzeigen</string>
     <string name="showBatteryWarningMessage">Achtung: Es ist keine Stromquelle verbunden !</string>
     <string name="showBatteryWarningSummary">Beim Start eine Warnung anzeigen, falls keine Stromquelle angeschlossen ist.</string>
     <string name="showBatteryWarningTitle">Akkuwarnung</string>
+    <string name="showNotifications">Benachrichtigungen anzeigen</string>
+    <string name="showNotificationsAccessGranted">Benachrichtigungszugriff erteilt</string>
+    <string name="showNotificationsAccessNotGranted">Benachrichtigungszugriff nicht erteilt!</string>
+    <string name="showNotificationsAlertText">Um Benachrichtigungen anzuzeigen, muss die Berechtigung in den Android-Einstellungen erteilt werden.</string>
     <string name="showPollen">Pollenflug-Gefahrenindex</string>
     <string name="showPollenIndex">Belastungsintensität</string>
     <string name="showPollenIndex0">keine</string>
@@ -389,16 +405,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="showPollenIndex6">hoch</string>
     <string name="showPollenNoData">Keine Daten für dieses Gebiet verfügbar. Der Pollenflug-Gefahrenindex ist nur für Deutschland verfügbar.</string>
     <string name="showPollenSummary">Datenquelle: Deutscher Wetterdienst</string>
-    <string name="show_alarm">Wecker anzeigen</string>
-    <string name="show_apparent_temperature">mit gefühlter Temperatur</string>
-    <string name="show_calendar_events">Ereignisse hervorheben</string>
-    <string name="show_date">Datum anzeigen</string>
-    <string name="show_divider">Trennlinie anzeigen</string>
-    <string name="show_second_hand">Sekundenzeiger anzeigen</string>
-    <string name="show_seconds">Sekunden anzeigen</string>
-    <string name="show_temperature">Temperatur anzeigen</string>
-    <string name="show_weather">Wetter anzeigen</string>
-    <string name="show_wind_speed">Windgeschwindigkeit anzeigen</string>
     <string name="sleep_time_dialog_title">Sleep Timer</string>
     <string name="slideshow_center_animated">animiert</string>
     <string name="slideshow_center_crop">Bild beschneiden</string>
@@ -410,11 +416,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="smart_home_avm_host_summary">Addresse der Fritz!Box, z.B. http://fritz.box</string>
     <string name="smart_home_avm_password">Passwort</string>
     <string name="smart_home_avm_username">Username</string>
-    <string name="smart_home_purchase_request">AVM Geräte schalten mit der Pro Version</string>
     <string name="smart_home_permission_denied">Berechtigung für den Zugriff auf das lokale Netzwerk verweigert. Verbindung zur Fritz!Box nicht möglich.</string>
+    <string name="smart_home_purchase_request">AVM Geräte schalten mit der Pro Version</string>
     <string name="snoozeAfter">Automatisch schlummern nach</string>
     <string name="snoozeCycles">Maximale Wiederholungen der Schlummerfunktion vor Auto-Stopp</string>
     <string name="snoozeTime">Schlummerzeit</string>
+    <string name="snoozeUsingVolumeButtons">Lautstärketasten verwenden</string>
     <string name="speakTime">Es ist</string>
     <string name="speakTimeSummary">Aktuelle Uhrzeit vorlesen lassen durch langes Drücken auf den Bildschirm.</string>
     <string name="speakTimeTitle">Aktuelle Uhrzeit vorlesen</string>
@@ -424,10 +431,21 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">im Zeitraum</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standbymodus auch beim Entladen</string>
     <string name="style">Stil</string>
+    <string name="subscription_free_trial_description">%s kostenlos testen.</string>
+    <string name="subscription_offer_price_for_period">%s für %s.</string>
+    <string name="subscription_prefix_after_period">Danach </string>
+    <string name="subscription_prefix_subsequently">Anschließend </string>
+    <string name="subscription_price_per_period">%s pro %s.</string>
+    <string name="subscription_renewal_info">Automatische Verlängerung. Jederzeit kündbar.</string>
     <string name="suggestions">Ideen</string>
     <string name="suggestions_summary">Ideen für kommende Versionen melden</string>
     <string name="temperatureUnit">Temperatureinheit</string>
     <string name="text_size">Schriftgröße</string>
+    <string name="theme_animation_enabled_summary">Animation für fallenden Schnee oder goldene Sterne anzeigen.</string>
+    <string name="theme_animation_only_charging_summary">Pausiert Animationen im Akkubetrieb, um Energie zu sparen.</string>
+    <string name="theme_reset_to_defaults">Thema auf Standard zurückgesetzt</string>
+    <string name="theme_updated">Thema aktualisiert!</string>
+    <string name="themes">Themen</string>
     <string name="tick_style_circle">Kreis</string>
     <string name="tick_style_dash">Strich</string>
     <string name="tick_style_hours">Stundenmarker</string>
@@ -446,6 +464,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_regular">Roboto Regular</string>
     <string name="typeface_roboto_thin">Roboto Thin</string>
     <string name="uninstall">Anwendung deinstallieren</string>
+    <string name="unit_day">Tag</string>
+    <string name="unit_days">Tage</string>
+    <string name="unit_month">Monat</string>
+    <string name="unit_months">Monate</string>
+    <string name="unit_week">Woche</string>
+    <string name="unit_weeks">Wochen</string>
+    <string name="unit_year">Jahr</string>
+    <string name="unit_years">Jahre</string>
     <string name="unlockHint">Lange Drücken zum Entsperren</string>
     <string name="upgrade_now">Jetzt kaufen!</string>
     <string name="useAlarmSwipeGesture">Alarm stellen via Wischgeste</string>
@@ -454,7 +480,6 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="useDeviceLockDescription">Diese Funktion benötigt die Berechtigung als Geräteadministrator. Falls Sie die App deinstallieren möchten, muss diese Funktion deaktiviert werden.</string>
     <string name="useDeviceLockExplanation">Gerät sperren während die Nachtuhr aktiv ist. Falls Sie die App deinstallieren möchten, muss diese Berechtigung zuvor entzogen werden.</string>
     <string name="weather">Wetter</string>
-    <string name="weatherProvider">Anbieter für Wetterdaten</string>
     <string name="weather_calculation_time">Zeit der Wetterdatenberechnung</string>
     <string name="weather_city_id_title">Standort suchen</string>
     <string name="weather_current_location">Aktueller Standort</string>
@@ -465,37 +490,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="weather_info_title">Informationen</string>
     <string name="weather_sun_rise">Sonnenaufgang</string>
     <string name="weather_sun_set">Sonnenuntergang</string>
+    <string name="weatherProvider">Anbieter für Wetterdaten</string>
     <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
-    <string name="snoozeUsingVolumeButtons">Lautstärketasten verwenden</string>
-    <string name="product_name_subscription">Jahresabo</string>
-
-    <string name="subscription_free_trial_description">%s kostenlos testen.</string>
-    <string name="subscription_prefix_after_period">Danach </string>
-    <string name="subscription_prefix_subsequently">Anschließend </string>
-    <string name="subscription_price_per_period">%s pro %s.</string>
-    <string name="subscription_offer_price_for_period">%s für %s.</string>
-    <string name="subscription_renewal_info">Automatische Verlängerung. Jederzeit kündbar.</string>
-
-    <!-- Units for subscription periods -->
-    <string name="unit_day">Tag</string>
-    <string name="unit_days">Tage</string>
-    <string name="unit_week">Woche</string>
-    <string name="unit_weeks">Wochen</string>
-    <string name="unit_month">Monat</string>
-    <string name="unit_months">Monate</string>
-    <string name="unit_year">Jahr</string>
-    <string name="unit_years">Jahre</string>
-
-    <string name="themes">Themen</string>
-    <string name="active_theme">Aktives Thema</string>
-    <string name="reset_theme_defaults_summary">Anpassungen für das aktive Thema auf Standard zurücksetzen.</string>
-    <string name="animations">Animationen</string>
-    <string name="enable_particle_overlays">Partikel-Overlays aktivieren</string>
-    <string name="theme_animation_enabled_summary">Animation für fallenden Schnee oder goldene Sterne anzeigen.</string>
-    <string name="particle_effect">Partikeleffekt</string>
-    <string name="only_animate_when_charging">Nur beim Laden animieren</string>
-    <string name="theme_animation_only_charging_summary">Pausiert Animationen im Akkubetrieb, um Energie zu sparen.</string>
-    <string name="theme_updated">Thema aktualisiert!</string>
-    <string name="theme_reset_to_defaults">Thema auf Standard zurückgesetzt</string>
 </resources>

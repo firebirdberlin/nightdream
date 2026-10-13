@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,8 +14,6 @@ OR
 
  Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">About</string>
     <string name="action_change">Change</string>
@@ -24,83 +23,82 @@ OR
     <string name="activateDoNotDisturb">activate DnD</string>
     <string name="activateDoNotDisturbAllowPriority">allow priority</string>
     <string name="activateDoNotDisturbSummary">Enable do-not-disturb mode while the app is active.</string>
-    <string name="add_new_alarm">add new alarm</string>
+    <string name="active_theme">Active Theme</string>
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
+    <string name="add_new_alarm">add new alarm</string>
     <string name="alarm">Alarm</string>
-    <string name="alarmName">Name of the alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>
     <string name="alarmFadeInMaxVolumePercent">maximum volume</string>
+    <string name="alarmName">Name of the alarm</string>
     <string name="alarmStartDate">Next alarm on</string>
     <string name="alarmStartsFrom">from</string>
     <string name="alarmUpcoming">Upcoming alarm</string>
     <string name="alarmVolume">Volume</string>
-    <string name="allow_screen_off_summary">Turn the screen off during the night.</string>
     <string name="allow_screen_off">Turn screen off</string>
+    <string name="allow_screen_off_summary">Turn the screen off during the night.</string>
     <string name="always_on">Always on</string>
     <string name="alwaysOnBatteryLevel">Battery level is above</string>
     <string name="alwaysOnStartWithLockedUI">Lock user interface</string>
     <string name="alwaysOnStartWithLockedUIDesc">When starting the app automatically lock the user interface. Long press the lock icon to unlock.</string>
     <string name="ambient_noise">Ambient noise detection</string>
     <string name="ambient_noise_summary">Shall ambient noise prevent the night mode to be activated?</string>
-    <string name="appearance">Appearance</string>
+    <string name="animations">Animations</string>
     <string name="app_name">Night Clock</string>
+    <string name="appearance">Appearance</string>
     <string name="auto_brightness">Auto brightness</string>
-    <string name="autostartForNotificationsSummary">Activate the app when new notifications are shown.</string>
-    <string name="autostartForNotificationsTitle">Notifications</string>
     <string name="autostart_message_disabled">Please disable screensavers (Daydream) to activate the autostart options.</string>
     <string name="autostart_timerange_label_end">End time</string>
     <string name="autostart_timerange_label_start">Start time</string>
+    <string name="autostartForNotificationsSummary">Activate the app when new notifications are shown.</string>
+    <string name="autostartForNotificationsTitle">Notifications</string>
     <string name="background">Background</string>
-    <string name="background_zoomin">Zoom animation</string>
-    <string name="background_zoomin_summary">Automatically zoom into background picture.</string>
-    <string name="background_fadein">Cross-fade animation</string>
-    <string name="background_fadein_summary">Cross-fade between background images.</string>
-    <string name="background_movein">Translation animation</string>
-    <string name="background_movein_direction">Slide the next background image into the screen from</string>
-    <string name="background_movein_top">top</string>
-    <string name="background_movein_right">right</string>
-    <string name="background_movein_bottom">bottom</string>
-    <string name="background_movein_left">left</string>
-    <string name="background_image_filter">Imagefilter</string>
-    <string name="background_image_filter_none">None</string>
-    <string name="background_image_filter_grey">Grey</string>
-    <string name="background_image_filter_sepia">Sepia</string>
-    <string name="background_image_filter_invert">Invert</string>
-    <string name="background_image_filter_contrast">Contrast</string>
-    <string name="background_image_filter_sketch">Sketch</string>
-    <string name="background_image_filter_blur">Blur</string>
     <string name="background_auto_accent_color">Automatic color selection</string>
     <string name="background_auto_accent_summary">Automatically select an appropriate accent color.</string>
     <string name="background_black">Black</string>
     <string name="background_exif">Show EXIF information</string>
     <string name="background_exif_summary">Show EXIF information for the current background image</string>
+    <string name="background_fadein">Cross-fade animation</string>
+    <string name="background_fadein_summary">Cross-fade between background images.</string>
     <string name="background_gradient">Gradient</string>
-    <string name="background_gradient_start_color">Start color</string>
     <string name="background_gradient_end_color">End color</string>
+    <string name="background_gradient_start_color">Start color</string>
     <string name="background_image">Image</string>
+    <string name="background_image_duration">Image change every</string>
+    <string name="background_image_filter">Imagefilter</string>
+    <string name="background_image_filter_blur">Blur</string>
+    <string name="background_image_filter_contrast">Contrast</string>
+    <string name="background_image_filter_grey">Grey</string>
+    <string name="background_image_filter_invert">Invert</string>
+    <string name="background_image_filter_none">None</string>
+    <string name="background_image_filter_sepia">Sepia</string>
+    <string name="background_image_filter_sketch">Sketch</string>
     <string name="background_image_select">Select an image</string>
+    <string name="background_movein">Translation animation</string>
+    <string name="background_movein_bottom">bottom</string>
+    <string name="background_movein_direction">Slide the next background image into the screen from</string>
+    <string name="background_movein_left">left</string>
+    <string name="background_movein_right">right</string>
+    <string name="background_movein_top">top</string>
     <string name="background_slideshow">Slide show</string>
     <string name="background_transparent">Transparent</string>
-    <string name="background_image_duration">Image change every</string>
-    <string name="seconds_60">60 seconds</string>
-    <string name="seconds_30">30 seconds</string>
-    <string name="seconds_15">15 seconds</string>
-    <string name="backgroundServiceDialogTitle">Stop background service</string>
+    <string name="background_zoomin">Zoom animation</string>
+    <string name="background_zoomin_summary">Automatically zoom into background picture.</string>
     <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode. Proceed?</string>
+    <string name="backgroundServiceDialogTitle">Stop background service</string>
     <string name="backgroundServiceNotificationText">Background service is running.</string>
     <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
     <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="battery">Battery</string>
-    <string name="batteryTimeoutDescription">on battery timeout</string>
-    <string name="batteryTimeoutNever">never</string>
-    <string name="batteryTimeout1min">1 min</string>
-    <string name="batteryTimeout2min">2 min</string>
-    <string name="batteryTimeout5min">5 min</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min</string>
+    <string name="batteryTimeout1min">1 min</string>
+    <string name="batteryTimeout2min">2 min</string>
     <string name="batteryTimeout30min">30 min</string>
+    <string name="batteryTimeout5min">5 min</string>
+    <string name="batteryTimeoutDescription">on battery timeout</string>
+    <string name="batteryTimeoutNever">never</string>
     <string name="behaviour">Behaviour</string>
     <string name="brightness">Brightness</string>
     <string name="brightness_night_mode">Brightness in night mode</string>
@@ -116,7 +114,6 @@ OR
     <string name="bug_summary">Please let us know if something went wrong.</string>
     <string name="buy">Buy</string>
     <string name="buy_upgrade_summary">Upgrade to the professional version now.</string>
-    <string name="subscribe">Subscribe</string>
     <string name="category_handle_power">… and when connected to</string>
     <string name="category_handle_power_autostart_time">Start within the time range</string>
     <string name="category_night_mode_display_management">Display management</string>
@@ -126,23 +123,23 @@ OR
     <string name="clear">clear</string>
     <string name="clock">Clock</string>
     <string name="clock_hands">Hands</string>
+    <string name="clock_layout">Layout</string>
     <string name="clock_layout_analog">analog clock</string>
+    <string name="clock_layout_anim_digit">digital animated clock</string>
     <string name="clock_layout_calendar">digital clock with calendar</string>
+    <string name="clock_layout_digit_analog">analog clock with digits</string>
     <string name="clock_layout_digital">digital clock</string>
     <string name="clock_layout_digital2">digital clock with weather</string>
     <string name="clock_layout_digital3">digital clock with weather (2)</string>
-    <string name="clock_layout_elegant_analog">elegant analog clock</string>
-    <string name="clock_layout_digit_analog">analog clock with digits</string>
     <string name="clock_layout_digital_flip">digital flip clock</string>
-    <string name="clock_layout_anim_digit">digital animated clock</string>
-    <string name="clock_layout">Layout</string>
-    <string name="clock_layout_modern_analog">modern analog clock</string>
+    <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_mirror_text">Mirror text</string>
+    <string name="clock_layout_modern_analog">modern analog clock</string>
     <string name="clockBackgroundTransparency">Clock background transparency</string>
     <string name="colors">Colors</string>
+    <string name="confirm_reset">Reset</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
     <string name="confirm_reset_question_layout">Do you really want to reset this layout to defaults ?</string>
-    <string name="confirm_reset">Reset</string>
     <string name="contribute">Contribute</string>
     <string name="contribute_beta_channel">Get beta versions</string>
     <string name="contribute_source_code">Source code</string>
@@ -152,43 +149,47 @@ OR
     <string name="credits">Credits</string>
     <string name="credits_pull_requests">Pull requests</string>
     <string name="date_format">Date format</string>
-    <string name="delete">delete</string>
-    <string name="dialog_message_pending_purchase">Your purchase was not yet confirmed by Google Play.</string>
-    <string name="dialog_message_already_owned">This item was already bought.</string>
-    <string name="dialog_message_thank_you">Thank you very much!</string>
-    <string name="dialog_title_thank_you">Thanks</string>
-    <string name="digit_emphasize_quarters">Emphasize quarters</string>
-    <string name="directory_background_image_select">Select images</string>
     <string name="decoration">Decoration</string>
     <string name="decoration_glow_effect">Glow effect</string>
     <string name="decoration_style_copper">Copper</string>
     <string name="decoration_style_gold">Gold</string>
-    <string name="decoration_style_none">None</string>
-    <string name="decoration_style_minute_hand">Minute hand</string>
     <string name="decoration_style_labels">Numbers</string>
-    <string name="decoration_style_rust">Rust</string>
-    <string name="decoration_style_rainbow">Rainbow</string>
+    <string name="decoration_style_minute_hand">Minute hand</string>
+    <string name="decoration_style_none">None</string>
     <string name="decoration_style_pride">Pride flag</string>
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Rainbow</string>
+    <string name="decoration_style_rust">Rust</string>
     <string name="decoration_weather_icon_size">Weather icon size</string>
+    <string name="delete">delete</string>
+    <string name="dialog_message_already_owned">This item was already bought.</string>
+    <string name="dialog_message_pending_purchase">Your purchase was not yet confirmed by Google Play.</string>
+    <string name="dialog_message_thank_you">Thank you very much!</string>
+    <string name="dialog_title_thank_you">Thanks</string>
+    <string name="digit_emphasize_quarters">Emphasize quarters</string>
+    <string name="directory_background_image_select">Select images</string>
     <string name="donate">Donate</string>
     <string name="doubleTapToFinishSummary">Finish the app by double tapping the screen.</string>
     <string name="doubleTapToFinishTitle">Double tap to finish</string>
-    <string name="gift_for_donors">Gift for your donation</string>
+    <string name="enable_particle_overlays">Enable Particle Overlays</string>
+    <string name="export_preferences">Export app information</string>
+    <string name="export_preferences_email">Send app info via email</string>
+    <string name="export_preferences_file">Export settings to file</string>
     <string name="flashlight">Flashlight</string>
     <string name="forecast">Weather Forecast</string>
     <string name="frequently_asked_questions">frequently asked questions</string>
+    <string name="gift_for_donors">Gift for your donation</string>
     <string name="hand_shape_arc">Arc</string>
     <string name="hand_shape_bar">Bar</string>
     <string name="hand_shape_triangle">Triangle</string>
     <string name="handle_auto_stop">Stop automatically</string>
-    <string name="handle_power_ac">AC</string>
     <string name="handle_power">Autostart</string>
+    <string name="handle_power_ac">AC</string>
     <string name="handle_power_car">car dock</string>
     <string name="handle_power_desk">desk dock</string>
     <string name="handle_power_disconnection">when disconnected</string>
-    <string name="handle_power_disconnection_summary">Terminate the application when disconnecting the power supply.</string>
     <string name="handle_power_disconnection_at_time_range_end">at the end of the autostart time range</string>
+    <string name="handle_power_disconnection_summary">Terminate the application when disconnecting the power supply.</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">wireless charger</string>
     <string name="help">Help and feedback</string>
@@ -197,107 +198,123 @@ OR
     <string name="hour">h</string>
     <string name="ignoreBatteryOptimisation">Battery optimisation</string>
     <string name="ignoreBatteryOptimisation_summary">It is recommended to exclude the app from battery optimisations.</string>
-    <string name="inner_circle_radius">Inner circle radius</string>
     <string name="images_background_copy">Process images in the background</string>
     <string name="images_background_service_unbound">Error processing images. Please try again.</string>
+    <string name="import_preferences">Import settings</string>
+    <string name="import_preferences_confirm">Do you want to import settings from this backup file?</string>
+    <string name="import_preferences_failed">Failed to import settings.</string>
+    <string name="import_preferences_requires_pro">Importing settings requires Pro or Actions.</string>
+    <string name="import_preferences_success">Settings imported successfully.</string>
+    <string name="inner_circle_radius">Inner circle radius</string>
     <string name="length">Length</string>
     <string name="location_time">location time</string>
     <string name="mailing_list">Public mailing list</string>
     <string name="manage_permissions">Manage permissions</string>
     <string name="maxBrightness">Maximum screen brightness</string>
     <string name="maxBrightnessBattery">Maximum screen brightness on battery</string>
-    <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>
     <string name="message_mobile_data_connection">Mobile data connection</string>
+    <string name="message_mobile_data_connection_confirmation">You are connected to a mobile network. Play the radio stream?</string>
     <string name="message_no_data_connection">No data connection</string>
     <string name="message_stop_alarm_long_press">Long press to stop the alarm</string>
     <string name="minBrightness">Minimum screen brightness</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Mute ringer</string>
     <string name="next">next</string>
+    <string name="night_mode">Night mode</string>
     <string name="night_mode_activation_auto">automatic</string>
     <string name="night_mode_activation_manual">manual</string>
     <string name="night_mode_activation_mode">Activation mode</string>
     <string name="night_mode_activation_scheduled">scheduled</string>
-    <string name="night_mode">Night mode</string>
     <string name="night_mode_timerange_label_end">End time</string>
     <string name="night_mode_timerange_label_start">Start time</string>
     <string name="night_mode_timerange_title">Night time</string>
     <string name="no_alarm_set">no alarm set</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
-    <string name="notification_channel_name_alarms">Alarms</string>
-    <string name="notification_channel_name_devmsg">Messages</string>
-    <string name="notification_channel_name_radio">Radio</string>
-    <string name="notification_channel_name_services">Services</string>
-    <string name="notification_channel_name_copy_images">Copy images</string>
     <string name="notification_channel_desc_alarms">Notification showing up during alarms</string>
+    <string name="notification_channel_desc_copy_images">Notification indicating running service for copy images</string>
     <string name="notification_channel_desc_devmsg">Messages concerning the app</string>
     <string name="notification_channel_desc_radio">Notification showing up while web radio is playing</string>
     <string name="notification_channel_desc_services">Notification indicating running services</string>
-    <string name="notification_channel_desc_copy_images">Notification indicating running service for copy images</string>
-    <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
-    <string name="notification_show_preview_title">Notification preview</string>
-    <string name="notification_show_mediastyle_summary">Show media player controls</string>
-    <string name="notification_show_mediastyle_title">Media controls</string>
-    <string name="notification_lowest_importance">Importance is higher or equal than</string>
+    <string name="notification_channel_name_alarms">Alarms</string>
+    <string name="notification_channel_name_copy_images">Copy images</string>
+    <string name="notification_channel_name_devmsg">Messages</string>
+    <string name="notification_channel_name_radio">Radio</string>
+    <string name="notification_channel_name_services">Services</string>
+    <string name="notification_importance_default">default</string>
+    <string name="notification_importance_high">high</string>
+    <string name="notification_importance_low">low</string>
+    <string name="notification_importance_max">max</string>
+    <string name="notification_importance_min">min</string>
     <string name="notification_list_delete_all">Delete all</string>
     <string name="notification_list_delete_marked">Delete all marked</string>
     <string name="notification_list_mark_all">Mark all</string>
-    <string name="notification_importance_min">min</string>
-    <string name="notification_importance_low">low</string>
-    <string name="notification_importance_default">default</string>
-    <string name="notification_importance_high">high</string>
-    <string name="notification_importance_max">max</string>
-    <string name="notifications">Notifications</string>
-    <string name="notificationsInStatusBarTitle">Status bar</string>
-    <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
+    <string name="notification_lowest_importance">Importance is higher or equal than</string>
+    <string name="notification_show_mediastyle_summary">Show media player controls</string>
+    <string name="notification_show_mediastyle_title">Media controls</string>
+    <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
+    <string name="notification_show_preview_title">Notification preview</string>
     <string name="notificationListenerService">Notification listener service</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_options">Notification options</string>
+    <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
+    <string name="notificationsInStatusBarTitle">Status bar</string>
     <string name="notifyForUpcomingAlarmsSummary">Notify for upcoming alarms</string>
     <string name="notifyForUpcomingAlarmsTitle">Notify ahead</string>
-    <string name="showNotifications">Show notifications</string>
-    <string name="showNotificationsAccessGranted">Access granted</string>
-    <string name="showNotificationsAccessNotGranted">Access not granted!</string>
-    <string name="showNotificationsAlertText">Notification access must be granted to show notifications.</string>
-    <string name="notifications_options">Notification options</string>
     <string name="numbers">Numbers</string>
     <string name="numberStyleArabic">Arabic</string>
-    <string name="numberStyleRoman">Roman</string>
     <string name="numberStyleNone">None</string>
-    <string name="other_apps">Other apps</string>
-    <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
-    <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
-    <string name="options_stop_alarms_tap">tap</string>
-    <string name="options_stop_alarms_title">Gesture for stopping alarms</string>
+    <string name="numberStyleRoman">Roman</string>
+    <string name="only_animate_when_charging">Only Animate When Charging</string>
+    <string name="open_weather_map_api_key">OpenWeatherMap API Key</string>
+    <string name="open_weather_map_api_key_summary">Enter your API key for OpenWeatherMap. Get one at openweathermap.org</string>
+    <string name="options_stop_alarms_error_min_one">Please select at least one gesture.</string>
     <string name="options_stop_alarms_long_press">long press</string>
     <string name="options_stop_alarms_slider">slider</string>
-    <string name="options_stop_alarms_error_min_one">Please select at least one gesture.</string>
+    <string name="options_stop_alarms_tap">tap</string>
+    <string name="options_stop_alarms_title">Gesture for stopping alarms</string>
+    <string name="other_apps">Other apps</string>
+    <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
+    <string name="particle_effect">Particle Effect</string>
+    <string-array name="particleEffectEntries">
+            <item>None</item>
+            <item>Falling Snow</item>
+            <item>Golden Stars</item>
+        </string-array>
+    <string-array name="particleEffectValues">
+            <item>0</item>
+            <item>1</item>
+            <item>2</item>
+        </string-array>
     <string name="permission_request">Permission request</string>
-    <string name="permission_request_post_notifications">Please grant the permission to post notifications.</string>
-    <string name="permission_request_overlays">The permission for showing over all apps is not granted. Please grant this permission now!</string>
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
+    <string name="permission_request_overlays">The permission for showing over all apps is not granted. Please grant this permission now!</string>
+    <string name="permission_request_post_notifications">Please grant the permission to post notifications.</string>
     <string name="permission_request_storage">The permission for storage access was not granted.</string>
     <string name="persistent_battery_value_while_charging">Persistent battery status</string>
     <string name="persistent_battery_value_while_charging_summary">Show the battery status permanently while charging.</string>
-    <string name="pollen_hazelnut">Hazelnut</string>
-    <string name="pollen_birch">Birch</string>
-    <string name="pollen_ambrosia">Ambrosia</string>
-    <string name="pollen_grass">Grass</string>
-    <string name="pollen_ash">Ash</string>
-    <string name="pollen_mugwort">Mugwort</string>
     <string name="pollen_alder">Alder</string>
+    <string name="pollen_ambrosia">Ambrosia</string>
+    <string name="pollen_ash">Ash</string>
+    <string name="pollen_birch">Birch</string>
+    <string name="pollen_grass">Grass</string>
+    <string name="pollen_hazelnut">Hazelnut</string>
+    <string name="pollen_mugwort">Mugwort</string>
     <string name="pollen_rye">Rye</string>
     <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>
     <string name="preview">Preview</string>
     <string name="product_description_weather">An upgrade includes\n
-    \n- a weather status line shown below the clock
-    \n- a weather forecast
-    \n- more clock faces
-    </string>
+        \n- a weather status line shown below the clock
+        \n- a weather forecast
+        \n- more clock faces
+        </string>
     <string name="product_name_donation">Donation</string>
     <string name="product_name_pro">Full version</string>
+    <string name="product_name_subscription">one-year subscription</string>
     <string name="radio">Radio</string>
     <string name="radio_connecting">connecting</string>
     <string name="radio_muting">muting ads</string>
@@ -306,8 +323,6 @@ OR
     <string name="radio_paused">paused</string>
     <string name="radio_play">play radio</string>
     <string name="radio_playing">playing</string>
-    <string name="radio_stream_keep_running">Keep radio running</string>
-    <string name="radio_stream_keep_running_summary">Continue playing the radio stream after the alarm has been stopped.</string>
     <string name="radio_previous">previous station</string>
     <string name="radio_station">Radio station</string>
     <string name="radio_station_dialog_title">Select a radio station</string>
@@ -316,6 +331,8 @@ OR
     <string name="radio_stream_activate_wifi">enable WiFi</string>
     <string name="radio_stream_activate_wifi_desc">If on, WiFi will be activated a few minutes before the stream starts to play.</string>
     <string name="radio_stream_failure">Radio stream failure</string>
+    <string name="radio_stream_keep_running">Keep radio running</string>
+    <string name="radio_stream_keep_running_summary">Continue playing the radio stream after the alarm has been stopped.</string>
     <string name="radio_stream_manual_edit">Edit radio station</string>
     <string name="radio_stream_manual_input_description">Station name</string>
     <string name="radio_stream_manual_input_hint">Add a station manually</string>
@@ -329,63 +346,68 @@ OR
     <string name="radio_stream_require_wifi_desc">If on, alarms will play web radio streams only with an established WiFi connection.</string>
     <string name="radio_stream_search">Search</string>
     <string name="radio_stream_unreachable_url">The URL is not reachable.</string>
-    <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
-    <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
-    <string name="recommend">Recommend app</string>
-    <string name="export_preferences">Export app information</string>
-    <string name="export_preferences_file">Export settings to file</string>
-    <string name="export_preferences_email">Send app info via email</string>
-    <string name="import_preferences">Import settings</string>
-    <string name="import_preferences_confirm">Do you want to import settings from this backup file?</string>
-    <string name="import_preferences_success">Settings imported successfully.</string>
-    <string name="import_preferences_failed">Failed to import settings.</string>
-    <string name="import_preferences_requires_pro">Importing settings requires Pro or Actions.</string>
     <string name="rate">Rate this app</string>
     <string name="rate_summary">We would like to know if you like our app</string>
+    <string name="recommend">Recommend app</string>
+    <string name="recommend_app_desc">Choose an app to share your recommendation.</string>
+    <string name="recommend_app_subject">I would like to recommend this night clock app to you.</string>
     <string name="remaining">rem.</string>
-    <string name="remaining_alarm_time_end">&#160;</string>
+    <string name="remaining_alarm_time_end"> </string>
     <string name="remaining_alarm_time_now">This alarm will ring soon.</string>
-    <string name="remaining_alarm_time_start">This alarm will ring in&#160;</string>
+    <string name="remaining_alarm_time_start">This alarm will ring in </string>
     <string name="repeat">repeat</string>
     <string name="reset">reset</string>
+    <string name="reset_theme_defaults_summary">Reset customizations for the active theme to default.</string>
     <string name="reset_to_defaults">Reset to defaults</string>
+    <string name="review_request">Please rate this application. Thanks !</string>
     <string name="rss">RSS ticker</string>
     <string name="rss_charset">character encoding</string>
+    <string name="rss_data_error">An error occurred. No data available.</string>
     <string name="rss_enable_summary">Enable RSS ticker</string>
+    <string name="rss_text_size">Text size</string>
     <string name="rss_tickerspeed">Ticker speed</string>
     <string name="rss_timeset">Refresh interval (minutes)</string>
     <string name="rss_url_error">Url not set</string>
-    <string name="rss_data_error">An error occurred. No data available.</string>
-    <string name="rss_text_size">Text size</string>
-    <string name="screen">Screen</string>
-    <string name="screenProtection">Screen burn protection</string>
-    <string name="screenProtectionNone">None</string>
-    <string name="screenProtectionMove">Move the clock around</string>
-    <string name="screenProtectionFade">Fade the clock</string>
-    <string name="review_request">Please rate this application. Thanks !</string>
     <string name="scheduledAutoStart">Scheduled Autostart</string>
     <string name="scheduledAutoStartChargerRequired">only when charging</string>
     <string name="scheduledAutoStartEnabledDesc">Schedule the autostart for a specific time. It keeps the display active within the autostart time range.</string>
     <string name="scheduledAutoStartEnabledTitle">Scheduled Autostart</string>
     <string name="scheduledAutoStartTimeRange">time range</string>
+    <string name="screen">Screen</string>
     <string name="screen_orientation_automatic">automatic</string>
     <string name="screen_orientation_landscape">landscape</string>
     <string name="screen_orientation_portrait">portrait</string>
     <string name="screen_orientation_reverse_landscape">reverse landscape</string>
     <string name="screen_orientation_reverse_portrait">reverse portrait</string>
     <string name="screenOrientation">Screen orientation</string>
+    <string name="screenProtection">Screen burn protection</string>
+    <string name="screenProtectionFade">Fade the clock</string>
+    <string name="screenProtectionMove">Move the clock around</string>
+    <string name="screenProtectionNone">None</string>
+    <string name="seconds_15">15 seconds</string>
+    <string name="seconds_30">30 seconds</string>
+    <string name="seconds_60">60 seconds</string>
     <string name="set_alarm">set alarm</string>
-    <string name="showAlarmsPersistently">Show persistently</string>
-    <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
-    <string name="showBattery">Show battery</string>
-    <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
-    <string name="showBatteryWarningTitle">Battery warning</string>
-    <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
-    <string name="show_apparent_temperature">include apparent temperature</string>
     <string name="show_alarm">Show alarms</string>
+    <string name="show_apparent_temperature">include apparent temperature</string>
     <string name="show_calendar_events">Highlight events</string>
     <string name="show_date">Show date</string>
     <string name="show_divider">Show divider</string>
+    <string name="show_second_hand">show second hand</string>
+    <string name="show_seconds">Show seconds</string>
+    <string name="show_temperature">Show temperature</string>
+    <string name="show_weather">Show local weather</string>
+    <string name="show_wind_speed">Show wind speed</string>
+    <string name="showAlarmsPersistently">Show persistently</string>
+    <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
+    <string name="showBattery">Show battery</string>
+    <string name="showBatteryWarningMessage">Attention: No power source is connected !</string>
+    <string name="showBatteryWarningSummary">Show a warning at startup when on battery.</string>
+    <string name="showBatteryWarningTitle">Battery warning</string>
+    <string name="showNotifications">Show notifications</string>
+    <string name="showNotificationsAccessGranted">Access granted</string>
+    <string name="showNotificationsAccessNotGranted">Access not granted!</string>
+    <string name="showNotificationsAlertText">Notification access must be granted to show notifications.</string>
     <string name="showPollen">Pollen risk index</string>
     <string name="showPollenIndex">Stress level</string>
     <string name="showPollenIndex0">none</string>
@@ -397,27 +419,23 @@ OR
     <string name="showPollenIndex6">high</string>
     <string name="showPollenNoData">No data for this area. Pollen risk index only available for German locations.</string>
     <string name="showPollenSummary">only available for German locations</string>
-    <string name="show_temperature">Show temperature</string>
-    <string name="show_second_hand">show second hand</string>
-    <string name="show_seconds">Show seconds</string>
-    <string name="show_weather">Show local weather</string>
-    <string name="show_wind_speed">Show wind speed</string>
+    <string name="sleep_time_dialog_title">Sleep timer</string>
+    <string name="slideshow_center_animated">animated</string>
     <string name="slideshow_center_crop">crop borders</string>
     <string name="slideshow_center_inside">add borders</string>
-    <string name="slideshow_center_animated">animated</string>
     <string name="slideshow_style">Style</string>
-    <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="smart_home">Smart Home</string>
     <string name="smart_home_avm">AVM Fritz!Box</string>
     <string name="smart_home_avm_host">Host</string>
     <string name="smart_home_avm_host_summary">Address of your Fritz!Box, e.g. http://fritz.box</string>
-    <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_avm_password">Password</string>
-    <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
+    <string name="smart_home_avm_username">Username</string>
     <string name="smart_home_permission_denied">Permission for local network access denied. Cannot connect to Fritz!Box.</string>
-    <string name="snoozeTime">Snooze time</string>
+    <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
     <string name="snoozeAfter">Auto snooze after</string>
     <string name="snoozeCycles">Auto snooze cycles before auto stop</string>
+    <string name="snoozeTime">Snooze time</string>
+    <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
     <string name="speakTime">It is</string>
     <string name="speakTimeSummary">Speaks the current time on long pressing the screen.</string>
     <string name="speakTimeTitle">Speak the current time</string>
@@ -427,14 +445,40 @@ OR
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">within the time range</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode while discharging.</string>
     <string name="style">Style</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscription_free_trial_description">%s free for trial.</string>
+    <string name="subscription_offer_price_for_period">%s for %s.</string>
+    <string name="subscription_prefix_after_period">Then</string>
+    <string name="subscription_prefix_subsequently">Subsequently</string>
+    <string name="subscription_price_per_period">%s per %s.</string>
+    <string name="subscription_renewal_info">Auto-renews. Cancel anytime.</string>
     <string name="suggestions">Suggestions</string>
     <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="text_size">Text size</string>
-    <string name="tick_style_hours">Hour tick style</string>
-    <string name="tick_style_minutes">Minute tick style</string>
+    <string name="theme_animation_enabled_summary">Show falling snow or golden stars animation.</string>
+    <string name="theme_animation_only_charging_summary">Pauses animations when running on battery to conserve power.</string>
+    <string name="theme_reset_to_defaults">Theme reset to defaults</string>
+    <string name="theme_updated">Theme updated!</string>
+    <string-array name="themeEntries">
+            <item>Standard</item>
+            <item>Halloween Analog</item>
+            <item>Halloween Digital</item>
+            <item>Christmas Analog</item>
+            <item>Christmas Digital</item>
+        </string-array>
+    <string name="themes">Themes</string>
+    <string-array name="themeValues">
+            <item>none</item>
+            <item>halloween_analog</item>
+            <item>halloween_digital</item>
+            <item>christmas_analog</item>
+            <item>christmas_digital</item>
+        </string-array>
     <string name="tick_style_circle">Circle</string>
     <string name="tick_style_dash">Dash</string>
+    <string name="tick_style_hours">Hour tick style</string>
+    <string name="tick_style_minutes">Minute tick style</string>
     <string name="tick_style_none">None</string>
     <string name="ticks">Ticks</string>
     <string name="timeFormat">Time format</string>
@@ -444,89 +488,38 @@ OR
     <string name="today">today</string>
     <string name="tomorrow">tomorrow</string>
     <string name="translations">Translations</string>
+    <string name="typeface">Typeface</string>
     <string name="typeface_14_segment">14-segment LED</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
-    <string name="typeface">Typeface</string>
     <string name="uninstall">Uninstall application</string>
+    <string name="unit_day">Day</string>
+    <string name="unit_days">Days</string>
+    <string name="unit_month">Month</string>
+    <string name="unit_months">Months</string>
+    <string name="unit_week">Week</string>
+    <string name="unit_weeks">Weeks</string>
+    <string name="unit_year">Year</string>
+    <string name="unit_years">Years</string>
     <string name="unlockHint">Long press to unlock</string>
     <string name="upgrade_now">Upgrade now!</string>
     <string name="useAlarmSwipeGesture">Set alarm via swipe gesture</string>
     <string name="useAlarmSwipeGestureSummary">Allows to set a new alarm with a swipe from the lower left corner.</string>
+    <string name="useDeviceLock">Lock device</string>
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
-    <string name="useDeviceLock">Lock device</string>
     <string name="weather">Weather</string>
-    <string name="weatherProvider">Weather Provider</string>
-    <string name="open_weather_map_api_key">OpenWeatherMap API Key</string>
-    <string name="open_weather_map_api_key_summary">Enter your API key for OpenWeatherMap. Get one at openweathermap.org</string>
     <string name="weather_calculation_time">weather calculation time</string>
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_current_location">Current location</string>
     <string name="weather_icon">Weather Icon</string>
-    <string name="weather_icon_default">Default</string>
-    <string name="weather_icon_colored">Colored</string>
     <string name="weather_icon_animated">Animated (Android 6+)</string>
+    <string name="weather_icon_colored">Colored</string>
+    <string name="weather_icon_default">Default</string>
     <string name="weather_info_title">Information</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="weatherProvider">Weather Provider</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
-    <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
-    <string name="product_name_subscription">one-year subscription</string>
-    <!-- Subscription related strings -->
-    <string name="subscription_free_trial_description">%s free for trial.</string>
-    <string name="subscription_prefix_after_period">Then</string>
-    <string name="subscription_prefix_subsequently">Subsequently</string>
-    <string name="subscription_price_per_period">%s per %s.</string>
-    <string name="subscription_offer_price_for_period">%s for %s.</string>
-    <string name="subscription_renewal_info">Auto-renews. Cancel anytime.</string>
-
-    <!-- Units for subscription periods -->
-    <string name="unit_day">Day</string>
-    <string name="unit_days">Days</string>
-    <string name="unit_week">Week</string>
-    <string name="unit_weeks">Weeks</string>
-    <string name="unit_month">Month</string>
-    <string name="unit_months">Months</string>
-    <string name="unit_year">Year</string>
-    <string name="unit_years">Years</string>
-
-    <string-array name="particleEffectEntries">
-        <item>None</item>
-        <item>Falling Snow</item>
-        <item>Golden Stars</item>
-    </string-array>
-    <string-array name="particleEffectValues">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <string-array name="themeEntries">
-        <item>Standard</item>
-        <item>Halloween Analog</item>
-        <item>Halloween Digital</item>
-        <item>Christmas Analog</item>
-        <item>Christmas Digital</item>
-    </string-array>
-    <string-array name="themeValues">
-        <item>none</item>
-        <item>halloween_analog</item>
-        <item>halloween_digital</item>
-        <item>christmas_analog</item>
-        <item>christmas_digital</item>
-    </string-array>
-
-    <string name="themes">Themes</string>
-    <string name="active_theme">Active Theme</string>
-    <string name="reset_theme_defaults_summary">Reset customizations for the active theme to default.</string>
-    <string name="animations">Animations</string>
-    <string name="enable_particle_overlays">Enable Particle Overlays</string>
-    <string name="theme_animation_enabled_summary">Show falling snow or golden stars animation.</string>
-    <string name="particle_effect">Particle Effect</string>
-    <string name="only_animate_when_charging">Only Animate When Charging</string>
-    <string name="theme_animation_only_charging_summary">Pauses animations when running on battery to conserve power.</string>
-    <string name="theme_updated">Theme updated!</string>
-    <string name="theme_reset_to_defaults">Theme reset to defaults</string>
 </resources>

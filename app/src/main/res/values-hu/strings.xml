@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,26 +14,24 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Névjegy</string>
     <string name="action_snooze">Szundi</string>
     <string name="action_stop">Stop</string>
-    <string name="options_stop_alarms_slider">csúszka</string>
-    <string name="options_stop_alarms_error_min_one">Kérjük, válasszon ki legalább egy gesztust.</string>
-    <string name="add_new_alarm">Új ébresztés hozzáadása</string>
+    <string name="active_theme">Aktív téma</string>
     <string name="add_custom_alarm_tone">Egyéni hangjelzés hozzáadása</string>
     <string name="add_custom_font">Egyéni betűtípus hozzáadása</string>
+    <string name="add_new_alarm">Új ébresztés hozzáadása</string>
     <string name="alarm">Ébresztő óra</string>
     <string name="alarmFadeIn">Hangerő növelése</string>
     <string name="alarmVolume">Hangerő</string>
-    <string name="allow_screen_off_summary">Kijelző kikapcsolása éjszaka</string>
     <string name="allow_screen_off">Kijelző kikapcsolása</string>
+    <string name="allow_screen_off_summary">Kijelző kikapcsolása éjszaka</string>
     <string name="ambient_noise">Környezeti zaj észlelése</string>
     <string name="ambient_noise_summary">Akadályozza meg a környezeti zaj az éjszakai üzemmód aktiválódását?</string>
-    <string name="appearance">Kinézet</string>
+    <string name="animations">Animációk</string>
     <string name="app_name">Éjszakai óra</string>
+    <string name="appearance">Kinézet</string>
     <string name="auto_brightness">Automatikus fényerő</string>
     <string name="autostart_message_disabled">Kérlek kapcsold ki a képernyő védő beállitásokban, hogy automatikusan elinduljon.</string>
     <string name="autostart_timerange_label_end">Befejező időpont</string>
@@ -52,15 +51,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Hangsúly színe</string>
     <string name="choose_secondary_color">Szöveg színe</string>
     <string name="clear">Tiszta</string>
+    <string name="clock_layout">Felület</string>
     <string name="clock_layout_analog">Analóg óra</string>
+    <string name="clock_layout_digit_analog">Analóg óra számokkal</string>
     <string name="clock_layout_digital">Digitális óra</string>
     <string name="clock_layout_elegant_analog">Elegáns analóg óra</string>
-    <string name="clock_layout_digit_analog">Analóg óra számokkal</string>
-    <string name="clock_layout">Felület</string>
     <string name="clock_layout_modern_analog">Modern analóg óra</string>
     <string name="colors">Színek</string>
-    <string name="confirm_reset_question">Valóban vissza akarja állítani az összes beállítást?</string>
     <string name="confirm_reset">Visszaállítás</string>
+    <string name="confirm_reset_question">Valóban vissza akarja állítani az összes beállítást?</string>
     <string name="contribute">Hozzájárulás</string>
     <string name="contribute_source_code">Forráskód</string>
     <string name="contribute_translation">Fordítás</string>
@@ -68,18 +67,19 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits">Köszönet nyilvánítás</string>
     <string name="credits_pull_requests">Válaszol a kérésekre</string>
     <string name="date_format">Dátum formája</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Szivárvány</string>
     <string name="delete">Törlés</string>
     <string name="dialog_message_thank_you">Nagyon szépen köszönöm!</string>
     <string name="dialog_title_thank_you">Köszi</string>
-    <string name="decoration_style_rainbow">Szivárvány</string>
-    <string name="decoration_style_pride">Pride flag</string>
-    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Adomány</string>
     <string name="doubleTapToFinishSummary">Bezárja az alkalmazást a képernyő kettős megérintésével.</string>
     <string name="doubleTapToFinishTitle">Koppintson duplán a befejezéshez</string>
+    <string name="enable_particle_overlays">Részecskék engedélyezése</string>
     <string name="forecast">5 napos előrejelzés</string>
-    <string name="handle_power_ac">Hálózati töltő</string>
     <string name="handle_power">Automatikus indulás</string>
+    <string name="handle_power_ac">Hálózati töltő</string>
     <string name="handle_power_car">Autós dokkoló</string>
     <string name="handle_power_desk">Asztali dokkoló</string>
     <string name="handle_power_disconnection">Automatikusan leáll</string>
@@ -92,34 +92,38 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="location_time">Helyi idő</string>
     <string name="maxBrightness">A képernyő maximális fényereje</string>
     <string name="maxBrightnessBattery">A képernyő maximális fényereje az akkumulátoron</string>
-    <string name="message_mobile_data_connection_confirmation">Ön mobilhálózathoz csatlakozik. Lejátssza a rádióadókat?</string>
     <string name="message_mobile_data_connection">Mobil adatkapcsolat</string>
+    <string name="message_mobile_data_connection_confirmation">Ön mobilhálózathoz csatlakozik. Lejátssza a rádióadókat?</string>
     <string name="message_no_data_connection">Nincs adatkapcsolat</string>
     <string name="minBrightness">A képernyő minimális fényereje</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Néma csengés</string>
+    <string name="night_mode">Éjszakai üzemmód</string>
     <string name="night_mode_activation_auto">automatikus</string>
     <string name="night_mode_activation_manual">kézi beállítás</string>
     <string name="night_mode_activation_mode">Aktiválási mód</string>
     <string name="night_mode_activation_scheduled">Ütemezett</string>
-    <string name="night_mode">Éjszakai üzemmód</string>
     <string name="night_mode_timerange_label_end">Befejező időpont</string>
     <string name="night_mode_timerange_label_start">Kezdő időpont</string>
     <string name="night_mode_timerange_title">Éjjel</string>
     <string name="noise_sensitivity">Mikrofon érzékenység</string>
+    <string name="only_animate_when_charging">Animáció csak töltés közben</string>
+    <string name="options_stop_alarms_error_min_one">Kérjük, válasszon ki legalább egy gesztust.</string>
+    <string name="options_stop_alarms_slider">csúszka</string>
     <string name="other_apps">További alkalmazások</string>
-    <string name="other_apps_tinytimetracker_summary">Kövesd nyomon a napi munkaidődet.</string>
     <string name="other_apps_tinytimetracker">ApróIdőNyomonkövető</string>
+    <string name="other_apps_tinytimetracker_summary">Kövesd nyomon a napi munkaidődet.</string>
+    <string name="particle_effect">Részecske effektus</string>
     <string name="persistent_battery_value_while_charging">Tartós akkumulátorállapot</string>
     <string name="persistent_battery_value_while_charging_summary">Az akkumulátor állapotának folyamatos megjelenítése töltés közben.</string>
     <string name="preview">Előnézet</string>
     <string name="product_name_donation">Adomány</string>
     <string name="product_name_pro">Teljes verzió</string>
     <string name="radio">Rádió</string>
-    <string name="radio_stream_keep_running">Rádió bekapcsolva tartása</string>
-    <string name="radio_stream_keep_running_summary">A rádióadás lejátszásának folytatása az ébresztés leállítása után.</string>
     <string name="radio_stream">Rádióadások</string>
     <string name="radio_stream_failure">Rádiósugárzás hiba</string>
+    <string name="radio_stream_keep_running">Rádió bekapcsolva tartása</string>
+    <string name="radio_stream_keep_running_summary">A rádióadás lejátszásának folytatása az ébresztés leállítása után.</string>
     <string name="radio_stream_manual_input_description">Állomás neve</string>
     <string name="radio_stream_manual_input_hint">Rádióállomás hozzáadása manuálisan</string>
     <string name="radio_stream_manual_input_url">Rádióadás webcíme</string>
@@ -129,13 +133,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Sor keresése</string>
     <string name="radio_stream_search">Keresés</string>
     <string name="radio_stream_unreachable_url">A weboldal nem érhető el.</string>
+    <string name="recommend">Alkalmazás ajánlása</string>
     <string name="recommend_app_desc">Válasszon ki egy alkalmazást az ajánlás megosztásához.</string>
     <string name="recommend_app_subject">Szeretném javasolni neked ezt az éjszakai órát neked.</string>
-    <string name="recommend">Alkalmazás ajánlása</string>
     <string name="remaining">megmaradó</string>
     <string name="repeat">ismétlés</string>
+    <string name="reset_theme_defaults_summary">Az aktív téma testreszabásainak visszaállítása alapértelmezettre.</string>
     <string name="reset_to_defaults">Visszaállítás alapértelmezettre</string>
-    <string name="screenProtectionMove">Óra mozgása körben</string>
     <string name="review_request">Kérem értékelje ezt az alkalmazást. Köszönöm!</string>
     <string name="screen_orientation_automatic">Automatikus</string>
     <string name="screen_orientation_landscape">Tájkép</string>
@@ -143,6 +147,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Fordított tájkép</string>
     <string name="screen_orientation_reverse_portrait">Fordított portré</string>
     <string name="screenOrientation">Képernyő tájolása</string>
+    <string name="screenProtectionMove">Óra mozgása körben</string>
     <string name="set_alarm">Ébresztő beállítása</string>
     <string name="show_calendar_events">Események kiemelése</string>
     <string name="show_date">Mutassa a dátumot</string>
@@ -155,33 +160,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">Ez a funkció gyorsan lemeríti az akkumulátort!</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Készenléti üzemmód kisütés közben</string>
     <string name="temperatureUnit">Hőmérséklet egysége</string>
+    <string name="theme_animation_enabled_summary">Hulló hó vagy arany csillagok animációjának megjelenítése.</string>
+    <string name="theme_animation_only_charging_summary">Szünetelteti az animációkat akkumulátorról az energiatakarékosság érdekében.</string>
+    <string name="theme_reset_to_defaults">Téma visszaállítva az alapértelmezettekre</string>
+    <string name="theme_updated">Téma frissítve!</string>
+    <string name="themes">Témák</string>
     <string name="timeFormat">Idő formátum</string>
     <string name="titlePrivacyPolicy">Adatvédelmi irányelvek</string>
     <string name="today">Ma</string>
     <string name="tomorrow">Holnap</string>
     <string name="translations">Fordítások</string>
+    <string name="typeface">Betűkészlet</string>
     <string name="typeface_roboto_regular">Roboto szabályos</string>
     <string name="typeface_roboto_thin">Roboto vékony</string>
-    <string name="typeface">Betűkészlet</string>
     <string name="uninstall">Az applikáció eltávolítása</string>
     <string name="useAlarmSwipeGesture">Állítsa be az ébresztést az ujjmozdulattal</string>
+    <string name="useDeviceLock">Lezárja a készüléket</string>
     <string name="useDeviceLockDescription">A képernyőzár funkciónak szüksége van az eszköz rendszergazdájának engedélyére. Az alkalmazás eltávolításához kérjük, kapcsolja ki ezt a funkciót.</string>
     <string name="useDeviceLockExplanation">Zárja le az eszközt, amíg az alkalmazás aktív. Az alkalmazás eltávolításához kérjük, vonja vissza ezt az engedélyt.</string>
-    <string name="useDeviceLock">Lezárja a készüléket</string>
     <string name="weather">Időjárás</string>
     <string name="weather_calculation_time">Időjárás számítási idő</string>
     <string name="weather_city_id_title">Város azonosítója</string>
     <string name="weather_info_title">Információ</string>
-
-    <string name="themes">Témák</string>
-    <string name="active_theme">Aktív téma</string>
-    <string name="reset_theme_defaults_summary">Az aktív téma testreszabásainak visszaállítása alapértelmezettre.</string>
-    <string name="animations">Animációk</string>
-    <string name="enable_particle_overlays">Részecskék engedélyezése</string>
-    <string name="theme_animation_enabled_summary">Hulló hó vagy arany csillagok animációjának megjelenítése.</string>
-    <string name="particle_effect">Részecske effektus</string>
-    <string name="only_animate_when_charging">Animáció csak töltés közben</string>
-    <string name="theme_animation_only_charging_summary">Szünetelteti az animációkat akkumulátorról az energiatakarékosság érdekében.</string>
-    <string name="theme_updated">Téma frissítve!</string>
-    <string name="theme_reset_to_defaults">Téma visszaállítva az alapértelmezettekre</string>
 </resources>

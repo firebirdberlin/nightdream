@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,20 +14,20 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">เกี่ยวกับนาฬิกา</string>
     <string name="action_snooze">เลื่อนการปลุก</string>
     <string name="action_stop">หยุด</string>
+    <string name="active_theme">ธีมที่ใช้งาน</string>
     <string name="alarm">นาฬิกาปลุก</string>
     <string name="alarmFadeIn">เพิ่มเสียง</string>
     <string name="alarmVolume">เสียง</string>
-    <string name="allow_screen_off_summary">ปิดหน้าจอตอนกลางคืน</string>
     <string name="allow_screen_off">ปิดหน้าจอ</string>
+    <string name="allow_screen_off_summary">ปิดหน้าจอตอนกลางคืน</string>
     <string name="ambient_noise">ตรวจจับเสียง</string>
-    <string name="appearance">ปรับเปลี่ยนหน้าตา</string>
+    <string name="animations">แอนิเมชัน</string>
     <string name="app_name">โหมดกลางคืน</string>
+    <string name="appearance">ปรับเปลี่ยนหน้าตา</string>
     <string name="auto_brightness">ปรับแสงสว่าง</string>
     <string name="autostart_timerange_label_end">เวลาหยุด</string>
     <string name="autostart_timerange_label_start">เวลาเริ่ม</string>
@@ -44,31 +45,28 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">สีหลัก</string>
     <string name="choose_secondary_color">สีตัวอักษร</string>
     <string name="colors">สีต่าง ๆ</string>
-    <string name="confirm_reset_question">คุณแน่ใจว่าจะรีเซ็ตการตั้งค่าใหม่หรือไม่</string>
     <string name="confirm_reset">ตั้งค่าเริ่มต้น</string>
+    <string name="confirm_reset_question">คุณแน่ใจว่าจะรีเซ็ตการตั้งค่าใหม่หรือไม่</string>
     <string name="contribute">ความช่วยเหลือ</string>
     <string name="contribute_source_code">ซอสโค้ด</string>
     <string name="contribute_translation">การแปลภาษา</string>
     <string name="credits">เครดิต</string>
-    <string name="screen_orientation_reverse_landscape">อุบลราชธานี</string>
-    <string name="show_calendar_events">ไฮไลท์กิจกรรม</string>
-    <string name="options_stop_alarms_slider">สไลเดอร์</string>
-    <string name="options_stop_alarms_error_min_one">โปรดเลือกอย่างน้อยหนึ่งท่าทาง</string>
-    <string name="radio_stream_keep_running">เปิดวิทยุค้างไว้</string>
-    <string name="radio_stream_keep_running_summary">เล่นวิทยุต่อเนื่องหลังจากหยุดนาฬิกาปลุกแล้ว</string>
-    <string name="decoration_style_rainbow">สายรุ้ง</string>
     <string name="decoration_style_pride">Pride flag</string>
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
-
-    <string name="themes">ธีม</string>
-    <string name="active_theme">ธีมที่ใช้งาน</string>
-    <string name="reset_theme_defaults_summary">รีเซ็ตการปรับแต่งสำหรับธีมที่ใช้งานเป็นค่าเริ่มต้น</string>
-    <string name="animations">แอนิเมชัน</string>
+    <string name="decoration_style_rainbow">สายรุ้ง</string>
     <string name="enable_particle_overlays">เปิดใช้งานการซ้อนทับอนุภาค</string>
-    <string name="theme_animation_enabled_summary">แสดงแอนิเมชันหิมะตกหรือดาวสีทอง</string>
-    <string name="particle_effect">เอฟเฟกต์อนุภาค</string>
     <string name="only_animate_when_charging">เล่นแอนิเมชันเมื่อชาร์จเท่านั้น</string>
+    <string name="options_stop_alarms_error_min_one">โปรดเลือกอย่างน้อยหนึ่งท่าทาง</string>
+    <string name="options_stop_alarms_slider">สไลเดอร์</string>
+    <string name="particle_effect">เอฟเฟกต์อนุภาค</string>
+    <string name="radio_stream_keep_running">เปิดวิทยุค้างไว้</string>
+    <string name="radio_stream_keep_running_summary">เล่นวิทยุต่อเนื่องหลังจากหยุดนาฬิกาปลุกแล้ว</string>
+    <string name="reset_theme_defaults_summary">รีเซ็ตการปรับแต่งสำหรับธีมที่ใช้งานเป็นค่าเริ่มต้น</string>
+    <string name="screen_orientation_reverse_landscape">อุบลราชธานี</string>
+    <string name="show_calendar_events">ไฮไลท์กิจกรรม</string>
+    <string name="theme_animation_enabled_summary">แสดงแอนิเมชันหิมะตกหรือดาวสีทอง</string>
     <string name="theme_animation_only_charging_summary">หยุดแอนิเมชันชั่วคราวเมื่อใช้แบตเตอรี่เพื่อประหยัดพลังงาน</string>
-    <string name="theme_updated">อัปเดตธีมแล้ว!</string>
     <string name="theme_reset_to_defaults">รีเซ็ตธีมเป็นค่าเริ่มต้นแล้ว</string>
+    <string name="theme_updated">อัปเดตธีมแล้ว!</string>
+    <string name="themes">ธีม</string>
 </resources>

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,27 +14,25 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Πληροφορίες</string>
     <string name="action_skip">Παραλείπω</string>
     <string name="action_snooze">Αναβολή</string>
     <string name="action_stop">Τερματισμός</string>
-    <string name="options_stop_alarms_slider">ρυθμιστικό</string>
-    <string name="options_stop_alarms_error_min_one">Επιλέξτε τουλάχιστον μία χειρονομία.</string>
-    <string name="add_new_alarm">Εισαγωγή νέου ξυπνητηριού</string>
+    <string name="active_theme">Ενεργό θέμα</string>
     <string name="add_custom_alarm_tone">Εισαγωγή ήχου</string>
     <string name="add_custom_font">Εισαγωγή γραμματοσειράς</string>
+    <string name="add_new_alarm">Εισαγωγή νέου ξυπνητηριού</string>
     <string name="alarm">Ξυπνητήρι</string>
     <string name="alarmFadeIn">Ανεβάζω ενταση</string>
     <string name="alarmVolume">Ένταση</string>
-    <string name="allow_screen_off_summary">Απενεργοποίηση της οθόνης κατά την διάρκεια της νύχτας</string>
     <string name="allow_screen_off">Απενεργοποίηση οθόνης</string>
+    <string name="allow_screen_off_summary">Απενεργοποίηση της οθόνης κατά την διάρκεια της νύχτας</string>
     <string name="ambient_noise">Εντοπισμός ήχου στο περιβάλλον.</string>
     <string name="ambient_noise_summary">Ο ήχος περιβάλλοντος να μην επιτρέπει την νυχτερινή λειτουργία να ενεργοποιηθεί</string>
-    <string name="appearance">Εμφάνιση </string>
+    <string name="animations">Κινούμενα σχέδια</string>
     <string name="app_name">Νυχτερινό ρολόι</string>
+    <string name="appearance">Εμφάνιση </string>
     <string name="auto_brightness">Αυτόματη φωτεινότητα </string>
     <string name="autostart_message_disabled">Παρακαλούμε απενεργοποιήτε την προφύλαξη οθόνης για να ενεργοποιήσετε τις επιλογές για την αυτόματη έναρξη  </string>
     <string name="autostart_timerange_label_end">Τέλος χρονου</string>
@@ -53,15 +52,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Χρώμα έμφασης</string>
     <string name="choose_secondary_color">Χρώμα κειμένου</string>
     <string name="clear">Καθαρισμός</string>
+    <string name="clock_layout">Διάταξη</string>
     <string name="clock_layout_analog">Αναλογικό ρολόι</string>
+    <string name="clock_layout_digit_analog">Αναλογικό ρολόι με ψηφία</string>
     <string name="clock_layout_digital">Ψηφιακό ρολόι</string>
     <string name="clock_layout_elegant_analog">Κομψό αναλογικό ρολόι</string>
-    <string name="clock_layout_digit_analog">Αναλογικό ρολόι με ψηφία</string>
-    <string name="clock_layout">Διάταξη</string>
     <string name="clock_layout_modern_analog">Μοντέρνο αναλογικό ρολόι</string>
     <string name="colors">Χρώματα </string>
-    <string name="confirm_reset_question">Θέλετε πραγματικά να επαναφέρετε όλες τις ρυθμίσεις </string>
     <string name="confirm_reset">Επαναφορά </string>
+    <string name="confirm_reset_question">Θέλετε πραγματικά να επαναφέρετε όλες τις ρυθμίσεις </string>
     <string name="contribute">Συμβάλε και εσύ</string>
     <string name="contribute_source_code">Κύριος κώδικας</string>
     <string name="contribute_translation">Μετάφραση </string>
@@ -69,20 +68,19 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits">Ευχαριστίες</string>
     <string name="credits_pull_requests">Αιτήσεις</string>
     <string name="date_format">Ημερομηνία </string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Ουράνιο τόξο</string>
     <string name="delete">Διαγραφή</string>
     <string name="dialog_message_thank_you">Σας ευχαριστώ πάρα πολύ </string>
     <string name="dialog_title_thank_you">Ευχαριστώ </string>
-    <string name="decoration_style_rainbow">Ουράνιο τόξο</string>
-    <string name="decoration_style_pride">Pride flag</string>
-    <string name="decoration_style_progress_pride">Progress Pride flag</string>
-
-    <string name="show_pride_chevron">Show chevron</string>
     <string name="donate">Δώρισε</string>
     <string name="doubleTapToFinishSummary">Διπλό άγγιγμα για τερματισμό της εφαρμογής</string>
     <string name="doubleTapToFinishTitle">Διπλό άγγιγμα για τερματισμό</string>
+    <string name="enable_particle_overlays">Ενεργοποίηση επικαλύψεων σωματιδίων</string>
     <string name="forecast">Πρόβλεψη καιρού 5 ημερών</string>
-    <string name="handle_power_ac">Συνδεμένο με φωτιστή</string>
     <string name="handle_power">Αυτόματο ξεκίνημα</string>
+    <string name="handle_power_ac">Συνδεμένο με φωτιστή</string>
     <string name="handle_power_car">Όταν συνδεθεί με αμάξι</string>
     <string name="handle_power_desk">Όταν συνδεθεί στο γραφείο</string>
     <string name="handle_power_disconnection">Αυτόματη έναρξη</string>
@@ -95,24 +93,28 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="location_time">Ώρα τοποθεσίας</string>
     <string name="maxBrightness">Μέγιστη ένταση φωτισμού</string>
     <string name="maxBrightnessBattery">Μέγιστη ένταση φωτισμού όταν δεν φωτίζεται</string>
-    <string name="message_mobile_data_connection_confirmation">Αναπαραγωγή ράδιο χωρίς Wi-Fi</string>
     <string name="message_mobile_data_connection">Σύνδεση δεδομένων</string>
+    <string name="message_mobile_data_connection_confirmation">Αναπαραγωγή ράδιο χωρίς Wi-Fi</string>
     <string name="message_no_data_connection">Δεν βρέθηκε σύνδεση</string>
     <string name="minBrightness">Ελάχιστη ένταση φωτισμού</string>
     <string name="minute">Λεπτό</string>
     <string name="mute_ringer">Σίγαση</string>
+    <string name="night_mode">Νυχτερινή λειτουργία</string>
     <string name="night_mode_activation_auto">Αυτόματο</string>
     <string name="night_mode_activation_manual">Χειροκίνητο</string>
     <string name="night_mode_activation_mode">Μέθοδος ενεργοποίησης</string>
     <string name="night_mode_activation_scheduled">Προγραμματισμένο</string>
-    <string name="night_mode">Νυχτερινή λειτουργία</string>
     <string name="night_mode_timerange_label_end">Ώρα λήξης</string>
     <string name="night_mode_timerange_label_start">Ώρα έναρξης</string>
     <string name="night_mode_timerange_title">Νυχτερινή ώρα</string>
     <string name="noise_sensitivity">Ευαισθησία μικροφώνου</string>
+    <string name="only_animate_when_charging">Κίνηση μόνο κατά τη φόρτιση</string>
+    <string name="options_stop_alarms_error_min_one">Επιλέξτε τουλάχιστον μία χειρονομία.</string>
+    <string name="options_stop_alarms_slider">ρυθμιστικό</string>
     <string name="other_apps">Άλλες εφαρμογές</string>
-    <string name="other_apps_tinytimetracker_summary">Παρακολούθηση καθημερινής ώρας εργασίας</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="other_apps_tinytimetracker_summary">Παρακολούθηση καθημερινής ώρας εργασίας</string>
+    <string name="particle_effect">Εφέ σωματιδίων</string>
     <string name="persistent_battery_value_while_charging">Ποσοστό μπαταρίας</string>
     <string name="persistent_battery_value_while_charging_summary">Μόνιμη ένδειξη ποσοστού μπαταρίας όταν φορτιζει</string>
     <string name="preview">Προεπισκόπηση</string>
@@ -120,9 +122,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_pro">Πλήρη έκδοση</string>
     <string name="radio">Ράδιο</string>
     <string name="radio_stream">Ροές</string>
+    <string name="radio_stream_failure">Σφάλμα ροής</string>
     <string name="radio_stream_keep_running">Διατήρηση λειτουργίας ραδιοφώνου</string>
     <string name="radio_stream_keep_running_summary">Συνέχιση αναπαραγωγής της ροής ραδιοφώνου μετά τη διακοπή της ειδοποίησης.</string>
-    <string name="radio_stream_failure">Σφάλμα ροής</string>
     <string name="radio_stream_manual_input_description">Όνομα σταθμού</string>
     <string name="radio_stream_manual_input_hint">Πρόσθεση σταθμού χειροκίνητα</string>
     <string name="radio_stream_manual_input_url">URL ροής</string>
@@ -131,13 +133,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_query_hint">Λέξη προς αναζήτηση</string>
     <string name="radio_stream_search">Αναζήτηση</string>
     <string name="radio_stream_unreachable_url">Το URL δεν είναι σωστό</string>
+    <string name="recommend">Συνιστώμενη εφαρμογή</string>
     <string name="recommend_app_desc">Επιλογη εφαρμογής για κοινοποίηση</string>
     <string name="recommend_app_subject">Θα ήθελα να σου προτείνω αυτη την εφαρμογή, νυχτερινό ρολόι</string>
-    <string name="recommend">Συνιστώμενη εφαρμογή</string>
     <string name="remaining">Εναπομείναντα</string>
     <string name="repeat">Επανάλαβε</string>
+    <string name="reset_theme_defaults_summary">Επαναφορά προσαρμογών για το ενεργό θέμα στις προεπιλογές.</string>
     <string name="reset_to_defaults">Επαναφορά στις αρχικές ρυθμίσεις</string>
-    <string name="screenProtectionMove">Εναλλαγή θέσεων στο ρολόι</string>
     <string name="review_request">Παρακαλούμε αξιολογήστε μας </string>
     <string name="screen_orientation_automatic">Αυτόματη</string>
     <string name="screen_orientation_landscape">Οριζόντια</string>
@@ -145,9 +147,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Οριζόντια αντίθετη</string>
     <string name="screen_orientation_reverse_portrait">Κάθετη αντίθετη</string>
     <string name="screenOrientation">Περιστροφή οθόνης</string>
+    <string name="screenProtectionMove">Εναλλαγή θέσεων στο ρολόι</string>
     <string name="set_alarm">Ορισμός ξυπνητηριού</string>
     <string name="show_calendar_events">Επισήμανση συμβάντων</string>
     <string name="show_date">Εμφάνιση Ημερομηνίας</string>
+    <string name="show_pride_chevron">Show chevron</string>
     <string name="show_temperature">Εμφάνιση θερμοκρασίας</string>
     <string name="show_weather">Εμφάνιση καιρού στην τοποθεσία σας</string>
     <string name="show_wind_speed">Εμφάνιση ταχύτητας ανέμων</string>
@@ -157,33 +161,26 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedSummary">Προσοχή Αυτό θα αδειάσει γρήγορα την μπαταρία σας</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Αναμονή όταν αποφορτίζει</string>
     <string name="temperatureUnit">Μονάδα θερμοκρασίας</string>
+    <string name="theme_animation_enabled_summary">Εμφάνιση κινουμένων σχεδίων χιονιού που πέφτει ή χρυσών αστεριών.</string>
+    <string name="theme_animation_only_charging_summary">Παύση των κινουμένων σχεδίων στην μπαταρία για εξοικονόμηση ενέργειας.</string>
+    <string name="theme_reset_to_defaults">Το θέμα επανήλθε στις προεπιλογές</string>
+    <string name="theme_updated">Το θέμα ενημερώθηκε!</string>
+    <string name="themes">Θέματα</string>
     <string name="timeFormat">Μορφή ώρας</string>
     <string name="titlePrivacyPolicy">Πολιτική απορρήτου</string>
     <string name="today">Σήμερα </string>
     <string name="tomorrow">Αύριο</string>
     <string name="translations">Μεταφράσεις</string>
+    <string name="typeface">Typeface</string>
     <string name="typeface_roboto_regular">Roboto regular</string>
     <string name="typeface_roboto_thin">Roboto thin</string>
-    <string name="typeface">Typeface</string>
     <string name="uninstall">Απεγκατάσταση εφαρμογής</string>
     <string name="useAlarmSwipeGesture">Εισαγωγή ξυπνητηριού μέσω της χειρονομίας swipe </string>
+    <string name="useDeviceLock">Κλείδωμα συσκευής</string>
     <string name="useDeviceLockDescription">Για να γίνει απεγκατάσταση παρακαλούμε απενεργοποιήστε τα δικαιώματα διαχειριστή συσκευής για την συγκεκριμένη εφαρμογή</string>
     <string name="useDeviceLockExplanation">Για να γίνει απεγκατάσταση πρέπει να απενεργοποιηθεί το δικαίωμα για το κλειδωμα της συσκευής </string>
-    <string name="useDeviceLock">Κλείδωμα συσκευής</string>
+    <string name="weather">Καιρός</string>
     <string name="weather_calculation_time">Χρόνος υπολογισμού καιρού</string>
     <string name="weather_city_id_title">Αναζήτηση τοποθεσίας</string>
     <string name="weather_info_title">Πληροφορίες</string>
-    <string name="weather">Καιρός</string>
-
-    <string name="themes">Θέματα</string>
-    <string name="active_theme">Ενεργό θέμα</string>
-    <string name="reset_theme_defaults_summary">Επαναφορά προσαρμογών για το ενεργό θέμα στις προεπιλογές.</string>
-    <string name="animations">Κινούμενα σχέδια</string>
-    <string name="enable_particle_overlays">Ενεργοποίηση επικαλύψεων σωματιδίων</string>
-    <string name="theme_animation_enabled_summary">Εμφάνιση κινουμένων σχεδίων χιονιού που πέφτει ή χρυσών αστεριών.</string>
-    <string name="particle_effect">Εφέ σωματιδίων</string>
-    <string name="only_animate_when_charging">Κίνηση μόνο κατά τη φόρτιση</string>
-    <string name="theme_animation_only_charging_summary">Παύση των κινουμένων σχεδίων στην μπαταρία για εξοικονόμηση ενέργειας.</string>
-    <string name="theme_updated">Το θέμα ενημερώθηκε!</string>
-    <string name="theme_reset_to_defaults">Το θέμα επανήλθε στις προεπιλογές</string>
 </resources>
