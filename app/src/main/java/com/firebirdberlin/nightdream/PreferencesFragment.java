@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.ext.SdkExtensions;
@@ -113,7 +114,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private Vector<AlertDialog> dialogs = new Vector<>();
     Snackbar snackbar;
     String rootKey;
@@ -417,7 +418,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onStart() {
         super.onStart();
 
-        daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler());
+        daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler(Looper.getMainLooper()));
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
                 true,

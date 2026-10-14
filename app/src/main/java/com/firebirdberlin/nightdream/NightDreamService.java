@@ -22,13 +22,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.service.dreams.DreamService;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class NightDreamService extends DreamService {
 
     final Context context = this;
-    Handler handler = new Handler();
+    Handler handler = new Handler(Looper.getMainLooper());
     Runnable startDelayed = new Runnable() {
         @Override
         public void run() {

@@ -27,6 +27,7 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -255,7 +256,7 @@ public class CustomDigitalFlipClock extends LinearLayout {
 
     private class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver() {
-            super(new Handler());
+            super(new Handler(Looper.getMainLooper()));
         }
 
         @Override

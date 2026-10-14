@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.AlarmClock;
 import android.text.InputType;
 import android.util.Log;
@@ -416,7 +417,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         entries.add(entry);
         update(entry.id);
         if (intent.getBooleanExtra(AlarmClock.EXTRA_SKIP_UI, false)) {
-            new Handler().postDelayed(this::finish, 3000);
+            new Handler(Looper.getMainLooper()).postDelayed(this::finish, 3000);
         }
     }
 

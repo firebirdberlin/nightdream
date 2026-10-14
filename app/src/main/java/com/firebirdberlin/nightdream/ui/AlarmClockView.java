@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -58,8 +59,8 @@ import java.util.Calendar;
 
 public class AlarmClockView extends View {
     private static final String TAG = "AlarmClockView";
-    final Handler mHandler = new Handler();
-    final private Handler handler = new Handler();
+    final Handler mHandler = new Handler(Looper.getMainLooper());
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final Context ctx;
     private final Paint paint = new Paint();
     private final Rect alarmTimeRect = new Rect(0, 0, 0, 0);

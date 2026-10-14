@@ -123,7 +123,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public static final int MODE_DAY = 2;
     private static int mode = MODE_DAY;
     private static Context context = null;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable finishApp = this::finish;
     private final Runnable runnableSetupNightMode = this::setupNightMode;
     Sensor lightSensor = null;

@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 
@@ -33,7 +34,7 @@ import com.firebirdberlin.nightdream.Utility;
 
 public class AskForOverlayPermissionDialogFragment extends AppCompatDialogFragment{
     public static String TAG = "NightDreamActivity";
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

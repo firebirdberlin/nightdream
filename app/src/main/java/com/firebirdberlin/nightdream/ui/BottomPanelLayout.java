@@ -20,6 +20,7 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +52,7 @@ public class BottomPanelLayout extends FrameLayout {
     public boolean isVisible = true;
     private SimpleTime nextAlarmTime = null;
 
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable hidePanel = new Runnable() {
         @Override
         public void run() {

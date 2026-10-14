@@ -131,7 +131,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public static final int MODE_DAY = 2;
     private static int mode = MODE_DAY;
     private static Context context = null;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable finishApp = this::finish;
     private final Runnable runnableSetupNightMode = this::setupNightMode;
     public CastContext mCastContext;
@@ -139,7 +139,6 @@ public class NightDreamActivity extends BillingHelperActivity
     mAudioManager AudioManage = null;
     private ImageView alarmClockIcon;
     private BottomPanelLayout bottomPanelLayout;
-    private ClockLayoutContainer clockLayoutContainer;
     private SidePanel sidePanelLeft;
     private SidePanel sidePanelRight;
     private boolean screenWasOn = false;
@@ -362,7 +361,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
-        clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
         sidePanelLeft = findViewById(R.id.side_menu_left);
         sidePanelRight = findViewById(R.id.side_menu_right);
 

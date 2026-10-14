@@ -28,6 +28,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,7 +67,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     private final Context context;
     private float textSize = 28.f;
     private boolean running = false;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
 
     public Ticker(Context context) {
         super(context);
