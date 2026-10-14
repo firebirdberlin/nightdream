@@ -376,6 +376,7 @@ public class ThemePresetManager {
     }
 
     private static String serializePreferencesToJson(Context context) {
+        Log.d(TAG, "serializePreferencesToJson()");
         try {
             JSONObject root = new JSONObject();
             JSONObject allPreferencesObj = new JSONObject();
@@ -399,6 +400,9 @@ public class ThemePresetManager {
                     }
 
                     Object value = entry.getValue();
+                    if (key.toLowerCase().contains("bright")) {
+                        Log.d(TAG, "key: " + key + " value: " + value);
+                    }
                     if (value == null) continue;
 
                     if (value instanceof Boolean) {
@@ -440,6 +444,7 @@ public class ThemePresetManager {
     }
 
     private static void restorePreferencesFromJson(Context context, String jsonString) {
+        Log.d(TAG, "restorePreferencesFromJson()");
         if (Utility.isEmpty(jsonString)) return;
         try {
             JSONObject rootJson = new JSONObject(jsonString);
@@ -499,6 +504,10 @@ public class ThemePresetManager {
 
                     String type = (typesObj != null && typesObj.has(key)) ? typesObj.getString(key) : null;
                     Object valueObj = valuesObj.get(key);
+
+                    if (key.toLowerCase().contains("bright")) {
+                        Log.d(TAG, "key: " + key + " type: " + type + " value: " + valueObj.toString() + "");
+                    }
 
                     if ("boolean".equals(type) || valueObj instanceof Boolean) {
                         editor.putBoolean(key, valuesObj.getBoolean(key));

@@ -39,7 +39,7 @@
         app:title="@string/animations">
 
         <SwitchPreferenceCompat
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="theme_animation_enabled"
             app:summary="@string/theme_animation_enabled_summary"
