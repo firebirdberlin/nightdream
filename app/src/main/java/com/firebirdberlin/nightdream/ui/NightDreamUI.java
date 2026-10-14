@@ -45,7 +45,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
@@ -816,8 +815,7 @@ public class NightDreamUI {
                     loadBackgroundImageFiles();
                     if (!Utility.isEmpty(files)) {
                         preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-                        AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-                        runningTask.execute(preloadBackgroundImageFile);
+                        preloadImage(preloadBackgroundImageFile);
                         parentLayout.postDelayed(initSlideshowBackground, 500);
                         handler.post(backgroundChange);
                     } else {
@@ -1144,8 +1142,7 @@ public class NightDreamUI {
 
         if (!Utility.isEmpty(files) && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-            AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-            runningTask.execute(preloadBackgroundImageFile);
+            preloadImage(preloadBackgroundImageFile);
         }
     }
 
@@ -1984,25 +1981,20 @@ public class NightDreamUI {
         ClockWidgetProvider.updateAllWidgets(context);
     }
 
-    private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(File... params) {
-            if (files == null || files.isEmpty() || params[0] == null) {
-                return null;
-            } else {
-                return imageFilter(rescaleBackgroundImage(loadImageFromPath(params[0])));
+    private void preloadImage(File file) {
+        if (file == null) {
+            return;
+        }
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            Bitmap result = null;
+            if (files != null && !files.isEmpty()) {
+                result = imageFilter(rescaleBackgroundImage(loadImageFromPath(file)));
             }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            preloadBackgroundImage = result;
-        }
+            Bitmap finalResult = result;
+            handler.post(() -> preloadBackgroundImage = finalResult);
+            executor.shutdown();
+        });
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {
