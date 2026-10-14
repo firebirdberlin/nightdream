@@ -308,7 +308,7 @@ public class PreferencesActivity extends BillingHelperActivity
         super.onResume();
         Log.d(TAG, "onResume");
 
-        new Handler().postDelayed(this::checkForReviewRequest, 100);
+        new Handler(Looper.getMainLooper()).postDelayed(this::checkForReviewRequest, 100);
     }
 
     private void checkForReviewRequest() {

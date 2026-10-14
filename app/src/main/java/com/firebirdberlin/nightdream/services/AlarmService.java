@@ -30,6 +30,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -52,7 +53,7 @@ public class AlarmService extends Service
         MediaPlayer.OnCompletionListener {
     private static final String TAG = AlarmService.class.getSimpleName();
     static public boolean isRunning = false;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     PowerManager.WakeLock wakelock;
     VibrationHandler vibrator = null;
     long startTime = 0;

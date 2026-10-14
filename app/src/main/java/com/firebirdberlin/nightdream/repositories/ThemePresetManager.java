@@ -400,8 +400,8 @@ public class ThemePresetManager {
                     }
 
                     Object value = entry.getValue();
-                    if (key.toLowerCase().contains("bright")) {
-                        Log.d(TAG, "key: " + key + " value: " + value);
+                    if ("brightness_offset".equals(key) || "nightModeBrightness".equals(key) || key.toLowerCase().contains("bright")) {
+                        Log.d(TAG, "serializePreferencesToJson() - key: " + key + " value: " + value);
                     }
                     if (value == null) continue;
 
@@ -505,8 +505,8 @@ public class ThemePresetManager {
                     String type = (typesObj != null && typesObj.has(key)) ? typesObj.getString(key) : null;
                     Object valueObj = valuesObj.get(key);
 
-                    if (key.toLowerCase().contains("bright")) {
-                        Log.d(TAG, "key: " + key + " type: " + type + " value: " + valueObj.toString() + "");
+                    if ("brightness_offset".equals(key) || "nightModeBrightness".equals(key) || key.toLowerCase().contains("bright")) {
+                        Log.d(TAG, "restorePreferencesFromJson() - key: " + key + " type: " + type + " value: " + valueObj);
                     }
 
                     if ("boolean".equals(type) || valueObj instanceof Boolean) {
