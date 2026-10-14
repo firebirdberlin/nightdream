@@ -99,10 +99,7 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
             final Handler handler = new Handler();
             final Runnable longPress = () -> {
-                performHapticFeedback(
-                        HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                );
+                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             };
             float startX = 0;
             float max_move_seen = 0;
