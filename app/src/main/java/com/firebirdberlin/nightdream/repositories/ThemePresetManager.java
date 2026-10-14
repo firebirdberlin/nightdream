@@ -337,8 +337,12 @@ public class ThemePresetManager {
             }
         }
         
+        // Commit preset default values to disk before creating the initial JSON snapshot
+        editor.apply();
+
         // Save initial profile JSON snapshot
         saveThemeProfileJson(context, prefs, editor, preset.id);
+        editor.apply();
     }
 
     private static void saveThemeProfileJson(Context context, SharedPreferences prefs, SharedPreferences.Editor editor, String themeId) {
