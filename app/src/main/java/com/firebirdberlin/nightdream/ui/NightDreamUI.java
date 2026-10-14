@@ -116,6 +116,7 @@ public class NightDreamUI {
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private static final String TAG = NightDreamUI.class.getSimpleName();
+    private static final ExecutorService backgroundExecutor = Executors.newCachedThreadPool();
     final private Handler handler = new Handler(Looper.getMainLooper());
     final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
@@ -198,8 +199,6 @@ public class NightDreamUI {
             }
         }
     };
-    private final float LIGHT_VALUE_BRIGHT = 40.0f;
-    private final float LIGHT_VALUE_DAYLIGHT = 10000.0f;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
@@ -357,7 +356,7 @@ public class NightDreamUI {
 
             @Override
             public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-                if (e1 == null || e2 == null) return false;
+                if (e1 == null) return false;
                 Log.i(TAG, "onFling");
                 clockLayoutContainer.getLocationInWindow(rect);
                 if (e1.getY() < rect[1]) return false;
@@ -390,7 +389,7 @@ public class NightDreamUI {
             }
 
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
+            public boolean onSingleTapUp(@NonNull MotionEvent e) {
                 Log.w(TAG, "single tap up");
 
                 showAlarmClock();
@@ -410,7 +409,7 @@ public class NightDreamUI {
             }
 
             @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
                 Log.d(TAG, "onScroll");
                 if (
                         clockLayoutContainer == null || brightnessProgress == null
@@ -494,7 +493,7 @@ public class NightDreamUI {
         View.OnLongClickListener onMenuItemLongClickListener = v -> {
             boolean wasLocked = locked;
             locked = !locked;
-            if (wasLocked && !locked) {
+            if (wasLocked) {
                 settings.incrementUnlockCount();
             }
             settings.setUILocked(locked);
@@ -504,10 +503,7 @@ public class NightDreamUI {
                 sidePanelRight.closeMenu();
             }
             if (Utility.hasPermission(mContext, Manifest.permission.VIBRATE)) {
-                v.performHapticFeedback(
-                        HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                );
+                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             } else {
                 Log.w(TAG, "PERMISSION VIBRATE is missing");
             }
@@ -690,9 +686,7 @@ public class NightDreamUI {
         setScreenOrientation(settings.screenOrientation);
 
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> { //background thread
+        backgroundExecutor.execute(() -> { //background thread
             clockLayoutContainer.post(initClockLayout);
             //like onPostExecute()
             handler.post(this::postFadeAnimation);
@@ -1405,8 +1399,8 @@ public class NightDreamUI {
         int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
         int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
 
-        i1 -= (clockLayout.getWidth() - scaledWidth) / 2;
-        i2 -= (clockLayout.getHeight() - scaledHeight) / 2;
+        i1 -= (int) ((clockLayout.getWidth() - scaledWidth) / 2.0f);
+        i2 -= (int) ((clockLayout.getHeight() - scaledHeight) / 2.0f);
         clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
     }
 
@@ -1418,7 +1412,8 @@ public class NightDreamUI {
     private float calculateLogarithmicBrightnessFactor(float currentLightValue) {
         // make sure all boundary values are positive
         double min_lux_for_log = Math.max(0.1, this.LIGHT_VALUE_DARK);
-        double max_lux_for_log = Math.max(min_lux_for_log + 0.1, this.LIGHT_VALUE_DAYLIGHT);
+        float LIGHT_VALUE_DAYLIGHT = 10000.0f;
+        double max_lux_for_log = Math.max(min_lux_for_log + 0.1, LIGHT_VALUE_DAYLIGHT);
 
         // make sure the light value is in between boundaries
         double clampedLightValue = Math.max(min_lux_for_log, Math.min(max_lux_for_log, currentLightValue));
@@ -1450,9 +1445,7 @@ public class NightDreamUI {
             float logarithmicBrightnessFactor = calculateLogarithmicBrightnessFactor(light_value);
 
 //          2. combine with manual preference
-            float combinedBrightnessFactor = (logarithmicBrightnessFactor + add_brightness) / 2.f;
-
-            brightness = combinedBrightnessFactor;
+            brightness = (logarithmicBrightnessFactor + add_brightness) / 2.f;
             v = 1.f + brightness;
 
         } else {
@@ -1471,7 +1464,7 @@ public class NightDreamUI {
         brightness = getValidBrightnessValue(brightness);
         setBrightness(brightness);
 
-        if (!batteryViewShallBeVisible()) {
+        if (batteryViewShallBeHidden()) {
             hideBatteryView(millis);
         }
 
@@ -1541,6 +1534,7 @@ public class NightDreamUI {
 
     public int determineScreenMode(float light_value) {
         LIGHT_VALUE_DARK = settings.minIlluminance + 1.f;
+        float LIGHT_VALUE_BRIGHT = 40.0f;
         if (light_value <= LIGHT_VALUE_DARK) {
             return 0;
         } else if (light_value < LIGHT_VALUE_BRIGHT / 2.f) { // night shift, desk light on
@@ -1597,19 +1591,17 @@ public class NightDreamUI {
     }
 
     private void hideBatteryView(int millis) {
-        if (!batteryViewShallBeVisible()) {
+        if (batteryViewShallBeHidden()) {
             setAlpha(batteryIconView, 0.f, millis);
         }
     }
 
-    private boolean batteryViewShallBeVisible() {
+    private boolean batteryViewShallBeHidden() {
         if (!settings.showBattery) {
-            return false;
+            return true;
         }
-        return (
-                controlsVisible ||
-                        (settings.persistentBatteryValueWhileCharging && batteryIconView.shallBeVisible())
-        );
+        return (!controlsVisible &&
+                (!settings.persistentBatteryValueWhileCharging || !batteryIconView.shallBeVisible()));
     }
 
     public void showAlarmClock() {
@@ -1707,7 +1699,7 @@ public class NightDreamUI {
         Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
 
         s = Math.min(s, max);
-        if (s > 0.5f && !Float.isNaN(s) && !Float.isInfinite(s)) {
+        if (s > 0.5f) {
             return s;
         }
         return 1.f;
@@ -1959,9 +1951,7 @@ public class NightDreamUI {
     }
 
     private void getExifInformation(File file) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> { //background thread
+        backgroundExecutor.execute(() -> { //background thread
             Boolean success = exifView.getExifView(mContext, file, getSecondaryColor());
             handler.post(() -> { //like onPostExecute()
                 if (success) {
@@ -1985,15 +1975,13 @@ public class NightDreamUI {
         if (file == null) {
             return;
         }
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
+        backgroundExecutor.execute(() -> {
             Bitmap result = null;
             if (files != null && !files.isEmpty()) {
                 result = imageFilter(rescaleBackgroundImage(loadImageFromPath(file)));
             }
             Bitmap finalResult = result;
             handler.post(() -> preloadBackgroundImage = finalResult);
-            executor.shutdown();
         });
     }
 
