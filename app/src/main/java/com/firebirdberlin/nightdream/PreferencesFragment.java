@@ -580,7 +580,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle(getString(R.string.showNotificationsAccessNotGranted))
                                     .setMessage(getString(R.string.showNotificationsAlertText))
-                                    .setPositiveButton(android.R.string.yes, null)
+                                    .setPositiveButton(android.R.string.ok, null)
                                     .setIcon(android.R.drawable.ic_dialog_alert);
                             AlertDialog alertdialog = builder.create();
                             dialogs.add(alertdialog);
@@ -859,8 +859,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(getResources().getString(R.string.confirm_reset))
                         .setMessage(getResources().getString(R.string.confirm_reset_question))
-                        .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
                             settings.clear();
                             getPreferenceScreen().removeAll();
                             WakeUpReceiver.cancelAlarm(mContext);
@@ -1342,6 +1342,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private String getDeviceInfo() {
         return String.format(
+                Locale.US,
                 "\n\n\n--- Device Information ---\n" +
                         "Manufacturer: %s\n" +
                         "Model: %s\n" +

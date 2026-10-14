@@ -144,7 +144,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">Obtener versiones beta</string>
     <string name="contribute_source_code">Código fuente</string>
     <string name="contribute_translation">Traducción</string>
-    <string name="copy_images">Procesando imagen %1 de %2</string>
+    <string name="copy_images">Procesando imagen %1$d de %2$d</string>
     <string name="country">Pais</string>
     <string name="credits">Créditos</string>
     <string name="credits_pull_requests">Contribuciones de código</string>
