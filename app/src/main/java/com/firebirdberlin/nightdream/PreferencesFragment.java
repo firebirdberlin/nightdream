@@ -1437,8 +1437,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
             activeThemePref.setValue(activeId);
             activeThemePref.setOnPreferenceChangeListener((preference, newValue) -> {
                 String newThemeId = (String) newValue;
+                SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+                if (preferences != null) {
+                    preferences.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+                }
                 ThemePresetManager.switchTheme(mContext, newThemeId);
                 setupThemeControls();
+                if (preferences != null) {
+                    preferences.registerOnSharedPreferenceChangeListener(prefChangedListener);
+                }
                 if (getView() != null) {
                     Snackbar.make(getView(), R.string.theme_updated, Snackbar.LENGTH_SHORT).show();
                 }
@@ -1448,8 +1455,15 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
         if (resetPref != null) {
             resetPref.setOnPreferenceClickListener(p -> {
+                SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+                if (preferences != null) {
+                    preferences.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+                }
                 ThemePresetManager.resetActiveThemeDefaults(mContext);
                 setupThemeControls();
+                if (preferences != null) {
+                    preferences.registerOnSharedPreferenceChangeListener(prefChangedListener);
+                }
                 if (getView() != null) {
                     Snackbar.make(getView(), R.string.theme_reset_to_defaults, Snackbar.LENGTH_SHORT).show();
                 }
