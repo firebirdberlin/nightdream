@@ -122,8 +122,7 @@ public class Settings {
     public boolean keepRadioStreamRunning = true;
     private boolean scheduledAutoStartEnabled = false;
     public boolean scheduledAutoStartChargerRequired = true;
-    public float dim_offset = 0.8f;
-    public float nightModeBrightness = 0.f;
+    private float nightModeBrightness = 0.f;
     public float maxBrightness = 1.f;
     public float maxBrightnessBattery = 1.f;
     public double location_lon = 0.d;
@@ -216,6 +215,15 @@ public class Settings {
         this.mContext = context;
         purchaseManager = PurchaseManager.getInstance(context.getApplicationContext());
         settings = context.getSharedPreferences(PREFS_KEY, 0);
+        cryptoManager = new CryptoManager();
+
+        reload();
+    }
+
+    public Settings(SharedPreferences sharedPreferences) {
+        this.mContext = null;
+        purchaseManager = null;
+        settings = sharedPreferences;
         cryptoManager = new CryptoManager();
 
         reload();
@@ -441,10 +449,13 @@ public class Settings {
     }
 
     public void reload() {
-        AlarmToneUri = settings.getString(
-                "AlarmToneUri",
-                android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString()
-        );
+        String defaultAlarmUri = "";
+        try {
+            if (android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI != null) {
+                defaultAlarmUri = android.provider.Settings.System.DEFAULT_ALARM_ALERT_URI.toString();
+            }
+        } catch (Exception ignored) {}
+        AlarmToneUri = settings.getString("AlarmToneUri", defaultAlarmUri);
         AlarmToneName = settings.getString("AlarmToneName", "");
         activateDoNotDisturb = settings.getBoolean("activateDoNotDisturb", false);
         activateDoNotDisturbAllowPriority = settings.getBoolean("activateDoNotDisturbAllowPriority", true);
@@ -504,7 +515,6 @@ public class Settings {
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
         clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
         clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
-        dim_offset = settings.getFloat("dimOffset", dim_offset);
         location_lat = getDouble("location_lat", 0.d);
         location_lon = getDouble("location_lon", 0.d);
         location_time = settings.getLong("location_time", -1L);
@@ -571,9 +581,14 @@ public class Settings {
 
         weatherEntry = getWeatherEntry();
 
-        HashSet<String> defaultOptions = new HashSet<>(Arrays.asList(
-                mContext.getResources().getStringArray(R.array.optionsStopAlarmsValuesDefault)
-        ));
+        HashSet<String> defaultOptions = new HashSet<>(Arrays.asList("0", "1"));
+        if (mContext != null) {
+            try {
+                defaultOptions = new HashSet<>(Arrays.asList(
+                        mContext.getResources().getStringArray(R.array.optionsStopAlarmsValuesDefault)
+                ));
+            } catch (Exception ignored) {}
+        }
         Set<String> optionsStopAlarms = settings.getStringSet("optionsStopAlarms", defaultOptions);
         stopAlarmOnTap = optionsStopAlarms.contains("0");
         stopAlarmOnLongPress = optionsStopAlarms.contains("1");
@@ -659,7 +674,7 @@ public class Settings {
     }
 
     private void setPowerSourceOptions() {
-
+        if (mContext == null) return;
         SharedPreferences.Editor edit = settings.edit();
         HashSet<String> defaultOptions = new HashSet<>(Arrays.asList(
                 mContext.getResources().getStringArray(R.array.optionsPowerSource)
@@ -1069,9 +1084,9 @@ public class Settings {
 
     public String getFontName(int clockLayoutId) {
         String key = getKeyForClockLayout("fontName", clockLayoutId);
-        String def = mContext.getString(R.string.typeface_14_segment);
+        String def = mContext != null ? mContext.getString(R.string.typeface_14_segment) : "";
         if ("fontUri:6".equals(key)) {
-            def = mContext.getString(R.string.typeface_roboto_thin);
+            def = mContext != null ? mContext.getString(R.string.typeface_roboto_thin) : "";
         }
         return settings.getString(key, def);
     }
@@ -1083,11 +1098,19 @@ public class Settings {
         return String.format(Locale.getDefault(),"%s:%d", key, clockLayoutId);
     }
 
-    public void setBrightnessOffset(float value) {
-        dim_offset = value;
+    public float getBrightnessOffset() {
+        if (settings.contains("brightness_offset")) {
+            return settings.getInt("brightness_offset", 80) / 100.f;
+        }
+        return settings.getFloat("dimOffset", 0.8f);
+    }
 
+    public float getNightModeBrightness() {
+        return nightModeBrightness;
+    }
+
+    public void setBrightnessOffset(float value) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        prefEditor.putFloat("dimOffset", value);
         prefEditor.putInt("brightness_offset", (int) (value * 100));
         // TODO This decreases the night mode brightness ... do we want to keep it ?
         if (!autoBrightness && value < nightModeBrightness) {
@@ -1101,9 +1124,7 @@ public class Settings {
         nightModeBrightness = value;
         SharedPreferences.Editor prefEditor = settings.edit();
         prefEditor.putFloat("nightModeBrightness", value);
-        if (!autoBrightness && value > dim_offset) {
-            dim_offset = value;
-            prefEditor.putFloat("dimOffset", value);
+        if (!autoBrightness && value > getBrightnessOffset()) {
             prefEditor.putInt("brightness_offset", (int) (value * 100));
         }
         prefEditor.apply();

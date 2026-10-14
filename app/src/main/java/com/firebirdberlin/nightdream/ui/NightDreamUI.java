@@ -419,7 +419,7 @@ public class NightDreamUI {
                     if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
                         Point size = Utility.getDisplaySize(mContext);
                         float dx = -2.f * (distanceX / size.x);
-                        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                        float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
                         value += dx;
                         value = to_range(value, -0.9f, 1.f);
 
@@ -654,7 +654,7 @@ public class NightDreamUI {
     }
 
     void setBrightnessProgress() {
-        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+        float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
         value = to_range(value, -1.f, 1.f);
         int intValue = (int) (100.f * (value + 1.f));
         brightnessProgress.setProgress(intValue);
@@ -1450,15 +1450,15 @@ public class NightDreamUI {
 
         } else {
             if (mode == 0) {
-                v = 1.f + settings.nightModeBrightness;
-                brightness = settings.nightModeBrightness;
+                v = 1.f + settings.getNightModeBrightness();
+                brightness = settings.getNightModeBrightness();
             } else {
                 v = 1.f + add_brightness;
                 brightness = add_brightness;
             }
         }
 
-        float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.001f);
+        float minBrightness = Math.max(1.f + settings.getNightModeBrightness(), 0.001f);
         v = to_range(v, minBrightness, 1.f);
 
         brightness = getValidBrightnessValue(brightness);
@@ -1492,7 +1492,7 @@ public class NightDreamUI {
     private float getMinAllowedBrightness() {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
         // Therefore, a minimum value must be set to preserve the visibility of the clock.
-        float minBrightness = Math.max(settings.nightModeBrightness, 0.001f);
+        float minBrightness = Math.max(settings.getNightModeBrightness(), 0.001f);
         if (settings.autoBrightness) {
             minBrightness = Math.min(minBrightness, 0.1f);
         }
@@ -1567,7 +1567,7 @@ public class NightDreamUI {
             }
         }
 
-        float dim_offset = settings.dim_offset;
+        float dim_offset = settings.getBrightnessOffset();
         if ((new_mode == 1) && (current_mode == 0)) {
             dim_offset += 0.1f;
         }
@@ -1612,7 +1612,7 @@ public class NightDreamUI {
         if (AlarmHandlerService.alarmIsRunning()) {
             blinkIfLocked();
         }
-        dimScreen(0, last_ambient, settings.dim_offset);
+        dimScreen(0, last_ambient, settings.getBrightnessOffset());
     }
 
     public void onPowerConnected() {
@@ -1780,7 +1780,7 @@ public class NightDreamUI {
                     if (clockLayoutContainer != null && brightnessProgress != null) {
                         Point size = Utility.getDisplaySize(mContext);
                         float dx = 2.0f * (deltaX / size.x);
-                        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                        float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
                         value += dx;
                         value = to_range(value, -0.9f, 1.f);
 
@@ -1839,7 +1839,7 @@ public class NightDreamUI {
                 onTouchListenerClockLayout.onTouch(view, e);
             }
         }
-        dimScreen(0, last_ambient, settings.dim_offset);
+        dimScreen(0, last_ambient, settings.getBrightnessOffset());
         return true;
     }
 
@@ -1914,13 +1914,13 @@ public class NightDreamUI {
     public void onEvent(OnNewLightSensorValue event) {
         Log.i(TAG, "onEvent(OnNewLightSensorValue) = " + event.value);
         last_ambient = event.value;
-        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.getBrightnessOffset());
     }
 
     public void onEvent(OnLightSensorValueTimeout event) {
         Log.i(TAG, "onEvent(OnLightSensorValueTimeout) = " + event.value);
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
-        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.getBrightnessOffset());
     }
 
     private Bitmap imageFilter(Bitmap bitmap) {
