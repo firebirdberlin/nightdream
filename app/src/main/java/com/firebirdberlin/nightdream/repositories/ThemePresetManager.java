@@ -364,6 +364,17 @@ public class ThemePresetManager {
             "showDate",
             "dateFormat",
             "timeFormat",
+            "textureId",
+            "glowRadius",
+            "weatherIconSizeFactor",
+            "showDivider",
+            "showSeconds",
+            "showCalendarEvents",
+            "colorHours",
+            "colorMinutes",
+            "colorSeconds",
+            "fontUri",
+            "fontName",
             // written by the colour selection / preset code, not listed in the XML
             "clockColor",
             "primaryColorNight",
@@ -431,7 +442,15 @@ public class ThemePresetManager {
         if (CLOCK_STYLE_PREF_FILES.contains(prefName)) {
             return true;
         }
-        return Settings.PREFS_KEY.equals(prefName) && THEME_KEYS.contains(key);
+        if (!Settings.PREFS_KEY.equals(prefName)) {
+            return false;
+        }
+        String baseKey = key;
+        int colonIdx = key.indexOf(':');
+        if (colonIdx > 0) {
+            baseKey = key.substring(0, colonIdx);
+        }
+        return THEME_KEYS.contains(baseKey);
     }
 
     private static String serializePreferencesToJson(Context context) {
