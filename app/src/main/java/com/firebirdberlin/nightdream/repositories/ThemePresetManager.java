@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -351,32 +352,86 @@ public class ThemePresetManager {
         editor.putBoolean("profile_saved_" + themeId, true);
     }
 
-    private static List<String> getSharedPreferencesNames(Context context) {
-        Set<String> names = new HashSet<>();
+    /**
+     * Whitelist of preference keys that belong to a theme. Only these keys are saved into a
+     * theme profile and restored on theme switch. Every other preference stays untouched.
+     * Keys are taken from preferences_clock.xml, preferences_background.xml,
+     * preferences_behaviour.xml and preferences_themes.xml.
+     */
+    private static final Set<String> THEME_KEYS = new HashSet<>(Arrays.asList(
+            // --- clock (preferences_clock.xml) ---
+            "clockLayout",
+            "showDate",
+            "dateFormat",
+            "timeFormat",
+            // written by the colour selection / preset code, not listed in the XML
+            "clockColor",
+            "primaryColorNight",
+            "secondaryColor",
+            "secondaryColorNight",
+            "font",
+
+            // --- background (preferences_background.xml) ---
+            "backgroundMode",
+            "gradientStartColor",
+            "gradientEndColor",
+            "slideshowStyle",
+            "backgroundEXIF",
+            "backgroundImageDuration",
+            "backgroundImageZoomIn",
+            "backgroundImageFadeIn",
+            "backgroundImageMoveIn",
+            "backgroundMovein",
+            "backgroundImageFilter",
+            "autoAccentColor",
+            "hideBackgroundImage",
+            "clockBackgroundTransparency",
+
+            // --- behaviour (preferences_behaviour.xml) ---
+            "doubleTapToFinish",
+            "screenProtection",
+            "screenOrientation",
+            "clockLayoutMirrorText",
+            "showBattery",
+            "persistentBatteryValueWhileCharging",
+            "showBatteryWarning",
+            "speakTime",
+            "activateDoNotDisturb",
+            "activateDoNotDisturbAllowPriorityCalls",
+
+            // --- themes (preferences_themes.xml) ---
+            // PREF_ACTIVE_PRESET is deliberately NOT part of the profile (managed separately)
+            "theme_animation_enabled",
+            "theme_particle_effect",
+            "theme_animation_only_charging"
+    ));
+
+    /**
+     * Preference files that hold per-style analog clock settings (see AnalogClockConfig).
+     * They belong entirely to the clock section, so all their keys are part of the theme.
+     */
+    private static final Set<String> CLOCK_STYLE_PREF_FILES = new HashSet<>(Arrays.asList(
+            "DEFAULT", "SIMPLE", "ARC", "MINIMALISTIC"
+    ));
+
+    private static List<String> getSharedPreferencesNames() {
+        List<String> names = new ArrayList<>();
         names.add(Settings.PREFS_KEY);
-        names.add("defaults");
-        names.add("DEFAULT");
-        names.add("SIMPLE");
-        names.add("ARC");
-        names.add("MINIMALISTIC");
+        names.addAll(CLOCK_STYLE_PREF_FILES);
+        return names;
+    }
 
-        File dataDir = context.getDataDir();
-        File prefsDir = new File(dataDir, "shared_prefs");
-
-        if (prefsDir.exists() && prefsDir.isDirectory()) {
-            File[] files = prefsDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    String fileName = file.getName();
-                    if (fileName.endsWith(".xml")) {
-                        String name = fileName.substring(0, fileName.length() - 4);
-                        names.add(name);
-                    }
-                }
-            }
+    private static boolean isThemeKey(String prefName, String key) {
+        if (key == null) return false;
+        if (key.equals(PREF_ACTIVE_PRESET)
+                || key.startsWith("profile_saved_")
+                || key.startsWith("profile_json_")) {
+            return false;
         }
-
-        return new ArrayList<>(names);
+        if (CLOCK_STYLE_PREF_FILES.contains(prefName)) {
+            return true;
+        }
+        return Settings.PREFS_KEY.equals(prefName) && THEME_KEYS.contains(key);
     }
 
     private static String serializePreferencesToJson(Context context) {
@@ -385,7 +440,7 @@ public class ThemePresetManager {
             JSONObject root = new JSONObject();
             JSONObject allPreferencesObj = new JSONObject();
 
-            List<String> prefNames = getSharedPreferencesNames(context);
+            List<String> prefNames = getSharedPreferencesNames();
             for (String prefName : prefNames) {
                 SharedPreferences sp = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
                 Map<String, ?> allEntries = sp.getAll();
@@ -398,8 +453,8 @@ public class ThemePresetManager {
                     String key = entry.getKey();
                     if (key == null) continue;
 
-                    // Skip theme internal profile metadata keys
-                    if (key.equals(PREF_ACTIVE_PRESET) || key.startsWith("profile_saved_") || key.startsWith("profile_json_")) {
+                    // Only keys belonging to the clock, background, behaviour and themes sections
+                    if (!isThemeKey(prefName, key)) {
                         continue;
                     }
 
@@ -467,42 +522,27 @@ public class ThemePresetManager {
                     valuesObj = prefEntryObj;
                 }
 
+                // Snapshots of old versions may contain other files / keys: ignore them
+                if (!getSharedPreferencesNames().contains(prefName)) {
+                    continue;
+                }
+
                 SharedPreferences sp = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-
-                // Preserve local purchase status cache in "defaults"
-                Map<String, Boolean> purchaseCache = new HashMap<>();
-                Map<String, ?> currentEntries = sp.getAll();
-                if ("defaults".equals(prefName)) {
-                    for (Map.Entry<String, ?> entry : currentEntries.entrySet()) {
-                        if (entry.getKey().startsWith("purchased_") && entry.getValue() instanceof Boolean) {
-                            purchaseCache.put(entry.getKey(), (Boolean) entry.getValue());
-                        }
-                    }
-                }
-
-                // Preserve theme metadata cache in PREFS_KEY
-                Map<String, Object> themeMetaCache = new HashMap<>();
-                if (Settings.PREFS_KEY.equals(prefName)) {
-                    for (Map.Entry<String, ?> entry : currentEntries.entrySet()) {
-                        String k = entry.getKey();
-                        if (k.equals(PREF_ACTIVE_PRESET) || k.startsWith("profile_saved_") || k.startsWith("profile_json_")) {
-                            themeMetaCache.put(k, entry.getValue());
-                        }
-                    }
-                }
-
                 SharedPreferences.Editor editor = sp.edit();
-                editor.clear();
-                editor.apply();
+
+                // Remove only the theme keys. Keys missing in the snapshot fall back to their
+                // defaults; everything else (alarms, radio, weather, purchases, ...) stays as is.
+                for (String existingKey : new ArrayList<>(sp.getAll().keySet())) {
+                    if (isThemeKey(prefName, existingKey)) {
+                        editor.remove(existingKey);
+                    }
+                }
 
                 Iterator<String> keys = valuesObj.keys();
                 while (keys.hasNext()) {
                     String key = keys.next();
 
-                    if ("defaults".equals(prefName) && key.startsWith("purchased_")) {
-                        continue;
-                    }
-                    if (Settings.PREFS_KEY.equals(prefName) && (key.equals(PREF_ACTIVE_PRESET) || key.startsWith("profile_saved_") || key.startsWith("profile_json_"))) {
+                    if (!isThemeKey(prefName, key)) {
                         continue;
                     }
 
@@ -531,22 +571,6 @@ public class ThemePresetManager {
                     } else {
                         editor.putString(key, valuesObj.getString(key));
                     }
-                }
-
-                // Restore purchase cache
-                for (Map.Entry<String, Boolean> entry : purchaseCache.entrySet()) {
-                    editor.putBoolean(entry.getKey(), entry.getValue());
-                }
-
-                // Restore theme metadata cache
-                for (Map.Entry<String, Object> entry : themeMetaCache.entrySet()) {
-                    Object val = entry.getValue();
-                    String k = entry.getKey();
-                    if (val instanceof Boolean) editor.putBoolean(k, (Boolean) val);
-                    else if (val instanceof Integer) editor.putInt(k, (Integer) val);
-                    else if (val instanceof Long) editor.putLong(k, (Long) val);
-                    else if (val instanceof Float) editor.putFloat(k, (Float) val);
-                    else if (val instanceof String) editor.putString(k, (String) val);
                 }
 
                 editor.commit();
