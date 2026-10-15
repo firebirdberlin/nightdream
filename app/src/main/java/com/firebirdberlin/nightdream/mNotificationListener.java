@@ -309,59 +309,63 @@ public class mNotificationListener extends NotificationListenerService {
             StatusBarNotification[] notificationList = null;
             try {
                 notificationList = mNotificationListener.this.getActiveNotifications();
-            } catch (RuntimeException | OutOfMemoryError ignored) {
-                Log.e(TAG, "Error getting active notifications", ignored);
+            } catch (Throwable t) {
+                Log.e(TAG, "Error getting active notifications", t);
             }
 
             if (notificationList == null) return;
 
             for (StatusBarNotification sbn : notificationList) {
-                Notification notification = sbn.getNotification();
-                if (notification == null) continue;
+                try {
+                    if (sbn == null) continue;
+                    Notification notification = sbn.getNotification();
+                    if (notification == null) continue;
 
-                logNotification(sbn);
+                    logNotification(sbn);
 
-                if (shallIgnoreNotification(sbn)) {
-                    continue;
-                }
+                    if (shallIgnoreNotification(sbn)) {
+                        continue;
+                    }
 
-                Intent i = getIntentForBroadCast(sbn);
-                if (i == null) {
-                    continue;
-                }
-                String template = (String) i.getSerializableExtra("template");
-                if (template == null) {
-                    continue;
-                }
-                if (template.contains("MediaStyle")) {
-                    i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
-                    i.putExtra("action", "added_media");
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(i);
-                    continue;
-                }
-                notifications.add(
-                        new com.firebirdberlin.nightdream.NotificationList.Notification(
-                                getApplicationContext(), i
-                        )
-                );
+                    Intent i = getIntentForBroadCast(sbn);
+                    if (i == null) {
+                        continue;
+                    }
+                    String template = (String) i.getSerializableExtra("template");
+                    if (template == null) {
+                        continue;
+                    }
+                    if (template.contains("MediaStyle")) {
+                        i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
+                        i.putExtra("action", "added_media");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+                        continue;
+                    }
+                    notifications.add(
+                            new com.firebirdberlin.nightdream.NotificationList.Notification(
+                                    getApplicationContext(), i
+                            )
+                    );
 
-                String applicationName = i.getStringExtra("applicationName");
-                boolean addApp = true;
-                for (NotificationApp app : notificationApps) {
-                    if (app == null) continue;
-                    String appName = app.getName();
-                    if (appName == null) appName = "";
-                    addApp = addApp && !appName.equals(applicationName);
-                    if (appName.equals(applicationName)) {
-                        if (app.getPostTimestamp() < sbn.getPostTime()) {
-                            app.setPostTimestamp(sbn.getPostTime());
+                    String applicationName = i.getStringExtra("applicationName");
+                    boolean addApp = true;
+                    for (NotificationApp app : notificationApps) {
+                        if (app == null) continue;
+                        String appName = app.getName();
+                        if (appName == null) appName = "";
+                        addApp = addApp && !appName.equals(applicationName);
+                        if (appName.equals(applicationName)) {
+                            if (app.getPostTimestamp() < sbn.getPostTime()) {
+                                app.setPostTimestamp(sbn.getPostTime());
+                            }
                         }
                     }
+                    if (addApp) {
+                        notificationApps.add(new NotificationApp(i));
+                    }
+                } catch (Throwable t) {
+                    Log.e(TAG, "Error processing notification in listNotifications", t);
                 }
-                if (addApp) {
-                    notificationApps.add(new NotificationApp(i));
-                }
-
             }
             Intent intentList = new Intent("Notification.Action.notificationList");
             intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
