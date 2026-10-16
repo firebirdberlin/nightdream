@@ -20,21 +20,16 @@ package com.firebirdberlin.nightdream.services;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
-import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.events.OnAlarmStarted;
-import com.google.gson.Gson;
-
-import com.firebirdberlin.nightdream.events.AppEventBus;
 
 public class SqliteIntentService {
 
@@ -60,9 +55,7 @@ public class SqliteIntentService {
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmNotificationService.cancelNotification(context);
-        }
+        AlarmNotificationService.cancelNotification(context);
 
         DataSource db = new DataSource(context);
         db.open();

@@ -29,6 +29,12 @@ proguard/
 # release keys
 *.keystore
 
+# Release build outputs & mapping files
+release/
+/*/release/
+mapping.txt
+output-metadata.json
+
 # temporary files
 *.sw*
 

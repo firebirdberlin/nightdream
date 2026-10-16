@@ -26,33 +26,43 @@ import java.util.Hashtable;
 
 public class FontCache {
 
-    private static Hashtable<String, Typeface> fontCache = new Hashtable<>();
-
-    private static final String TAG = "FontCache";
+    private static final Hashtable<String, Typeface> fontCache = new Hashtable<>();
+    private static final Object lock = new Object();
+    private static final String TAG = FontCache.class.getSimpleName();
 
     public static Typeface get(Context context, String name) {
+        if (name == null) {
+            return null;
+        }
         final String cacheKey = name.replace("file:///android_asset/", "");
         Typeface tf = fontCache.get(cacheKey);
         if (tf == null) {
-            //Log.d(TAG, "cache miss: cacheKey=" +  cacheKey);
-            final String ASSET_PATH = "file:///android_asset/";
+            synchronized (lock) {
+                tf = fontCache.get(cacheKey);
+                if (tf == null) {
+                    final String ASSET_PATH = "file:///android_asset/";
+                    String assetName = name;
+                    if (assetName.contains(ASSET_PATH)) {
+                        assetName = assetName.replace(ASSET_PATH, "");
+                    }
 
-            if (name.contains(ASSET_PATH)) {
-                name = name.replace(ASSET_PATH, "");
-            }
-
-            try {
-                if (name.startsWith("file://")) {
-                    tf = Typeface.createFromFile(name.replace("file://", ""));
-                } else {
-                    tf = Typeface.createFromAsset(context.getAssets(), name);
+                    try {
+                        if (assetName.startsWith("file://")) {
+                            tf = Typeface.createFromFile(assetName.replace("file://", ""));
+                        } else {
+                            tf = Typeface.createFromAsset(context.getAssets(), assetName);
+                        }
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                    Log.d(TAG, "cache put: cacheKey=" + cacheKey + " value=" +
+                            (tf != null ? tf.toString() : "null"));
+                    if (tf != null) {
+                        fontCache.put(cacheKey, tf);
+                    }
                 }
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                return null;
             }
-            Log.d(TAG, "cache put: cacheKey=" + cacheKey + " value=" + (tf != null ? tf.toString() : "null"));
-            fontCache.put(cacheKey, tf);
         }
         return tf;
     }

@@ -31,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -60,7 +61,7 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 public class WebRadioLayout extends RelativeLayout {
 
     public static String TAG = "WebRadioLayout";
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final Context context;
     public boolean locked = false;
     FavoriteRadioStations stations;
@@ -257,6 +258,9 @@ public class WebRadioLayout extends RelativeLayout {
                 }
                 preferredCountry = s.countryCode;
             }
+            if (preferredCountry == null || preferredCountry.isEmpty()) {
+                preferredCountry = java.util.Locale.getDefault().getCountry();
+            }
         }
         RadioStreamDialogFragment.showDialog(
                 (AppCompatActivity) getContext(), stationIndex, station, preferredCountry, listener
@@ -373,7 +377,7 @@ public class WebRadioLayout extends RelativeLayout {
     }
 
     private void registerAudioVolumeContentObserver() {
-        audioVolumeContentObserver = new AudioVolumeContentObserver(context, new Handler());
+        audioVolumeContentObserver = new AudioVolumeContentObserver(context, new Handler(Looper.getMainLooper()));
         context.getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, audioVolumeContentObserver);
     }
 

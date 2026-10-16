@@ -29,8 +29,10 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -88,14 +90,17 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView.setSingleLine();
 
         alarmTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        alarmTimeTextView.setShadowLayer(8f, 2f, 2f, Color.BLACK);
+        alarmTimeTextView.setPadding(32, 16, 32, 16);
+        GradientDrawable badgeBg = new GradientDrawable();
+        badgeBg.setColor(Color.parseColor("#99000000")); // Semi-transparent dark backing
+        badgeBg.setCornerRadius(24f);
+        alarmTimeTextView.setBackground(badgeBg);
         alarmTimeTextView.setHapticFeedbackEnabled(true);
         alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
-            final Handler handler = new Handler();
+            final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable longPress = () -> {
-                performHapticFeedback(
-                        HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                );
+                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             };
             float startX = 0;
             float max_move_seen = 0;

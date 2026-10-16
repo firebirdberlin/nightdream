@@ -28,15 +28,14 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -52,9 +51,9 @@ public class AlarmService extends Service
         implements MediaPlayer.OnErrorListener,
         MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnCompletionListener {
-    private static final String TAG = "NightDream.AlarmService";
+    private static final String TAG = AlarmService.class.getSimpleName();
     static public boolean isRunning = false;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     PowerManager.WakeLock wakelock;
     VibrationHandler vibrator = null;
     long startTime = 0;
@@ -279,16 +278,12 @@ public class AlarmService extends Service
         Log.i(TAG, "AlarmPlay()");
         startTime = System.currentTimeMillis();
         mMediaPlayer = new MediaPlayer();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mMediaPlayer.setAudioAttributes(
-                    new AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .build()
-            );
-        } else {
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        }
+        mMediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build()
+        );
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setOnBufferingUpdateListener(this);
@@ -329,9 +324,11 @@ public class AlarmService extends Service
         }
 
         mMediaPlayer.start();
-        Log.i(TAG, "vibrate = " + alarmTime.vibrate);
-        if (alarmTime.vibrate) {
-            vibrator.startVibration();
+        if (alarmTime != null) {
+            Log.i(TAG, "vibrate = " + alarmTime.vibrate);
+            if (alarmTime.vibrate) {
+                vibrator.startVibration();
+            }
         }
     }
 

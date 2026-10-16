@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -44,7 +45,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -57,7 +58,6 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -82,16 +82,20 @@ import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.models.ParticleEffect;
+import com.firebirdberlin.nightdream.models.ThemePreset;
+import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
+import com.firebirdberlin.nightdream.ui.background.PulsingStarsOverlayView;
+import com.firebirdberlin.nightdream.ui.background.SnowOverlayView;
 import com.firebirdberlin.nightdream.widget.ClockWidgetProvider;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.android.flexbox.FlexboxLayout;
-
-import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,8 +115,9 @@ public class NightDreamUI {
     };
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    private static final String TAG = "NightDreamUI";
-    final private Handler handler = new Handler();
+    private static final String TAG = NightDreamUI.class.getSimpleName();
+    private static final ExecutorService backgroundExecutor = Executors.newCachedThreadPool();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     final private Drawable colorTransparent = new ColorDrawable(Color.TRANSPARENT);
     final private Drawable colorBlack = new ColorDrawable(Color.BLACK);
     private final Context mContext;
@@ -123,6 +128,9 @@ public class NightDreamUI {
     private final RelativeLayout parentLayout;
     private final ExifView exifView;
     private final ImageViewExtended[] backgroundImages = new ImageViewExtended[2];
+    private final SnowOverlayView snowOverlayView;
+    private final PulsingStarsOverlayView starsOverlayView;
+    private final View backgroundScrim;
     private final ImageView menuIcon;
     private final ImageView nightModeIcon;
     private final ImageView radioIcon;
@@ -191,11 +199,9 @@ public class NightDreamUI {
             }
         }
     };
-    private final float LIGHT_VALUE_BRIGHT = 40.0f;
-    private final float LIGHT_VALUE_DAYLIGHT = 10000.0f;
     OnScaleGestureListener mOnScaleGestureListener = new OnScaleGestureListener() {
         @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
+        public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
             Log.d(TAG, "onScaleBegin");
             return true;
         }
@@ -209,7 +215,7 @@ public class NightDreamUI {
         }
 
         @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
+        public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
             Log.d(TAG, "onScaleEnd");
             float s = clockLayout.getAbsScaleFactor();
             Configuration config = getConfiguration();
@@ -217,7 +223,6 @@ public class NightDreamUI {
         }
     };
     private int screen_alpha_animation_duration = 3000;
-    private final UserInteractionObserver bottomPanelUserInteractionObserver = () -> resetAlarmClockHideDelay();
     private int screen_transition_animation_duration = 10000;
     private int mode = 2;
     private boolean controlsVisible = false;
@@ -309,6 +314,7 @@ public class NightDreamUI {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                    v.performClick();
                     disableMoveClock();
                     break;
             }
@@ -321,8 +327,7 @@ public class NightDreamUI {
         mContext = context;
         settings = new Settings(context);
 
-        // right to left swipe
-        // left to right swipe
+        // right to left swipe and opposite
         GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
             final int[] rect = new int[2];
             final int[] size = new int[2];
@@ -350,8 +355,8 @@ public class NightDreamUI {
             }
 
             @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1 == null || e2 == null) return false;
+            public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
+                if (e1 == null) return false;
                 Log.i(TAG, "onFling");
                 clockLayoutContainer.getLocationInWindow(rect);
                 if (e1.getY() < rect[1]) return false;
@@ -384,7 +389,7 @@ public class NightDreamUI {
             }
 
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
+            public boolean onSingleTapUp(@NonNull MotionEvent e) {
                 Log.w(TAG, "single tap up");
 
                 showAlarmClock();
@@ -404,7 +409,7 @@ public class NightDreamUI {
             }
 
             @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
                 Log.d(TAG, "onScroll");
                 if (
                         clockLayoutContainer == null || brightnessProgress == null
@@ -414,9 +419,9 @@ public class NightDreamUI {
                     if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
                         Point size = Utility.getDisplaySize(mContext);
                         float dx = -2.f * (distanceX / size.x);
-                        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                        float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
                         value += dx;
-                        value = to_range(value, -0.6f, 1.f);
+                        value = to_range(value, -0.9f, 1.f);
 
                         setAlpha(brightnessProgress, 1.f, 0);
 
@@ -461,8 +466,12 @@ public class NightDreamUI {
 
         backgroundImages[0] = rootView.findViewById(R.id.background_view);
         backgroundImages[1] = rootView.findViewById(R.id.background_view2);
+        backgroundScrim = rootView.findViewById(R.id.background_scrim);
+        snowOverlayView = rootView.findViewById(R.id.snow_overlay_view);
+        starsOverlayView = rootView.findViewById(R.id.stars_overlay_view);
         activeBackgroundImage = 1;
 
+        UserInteractionObserver bottomPanelUserInteractionObserver = this::resetAlarmClockHideDelay;
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
         alarmClock = bottomPanelLayout.getAlarmClock();
 
@@ -484,7 +493,7 @@ public class NightDreamUI {
         View.OnLongClickListener onMenuItemLongClickListener = v -> {
             boolean wasLocked = locked;
             locked = !locked;
-            if (wasLocked && !locked) {
+            if (wasLocked) {
                 settings.incrementUnlockCount();
             }
             settings.setUILocked(locked);
@@ -494,10 +503,7 @@ public class NightDreamUI {
                 sidePanelRight.closeMenu();
             }
             if (Utility.hasPermission(mContext, Manifest.permission.VIBRATE)) {
-                v.performHapticFeedback(
-                        HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                );
+                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             } else {
                 Log.w(TAG, "PERMISSION VIBRATE is missing");
             }
@@ -563,7 +569,7 @@ public class NightDreamUI {
                         || (displaySize.x - safeRect.right) > 0
         ) {
             // reposition the clock
-            bottomPanelLayout.post(initClockLayout);
+            setClockPosition(getConfiguration());
         }
     }
 
@@ -613,10 +619,12 @@ public class NightDreamUI {
             setColor();
             checkAndClearWeatherEntry();
 
-            //Update Notifications in Clocklayout
-            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-            i.putExtra("command", "list");
-            LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+            //Update Notifications in ClockLayout
+            if (Settings.showNotification(mContext)) {
+                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
+                i.putExtra("command", "list");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+            }
 
             controlsVisible = true;
 
@@ -646,7 +654,7 @@ public class NightDreamUI {
     }
 
     void setBrightnessProgress() {
-        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+        float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
         value = to_range(value, -1.f, 1.f);
         int intValue = (int) (100.f * (value + 1.f));
         brightnessProgress.setProgress(intValue);
@@ -678,9 +686,7 @@ public class NightDreamUI {
         setScreenOrientation(settings.screenOrientation);
 
 
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> { //background thread
+        backgroundExecutor.execute(() -> { //background thread
             clockLayoutContainer.post(initClockLayout);
             //like onPostExecute()
             handler.post(this::postFadeAnimation);
@@ -698,6 +704,8 @@ public class NightDreamUI {
 
     private void initBackground() {
         if (mode == 0) return;
+
+        updateThemeOverlays();
 
         preloadBackgroundImage = null;
         preloadBackgroundImageFile = null;
@@ -746,7 +754,23 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_IMAGE: {
                     Log.d(TAG, "BACKGROUND_IMAGE");
                     loadBackgroundImageFiles();
-                    if (files != null && !files.isEmpty()) {
+                    if (Utility.isEmpty(files)) {
+                        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+                        ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
+                        if (preset != null && !Utility.isEmpty(preset.drawableResName)) {
+                            int resId = mContext.getResources().getIdentifier(preset.drawableResName, "drawable", mContext.getPackageName());
+                            if (resId != 0) {
+                                setImageScale();
+                                int other = (activeBackgroundImage + 1) % 2;
+                                backgroundImages[activeBackgroundImage].setImageResource(resId);
+                                backgroundImages[activeBackgroundImage].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                backgroundImages[other].setImageDrawable(colorBlack);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!Utility.isEmpty(files)) {
                         setImageScale();
 
                         int other = (activeBackgroundImage + 1) % 2;
@@ -783,10 +807,9 @@ public class NightDreamUI {
                 case Settings.BACKGROUND_SLIDESHOW:
                     Log.d(TAG, "BACKGROUND_SLIDESHOW");
                     loadBackgroundImageFiles();
-                    if (files != null && !files.isEmpty()) {
+                    if (!Utility.isEmpty(files)) {
                         preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-                        AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-                        runningTask.execute(preloadBackgroundImageFile);
+                        preloadImage(preloadBackgroundImageFile);
                         parentLayout.postDelayed(initSlideshowBackground, 500);
                         handler.post(backgroundChange);
                     } else {
@@ -872,6 +895,7 @@ public class NightDreamUI {
         clockLayout.showWeather(settings.shallShowWeather());
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(layoutId));
         clockLayout.showPollenExposure(settings.shallShowWeather() && settings.showPollen);
+        clockLayout.showMediaStyleLayout(Settings.showMediaStyleNotification(mContext));
         Configuration config = getConfiguration();
         WeatherEntry weatherEntry = settings.getWeatherEntry();
         clockLayout.update(weatherEntry, false);
@@ -1101,10 +1125,8 @@ public class NightDreamUI {
         backgroundImages[activeBackgroundImage].setTranslationX(0);
         backgroundImages[activeBackgroundImage].setTranslationY(0);
         backgroundImages[activeBackgroundImage].bringToFront();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            backgroundImages[(activeBackgroundImage + 1) % 2].setZ(4);
-            backgroundImages[activeBackgroundImage].setZ(5);
-        }
+        backgroundImages[(activeBackgroundImage + 1) % 2].setZ(4);
+        backgroundImages[activeBackgroundImage].setZ(5);
         backgroundImages[activeBackgroundImage].startAnimation(animationSet);
 
         parentLayout.bringChildToFront(backgroundImages[activeBackgroundImage]);
@@ -1112,22 +1134,40 @@ public class NightDreamUI {
         parentLayout.requestLayout();
         parentLayout.invalidate();
 
-        if (files != null && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && files.size() > 0) {
+        if (!Utility.isEmpty(files) && settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
             preloadBackgroundImageFile = files.get(new Random().nextInt(files.size()));
-            AsyncTask<File, Integer, Bitmap> runningTask = new preloadImageFromPath();
-            runningTask.execute(preloadBackgroundImageFile);
+            preloadImage(preloadBackgroundImageFile);
         }
     }
 
     private void loadBackgroundImageFiles() {
         File path = new File(mContext.getFilesDir() + "/backgroundImages");
         Log.d(TAG, "path:" + path);
+        ArrayList<File> allFiles;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            files = Utility.listFiles(path, null);
+            allFiles = Utility.listFiles(path, null);
         } else {
-            files = Utility.listFiles(path, ".png");
-            files.addAll(Utility.listFiles(path, ".jpg"));
-            files.addAll(Utility.listFiles(path, ".jpeg"));
+            allFiles = Utility.listFiles(path, ".png");
+            allFiles.addAll(Utility.listFiles(path, ".jpg"));
+            allFiles.addAll(Utility.listFiles(path, ".jpeg"));
+        }
+
+        files = new ArrayList<>();
+        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+        if (allFiles != null) {
+            for (File file : allFiles) {
+                String name = file.getName();
+                boolean isPrefixed = name.startsWith("theme_");
+                if (ThemePreset.PRESET_NONE.equals(activePresetId)) {
+                    if (!isPrefixed) {
+                        files.add(file);
+                    }
+                } else {
+                    if (isPrefixed && name.startsWith("theme_" + activePresetId + "_")) {
+                        files.add(file);
+                    }
+                }
+            }
         }
 
         Log.d(TAG, "success:" + files.toString());
@@ -1222,6 +1262,8 @@ public class NightDreamUI {
     public void reconfigure() {
         hideSystemUI();
         bottomPanelLayout.invalidate();
+        updateThemeOverlays();
+        setColor();
     }
 
     public void onPause() {
@@ -1357,8 +1399,8 @@ public class NightDreamUI {
         int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
         int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
 
-        i1 -= (clockLayout.getWidth() - scaledWidth) / 2;
-        i2 -= (clockLayout.getHeight() - scaledHeight) / 2;
+        i1 -= (int) ((clockLayout.getWidth() - scaledWidth) / 2.0f);
+        i2 -= (int) ((clockLayout.getHeight() - scaledHeight) / 2.0f);
         clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
     }
 
@@ -1370,7 +1412,8 @@ public class NightDreamUI {
     private float calculateLogarithmicBrightnessFactor(float currentLightValue) {
         // make sure all boundary values are positive
         double min_lux_for_log = Math.max(0.1, this.LIGHT_VALUE_DARK);
-        double max_lux_for_log = Math.max(min_lux_for_log + 0.1, this.LIGHT_VALUE_DAYLIGHT);
+        float LIGHT_VALUE_DAYLIGHT = 10000.0f;
+        double max_lux_for_log = Math.max(min_lux_for_log + 0.1, LIGHT_VALUE_DAYLIGHT);
 
         // make sure the light value is in between boundaries
         double clampedLightValue = Math.max(min_lux_for_log, Math.min(max_lux_for_log, currentLightValue));
@@ -1402,64 +1445,41 @@ public class NightDreamUI {
             float logarithmicBrightnessFactor = calculateLogarithmicBrightnessFactor(light_value);
 
 //          2. combine with manual preference
-            float combinedBrightnessFactor = (logarithmicBrightnessFactor + add_brightness) / 2.f;
-
-            brightness = combinedBrightnessFactor;
+            brightness = (logarithmicBrightnessFactor + add_brightness) / 2.f;
             v = 1.f + brightness;
 
         } else {
             if (mode == 0) {
-                v = 1.f + settings.nightModeBrightness;
-                brightness = settings.nightModeBrightness;
+                v = 1.f + settings.getNightModeBrightness();
+                brightness = settings.getNightModeBrightness();
             } else {
                 v = 1.f + add_brightness;
                 brightness = add_brightness;
             }
         }
 
-        float minBrightness = Math.max(1.f + settings.nightModeBrightness, 0.05f);
+        float minBrightness = Math.max(1.f + settings.getNightModeBrightness(), 0.001f);
         v = to_range(v, minBrightness, 1.f);
-        int backgroundMode = settings.getBackgroundMode();
-        if (
-                backgroundMode == Settings.BACKGROUND_IMAGE
-                        || backgroundMode == Settings.BACKGROUND_SLIDESHOW
-        ) {
-            v = to_range(v, 0.5f, 1.f);
-        }
 
         brightness = getValidBrightnessValue(brightness);
         setBrightness(brightness);
 
-        //if ( showcaseView == null && !AlarmHandlerService.alarmIsRunning()) {
-        long now = System.currentTimeMillis();
-        if (!AlarmHandlerService.alarmIsRunning() || now > lastTouchTime + 1000) {
-            setAlpha(clockLayout, v, millis);
-        }
-
-        if (bottomPanelLayout.isClickable()) {
-            setAlpha(bottomPanelLayout, v, millis);
-            v = to_range(v, 0.6f, 1.f);
-            setAlpha(menuIcon, v, millis);
-            setAlpha(unlockHint, v, millis);
-        }
-
-        if (batteryViewShallBeVisible()) {
-            v = to_range(v, 0.6f, 1.f);
-            setAlpha(batteryIconView, v, millis);
-        } else {
+        if (batteryViewShallBeHidden()) {
             hideBatteryView(millis);
         }
 
         if (mode == 0 && !controlsVisible) {
             setAlpha(notificationStatusBar, 0.0f, millis);
-        } else {
-            // increase minimum alpha value for the notification bar
-            v = to_range(v, 0.6f, 1.f);
-            setAlpha(notificationStatusBar, v, millis);
         }
 
         if (light_value + 0.2f < settings.minIlluminance) {
             settings.setMinIlluminance(light_value + 0.2f);
+        }
+
+        // Dim down the entire screen uniformly using the top-level scrim
+        if (backgroundScrim != null) {
+            float scrimAlpha = to_range(1.0f - v, 0.0f, 0.98f);
+            setAlpha(backgroundScrim, scrimAlpha, millis);
         }
     }
 
@@ -1471,8 +1491,8 @@ public class NightDreamUI {
 
     private float getMinAllowedBrightness() {
         // On some screens (as the Galaxy S2) a value of 0 means the screen is completely dark.
-        // Therefore a minimum value must be set to preserve the visibility of the clock.
-        float minBrightness = Math.max(settings.nightModeBrightness, 0.01f);
+        // Therefore, a minimum value must be set to preserve the visibility of the clock.
+        float minBrightness = Math.max(settings.getNightModeBrightness(), 0.001f);
         if (settings.autoBrightness) {
             minBrightness = Math.min(minBrightness, 0.1f);
         }
@@ -1514,6 +1534,7 @@ public class NightDreamUI {
 
     public int determineScreenMode(float light_value) {
         LIGHT_VALUE_DARK = settings.minIlluminance + 1.f;
+        float LIGHT_VALUE_BRIGHT = 40.0f;
         if (light_value <= LIGHT_VALUE_DARK) {
             return 0;
         } else if (light_value < LIGHT_VALUE_BRIGHT / 2.f) { // night shift, desk light on
@@ -1546,7 +1567,7 @@ public class NightDreamUI {
             }
         }
 
-        float dim_offset = settings.dim_offset;
+        float dim_offset = settings.getBrightnessOffset();
         if ((new_mode == 1) && (current_mode == 0)) {
             dim_offset += 0.1f;
         }
@@ -1570,19 +1591,17 @@ public class NightDreamUI {
     }
 
     private void hideBatteryView(int millis) {
-        if (!batteryViewShallBeVisible()) {
+        if (batteryViewShallBeHidden()) {
             setAlpha(batteryIconView, 0.f, millis);
         }
     }
 
-    private boolean batteryViewShallBeVisible() {
+    private boolean batteryViewShallBeHidden() {
         if (!settings.showBattery) {
-            return false;
+            return true;
         }
-        return (
-                controlsVisible ||
-                        (settings.persistentBatteryValueWhileCharging && batteryIconView.shallBeVisible())
-        );
+        return (!controlsVisible &&
+                (!settings.persistentBatteryValueWhileCharging || !batteryIconView.shallBeVisible()));
     }
 
     public void showAlarmClock() {
@@ -1593,17 +1612,63 @@ public class NightDreamUI {
         if (AlarmHandlerService.alarmIsRunning()) {
             blinkIfLocked();
         }
-        dimScreen(0, last_ambient, settings.dim_offset);
+        dimScreen(0, last_ambient, settings.getBrightnessOffset());
     }
 
     public void onPowerConnected() {
         setupScreenAnimation();
         showAlarmClock();
+        updateThemeOverlays();
     }
 
     public void onPowerDisconnected() {
         setupScreenAnimation();
         showAlarmClock();
+        updateThemeOverlays();
+    }
+
+    public void updateThemeOverlays() {
+        if (snowOverlayView == null || starsOverlayView == null) return;
+
+        SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
+        boolean animEnabled = prefs.getBoolean("theme_animation_enabled", true);
+        ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.SNOW);
+
+        boolean snowEnabled = animEnabled && (particleEffect == ParticleEffect.SNOW);
+        boolean starsEnabled = animEnabled && (particleEffect == ParticleEffect.GOLDEN_STARS);
+        boolean animOnlyCharging = prefs.getBoolean("theme_animation_only_charging", false);
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = mContext.registerReceiver(null, filter);
+        boolean isCharging = false;
+        if (batteryStatus != null) {
+            int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                         status == BatteryManager.BATTERY_STATUS_FULL;
+        }
+
+        snowOverlayView.setSnowEnabled(snowEnabled);
+
+        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+        ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
+        if (preset != null) {
+            starsOverlayView.setMaxYRatio(preset.starMaxYRatio > 0 ? preset.starMaxYRatio : 0.75f);
+            starsOverlayView.setStarSizeScale(preset.starSizeScale > 0 ? preset.starSizeScale : 1.0f);
+            starsOverlayView.setNumStars(preset.starCount > 0 ? preset.starCount : 25);
+        } else {
+            starsOverlayView.setMaxYRatio(0.75f);
+            starsOverlayView.setStarSizeScale(1.0f);
+            starsOverlayView.setNumStars(25);
+        }
+
+        starsOverlayView.setStarsEnabled(starsEnabled);
+
+        boolean pauseForBattery = animOnlyCharging && !isCharging;
+        snowOverlayView.setPausedByPowerSetting(pauseForBattery);
+        starsOverlayView.setPausedByPowerSetting(pauseForBattery);
+
+        if (snowEnabled) snowOverlayView.invalidate();
+        if (starsEnabled) starsOverlayView.invalidate();
     }
 
     private void blinkIfLocked() {
@@ -1634,7 +1699,7 @@ public class NightDreamUI {
         Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
 
         s = Math.min(s, max);
-        if (s > 0.5f && !Float.isNaN(s) && !Float.isInfinite(s)) {
+        if (s > 0.5f) {
             return s;
         }
         return 1.f;
@@ -1715,9 +1780,9 @@ public class NightDreamUI {
                     if (clockLayoutContainer != null && brightnessProgress != null) {
                         Point size = Utility.getDisplaySize(mContext);
                         float dx = 2.0f * (deltaX / size.x);
-                        float value = (mode == 0) ? settings.nightModeBrightness : settings.dim_offset;
+                        float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
                         value += dx;
-                        value = to_range(value, -0.6f, 1.f);
+                        value = to_range(value, -0.9f, 1.f);
 
                         removeCallbacks(hideBrightnessLevel);
                         removeCallbacks(hideBrightnessView);
@@ -1774,7 +1839,7 @@ public class NightDreamUI {
                 onTouchListenerClockLayout.onTouch(view, e);
             }
         }
-        dimScreen(0, last_ambient, settings.dim_offset);
+        dimScreen(0, last_ambient, settings.getBrightnessOffset());
         return true;
     }
 
@@ -1803,7 +1868,7 @@ public class NightDreamUI {
         }
         final Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        if (mContext.getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+        if (!mContext.getPackageManager().queryIntentActivities(intent, 0).isEmpty()) {
             PendingIntent pIntent = Utility.getImmutableActivity(mContext, 0, intent);
 
             // build notification
@@ -1824,7 +1889,7 @@ public class NightDreamUI {
             notificationManager.notify(0, n);
 
         }
-        /* else handle your error case: the device has no way to handle market urls */
+        /* else handle your error case: the device has no way to handle market URLs */
 
     }
 
@@ -1849,13 +1914,13 @@ public class NightDreamUI {
     public void onEvent(OnNewLightSensorValue event) {
         Log.i(TAG, "onEvent(OnNewLightSensorValue) = " + event.value);
         last_ambient = event.value;
-        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.getBrightnessOffset());
     }
 
     public void onEvent(OnLightSensorValueTimeout event) {
         Log.i(TAG, "onEvent(OnLightSensorValueTimeout) = " + event.value);
         last_ambient = (event.value >= 0.f) ? event.value : settings.minIlluminance;
-        dimScreen(screen_alpha_animation_duration, last_ambient, settings.dim_offset);
+        dimScreen(screen_alpha_animation_duration, last_ambient, settings.getBrightnessOffset());
     }
 
     private Bitmap imageFilter(Bitmap bitmap) {
@@ -1876,7 +1941,7 @@ public class NightDreamUI {
                 return Graphics.sketch(bitmap);
             case 7:
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
-                    // blur has bin mirgrated away from renderscript
+                    // blur has been migrated away from renderscript
                     // older android versions no longer support blurring the image
                     return bitmap;
                 }
@@ -1886,9 +1951,7 @@ public class NightDreamUI {
     }
 
     private void getExifInformation(File file) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> { //background thread
+        backgroundExecutor.execute(() -> { //background thread
             Boolean success = exifView.getExifView(mContext, file, getSecondaryColor());
             handler.post(() -> { //like onPostExecute()
                 if (success) {
@@ -1908,25 +1971,18 @@ public class NightDreamUI {
         ClockWidgetProvider.updateAllWidgets(context);
     }
 
-    private final class preloadImageFromPath extends AsyncTask<File, Integer, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(File... params) {
-            if (files == null || files.isEmpty() || params[0] == null) {
-                return null;
-            } else {
-                return imageFilter(rescaleBackgroundImage(loadImageFromPath(params[0])));
+    private void preloadImage(File file) {
+        if (file == null) {
+            return;
+        }
+        backgroundExecutor.execute(() -> {
+            Bitmap result = null;
+            if (files != null && !files.isEmpty()) {
+                result = imageFilter(rescaleBackgroundImage(loadImageFromPath(file)));
             }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... params) {
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            preloadBackgroundImage = result;
-        }
+            Bitmap finalResult = result;
+            handler.post(() -> preloadBackgroundImage = finalResult);
+        });
     }
 
     class NightDreamBroadcastReceiver extends BroadcastReceiver {

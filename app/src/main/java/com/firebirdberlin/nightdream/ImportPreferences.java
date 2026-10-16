@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -34,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -77,16 +79,7 @@ public class ImportPreferences {
         backgroundExecutor.execute(() -> {
             try {
                 InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
-                if (inputStream == null) {
-                    throw new IllegalArgumentException("Cannot open input stream for Uri: " + fileUri);
-                }
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
+                StringBuilder stringBuilder = getStringBuilder(fileUri, inputStream);
                 inputStream.close();
 
                 JSONObject rootJson = new JSONObject(stringBuilder.toString());
@@ -118,6 +111,21 @@ public class ImportPreferences {
                 mainExecutor.execute(() -> Toast.makeText(context, R.string.import_preferences_failed, Toast.LENGTH_LONG).show());
             }
         });
+    }
+
+    @NonNull
+    private static StringBuilder getStringBuilder(Uri fileUri, InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            throw new IllegalArgumentException("Cannot open input stream for Uri: " + fileUri);
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        return stringBuilder;
     }
 
     private void importSharedPreferences(JSONObject preferencesObj) throws JSONException {

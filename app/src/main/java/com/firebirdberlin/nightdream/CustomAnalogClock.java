@@ -41,6 +41,7 @@ import android.graphics.SweepGradient;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -141,7 +142,7 @@ public class CustomAnalogClock extends View {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setTimeTick();
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
         if (handler != null) {
             handler.post(update);
         }

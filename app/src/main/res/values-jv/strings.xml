@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,25 +14,34 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Babagan</string>
     <string name="action_skip">Babah</string>
     <string name="action_snooze">Tundha</string>
     <string name="action_stop">Mandeg</string>
-    <string name="options_stop_alarms_slider">slider</string>
-    <string name="options_stop_alarms_error_min_one">Mangga milih paling ora siji patrap.</string>
-    <string name="add_new_alarm">Tambah alarm anyar</string>
+    <string name="active_theme">Tema aktif</string>
     <string name="add_custom_alarm_tone">Tambah dering alarm racikan</string>
+    <string name="add_new_alarm">Tambah alarm anyar</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Gedhekake volume</string>
-    <string name="alarmUpcoming">Alarm sabanjure</string>
     <string name="alarmStartDate">Alarm sabanjure nalika</string>
-    <string name="show_calendar_events">Sorot acara</string>
-    <string name="radio_stream_keep_running">Tetep uripake radio</string>
-    <string name="radio_stream_keep_running_summary">Terusake muter aliran radio sawise weker dipateni.</string>
-    <string name="decoration_style_rainbow">Pelangi</string>
+    <string name="alarmUpcoming">Alarm sabanjure</string>
+    <string name="animations">Animasi</string>
     <string name="decoration_style_pride">Pride flag</string>
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Pelangi</string>
+    <string name="enable_particle_overlays">Aktifake overlay partikel</string>
+    <string name="only_animate_when_charging">Animasi mung nalika ngisi daya</string>
+    <string name="options_stop_alarms_error_min_one">Mangga milih paling ora siji patrap.</string>
+    <string name="options_stop_alarms_slider">slider</string>
+    <string name="particle_effect">Efek partikel</string>
+    <string name="radio_stream_keep_running">Tetep uripake radio</string>
+    <string name="radio_stream_keep_running_summary">Terusake muter aliran radio sawise weker dipateni.</string>
+    <string name="reset_theme_defaults_summary">Riset kustomisasi kanggo tema aktif dadi standar.</string>
+    <string name="show_calendar_events">Sorot acara</string>
+    <string name="theme_animation_enabled_summary">Tampilkan animasi salju tiba utawa lintang emas.</string>
+    <string name="theme_animation_only_charging_summary">Nggantung animasi nalika nganggo baterei kanggo ngirit daya.</string>
+    <string name="theme_reset_to_defaults">Tema diriset menyang standar</string>
+    <string name="theme_updated">Tema dianyari!</string>
+    <string name="themes">Tema</string>
 </resources>

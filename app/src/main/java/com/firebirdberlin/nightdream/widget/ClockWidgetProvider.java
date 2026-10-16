@@ -32,9 +32,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,6 +58,8 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClockWidgetProvider extends AppWidgetProvider {
 
@@ -158,6 +161,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         clockLayout.setShowNotifications(false);
         clockLayout.showPollenExposure(false);
+        clockLayout.showMediaStyleLayout(false);
         clockLayout.setWeatherIconSizeFactor(settings.getWeatherIconSizeFactor(clockLayoutId));
 
         if (settings.shallShowWeather()) {
@@ -309,7 +313,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         //Utility.logToFile(context, LOG_FILE_WEATHER_UPDATE, "updated widget");
         final PrepareBitmapTask task = new PrepareBitmapTask(context, appWidgetManager, appWidgetId, dimension);
-        task.execute(context);
+        task.execute();
     }
 
     private void scheduleUpdateClock(Context context, int[] widgetIds) {
@@ -348,12 +352,14 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private static class PrepareBitmapTask extends AsyncTask<Context, Void, PrepareBitmapTask.TaskResult> {
+    private static class PrepareBitmapTask {
 
         private final AppWidgetManager appWidgetManager;
         private final int appWidgetId;
         private final WidgetDimension dimension;
         private final Context applicationContext;
+        private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+        private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
         static class TaskResult {
             final ViewInfo viewInfo;
@@ -366,23 +372,24 @@ public class ClockWidgetProvider extends AppWidgetProvider {
         }
 
         PrepareBitmapTask(Context context, AppWidgetManager appWidgetManager, int appWidgetId, WidgetDimension dimension) {
-            super();
             this.applicationContext = context.getApplicationContext();
             this.appWidgetManager = appWidgetManager;
             this.appWidgetId = appWidgetId;
             this.dimension = dimension;
         }
 
-        @Override
-        protected TaskResult doInBackground(Context... contexts) {
-            final ViewInfo sourceView = prepareSourceView(applicationContext, dimension, appWidgetId);
+        public void execute() {
+            executor.execute(() -> {
+                final ViewInfo sourceView = prepareSourceView(applicationContext, dimension, appWidgetId);
 
-            RemoteViews updateViews = new RemoteViews(applicationContext.getPackageName(), R.layout.clock_widget);
-            Intent intent = new Intent(applicationContext, NightDreamActivity.class);
-            PendingIntent pendingIntent = Utility.getImmutableActivity(applicationContext, 0, intent);
-            updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
+                RemoteViews updateViews = new RemoteViews(applicationContext.getPackageName(), R.layout.clock_widget);
+                Intent intent = new Intent(applicationContext, NightDreamActivity.class);
+                PendingIntent pendingIntent = Utility.getImmutableActivity(applicationContext, 0, intent);
+                updateViews.setOnClickPendingIntent(R.id.clockWidgetImageView, pendingIntent);
 
-            return new TaskResult(sourceView, updateViews);
+                TaskResult result = new TaskResult(sourceView, updateViews);
+                mainHandler.post(() -> onPostExecute(result));
+            });
         }
 
         private static Bitmap loadBitmapFromView(ViewInfo viewInfo) {
@@ -408,8 +415,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
             return bitmap;
         }
 
-        @Override
-        protected void onPostExecute(TaskResult result) {
+        private void onPostExecute(TaskResult result) {
             if (result == null || result.viewInfo == null || result.remoteViews == null) {
                 return;
             }

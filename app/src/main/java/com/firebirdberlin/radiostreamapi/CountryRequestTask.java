@@ -19,35 +19,45 @@
 package com.firebirdberlin.radiostreamapi;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.firebirdberlin.radiostreamapi.models.Country;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class CountryRequestTask extends AsyncTask<Void, Void, List<Country> > {
+public class CountryRequestTask {
 
     public interface AsyncResponse {
-        public void onCountryRequestFinished(List<Country> countries);
+        void onCountryRequestFinished(List<Country> countries);
     }
 
-    private CountryRequestTask.AsyncResponse delegate = null;
-    private Context context;
+    private final AsyncResponse delegate;
+    private final Context context;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean cancelled = false;
 
-    public CountryRequestTask(CountryRequestTask.AsyncResponse listener, Context context) {
+    public CountryRequestTask(AsyncResponse listener, Context context) {
         this.delegate = listener;
         this.context = context;
     }
 
-    @Override
-    protected List<Country> doInBackground(Void... params) {
-        //return DirbleApi.fetchCountries(context.getCacheDir());
-        return RadioBrowserApi.fetchCountries(context.getCacheDir());
+    public void execute(Void... params) {
+        executor.execute(() -> {
+            if (cancelled) return;
+            List<Country> countries = RadioBrowserApi.fetchCountries(context.getCacheDir());
+            mainHandler.post(() -> {
+                if (!cancelled && delegate != null) {
+                    delegate.onCountryRequestFinished(countries);
+                }
+            });
+        });
     }
 
-    @Override
-    protected void onPostExecute(List<Country> countries) {
-        delegate.onCountryRequestFinished(countries);
+    public void cancel(boolean mayInterruptIfRunning) {
+        this.cancelled = true;
     }
-
 }

@@ -45,7 +45,7 @@ import java.util.List;
 
 public class NotificationListActivity extends AppCompatActivity {
 
-    public static String TAG = "NotificationListActivity";
+    private static final String TAG = NotificationListActivity.class.getSimpleName();
     List<NotificationApp> notificationApps = new ArrayList<>();
     NotificationAppList notificationAppList;
     private BrowseNotificationApps adapter;
@@ -53,11 +53,13 @@ public class NotificationListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive");
+            if (intent == null) return;
 
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 for (String key : bundle.keySet()) {
-                    Log.d(TAG, key + " : " + (bundle.get(key) != null ? bundle.get(key) : "NULL"));
+                    Object val = bundle.get(key);
+                    Log.d(TAG, key + " : " + (val != null ? val : "NULL"));
                 }
             }
 

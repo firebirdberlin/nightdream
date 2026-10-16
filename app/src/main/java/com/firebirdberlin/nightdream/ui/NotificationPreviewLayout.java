@@ -28,6 +28,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ import com.firebirdberlin.nightdream.R;
 
 public class NotificationPreviewLayout extends LinearLayout {
     private static final String TAG = "NotificationPreviewLayout";
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private View notificationPreview;
     private final Runnable fadePreview = new Runnable() {
         @Override

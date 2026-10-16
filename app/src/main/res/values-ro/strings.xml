@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,27 +14,25 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Despre</string>
     <string name="action_skip">Treci peste</string>
     <string name="action_snooze">Amânare</string>
     <string name="action_stop">Stop</string>
-    <string name="options_stop_alarms_slider">glisor</string>
-    <string name="options_stop_alarms_error_min_one">Selectați cel puțin un gest.</string>
-    <string name="add_new_alarm">Adaugă alarmă nouă</string>
+    <string name="active_theme">Tema activă</string>
     <string name="add_custom_alarm_tone">Adaugă ton alarmă personalizat</string>
     <string name="add_custom_font">Adaugă font personalizat</string>
+    <string name="add_new_alarm">Adaugă alarmă nouă</string>
     <string name="alarm">Alarmă</string>
     <string name="alarmFadeIn">Volum crescând</string>
     <string name="alarmVolume">Volum</string>
-    <string name="allow_screen_off_summary">Inchide ecranul pe timpul noptii</string>
     <string name="allow_screen_off">Inchide ecran</string>
+    <string name="allow_screen_off_summary">Inchide ecranul pe timpul noptii</string>
     <string name="ambient_noise">Detectare zgomot de fond</string>
     <string name="ambient_noise_summary">Ar trebui ca zgomotul de fond sa previna ca modul de noapte sa fie activat?</string>
-    <string name="appearance">Înfățișare</string>
+    <string name="animations">Animații</string>
     <string name="app_name">Ceas de noapte</string>
+    <string name="appearance">Înfățișare</string>
     <string name="auto_brightness">Iluminare automată</string>
     <string name="autostart_timerange_label_end">Timp final</string>
     <string name="autostart_timerange_label_start">Timp de început</string>
@@ -52,30 +51,31 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Culoare de accent</string>
     <string name="choose_secondary_color">Culoarea textului</string>
     <string name="clear">Clar</string>
+    <string name="clock_layout">Infatisare</string>
     <string name="clock_layout_analog">Ceas analog</string>
+    <string name="clock_layout_digit_analog">Ceas analog cu cifre</string>
     <string name="clock_layout_digital">Ceas digital</string>
     <string name="clock_layout_elegant_analog">Ceas analog elegant</string>
-    <string name="clock_layout_digit_analog">Ceas analog cu cifre</string>
-    <string name="clock_layout">Infatisare</string>
     <string name="clock_layout_modern_analog">Ceas analog modern</string>
     <string name="colors">Culori</string>
-    <string name="confirm_reset_question">Ești sigur ca vrei sa revii la setările inițiale?</string>
     <string name="confirm_reset">Reset</string>
+    <string name="confirm_reset_question">Ești sigur ca vrei sa revii la setările inițiale?</string>
     <string name="contribute">Contribuie</string>
     <string name="contribute_source_code">Cod sursă</string>
     <string name="contribute_translation">Traducere</string>
     <string name="country">Țara</string>
     <string name="credits">Mulțumiri</string>
     <string name="date_format">Format Dată</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Curcubeu</string>
     <string name="delete">Sterge</string>
     <string name="dialog_message_thank_you">Mulțumesc frumos</string>
     <string name="dialog_title_thank_you">Mulțumesc</string>
-    <string name="decoration_style_rainbow">Curcubeu</string>
-    <string name="decoration_style_pride">Pride flag</string>
-    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Doneză</string>
-    <string name="handle_power_ac">AC</string>
+    <string name="enable_particle_overlays">Activează suprapunerile de particule</string>
     <string name="handle_power">Pornire automată</string>
+    <string name="handle_power_ac">AC</string>
     <string name="handle_power_car">Dock maşină</string>
     <string name="handle_power_desk">Dock birou</string>
     <string name="handle_power_disconnection">Oprire automată</string>
@@ -90,13 +90,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="message_no_data_connection">Fara conexiune</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Sonerie muta</string>
+    <string name="night_mode">Mod noapte</string>
     <string name="night_mode_activation_auto">Automat</string>
     <string name="night_mode_activation_mode">Modul Activare</string>
-    <string name="night_mode">Mod noapte</string>
     <string name="noise_sensitivity">Sensibilitate microfon</string>
+    <string name="only_animate_when_charging">Animează doar la încărcare</string>
+    <string name="options_stop_alarms_error_min_one">Selectați cel puțin un gest.</string>
+    <string name="options_stop_alarms_slider">glisor</string>
     <string name="other_apps">Alte aplicații</string>
-    <string name="other_apps_tinytimetracker_summary">Înregistrează timpul de lucru zilnic</string>
     <string name="other_apps_tinytimetracker">TinyTimeTracker</string>
+    <string name="other_apps_tinytimetracker_summary">Înregistrează timpul de lucru zilnic</string>
+    <string name="particle_effect">Efect de particule</string>
     <string name="persistent_battery_value_while_charging">Status baterie permanent</string>
     <string name="persistent_battery_value_while_charging_summary">Afişare status baterie permanent în timpul încărcării</string>
     <string name="preview">Previzualizare</string>
@@ -106,11 +110,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_no_search_results">Nu s-au găsit înregistrări</string>
     <string name="radio_stream_query_hint">Cauta cuvant</string>
     <string name="radio_stream_search">Cautare</string>
+    <string name="recommend">Recomanda aplicația</string>
     <string name="recommend_app_desc">Alege o aplicație pentru a face share la recomandare</string>
     <string name="recommend_app_subject">Vreau sa iti recomand aceasta aplicație de ceas de noapte</string>
-    <string name="recommend">Recomanda aplicația</string>
+    <string name="reset_theme_defaults_summary">Resetează personalizările pentru tema activă la cele implicite.</string>
     <string name="reset_to_defaults">Revenire la setările inițiale</string>
-    <string name="screenProtectionMove">Misca ceasul împrejur</string>
     <string name="review_request">Te rog da nota aplicației. Merci!</string>
     <string name="screen_orientation_automatic">Automat</string>
     <string name="screen_orientation_landscape">Rasturnat</string>
@@ -118,6 +122,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_landscape">Mod Oglinda</string>
     <string name="screen_orientation_reverse_portrait">Portret inversat</string>
     <string name="screenOrientation">Orientarea ecranului</string>
+    <string name="screenProtectionMove">Misca ceasul împrejur</string>
     <string name="set_alarm">Setează alarma</string>
     <string name="show_calendar_events">Evidențiați evenimente</string>
     <string name="show_date">Arata data</string>
@@ -126,11 +131,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">Viteza vântului</string>
     <string name="speedUnit">Unitate viteza vântului</string>
     <string name="temperatureUnit">Unitate temperatura</string>
+    <string name="theme_animation_enabled_summary">Afișează animația cu ninsoare sau stele aurii.</string>
+    <string name="theme_animation_only_charging_summary">Pune pauză animațiilor pe baterie pentru a economisi energie.</string>
+    <string name="theme_reset_to_defaults">Tema a fost resetată la valorile implicite</string>
+    <string name="theme_updated">Tema a fost actualizată!</string>
+    <string name="themes">Teme</string>
     <string name="titlePrivacyPolicy">Licenta Politica</string>
     <string name="translations">Traduceri</string>
+    <string name="typeface">Fonturi</string>
     <string name="typeface_roboto_regular">Roboto normal</string>
     <string name="typeface_roboto_thin">Roboto foarte subțire</string>
-    <string name="typeface">Fonturi</string>
     <string name="weather">Vremea</string>
     <string name="weather_calculation_time">Timpul de calcul al vremii</string>
     <string name="weather_city_id_title">Cauta Locatie</string>

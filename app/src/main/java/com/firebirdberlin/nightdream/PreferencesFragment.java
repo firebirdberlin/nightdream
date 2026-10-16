@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.ext.SdkExtensions;
@@ -61,7 +62,11 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebirdberlin.nightdream.BillingHelperActivity;
 import com.firebirdberlin.nightdream.models.CopyImagesDataHolder;
+import com.firebirdberlin.nightdream.models.ParticleEffect;
+import com.firebirdberlin.nightdream.models.ThemePreset;
+import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.receivers.PowerConnectionReceiver;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
 import com.firebirdberlin.nightdream.services.ImageCopyService;
@@ -109,7 +114,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     public static final String TAG = "PreferencesFragment";
     public static final String PREFS_KEY = "NightDream preferences";
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private Vector<AlertDialog> dialogs = new Vector<>();
     Snackbar snackbar;
     String rootKey;
@@ -223,6 +228,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             if (settings.getShowCalendarEvents(ClockLayout.LAYOUT_ID_CALENDAR) && !settings.hasPermission(Manifest.permission.READ_CALENDAR)) {
                                 readCalendarPermission.launch(Manifest.permission.READ_CALENDAR);
                             }
+                            break;
+                        case "activeThemePreset":
+                            setupThemeControls();
+                            break;
                     }
 
                     Log.i(TAG, "prefChangedListener called. Key: " + key);
@@ -295,7 +304,9 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     Log.d("PhotoPicker", "Selected URI: " + uri);
                     File directory = new File(mContext.getFilesDir() + "/backgroundImages");
                     Utility.prepareDirectory(directory);
-                    Utility.copyToDirectory(mContext, uri, directory, "image_0.jpg");
+                    String activeThemeId = ThemePresetManager.getActivePresetId(mContext);
+                    String prefix = ThemePreset.PRESET_NONE.equals(activeThemeId) ? "" : "theme_" + activeThemeId + "_";
+                    Utility.copyToDirectory(mContext, uri, directory, prefix + "image_0.jpg");
                 } else {
                     Log.d("PhotoPicker", "No media selected");
                 }
@@ -407,7 +418,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
     public void onStart() {
         super.onStart();
 
-        daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler());
+        daydreamSettingsObserver = new DaydreamSettingsObserver(new Handler(Looper.getMainLooper()));
         mContext.getContentResolver().registerContentObserver(
                 android.provider.Settings.Secure.getUriFor("screensaver_enabled"),
                 true,
@@ -488,6 +499,14 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         showPreference("purchaseActions2", !isPurchasedActions);
         showPreference("purchaseActions3", !isPurchasedActions);
         showPreference("purchaseProRss", !isPurchasedActions);
+
+        boolean isEligibleThemes = ThemePresetManager.isUserEligible(mContext);
+        showPreference("purchaseThemes", !isEligibleThemes);
+        enablePreference("activeThemePreset", isEligibleThemes);
+        enablePreference("reset_theme_defaults", isEligibleThemes);
+        enablePreference("theme_animation_enabled", isEligibleThemes);
+        enablePreference("theme_particle_effect", isEligibleThemes);
+        enablePreference("theme_animation_only_charging", isEligibleThemes);
     }
 
     private boolean isPurchased(String sku) {
@@ -561,7 +580,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle(getString(R.string.showNotificationsAccessNotGranted))
                                     .setMessage(getString(R.string.showNotificationsAlertText))
-                                    .setPositiveButton(android.R.string.yes, null)
+                                    .setPositiveButton(android.R.string.ok, null)
                                     .setIcon(android.R.drawable.ic_dialog_alert);
                             AlertDialog alertdialog = builder.create();
                             dialogs.add(alertdialog);
@@ -574,6 +593,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                     break;
                 case "help":
                     setPreferencesFromResource(R.xml.preferences_help_feedback, rootKey);
+                    break;
+                case "themes":
+                    setPreferencesFromResource(R.xml.preferences_themes, rootKey);
+                    setupThemeControls();
                     break;
                 case "about":
                     setPreferencesFromResource(R.xml.preferences_about, rootKey);
@@ -595,6 +618,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         initPurchasePreference("donation_play");
         initPurchasePreference("purchaseDesignPackage");
         initPurchasePreference("purchaseDesignPackageBackground");
+        initPurchasePreference("purchaseThemes");
     }
 
     @Override
@@ -835,8 +859,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle(getResources().getString(R.string.confirm_reset))
                         .setMessage(getResources().getString(R.string.confirm_reset_question))
-                        .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
                             settings.clear();
                             getPreferenceScreen().removeAll();
                             WakeUpReceiver.cancelAlarm(mContext);
@@ -1318,6 +1342,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
 
     private String getDeviceInfo() {
         return String.format(
+                Locale.US,
                 "\n\n\n--- Device Information ---\n" +
                         "Manufacturer: %s\n" +
                         "Model: %s\n" +
@@ -1377,6 +1402,74 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
                 activity.showSubscriptionDialog();
 
             }
+        }
+    }
+
+    private void setupThemeControls() {
+        ListPreference activeThemePref = findPreference("activeThemePreset");
+        Preference resetPref = findPreference("reset_theme_defaults");
+        SwitchPreferenceCompat animEnabledPref = findPreference("theme_animation_enabled");
+        ListPreference particleEffectPref = findPreference("theme_particle_effect");
+        SwitchPreferenceCompat animOnlyChargingPref = findPreference("theme_animation_only_charging");
+
+        SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
+        boolean isEligible = ThemePresetManager.isUserEligible(mContext);
+
+        showPreference("purchaseThemes", !isEligible);
+        enablePreference("activeThemePreset", isEligible);
+        enablePreference("reset_theme_defaults", isEligible);
+        enablePreference("theme_animation_enabled", isEligible);
+        enablePreference("theme_particle_effect", isEligible);
+        enablePreference("theme_animation_only_charging", isEligible);
+
+        if (animEnabledPref != null) {
+            animEnabledPref.setChecked(prefs.getBoolean("theme_animation_enabled", false));
+        }
+        if (particleEffectPref != null) {
+            ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.NONE);
+            particleEffectPref.setValue(String.valueOf(particleEffect.getValue()));
+        }
+        if (animOnlyChargingPref != null) {
+            animOnlyChargingPref.setChecked(prefs.getBoolean("theme_animation_only_charging", false));
+        }
+
+        if (activeThemePref != null) {
+            String activeId = ThemePresetManager.getActivePresetId(mContext);
+            activeThemePref.setValue(activeId);
+            activeThemePref.setOnPreferenceChangeListener((preference, newValue) -> {
+                String newThemeId = (String) newValue;
+                SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+                if (preferences != null) {
+                    preferences.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+                }
+                ThemePresetManager.switchTheme(mContext, newThemeId);
+                setupThemeControls();
+                if (preferences != null) {
+                    preferences.registerOnSharedPreferenceChangeListener(prefChangedListener);
+                }
+                if (getView() != null) {
+                    Snackbar.make(getView(), R.string.theme_updated, Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+            });
+        }
+
+        if (resetPref != null) {
+            resetPref.setOnPreferenceClickListener(p -> {
+                SharedPreferences preferences = getPreferenceManager().getSharedPreferences();
+                if (preferences != null) {
+                    preferences.unregisterOnSharedPreferenceChangeListener(prefChangedListener);
+                }
+                ThemePresetManager.resetActiveThemeDefaults(mContext);
+                setupThemeControls();
+                if (preferences != null) {
+                    preferences.registerOnSharedPreferenceChangeListener(prefChangedListener);
+                }
+                if (getView() != null) {
+                    Snackbar.make(getView(), R.string.theme_reset_to_defaults, Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+            });
         }
     }
 }

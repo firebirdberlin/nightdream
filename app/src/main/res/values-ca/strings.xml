@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,26 +14,35 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Sobre</string>
     <string name="action_skip">Passa</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Atura</string>
-    <string name="options_stop_alarms_slider">lliscador</string>
-    <string name="options_stop_alarms_error_min_one">Seleccioneu almenys un gest.</string>
     <string name="activateDoNotDisturb">No molestar</string>
     <string name="activateDoNotDisturbSummary">Activa "no molestar" mentre l\'App estigui activa</string>
+    <string name="active_theme">Tema actiu</string>
     <string name="add_custom_alarm_tone">Afegir tó personalitzat</string>
     <string name="add_custom_font">Afegir tipus de lletra personalitzat</string>
     <string name="add_new_alarm">Afegir nova alarma</string>
     <string name="alarm">Alarma</string>
     <string name="alarmUpcoming">Propera Alarma</string>
-    <string name="show_calendar_events">Destacar esdeveniments</string>
-    <string name="radio_stream_keep_running">Mantenir la ràdio en funcionament</string>
-    <string name="radio_stream_keep_running_summary">Continuar reproduint el flux de ràdio després d\'aturar l\'alarma.</string>
-    <string name="decoration_style_rainbow">Arc de Sant Martí</string>
+    <string name="animations">Animacions</string>
     <string name="decoration_style_pride">Pride flag</string>
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Arc de Sant Martí</string>
+    <string name="enable_particle_overlays">Habilita les superposicions de partícules</string>
+    <string name="only_animate_when_charging">Anima només en carregar</string>
+    <string name="options_stop_alarms_error_min_one">Seleccioneu almenys un gest.</string>
+    <string name="options_stop_alarms_slider">lliscador</string>
+    <string name="particle_effect">Efecte de partícules</string>
+    <string name="radio_stream_keep_running">Mantenir la ràdio en funcionament</string>
+    <string name="radio_stream_keep_running_summary">Continuar reproduint el flux de ràdio després d\'aturar l\'alarma.</string>
+    <string name="reset_theme_defaults_summary">Restableix les personalitzacions del tema actiu per defecte.</string>
+    <string name="show_calendar_events">Destacar esdeveniments</string>
+    <string name="theme_animation_enabled_summary">Mostra l\'animació de neu caient o estrelles daurades.</string>
+    <string name="theme_animation_only_charging_summary">Pausa les animacions quan funciona amb bateria per estalviar energia.</string>
+    <string name="theme_reset_to_defaults">Tema restablert per defecte</string>
+    <string name="theme_updated">Tema actualitzat!</string>
+    <string name="themes">Temes</string>
 </resources>
