@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import androidx.core.content.ContextCompat;
 import android.provider.Settings;
 import android.text.Spannable;
@@ -208,7 +209,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
         // retrigger the update in 1s if seconds are visible
         if (mFormat.contains(":ss")) {
             if (handler == null) {
-                handler = new Handler();
+                handler = new Handler(Looper.getMainLooper());
             }
             handler.removeCallbacks(update);
             long now = System.currentTimeMillis();
@@ -348,7 +349,6 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
     @Override
     public void setTextColor(int color) {
-        Log.d("CustomDigitalClock", "setTextColor called with color: " + color);
         this.primaryColor = color;
         super.setTextColor(color);
         updateTextView();
@@ -401,7 +401,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
     private class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver() {
-            super(new Handler());
+            super(new Handler(Looper.getMainLooper()));
         }
 
         @Override

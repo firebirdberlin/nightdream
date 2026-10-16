@@ -18,13 +18,20 @@
 
 package com.firebirdberlin.radiostreamapi;
 
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.firebirdberlin.radiostreamapi.models.PlaylistInfo;
 
-public class PlaylistRequestTask extends AsyncTask<String, Void, PlaylistInfo> {
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class PlaylistRequestTask {
 
     private AsyncResponse delegate;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean cancelled = false;
 
     public interface AsyncResponse {
         void onPlaylistRequestFinished(PlaylistInfo result);
@@ -34,15 +41,20 @@ public class PlaylistRequestTask extends AsyncTask<String, Void, PlaylistInfo> {
         this.delegate = listener;
     }
 
-    @Override
-    protected PlaylistInfo doInBackground(String... query) {
-        String playlistUrl = query[0];
-        PlaylistParser parser = new PlaylistParser();
-        return parser.parsePlaylistUrl(playlistUrl);
+    public void execute(String playlistUrl) {
+        executor.execute(() -> {
+            if (cancelled) return;
+            PlaylistParser parser = new PlaylistParser();
+            PlaylistInfo result = parser.parsePlaylistUrl(playlistUrl);
+            mainHandler.post(() -> {
+                if (!cancelled && delegate != null) {
+                    delegate.onPlaylistRequestFinished(result);
+                }
+            });
+        });
     }
 
-    @Override
-    protected void onPostExecute(PlaylistInfo result) {
-        delegate.onPlaylistRequestFinished(result);
+    public void cancel(boolean mayInterruptIfRunning) {
+        this.cancelled = true;
     }
 }

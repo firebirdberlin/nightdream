@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -272,7 +273,7 @@ public class CustomDigitalAnimClock extends LinearLayout {
         if (mFormat != null && mFormat.contains(":ss")) {
             secondsLayout.setVisibility(View.VISIBLE);
             if (handler == null) {
-                handler = new Handler();
+                handler = new Handler(Looper.getMainLooper());
             }
             handler.removeCallbacks(update);
             long now = System.currentTimeMillis();
@@ -295,7 +296,7 @@ public class CustomDigitalAnimClock extends LinearLayout {
 
     private class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver() {
-            super(new Handler());
+            super(new Handler(Looper.getMainLooper()));
         }
 
         @Override

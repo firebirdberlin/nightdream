@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,23 +14,21 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">درباره</string>
     <string name="action_snooze">تعویق انداختن</string>
     <string name="action_stop">ایست</string>
-    <string name="options_stop_alarms_slider">لغزنده</string>
-    <string name="options_stop_alarms_error_min_one">لطفا حداقل یک ژست را انتخاب کنید.</string>
+    <string name="active_theme">تم فعال</string>
     <string name="alarm">هشدار</string>
     <string name="alarmFadeIn">افزایش آوا</string>
     <string name="alarmVolume">صدا</string>
-    <string name="allow_screen_off_summary">هنگام شب صفحه نمایش را خاموش کنید</string>
     <string name="allow_screen_off">صفحه نمایش را خاموش کنید</string>
+    <string name="allow_screen_off_summary">هنگام شب صفحه نمایش را خاموش کنید</string>
     <string name="ambient_noise">آشکارسازی صدای نابهنجار محیط</string>
     <string name="ambient_noise_summary">آیا صدای زمینه نابهنجار از فعالیت حالت شبانه جلوگیری میکند</string>
-    <string name="appearance">رخ نما</string>
+    <string name="animations">پویانمایی‌ها</string>
     <string name="app_name">ساعت شبانه</string>
+    <string name="appearance">رخ نما</string>
     <string name="auto_brightness">روشنایی خودکار</string>
     <string name="autostart_message_disabled">خواهشمند است برای نگهداشتن حالت آماده بکار محافظ صفحه نمایش را از کار بیاندازید</string>
     <string name="autostart_timerange_label_end">زمان پایان</string>
@@ -47,27 +46,28 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">تشدید رنگ</string>
     <string name="choose_secondary_color">رنگ متن</string>
     <string name="clear">آشکار</string>
+    <string name="clock_layout">زمینه</string>
     <string name="clock_layout_analog">آنالوگ</string>
     <string name="clock_layout_digital">دیجیتال</string>
-    <string name="clock_layout">زمینه</string>
     <string name="colors">رنگ ها</string>
-    <string name="confirm_reset_question">آیا میخواهید همه تنطیمات را به پیشفرض برگردانید</string>
     <string name="confirm_reset">بازگرداندن به پیش فرض</string>
+    <string name="confirm_reset_question">آیا میخواهید همه تنطیمات را به پیشفرض برگردانید</string>
     <string name="contribute">سهیم شدن</string>
     <string name="contribute_source_code">کد منبع برنامه</string>
     <string name="contribute_translation">ترجمه</string>
     <string name="country">کشور</string>
     <string name="date_format">شکل تاریخ</string>
-    <string name="dialog_message_thank_you">سپاس فراوان از شما</string>
-    <string name="dialog_title_thank_you">سپاس</string>
-    <string name="decoration_style_rainbow">رنگین کمان</string>
     <string name="decoration_style_pride">Pride flag</string>
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">رنگین کمان</string>
+    <string name="dialog_message_thank_you">سپاس فراوان از شما</string>
+    <string name="dialog_title_thank_you">سپاس</string>
     <string name="donate">کمک کردن</string>
     <string name="doubleTapToFinishSummary">با دو ضربه روی صفحه برنامه را خاتمه دهید</string>
     <string name="doubleTapToFinishTitle">دو ضربه بزنید تا تمام شود</string>
-    <string name="handle_power_ac">شارژ</string>
+    <string name="enable_particle_overlays">فعال‌سازی لایه‌های ذرات</string>
     <string name="handle_power">شروع خودکار</string>
+    <string name="handle_power_ac">شارژ</string>
     <string name="handle_power_car">ساعت ماشین</string>
     <string name="handle_power_desk">ساعت رومیزی</string>
     <string name="handle_power_disconnection">توقف خودکار</string>
@@ -79,24 +79,28 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="hour">ساعت</string>
     <string name="location_time">زمان موقعیت</string>
     <string name="maxBrightness">حداکثر نور صفحه</string>
-    <string name="message_mobile_data_connection_confirmation">شما به یک شبکه ی موبایل متصل هستید. آیا جریان رادیو پخش شود؟</string>
     <string name="message_mobile_data_connection">ارتباط داده ی موبایل</string>
+    <string name="message_mobile_data_connection_confirmation">شما به یک شبکه ی موبایل متصل هستید. آیا جریان رادیو پخش شود؟</string>
     <string name="message_no_data_connection">ارتباط داده ها موجود نیست</string>
     <string name="minBrightness">حداقل نور صفحه</string>
     <string name="minute">دقیقه</string>
     <string name="mute_ringer">زنگ بی صدا</string>
+    <string name="night_mode">حالت شبانگاهی</string>
     <string name="night_mode_activation_auto">خودکار</string>
     <string name="night_mode_activation_manual">دستی</string>
     <string name="night_mode_activation_mode">حالت فعالسازی</string>
     <string name="night_mode_activation_scheduled">برنامه ریزی شده</string>
-    <string name="night_mode">حالت شبانگاهی</string>
     <string name="night_mode_timerange_label_end">زمان اتمام</string>
     <string name="night_mode_timerange_label_start">زمان شروع</string>
     <string name="night_mode_timerange_title">زمان شبانگاهی</string>
     <string name="noise_sensitivity">حساسیت میکروفون</string>
+    <string name="only_animate_when_charging">پویانمایی فقط هنگام شارژ</string>
+    <string name="options_stop_alarms_error_min_one">لطفا حداقل یک ژست را انتخاب کنید.</string>
+    <string name="options_stop_alarms_slider">لغزنده</string>
     <string name="other_apps">برنامه های دیگر</string>
-    <string name="other_apps_tinytimetracker_summary">زمان فعالیت روزانه ی خود را پیگیری کن.</string>
     <string name="other_apps_tinytimetracker">پیگیری کننده ی زمان کوچک</string>
+    <string name="other_apps_tinytimetracker_summary">زمان فعالیت روزانه ی خود را پیگیری کن.</string>
+    <string name="particle_effect">جلوه ذرات</string>
     <string name="persistent_battery_value_while_charging">نشانگر مداوم وضعیت باطری</string>
     <string name="persistent_battery_value_while_charging_summary">وضعیت باطری را طی شارژ کردن به طور مداوم نشان بده</string>
     <string name="preview">پیش نمایش</string>
@@ -106,13 +110,14 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_no_search_results">نتیجه ای برای جستجو وجود نداشت.</string>
     <string name="radio_stream_offline">افلاین</string>
     <string name="radio_stream_search">جستوجو</string>
+    <string name="recommend">پیشنهاد برنامه</string>
     <string name="recommend_app_desc">یک برنامه را انتخاب کنید تا پیشنهاد شما را به اشتراک بگذارید</string>
     <string name="recommend_app_subject">من می خواهم این برنامه ساعت شبانه را به شما توصیه کنم.</string>
-    <string name="recommend">پیشنهاد برنامه</string>
+    <string name="reset_theme_defaults_summary">بازنشانی سفارشی‌سازی‌های تم فعال به حالت پیش‌فرض.</string>
     <string name="reset_to_defaults">برگشت به حالت اولیه</string>
-    <string name="screenProtectionMove">ساعت را در اطراف حرکت دهید</string>
     <string name="review_request">لطفا به این برنامه امتیاز دهید.ممنون !</string>
     <string name="screen_orientation_automatic">اتوماتیک</string>
+    <string name="screenProtectionMove">ساعت را در اطراف حرکت دهید</string>
     <string name="set_alarm">انتخاب آلارم</string>
     <string name="show_calendar_events">برجسته کردن رویدادها</string>
     <string name="show_date">نمایش تاریخ</string>
@@ -121,6 +126,11 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="show_wind_speed">نمایش سرعت باد</string>
     <string name="snoozeTime">زمان تعویق</string>
     <string name="standbyEnabledWhileDisconnectedSummary">این ویژگی به سرعت باطری را تخلیه میکند</string>
+    <string name="theme_animation_enabled_summary">نمایش پویانمایی بارش برف یا ستاره‌های طلایی.</string>
+    <string name="theme_animation_only_charging_summary">مکث پویانمایی‌ها هنگام استفاده از باتری برای صرفه‌جویی در مصرف انرژی.</string>
+    <string name="theme_reset_to_defaults">تم به حالت پیش‌فرض بازنشانی شد</string>
+    <string name="theme_updated">تم به‌روزرسانی شد!</string>
+    <string name="themes">تم‌ها</string>
     <string name="timeFormat">نحوه نمایش ساعت</string>
     <string name="uninstall">حذف نرم افزار</string>
     <string name="weather">آب و هوا</string>

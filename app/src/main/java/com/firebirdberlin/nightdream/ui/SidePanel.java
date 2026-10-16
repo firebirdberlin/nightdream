@@ -22,7 +22,14 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
@@ -220,10 +227,57 @@ public class SidePanel extends FlexboxLayout {
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
             if (view instanceof ImageView) {
-                ((ImageView) view).setColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP);
-                setIconSize(getContext(), (ImageView) view);
+                ImageView iv = (ImageView) view;
+                applyMetallicGradientToIcon(iv);
+                setIconSize(getContext(), iv);
             }
         }
+    }
+
+    private void applyMetallicGradientToIcon(ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        if (drawable == null) return;
+
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        if (width <= 0) width = 96;
+        if (height <= 0) height = 96;
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        int baseColor = mIconColor != 0 ? mIconColor : Color.rgb(229, 193, 88);
+        int highlightColor = lightenColor(baseColor, 0.45f);
+        int shadowColor = darkenColor(baseColor, 0.4f);
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        LinearGradient shader = new LinearGradient(
+                0, 0, width, height,
+                new int[]{highlightColor, baseColor, shadowColor},
+                new float[]{0.0f, 0.5f, 1.0f},
+                Shader.TileMode.CLAMP
+        );
+        paint.setShader(shader);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawRect(0, 0, width, height, paint);
+
+        imageView.setImageBitmap(bitmap);
+    }
+
+    private int lightenColor(int color, float factor) {
+        int r = Math.min(255, (int) (Color.red(color) + (255 - Color.red(color)) * factor));
+        int g = Math.min(255, (int) (Color.green(color) + (255 - Color.green(color)) * factor));
+        int b = Math.min(255, (int) (Color.blue(color) + (255 - Color.blue(color)) * factor));
+        return Color.rgb(r, g, b);
+    }
+
+    private int darkenColor(int color, float factor) {
+        int r = (int) (Color.red(color) * (1f - factor));
+        int g = (int) (Color.green(color) * (1f - factor));
+        int b = (int) (Color.blue(color) * (1f - factor));
+        return Color.rgb(r, g, b);
     }
 
     public boolean isHidden() {

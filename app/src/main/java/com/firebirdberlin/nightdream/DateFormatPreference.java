@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.AttributeSet;
 
@@ -234,7 +235,7 @@ public class DateFormatPreference extends ListPreference {
 
     private class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver() {
-            super(new Handler());
+            super(new Handler(Looper.getMainLooper()));
         }
 
         @Override

@@ -123,7 +123,7 @@ public class NightDreamActivity extends BillingHelperActivity
     public static final int MODE_DAY = 2;
     private static int mode = MODE_DAY;
     private static Context context = null;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable finishApp = this::finish;
     private final Runnable runnableSetupNightMode = this::setupNightMode;
     Sensor lightSensor = null;
@@ -412,15 +412,6 @@ public class NightDreamActivity extends BillingHelperActivity
             setupAlarmClockIcon();
 
             showToastIfNotCharging();
-
-            final Context context = this;
-            clockLayoutContainer.post(() -> {
-                if (Settings.showNotification(this)) {
-                    Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                    i.putExtra("command", "list");
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-                }
-            });
 
             if (mySettings.getWeatherAutoLocationEnabled() && hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();

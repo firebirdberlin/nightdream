@@ -51,14 +51,12 @@ public class mAudioManager{
     }
 
     public void setRingerModeSilent(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationManager notificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+            (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            if ( notificationManager == null ||
-                    !notificationManager.isNotificationPolicyAccessGranted() ) {
-                return;
-            }
+        if ( notificationManager == null ||
+                !notificationManager.isNotificationPolicyAccessGranted() ) {
+            return;
         }
 
         currentRingerMode = audiomanage.getRingerMode(); // ringer mode to restore
@@ -90,9 +88,6 @@ public class mAudioManager{
     }
 
     void activateDnDMode(boolean enabled, boolean allowPriority) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return;
-        }
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 

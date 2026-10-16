@@ -30,23 +30,29 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.os.Looper;
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.session.MediaSession;
+import androidx.media3.session.MediaStyleNotificationHelper;
+
 import android.util.Log;
 import android.util.LruCache;
 import android.util.Patterns;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.IntentCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.media.session.MediaButtonReceiver;
+import android.view.KeyEvent;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
@@ -82,6 +88,7 @@ import com.google.android.gms.common.images.WebImage;
 
 import com.firebirdberlin.nightdream.events.AppEventBus;
 
+@OptIn(markerClass = UnstableApi.class)
 public class RadioStreamService extends Service implements HttpStatusCheckTask.AsyncResponse,
         PlaylistRequestTask.AsyncResponse {
 
@@ -92,7 +99,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     };
 
     protected static final int NOTIFY_ID = 1337;
-    private static final String TAG = "RadioStreamService";
+    private static final String TAG = RadioStreamService.class.getSimpleName();
     private static final String ACTION_START = "start";
     private static final String ACTION_START_STREAM = "start stream";
     private static final String ACTION_STOP = "stop";
@@ -104,14 +111,13 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     public static String EXTRA_RADIO_STATION_INDEX = "radioStationIndex";
     public static String EXTRA_TITLE = "title";
     static RadioStreamService mRadioStreamService = null;
-    private static boolean readyForPlayback = false;
     static private int radioStationIndex;
     static private RadioStation radioStation;
     private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
     private static long muteDelayInMillis = 0;
-    private static MediaSessionCompat mediaSession;
-    final private Handler handler = new Handler();
+    private static MediaSession mediaSession;
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
@@ -131,7 +137,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             if (RadioStreamService.streamingMode == StreamingMode.INACTIVE) {
                 stop(getApplicationContext());
             }
-            currentVolume -= 0.01;
+            currentVolume -= 0.01f;
             if (currentVolume > 0.) {
                 exoPlayer.setVolume(currentVolume);
                 handler.postDelayed(fadeOut, 50);
@@ -156,7 +162,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             handler.post(fadeOut);
         }
     };
-    private PlaybackStateCompat.Builder stateBuilder;
     private MediaMetadata mediaMetaData = null;
     private Bitmap iconRadio;
 
@@ -175,9 +180,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Utility.startForegroundService(context, i);
     }
 
-    public static boolean isReadyForPlayback() {
-        return readyForPlayback;
-    }
+
 
     public static int getCurrentRadioStationIndex() {
         if (streamingMode != StreamingMode.RADIO) {
@@ -299,22 +302,9 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
     private void enableMediaSession() {
         Log.d(TAG, "enableMediaSession()");
+        if (exoPlayer == null || mediaSession != null) return;
 
-        mediaSession = new MediaSessionCompat(getBaseContext(), getBaseContext().getPackageName());
-        mediaSession.setCallback(new sessionCallback());
-        mediaSession.setMediaButtonReceiver(null);
-        mediaSession.setActive(true);
-
-        stateBuilder = new PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1.f)
-                .setActions(
-                        PlaybackStateCompat.ACTION_PLAY
-                                | PlaybackStateCompat.ACTION_PAUSE
-                                | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                                | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                );
-
-        mediaSession.setPlaybackState(stateBuilder.build());
+        mediaSession = new MediaSession.Builder(this, exoPlayer).build();
     }
 
     @Override
@@ -324,7 +314,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         isRunning = true;
         mRadioStreamService = this;
 
-        MediaButtonReceiver.handleIntent(mediaSession, intent);
+        handleMediaButtonIntent(intent);
 
         this.intent = intent;
         String action = intent.getAction();
@@ -366,12 +356,10 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                             ContextCompat.registerReceiver(this, myNoisyAudioStreamReceiver, myNoisyAudioStreamIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
                         }
 
-                        readyForPlayback = false;
                         checkStreamAndStart(radioStationIndex);
                     }
                     break;
                 case ACTION_STOP:
-                    readyForPlayback = false;
                     Log.d(TAG, "stopself");
                     stopSelf();
                     break;
@@ -461,7 +449,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         Log.i(TAG, "checkStreamAndStart radioStationIndex=" + radioStationIndex);
 
         streamURL = "";
-        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_audiotrack_dark);
+        iconRadio = BitmapFactory.decodeResource(getResources(), R.drawable.ic_radio);
 
         if (radioStationIndex > -1) {
             FavoriteRadioStations stations = settings.getFavoriteRadioStations();
@@ -552,7 +540,11 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        stopForeground(false); // bool: true = remove Notification
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            stopForeground(Service.STOP_FOREGROUND_DETACH);
+        } else {
+            stopForeground(false);
+        }
     }
 
     public void setAlarmVolume(int volume, boolean useMusicStream) {
@@ -618,11 +610,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
                     if (isPlaying) {
                         Log.d(TAG, "onIsPlayingChanged: Play");
-                        stateBuilder.setState(
-                                PlaybackStateCompat.STATE_PLAYING,
-                                exoPlayer.getCurrentPosition(),
-                                1f
-                        );
 
                         if (mediaMetaData != null && mediaMetaData.title != null) {
                             updateNotification(mediaMetaData.title.toString());
@@ -632,10 +619,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
                     } else if (!exoPlayer.getPlayWhenReady()) {
                         Log.d(TAG, "onIsPlayingChanged: PAUSED");
-                        stateBuilder.setState(
-                                PlaybackStateCompat.STATE_PAUSED,
-                                exoPlayer.getCurrentPosition(), 1f
-                        );
                         handler.removeCallbacks(fadeIn);
                         updateNotification(getResources().getString(R.string.radio_paused));
                     }
@@ -690,18 +673,14 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 handler.postDelayed(fadeIn, muteDelayInMillis);
                 updateNotification(getResources().getString(R.string.radio_muting));
 
-                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime != null
+                        && alarmTime.vibrate && vibrator != null) {
                     vibrator.startVibration();
                 }
 
                 break;
             case ExoPlayer.STATE_ENDED:
                 Log.d(TAG, "The player finished playing all media");
-                stateBuilder.setState(
-                        PlaybackStateCompat.STATE_STOPPED,
-                        exoPlayer.getCurrentPosition(),
-                        1f
-                );
                 handler.removeCallbacks(fadeIn);
                 break;
             case Player.STATE_BUFFERING:
@@ -710,8 +689,6 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             case Player.STATE_IDLE:
                 break;
         }
-
-        mediaSession.setPlaybackState(stateBuilder.build());
     }
 
     private MediaInfo getRemoteMediaData() {
@@ -770,6 +747,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void stopPlaying() {
         Log.d(TAG, "stopPlaying()");
 
@@ -795,11 +773,13 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
 
         if (mediaSession != null) {
-            mediaSession.setActive(false);
+            mediaSession.release();
+            mediaSession = null;
         }
         stopForeground(true);
     }
 
+    @UnstableApi
     private void updateNotification(String title) {
         Log.i(TAG, "UpdateNotification() Title: " + title);
 
@@ -830,14 +810,16 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 .setSmallIcon(R.drawable.ic_radio)
                 .setLargeIcon(iconRadio)
                 .setTicker(title)
-                .setStyle(
-                        new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1, 2, 3)
-                        .setMediaSession(mediaSession.getSessionToken())
-                )
                 .setContentText(title)
                 .setWhen(System.currentTimeMillis())
                 .setUsesChronometer(true);
+
+        if (mediaSession != null) {
+            noteBuilder.setStyle(
+                    new MediaStyleNotificationHelper.MediaStyle(mediaSession)
+                            .setShowActionsInCompactView(1, 2, 3)
+            );
+        }
 
         if (radioStation != null) {
             noteBuilder.setContentTitle(radioStation.name);
@@ -877,7 +859,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         );
 
         return new NotificationCompat.Action.Builder(
-                R.drawable.exo_icon_stop,
+                R.drawable.ic_radio,
                 getString(R.string.action_stop),
                 pi
         ).build();
@@ -886,22 +868,15 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private NotificationCompat.Action notificationPlayPauseAction() {
         Log.d(TAG, "notificationPlayPauseAction()");
 
-        Log.d(TAG, "stateBuilder: " + stateBuilder.build().getState());
-        Log.d(TAG, "STATE_PLAYING: " + PlaybackStateCompat.STATE_PLAYING);
-
-        if (stateBuilder.build().getState() == PlaybackStateCompat.STATE_PLAYING) {
+        if (exoPlayer != null && exoPlayer.isPlaying()) {
             return new NotificationCompat.Action(
                     R.drawable.media3_icon_pause, getString(R.string.radio_pause),
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(
-                            this, PlaybackStateCompat.ACTION_PAUSE
-                    )
+                    buildMediaButtonPendingIntent(this, Player.COMMAND_PLAY_PAUSE)
             );
         } else {
             return new NotificationCompat.Action(
                     R.drawable.media3_icon_play, getString(R.string.radio_play),
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(
-                            this, PlaybackStateCompat.ACTION_PLAY
-                    )
+                    buildMediaButtonPendingIntent(this, Player.COMMAND_PLAY_PAUSE)
             );
         }
     }
@@ -909,18 +884,14 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private NotificationCompat.Action notificationNextStationAction() {
         return new NotificationCompat.Action(
                 R.drawable.media3_icon_next, getString(R.string.radio_next),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                )
+                buildMediaButtonPendingIntent(this, Player.COMMAND_SEEK_TO_NEXT)
         );
     }
 
     private NotificationCompat.Action notificationPreviousStationAction() {
         return new NotificationCompat.Action(
                 R.drawable.media3_icon_previous, getString(R.string.radio_previous),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                )
+                buildMediaButtonPendingIntent(this, Player.COMMAND_SEEK_TO_PREVIOUS)
         );
     }
 
@@ -994,7 +965,13 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "MediaReceiver");
-            MediaButtonReceiver.handleIntent(mediaSession, intent);
+            if (mRadioStreamService != null) {
+                mRadioStreamService.handleMediaButtonIntent(intent);
+            } else if (intent != null && Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
+                Intent serviceIntent = new Intent(intent);
+                serviceIntent.setClass(context, RadioStreamService.class);
+                Utility.startForegroundService(context, serviceIntent);
+            }
         }
     }
 
@@ -1002,7 +979,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "BecomingNoisyReceiver");
-            MediaButtonReceiver.handleIntent(mediaSession, intent);
+            handleMediaButtonIntent(intent);
             if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
                 Log.d(TAG, "stopself");
                 stopSelf();
@@ -1010,35 +987,62 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         }
     }
 
-    private class sessionCallback extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
-            Log.d(TAG, "onPlay");
-            if (exoPlayer != null) {
-                exoPlayer.setPlayWhenReady(true);
-                handleStateChange(exoPlayer.getPlaybackState());
-            }
+    private void handleMediaButtonIntent(Intent intent) {
+        if (intent == null || !Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
+            return;
         }
-
-        @Override
-        public void onPause() {
-            Log.d(TAG, "onPause: ");
-            if (exoPlayer != null) {
-                exoPlayer.setPlayWhenReady(false);
-                handleStateChange(exoPlayer.getPlaybackState());
-            }
+        KeyEvent ke = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_KEY_EVENT, KeyEvent.class);
+        if (ke == null || ke.getAction() != KeyEvent.ACTION_DOWN) {
+            return;
         }
-
-        @Override
-        public void onSkipToPrevious() {
-            Log.d(TAG, "onSkipToPrevious");
-            skipToPreviousStation();
-        }
-
-        @Override
-        public void onSkipToNext() {
-            Log.d(TAG, "skipToNext");
-            skipToNextStation();
+        switch (ke.getKeyCode()) {
+            case KeyEvent.KEYCODE_MEDIA_PLAY:
+                if (exoPlayer != null) {
+                    exoPlayer.setPlayWhenReady(true);
+                }
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                if (exoPlayer != null) {
+                    exoPlayer.setPlayWhenReady(false);
+                }
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+            case KeyEvent.KEYCODE_HEADSETHOOK:
+                if (exoPlayer != null) {
+                    exoPlayer.setPlayWhenReady(!exoPlayer.getPlayWhenReady());
+                }
+                break;
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                skipToNextStation();
+                break;
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                skipToPreviousStation();
+                break;
+            case KeyEvent.KEYCODE_MEDIA_STOP:
+                stopSelf();
+                break;
         }
     }
+
+    private static PendingIntent buildMediaButtonPendingIntent(Context context, int playerCommand) {
+        int keyCode;
+        if (playerCommand == Player.COMMAND_PLAY_PAUSE) {
+            keyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+        } else if (playerCommand == Player.COMMAND_SEEK_TO_NEXT) {
+            keyCode = KeyEvent.KEYCODE_MEDIA_NEXT;
+        } else if (playerCommand == Player.COMMAND_SEEK_TO_PREVIOUS) {
+            keyCode = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
+        } else if (playerCommand == Player.COMMAND_STOP) {
+            keyCode = KeyEvent.KEYCODE_MEDIA_STOP;
+        } else {
+            return null;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        intent.setClass(context, MediaReceiver.class);
+        intent.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+        return Utility.getImmutableBroadcast(context, keyCode, intent);
+    }
+
+
 }

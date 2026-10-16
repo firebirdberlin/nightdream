@@ -127,6 +127,8 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     private int primaryColor = 0; // Add primaryColor field
     private int dateInvisibilityMethod = GONE;
     private int backgroundTransparency = 100;
+    private int lastParentWidth = 0;
+    private Configuration lastConfiguration = null;
 
     public ClockLayout(Context context) {
         super(context);
@@ -679,8 +681,16 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
 
     public void showPollenExposure(boolean on) {
+        Log.d(TAG, "showPollenExposure(" + on + ");");
         if (pollenLayout != null) {
             pollenLayout.setVisibility((on) ? View.VISIBLE : GONE);
+        }
+    }
+    public void showMediaStyleLayout(boolean on) {
+        Log.d(TAG, "showMediaStyleLayout(" + on + ");");
+        if (mediaStyleLayout != null) {
+            boolean show = on && mediaStyleLayout.getChildCount() > 0;
+            mediaStyleLayout.setVisibility(show ? View.VISIBLE : GONE);
         }
     }
 
@@ -711,10 +721,23 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         } else {
             GradientDrawable shape = new GradientDrawable();
             shape.setCornerRadius(30);
+//            if (layoutId == LAYOUT_ID_ANALOG) {
+//                shape.setShape(GradientDrawable.OVAL);
+//            } else {
+//                shape.setCornerRadius(30);
+//            }
             int color = Color.parseColor("#44000000");
             color = Graphics.setColorWithAlpha(color, backgroundTransparency);
             shape.setColor(color);
             setBackground(shape);
+        }
+    }
+
+    public void updateLayout() {
+        if (lastParentWidth > 0 && lastConfiguration != null) {
+            updateLayout(lastParentWidth, lastConfiguration);
+        } else {
+            requestLayout();
         }
     }
 
@@ -729,6 +752,11 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     private void updateLayout(
             int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
     ) {
+        lastParentWidth = parentWidth;
+        if (config != null) {
+            lastConfiguration = config;
+        }
+        Log.d(TAG, "updateLayout() | layoutId=" + layoutId);
         if (notificationLayout != null) {
             notificationLayout.setVisibility(
                     mNotificationListener.running
@@ -1065,8 +1093,9 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     }
 
     private void setupLayoutAnalog(
-            int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
+        int parentWidth, int parentHeight, Configuration config, boolean displayInWidget
     ) {
+        Log.d(TAG, "setupLayoutAnalog()");
         final float minFontSize = 8.f; // in sp
         final float maxFontSize = 18.f; // in sp
         int widgetSize;
@@ -1083,10 +1112,13 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
 
         int additionalHeight = 0;
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? Utility.dpToPx(context, 24.f) : 0;
-        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? (int) getHeightOf(mediaStyleLayout) : 0;
+        Log.d(TAG, "1 additionalHeight = " + additionalHeight);
+        additionalHeight += (mediaStyleLayout.getVisibility() == VISIBLE && mediaStyleLayout.getChildCount() > 0) ? Utility.dpToPx(context, 48) : 0;
+        Log.d(TAG, "2 additionalHeight = " + additionalHeight);
         additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
-
-        int width = mediaStyleLayout.getVisibility() == VISIBLE ? LayoutParams.WRAP_CONTENT : widgetSize;
+        Log.d(TAG, "3 additionalHeight = " + additionalHeight);
+        Log.d(TAG, "mediaStyleLayout = " + getHeightOf(mediaStyleLayout));
+        int width = widgetSize;
         setSize(width, widgetSize + additionalHeight);
 
         if (date != null) {
@@ -1161,7 +1193,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         }
 
         additionalHeight += notificationLayout.getVisibility() == VISIBLE ? (int) getHeightOf(notificationLayout) : 0;
-        additionalHeight += mediaStyleLayout.getVisibility() == VISIBLE ? (int) getHeightOf(mediaStyleLayout) : 0;
+        additionalHeight += (mediaStyleLayout.getVisibility() == VISIBLE && mediaStyleLayout.getChildCount() > 0) ? Utility.dpToPx(context, 48) : 0;
         additionalHeight += pollenLayout.getVisibility() == VISIBLE ? (int) getHeightOf(pollenLayout) : 0;
         setSize(LayoutParams.WRAP_CONTENT, widgetSize + additionalHeight);
 

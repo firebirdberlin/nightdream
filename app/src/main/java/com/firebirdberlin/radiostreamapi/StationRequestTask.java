@@ -18,36 +18,49 @@
 
 package com.firebirdberlin.radiostreamapi;
 
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import com.firebirdberlin.radiostreamapi.DirbleApi;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
 
-public class StationRequestTask extends AsyncTask<String, Void, List<RadioStation> > {
+public class StationRequestTask {
 
     public interface AsyncResponse {
-        public void onRequestFinished(List<RadioStation> stations);
+        void onRequestFinished(List<RadioStation> stations);
     }
 
-    private AsyncResponse delegate = null;
+    private final AsyncResponse delegate;
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean cancelled = false;
 
     public StationRequestTask(AsyncResponse listener) {
         this.delegate = listener;
     }
 
-    @Override
-    protected List<RadioStation> doInBackground(String... query) {
+    public void execute(String... query) {
+        if (query == null || query.length == 0) {
+            return;
+        }
         String q = query[0];
         String countryCode = query.length > 1 ? query[1] : null;
 
-        return RadioBrowserApi.fetchStations(q, countryCode);
-        //return DirbleApi.fetchStations(q, countryCode);
+        executor.execute(() -> {
+            if (cancelled) return;
+            List<RadioStation> stations = RadioBrowserApi.fetchStations(q, countryCode);
+            mainHandler.post(() -> {
+                if (!cancelled && delegate != null) {
+                    delegate.onRequestFinished(stations);
+                }
+            });
+        });
     }
 
-    @Override
-    protected void onPostExecute(List<RadioStation> stations) {
-        delegate.onRequestFinished(stations);
+    public void cancel(boolean mayInterruptIfRunning) {
+        this.cancelled = true;
     }
 }

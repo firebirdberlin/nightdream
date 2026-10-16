@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
@@ -103,11 +102,7 @@ public class Notification implements Parcelable {
         this.postTimestamp = intent.getLongExtra("postTimestamp", 0L);
         this.time = intent.getStringExtra("timestamp");
         this.template = intent.getStringExtra("template");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), null, null);
-        }
+        this.notification_messages = Html.fromHtml(intent.getStringExtra("messages"), Html.FROM_HTML_MODE_LEGACY);
         this.text = intent.getStringExtra("text");
         this.textBig = intent.getStringExtra("textBig");
         this.summaryText = intent.getStringExtra("summaryText");
@@ -130,11 +125,7 @@ public class Notification implements Parcelable {
         this.smallIconBitmap = intent.getParcelableExtra("smallIconBitmap");
         this.bitmapLargeIcon = intent.getParcelableExtra("largeIconBitmap");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textLines"), Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            this.notification_textlines = Html.fromHtml(intent.getStringExtra("textLines"), null, null);
-        }
+        this.notification_textlines = Html.fromHtml(intent.getStringExtra("textLines"), Html.FROM_HTML_MODE_LEGACY);
 
         childId = -1;
     }

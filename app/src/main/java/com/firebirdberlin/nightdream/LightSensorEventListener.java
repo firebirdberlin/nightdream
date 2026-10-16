@@ -27,13 +27,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import com.firebirdberlin.nightdream.events.AppEventBus;
 
 public class LightSensorEventListener implements SensorEventListener {
 
     private static final String TAG = "LightSensorEventListener";
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private boolean isRegistered = false;
     private boolean pending = false;
 

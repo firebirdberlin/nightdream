@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:key="themes"
+    app:fragment="com.firebirdberlin.nightdream.PreferencesFragment"
+    app:title="@string/themes">
+
+    <Preference
+        app:iconSpaceReserved="false"
+        app:allowDividerAbove="false"
+        app:icon="@drawable/ic_googleplay"
+        app:key="purchaseThemes"
+        app:isPreferenceVisible="false"
+        app:title="@string/buy_upgrade_summary" />
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/active_theme">
+
+        <ListPreference
+            app:defaultValue="none"
+            app:entries="@array/themeEntries"
+            app:entryValues="@array/themeValues"
+            app:iconSpaceReserved="false"
+            app:key="activeThemePreset"
+            app:title="@string/active_theme"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="reset_theme_defaults"
+            app:summary="@string/reset_theme_defaults_summary"
+            app:title="@string/reset_to_defaults" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/animations">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="theme_animation_enabled"
+            app:summary="@string/theme_animation_enabled_summary"
+            app:title="@string/enable_particle_overlays" />
+
+        <ListPreference
+            app:defaultValue="1"
+            app:dependency="theme_animation_enabled"
+            app:entries="@array/particleEffectEntries"
+            app:entryValues="@array/particleEffectValues"
+            app:iconSpaceReserved="false"
+            app:key="theme_particle_effect"
+            app:title="@string/particle_effect"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:dependency="theme_animation_enabled"
+            app:iconSpaceReserved="false"
+            app:key="theme_animation_only_charging"
+            app:summary="@string/theme_animation_only_charging_summary"
+            app:title="@string/only_animate_when_charging" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

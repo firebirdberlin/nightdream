@@ -118,6 +118,7 @@ public class NotificationApp implements Parcelable {
     }
 
     public String getPackageName() {
+        if (packageName == null) return "";
         return packageName;
     }
 

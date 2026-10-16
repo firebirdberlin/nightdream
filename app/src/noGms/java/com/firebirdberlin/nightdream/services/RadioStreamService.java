@@ -32,6 +32,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.Patterns;
@@ -82,7 +83,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     };
 
     protected static final int NOTIFY_ID = 1337;
-    private static final String TAG = "RadioStreamService";
+    private static final String TAG = RadioStreamService.class.getSimpleName();
     private static final String ACTION_START = "start";
     private static final String ACTION_START_STREAM = "start stream";
     private static final String ACTION_STOP = "stop";
@@ -100,7 +101,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
     private static long sleepTimeInMillis = 0L;
     private static String streamURL = "";
     private static long muteDelayInMillis = 0;
-    final private Handler handler = new Handler();
+    final private Handler handler = new Handler(Looper.getMainLooper());
     private final IntentFilter myNoisyAudioStreamIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
     long fadeInDelay = 50;
     int maxVolumePercent = 100;
@@ -631,7 +632,8 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                 handler.postDelayed(fadeIn, muteDelayInMillis);
                 updateNotification(getResources().getString(R.string.radio_muting));
 
-                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime.vibrate && vibrator != null) {
+                if (currentStreamType == AudioManager.STREAM_ALARM && alarmTime != null
+                        && alarmTime.vibrate && vibrator != null) {
                     vibrator.startVibration();
                 }
 

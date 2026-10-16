@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 
 Translations wanted !
 =====================
@@ -13,38 +14,36 @@ OR
 
 Please preserve the xml tags and the utf8 encoding.
 -->
-
-
 <resources>
     <string name="about">Tietoja</string>
     <string name="action_skip">Ohita</string>
     <string name="action_snooze">Torkku</string>
     <string name="action_stop">Pois</string>
-    <string name="options_stop_alarms_slider">liukusäädin</string>
-    <string name="options_stop_alarms_error_min_one">Valitse vähintään yksi ele.</string>
     <string name="activateDoNotDisturb">Aktivoi Älä häiritse -tila</string>
-    <string name="add_new_alarm">Lisää uusi herätys</string>
+    <string name="active_theme">Aktiivinen teema</string>
     <string name="add_custom_alarm_tone">Lisää oma herätysääni</string>
     <string name="add_custom_font">Lisää oma fontti</string>
+    <string name="add_new_alarm">Lisää uusi herätys</string>
     <string name="alarm">Herätys</string>
     <string name="alarmFadeIn">Voimistuva</string>
-    <string name="alarmUpcoming">Tuleva hälytys</string>
     <string name="alarmStartDate">Seuraava hälytys</string>
     <string name="alarmStartsFrom">Alkaa</string>
+    <string name="alarmUpcoming">Tuleva hälytys</string>
     <string name="alarmVolume">Äänenvoimakkuus</string>
-    <string name="allow_screen_off_summary">Pimennä näyttö yöllä</string>
     <string name="allow_screen_off">Pimennä näyttö</string>
+    <string name="allow_screen_off_summary">Pimennä näyttö yöllä</string>
     <string name="always_on">Aina käytössä</string>
     <string name="alwaysOnBatteryLevel">Akun varaus on enemmän kuin</string>
     <string name="ambient_noise">Taustamelun tunnistus</string>
     <string name="ambient_noise_summary">Estääkö taustamelu yötilan aktivoinnin?</string>
-    <string name="appearance">Ulkoasu</string>
+    <string name="animations">Animaatiot</string>
     <string name="app_name">Night Clock</string>
+    <string name="appearance">Ulkoasu</string>
     <string name="auto_brightness">Automaattinen kirkkaus</string>
-    <string name="autostartForNotificationsTitle">Ilmoitukset</string>
     <string name="autostart_message_disabled">Kytke ruudunsäästäjät (Daydream) pois aktivoidaksesi automaattisen käynnistymisen</string>
     <string name="autostart_timerange_label_end">Loppuaika</string>
     <string name="autostart_timerange_label_start">Alkuaika</string>
+    <string name="autostartForNotificationsTitle">Ilmoitukset</string>
     <string name="background">Tausta</string>
     <string name="background_black">musta</string>
     <string name="background_gradient">gradientti</string>
@@ -53,13 +52,13 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="backgroundServiceDialogTitle">Pysäytä tausta palvelut</string>
     <string name="backgroundServiceNotificationText">Tausta palvelu käytössä</string>
     <string name="backgroundServiceNotificationTextLocation">Sijainnin päivittäminen käynnissä</string>
-    <string name="batteryTimeoutNever">Ei käytössä</string>
-    <string name="batteryTimeout1min">1 min</string>
-    <string name="batteryTimeout2min">2 min</string>
-    <string name="batteryTimeout5min">5 min</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min</string>
+    <string name="batteryTimeout1min">1 min</string>
+    <string name="batteryTimeout2min">2 min</string>
     <string name="batteryTimeout30min">30 min</string>
+    <string name="batteryTimeout5min">5 min</string>
+    <string name="batteryTimeoutNever">Ei käytössä</string>
     <string name="behaviour">käytös</string>
     <string name="brightness">kirkkaus</string>
     <string name="brightness_night_mode">Kirkkaus yö asetuksella</string>
@@ -72,17 +71,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_secondary_color">tekstin väri</string>
     <string name="clear">poista</string>
     <string name="clock_hands">Viisarit</string>
+    <string name="clock_layout">ulkoasu</string>
     <string name="clock_layout_analog">analogi</string>
+    <string name="clock_layout_digit_analog">Analogi + digitaali</string>
     <string name="clock_layout_digital">digitaali</string>
     <string name="clock_layout_elegant_analog">Elegantti analogi</string>
-    <string name="clock_layout_digit_analog">Analogi + digitaali</string>
-    <string name="clock_layout">ulkoasu</string>
-    <string name="clock_layout_modern_analog">Moderni analogi</string>
     <string name="clock_layout_mirror_text">Peilikuva</string>
+    <string name="clock_layout_modern_analog">Moderni analogi</string>
     <string name="colors">värit</string>
+    <string name="confirm_reset">palauta</string>
     <string name="confirm_reset_question">Haluatko palauttaa alkuperäiset asetukset</string>
     <string name="confirm_reset_question_layout">Haluatko varmasti palauttaa tämän asettelun oletusarvoihin?</string>
-    <string name="confirm_reset">palauta</string>
     <string name="contribute">osallistu</string>
     <string name="contribute_source_code">Lähdekoodi</string>
     <string name="contribute_translation">Käännös</string>
@@ -90,19 +89,20 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="credits">credits</string>
     <string name="credits_pull_requests">pyyntö</string>
     <string name="date_format">päiväyksen muoto</string>
+    <string name="decoration_style_pride">Pride flag</string>
+    <string name="decoration_style_progress_pride">Progress Pride flag</string>
+    <string name="decoration_style_rainbow">Sateenkaari</string>
     <string name="delete">poista</string>
     <string name="dialog_message_thank_you">Kiitos paljon!</string>
     <string name="dialog_title_thank_you">Kiitos</string>
     <string name="digit_emphasize_quarters">Korosta neljännestunnit</string>
-    <string name="decoration_style_rainbow">Sateenkaari</string>
-    <string name="decoration_style_pride">Pride flag</string>
-    <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="donate">Lahjoita</string>
     <string name="doubleTapToFinishSummary">Lopeta sovellus tuplaklikkaamalla näyttöä</string>
     <string name="doubleTapToFinishTitle">Lopeta tuplaklikkaamalla</string>
+    <string name="enable_particle_overlays">Ota hiukkaskerrokset käyttöön</string>
     <string name="forecast">5 päivän sääennuste</string>
-    <string name="handle_power_ac">lataus</string>
     <string name="handle_power">automaattinen käynnistys</string>
+    <string name="handle_power_ac">lataus</string>
     <string name="handle_power_car">autolaturi</string>
     <string name="handle_power_desk">pöytälaturi</string>
     <string name="handle_power_disconnection">pysäytä automaattisesti</string>
@@ -116,18 +116,18 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="location_time">paikallinen aika</string>
     <string name="maxBrightness">suurin näytön kirkkaus</string>
     <string name="maxBrightnessBattery">Maksimi näytön kirkkaus akku varauksella</string>
-    <string name="message_mobile_data_connection_confirmation">Olet mobiiliverkossa, avataanko radio</string>
     <string name="message_mobile_data_connection">mobiilidatayhteys</string>
+    <string name="message_mobile_data_connection_confirmation">Olet mobiiliverkossa, avataanko radio</string>
     <string name="message_no_data_connection">ei datayhteyttä</string>
     <string name="minBrightness">himmein</string>
     <string name="minute">min</string>
     <string name="mute_ringer">Hiljennä soittoääni</string>
     <string name="next">Seuraava</string>
+    <string name="night_mode">yötila</string>
     <string name="night_mode_activation_auto">automaattinen</string>
     <string name="night_mode_activation_manual">manuaalinen</string>
     <string name="night_mode_activation_mode">aktivointitila</string>
     <string name="night_mode_activation_scheduled">ajastettu</string>
-    <string name="night_mode">yötila</string>
     <string name="night_mode_timerange_label_end">loppuaika</string>
     <string name="night_mode_timerange_label_start">alkuaika</string>
     <string name="night_mode_timerange_title">yöaika</string>
@@ -137,8 +137,12 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Palvelut</string>
     <string name="numbers">Numerot</string>
+    <string name="only_animate_when_charging">Animoiti vain ladattaessa</string>
+    <string name="options_stop_alarms_error_min_one">Valitse vähintään yksi ele.</string>
+    <string name="options_stop_alarms_slider">liukusäädin</string>
     <string name="other_apps">muut sovellukset</string>
     <string name="other_apps_tinytimetracker_summary">Seuraa päivittäistä työaikaasi</string>
+    <string name="particle_effect">Hiukkasefekti</string>
     <string name="persistent_battery_value_while_charging">Pakota akun tilavarauksen näyttö</string>
     <string name="persistent_battery_value_while_charging_summary">Pakota akun tilavarauksen näyttö kun latauksessa</string>
     <string name="prev">Edellinen</string>
@@ -146,11 +150,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="product_name_donation">Lahjoitus</string>
     <string name="product_name_pro">Täysi versio</string>
     <string name="radio">Radio</string>
-    <string name="radio_stream_keep_running">Pidä radio päällä</string>
-    <string name="radio_stream_keep_running_summary">Jatka radiolähetyksen toistamista hälytyksen lopettamisen jälkeen.</string>
     <string name="radio_station_dialog_title">Valitse radio kanava</string>
     <string name="radio_station_none">Ei radio kanavaa</string>
     <string name="radio_stream_activate_wifi">WiFi</string>
+    <string name="radio_stream_keep_running">Pidä radio päällä</string>
+    <string name="radio_stream_keep_running_summary">Jatka radiolähetyksen toistamista hälytyksen lopettamisen jälkeen.</string>
+    <string name="reset_theme_defaults_summary">Palauta aktiivisen teeman mukautukset oletusarvoihin.</string>
     <string name="review_request">Kiitos kun arvostelet tämän sovelluksen!</string>
     <string name="show_calendar_events">Korosta tapahtumia</string>
+    <string name="theme_animation_enabled_summary">Näytä satavan lumen tai kultaisten tähtien animaatio.</string>
+    <string name="theme_animation_only_charging_summary">Keskeyttää animaatiot akkukäytössä virran säästämiseksi.</string>
+    <string name="theme_reset_to_defaults">Teema palautettu oletusarvoihin</string>
+    <string name="theme_updated">Teema päivitetty!</string>
+    <string name="themes">Teemat</string>
 </resources>
