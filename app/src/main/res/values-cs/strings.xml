@@ -439,10 +439,10 @@ OR
     <string name="style">Styl</string>
     <string name="subscribe">Předplatit</string>
     <string name="subscription_free_trial_description">%s zdarma na vyzkoušení.</string>
-    <string name="subscription_offer_price_for_period">%s za %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s za %2$s.</string>
     <string name="subscription_prefix_after_period">Poté</string>
     <string name="subscription_prefix_subsequently">Následně</string>
-    <string name="subscription_price_per_period">%s za %s.</string>
+    <string name="subscription_price_per_period">%1$s za %2$s.</string>
     <string name="subscription_renewal_info">Automaticky se obnovuje. Kdykoli zrušte.</string>
     <string name="suggestions">Návrhy</string>
     <string name="suggestions_summary">Dejte nám vědět, pokud máte nějaké návrhy pro nadcházející verze.</string>

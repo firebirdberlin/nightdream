@@ -450,10 +450,10 @@ OR
     <string name="style">Style</string>
     <string name="subscribe">Subscribe</string>
     <string name="subscription_free_trial_description">%s free for trial.</string>
-    <string name="subscription_offer_price_for_period">%s for %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s for %2$s.</string>
     <string name="subscription_prefix_after_period">Then</string>
     <string name="subscription_prefix_subsequently">Subsequently</string>
-    <string name="subscription_price_per_period">%s per %s.</string>
+    <string name="subscription_price_per_period">%1$s per %2$s.</string>
     <string name="subscription_renewal_info">Auto-renews. Cancel anytime.</string>
     <string name="suggestions">Suggestions</string>
     <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>

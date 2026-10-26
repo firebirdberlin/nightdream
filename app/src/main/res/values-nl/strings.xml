@@ -440,10 +440,10 @@ OR
     <string name="style">Stijl</string>
     <string name="subscribe">Abonneren</string>
     <string name="subscription_free_trial_description">%s gratis op proef.</string>
-    <string name="subscription_offer_price_for_period">%s voor %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s voor %2$s.</string>
     <string name="subscription_prefix_after_period">Daarna</string>
     <string name="subscription_prefix_subsequently">Vervolgens</string>
-    <string name="subscription_price_per_period">%s per %s.</string>
+    <string name="subscription_price_per_period">%1$s per %2$s.</string>
     <string name="subscription_renewal_info">Verlengt automatisch. Op elk moment opzegbaar.</string>
     <string name="suggestions">suggesties</string>
     <string name="suggestions_summary">suggesties_samenvatting</string>

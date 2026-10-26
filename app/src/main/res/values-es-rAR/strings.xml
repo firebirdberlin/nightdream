@@ -439,10 +439,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="style">Estilo</string>
     <string name="subscribe">Suscribirse</string>
     <string name="subscription_free_trial_description">%s gratis de prueba.</string>
-    <string name="subscription_offer_price_for_period">%s por %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s por %2$s.</string>
     <string name="subscription_prefix_after_period">Luego </string>
     <string name="subscription_prefix_subsequently">Posteriormente </string>
-    <string name="subscription_price_per_period">%s por %s.</string>
+    <string name="subscription_price_per_period">%1$s por %2$s.</string>
     <string name="subscription_renewal_info">Se renueva automáticamente. Cancela cuando quieras.</string>
     <string name="suggestions">Sugerencias</string>
     <string name="suggestions_summary">Háganos saber si tiene alguna sugerencia para las próximas versiones</string>
