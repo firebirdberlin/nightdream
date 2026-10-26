@@ -38,22 +38,27 @@ OR
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off">Turn screen off</string>
     <string name="allow_screen_off_summary">Turn the screen off during the night.</string>
-    <string name="always_on">Always on</string>
     <string name="alwaysOnBatteryLevel">Battery level is above</string>
     <string name="alwaysOnStartWithLockedUI">Lock user interface</string>
     <string name="alwaysOnStartWithLockedUIDesc">When starting the app automatically lock the user interface. Long press the lock icon to unlock.</string>
+    <string name="always_on">Always on</string>
     <string name="ambient_noise">Ambient noise detection</string>
     <string name="ambient_noise_summary">Shall ambient noise prevent the night mode to be activated?</string>
     <string name="animations">Animations</string>
     <string name="app_name">Night Clock</string>
     <string name="appearance">Appearance</string>
     <string name="auto_brightness">Auto brightness</string>
+    <string name="autostartForNotificationsSummary">Activate the app when new notifications are shown.</string>
+    <string name="autostartForNotificationsTitle">Notifications</string>
     <string name="autostart_message_disabled">Please disable screensavers (Daydream) to activate the autostart options.</string>
     <string name="autostart_timerange_label_end">End time</string>
     <string name="autostart_timerange_label_start">Start time</string>
-    <string name="autostartForNotificationsSummary">Activate the app when new notifications are shown.</string>
-    <string name="autostartForNotificationsTitle">Notifications</string>
     <string name="background">Background</string>
+    <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode. Proceed?</string>
+    <string name="backgroundServiceDialogTitle">Stop background service</string>
+    <string name="backgroundServiceNotificationText">Background service is running.</string>
+    <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="background_auto_accent_color">Automatic color selection</string>
     <string name="background_auto_accent_summary">Automatically select an appropriate accent color.</string>
     <string name="background_black">Black</string>
@@ -85,11 +90,6 @@ OR
     <string name="background_transparent">Transparent</string>
     <string name="background_zoomin">Zoom animation</string>
     <string name="background_zoomin_summary">Automatically zoom into background picture.</string>
-    <string name="backgroundServiceDialogMessage">Stopping the background service will disable the autostart and standby mode. Proceed?</string>
-    <string name="backgroundServiceDialogTitle">Stop background service</string>
-    <string name="backgroundServiceNotificationText">Background service is running.</string>
-    <string name="backgroundServiceNotificationTextLocation">Location update is in progress.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Night mode service is running.</string>
     <string name="battery">Battery</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min</string>
@@ -122,6 +122,7 @@ OR
     <string name="choose_secondary_color">Text color</string>
     <string name="clear">clear</string>
     <string name="clock">Clock</string>
+    <string name="clockBackgroundTransparency">Clock background transparency</string>
     <string name="clock_hands">Hands</string>
     <string name="clock_layout">Layout</string>
     <string name="clock_layout_analog">analog clock</string>
@@ -135,7 +136,6 @@ OR
     <string name="clock_layout_elegant_analog">elegant analog clock</string>
     <string name="clock_layout_mirror_text">Mirror text</string>
     <string name="clock_layout_modern_analog">modern analog clock</string>
-    <string name="clockBackgroundTransparency">Clock background transparency</string>
     <string name="colors">Colors</string>
     <string name="confirm_reset">Reset</string>
     <string name="confirm_reset_question">Do you really want to reset all settings ?</string>
@@ -230,6 +230,7 @@ OR
     <string name="night_mode_timerange_title">Night time</string>
     <string name="no_alarm_set">no alarm set</string>
     <string name="noise_sensitivity">Microphone sensitivity</string>
+    <string name="notificationListenerService">Notification listener service</string>
     <string name="notification_channel_desc_alarms">Notification showing up during alarms</string>
     <string name="notification_channel_desc_copy_images">Notification indicating running service for copy images</string>
     <string name="notification_channel_desc_devmsg">Messages concerning the app</string>
@@ -253,17 +254,16 @@ OR
     <string name="notification_show_mediastyle_title">Media controls</string>
     <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
     <string name="notification_show_preview_title">Notification preview</string>
-    <string name="notificationListenerService">Notification listener service</string>
     <string name="notifications">Notifications</string>
-    <string name="notifications_options">Notification options</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationsInStatusBarTitle">Status bar</string>
+    <string name="notifications_options">Notification options</string>
     <string name="notifyForUpcomingAlarmsSummary">Notify for upcoming alarms</string>
     <string name="notifyForUpcomingAlarmsTitle">Notify ahead</string>
-    <string name="numbers">Numbers</string>
     <string name="numberStyleArabic">Arabic</string>
     <string name="numberStyleNone">None</string>
     <string name="numberStyleRoman">Roman</string>
+    <string name="numbers">Numbers</string>
     <string name="only_animate_when_charging">Only Animate When Charging</string>
     <string name="open_weather_map_api_key">OpenWeatherMap API Key</string>
     <string name="open_weather_map_api_key_summary">Enter your API key for OpenWeatherMap. Get one at openweathermap.org</string>
@@ -277,17 +277,17 @@ OR
     <string name="other_apps_tinytimetracker_summary">Track your daily working time.</string>
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
-    <string name="particle_effect">Particle Effect</string>
     <string-array name="particleEffectEntries">
-            <item>None</item>
-            <item>Falling Snow</item>
-            <item>Golden Stars</item>
-        </string-array>
-    <string-array name="particleEffectValues">
-            <item>0</item>
-            <item>1</item>
-            <item>2</item>
-        </string-array>
+        <item>None</item>
+        <item>Falling Snow</item>
+        <item>Golden Stars</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string name="particle_effect">Particle Effect</string>
     <string name="permission_request">Permission request</string>
     <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="permission_request_overlays">The permission for showing over all apps is not granted. Please grant this permission now!</string>
@@ -374,16 +374,16 @@ OR
     <string name="scheduledAutoStartEnabledTitle">Scheduled Autostart</string>
     <string name="scheduledAutoStartTimeRange">time range</string>
     <string name="screen">Screen</string>
-    <string name="screen_orientation_automatic">automatic</string>
-    <string name="screen_orientation_landscape">landscape</string>
-    <string name="screen_orientation_portrait">portrait</string>
-    <string name="screen_orientation_reverse_landscape">reverse landscape</string>
-    <string name="screen_orientation_reverse_portrait">reverse portrait</string>
     <string name="screenOrientation">Screen orientation</string>
     <string name="screenProtection">Screen burn protection</string>
     <string name="screenProtectionFade">Fade the clock</string>
     <string name="screenProtectionMove">Move the clock around</string>
     <string name="screenProtectionNone">None</string>
+    <string name="screen_orientation_automatic">automatic</string>
+    <string name="screen_orientation_landscape">landscape</string>
+    <string name="screen_orientation_portrait">portrait</string>
+    <string name="screen_orientation_reverse_landscape">reverse landscape</string>
+    <string name="screen_orientation_reverse_portrait">reverse portrait</string>
     <string name="seconds_15">15 seconds</string>
     <string name="seconds_30">30 seconds</string>
     <string name="seconds_60">60 seconds</string>
@@ -391,16 +391,6 @@ OR
     <string name="seconds_off">Off</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">set alarm</string>
-    <string name="show_alarm">Show alarms</string>
-    <string name="show_apparent_temperature">include apparent temperature</string>
-    <string name="show_calendar_events">Highlight events</string>
-    <string name="show_date">Show date</string>
-    <string name="show_divider">Show divider</string>
-    <string name="show_second_hand">show second hand</string>
-    <string name="show_seconds">Show seconds</string>
-    <string name="show_temperature">Show temperature</string>
-    <string name="show_weather">Show local weather</string>
-    <string name="show_wind_speed">Show wind speed</string>
     <string name="showAlarmsPersistently">Show persistently</string>
     <string name="showAlarmsPersistentlySummary">Show the next alarm time persistently on the screen.</string>
     <string name="showBattery">Show battery</string>
@@ -422,6 +412,16 @@ OR
     <string name="showPollenIndex6">high</string>
     <string name="showPollenNoData">No data for this area. Pollen risk index only available for German locations.</string>
     <string name="showPollenSummary">only available for German locations</string>
+    <string name="show_alarm">Show alarms</string>
+    <string name="show_apparent_temperature">include apparent temperature</string>
+    <string name="show_calendar_events">Highlight events</string>
+    <string name="show_date">Show date</string>
+    <string name="show_divider">Show divider</string>
+    <string name="show_second_hand">show second hand</string>
+    <string name="show_seconds">Show seconds</string>
+    <string name="show_temperature">Show temperature</string>
+    <string name="show_weather">Show local weather</string>
+    <string name="show_wind_speed">Show wind speed</string>
     <string name="sleep_time_dialog_title">Sleep timer</string>
     <string name="slideshow_center_animated">animated</string>
     <string name="slideshow_center_crop">crop borders</string>
@@ -459,25 +459,25 @@ OR
     <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperature unit</string>
     <string name="text_size">Text size</string>
+    <string-array name="themeEntries">
+        <item>Standard</item>
+        <item>Halloween Analog</item>
+        <item>Halloween Digital</item>
+        <item>Christmas Analog</item>
+        <item>Christmas Digital</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Show falling snow or golden stars animation.</string>
     <string name="theme_animation_only_charging_summary">Pauses animations when running on battery to conserve power.</string>
     <string name="theme_reset_to_defaults">Theme reset to defaults</string>
     <string name="theme_updated">Theme updated!</string>
-    <string-array name="themeEntries">
-            <item>Standard</item>
-            <item>Halloween Analog</item>
-            <item>Halloween Digital</item>
-            <item>Christmas Analog</item>
-            <item>Christmas Digital</item>
-        </string-array>
     <string name="themes">Themes</string>
-    <string-array name="themeValues">
-            <item>none</item>
-            <item>halloween_analog</item>
-            <item>halloween_digital</item>
-            <item>christmas_analog</item>
-            <item>christmas_digital</item>
-        </string-array>
     <string name="tick_style_circle">Circle</string>
     <string name="tick_style_dash">Dash</string>
     <string name="tick_style_hours">Hour tick style</string>
@@ -512,6 +512,7 @@ OR
     <string name="useDeviceLockDescription">The screen lock feature needs the device administrator permission. In order to uninstall the app please disable this feature.</string>
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="weather">Weather</string>
+    <string name="weatherProvider">Weather Provider</string>
     <string name="weather_calculation_time">weather calculation time</string>
     <string name="weather_city_id_title">Search location</string>
     <string name="weather_current_location">Current location</string>
@@ -522,7 +523,6 @@ OR
     <string name="weather_info_title">Information</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
-    <string name="weatherProvider">Weather Provider</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

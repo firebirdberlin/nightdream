@@ -7,19 +7,21 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
--> Edit the strings in this file
--> Send your file to stefan.fruhner@googlemail.com.
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
 OR
--> Open a pull request on Github.
+ -> Open a pull request on Github.
 
-Please preserve the xml tags and the utf8 encoding.
+ Please preserve the xml tags and the utf8 encoding.
 -->
 <resources>
     <string name="about">Om</string>
+    <string name="action_change">Change</string>
     <string name="action_skip">Hopp over</string>
     <string name="action_snooze">Snooze</string>
     <string name="action_stop">Stopp</string>
     <string name="activateDoNotDisturb">Aktiver IkkeForstyrr</string>
+    <string name="activateDoNotDisturbAllowPriority">allow priority</string>
     <string name="activateDoNotDisturbSummary">Aktiver IkkeForstyrr når appen kjørernår appen kjører</string>
     <string name="active_theme">Aktivt tema</string>
     <string name="add_custom_alarm_tone">Opprett egendefinert alarma</string>
@@ -27,37 +29,68 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_new_alarm">Opprett ny alarm</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Øk lydnivå</string>
+    <string name="alarmFadeInDurationSeconds">fade in duration</string>
+    <string name="alarmFadeInMaxVolumePercent">maximum volume</string>
+    <string name="alarmName">Name of the alarm</string>
     <string name="alarmStartDate">Dato</string>
     <string name="alarmStartsFrom">Fra</string>
     <string name="alarmUpcoming">Neste alarm</string>
     <string name="alarmVolume">Lydnivå</string>
     <string name="allow_screen_off">Skru av skjermen</string>
     <string name="allow_screen_off_summary">Skru av skjermen om natten</string>
-    <string name="always_on">Skjerm alltid på</string>
     <string name="alwaysOnBatteryLevel">Skjerm på ved batterinivå over</string>
     <string name="alwaysOnStartWithLockedUI">Lås GUI</string>
     <string name="alwaysOnStartWithLockedUIDesc">Lås automatisk GUI når appen starter. Press lenge for å låse opp GUI.</string>
+    <string name="always_on">Skjerm alltid på</string>
     <string name="ambient_noise">Oppfang bakgrunsstøy</string>
     <string name="ambient_noise_summary">Skal bakgrunnsstøy forhindre nattmodus?</string>
     <string name="animations">Animasjoner</string>
     <string name="app_name">Nattklokke</string>
     <string name="appearance">Utseende</string>
     <string name="auto_brightness">Automatisk lysnivå</string>
+    <string name="autostartForNotificationsSummary">Aktiver apper ved notifiseringer</string>
+    <string name="autostartForNotificationsTitle">Aktiviseringer</string>
     <string name="autostart_message_disabled">Deaktiver skjermbeskyttere for å muliggjøre notifiseringer</string>
     <string name="autostart_timerange_label_end">Stopptid</string>
     <string name="autostart_timerange_label_start">Starttid</string>
-    <string name="autostartForNotificationsSummary">Aktiver apper ved notifiseringer</string>
-    <string name="autostartForNotificationsTitle">Aktiviseringer</string>
     <string name="background">Bakgrunn</string>
-    <string name="background_black">Sort</string>
-    <string name="background_gradient">Gradient</string>
-    <string name="background_image">Bilde</string>
-    <string name="background_image_select">Velg bilde</string>
     <string name="backgroundServiceDialogMessage">Stopping av bakgrunnstjenesten vil stoppe autostart/standby-modus, samt batteriprediksjon. Widgets vil heller ikke bli oppdatert. Fortsette?</string>
     <string name="backgroundServiceDialogTitle">Stopp bakgrunnstjeneste</string>
     <string name="backgroundServiceNotificationText">Bakgrunnstjeneste kjører.</string>
     <string name="backgroundServiceNotificationTextLocation">Plassering under oppdatering.</string>
     <string name="backgroundServiceNotificationTextNightMode">Nattmodustjeneste kjører.</string>
+    <string name="background_auto_accent_color">Automatic color selection</string>
+    <string name="background_auto_accent_summary">Automatically select an appropriate accent color.</string>
+    <string name="background_black">Sort</string>
+    <string name="background_exif">Show EXIF information</string>
+    <string name="background_exif_summary">Show EXIF information for the current background image</string>
+    <string name="background_fadein">Cross-fade animation</string>
+    <string name="background_fadein_summary">Cross-fade between background images.</string>
+    <string name="background_gradient">Gradient</string>
+    <string name="background_gradient_end_color">End color</string>
+    <string name="background_gradient_start_color">Start color</string>
+    <string name="background_image">Bilde</string>
+    <string name="background_image_duration">Image change every</string>
+    <string name="background_image_filter">Imagefilter</string>
+    <string name="background_image_filter_blur">Blur</string>
+    <string name="background_image_filter_contrast">Contrast</string>
+    <string name="background_image_filter_grey">Grey</string>
+    <string name="background_image_filter_invert">Invert</string>
+    <string name="background_image_filter_none">None</string>
+    <string name="background_image_filter_sepia">Sepia</string>
+    <string name="background_image_filter_sketch">Sketch</string>
+    <string name="background_image_select">Velg bilde</string>
+    <string name="background_movein">Translation animation</string>
+    <string name="background_movein_bottom">bottom</string>
+    <string name="background_movein_direction">Slide the next background image into the screen from</string>
+    <string name="background_movein_left">left</string>
+    <string name="background_movein_right">right</string>
+    <string name="background_movein_top">top</string>
+    <string name="background_slideshow">Slide show</string>
+    <string name="background_transparent">Transparent</string>
+    <string name="background_zoomin">Zoom animation</string>
+    <string name="background_zoomin_summary">Automatically zoom into background picture.</string>
+    <string name="battery">Battery</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min.</string>
     <string name="batteryTimeout1min">1 min.</string>
@@ -70,6 +103,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">Skarphet</string>
     <string name="brightness_night_mode">Skarphet i nattmodus</string>
     <string name="brightness_offset">Offsett i skarphet</string>
+    <string name="brightsky_conditions_dry">dry</string>
+    <string name="brightsky_conditions_fog">fog</string>
+    <string name="brightsky_conditions_hail">hail</string>
+    <string name="brightsky_conditions_rain">rain</string>
+    <string name="brightsky_conditions_sleet">sleet</string>
+    <string name="brightsky_conditions_snow">snow</string>
+    <string name="brightsky_conditions_thunderstorm">thunderstorm</string>
+    <string name="bug">Report a bug</string>
+    <string name="bug_summary">Please let us know if something went wrong.</string>
     <string name="buy">Kjøp</string>
     <string name="buy_upgrade_summary">Oppgrader til profesjonell utgave</string>
     <string name="category_handle_power">... og når du er tilkoblet</string>
@@ -79,12 +121,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">Primærfarge</string>
     <string name="choose_secondary_color">Tekstfarge</string>
     <string name="clear">Fjern</string>
+    <string name="clock">Clock</string>
+    <string name="clockBackgroundTransparency">Clock background transparency</string>
     <string name="clock_hands">Klokkehender</string>
     <string name="clock_layout">Klokkelayout</string>
     <string name="clock_layout_analog">Analog klokke</string>
+    <string name="clock_layout_anim_digit">digital animated clock</string>
     <string name="clock_layout_calendar">Digital klokke med kalender</string>
     <string name="clock_layout_digit_analog">analog klokke med siffer</string>
     <string name="clock_layout_digital">Digital klokke</string>
+    <string name="clock_layout_digital2">digital clock with weather</string>
+    <string name="clock_layout_digital3">digital clock with weather (2)</string>
     <string name="clock_layout_digital_flip">digital \'flipp\'-klokke</string>
     <string name="clock_layout_elegant_analog">Elegant analog klokke</string>
     <string name="clock_layout_mirror_text">Speil tekst</string>
@@ -97,6 +144,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">Motta beta-versjoner</string>
     <string name="contribute_source_code">Kildekode</string>
     <string name="contribute_translation">Oversettelse</string>
+    <string name="copy_images">Processing image %1$d of %2$d</string>
     <string name="country">Land</string>
     <string name="credits">Navn</string>
     <string name="credits_pull_requests">Kreditt</string>
@@ -112,18 +160,24 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="decoration_style_rainbow">Regnbue</string>
     <string name="decoration_style_rust">Rust</string>
+    <string name="decoration_weather_icon_size">Weather icon size</string>
     <string name="delete">slett</string>
     <string name="dialog_message_already_owned">Dette kjøpet er allerede gjennomført</string>
     <string name="dialog_message_pending_purchase">Kjøpet ditt er ennå ikke verifisert på Google Play</string>
     <string name="dialog_message_thank_you">Tusen takk for kjøpet</string>
     <string name="dialog_title_thank_you">Tusen takk</string>
     <string name="digit_emphasize_quarters">Legg trykk på kvartaler</string>
+    <string name="directory_background_image_select">Select images</string>
     <string name="donate">Doner</string>
     <string name="doubleTapToFinishSummary">Avslutt programmet ved å dobbeltklikke på skjermen</string>
     <string name="doubleTapToFinishTitle">Dobbeltklikk for å avslutte</string>
     <string name="enable_particle_overlays">Aktiver partikkeloverlegg</string>
+    <string name="export_preferences">Export app information</string>
+    <string name="export_preferences_email">Send app info via email</string>
+    <string name="export_preferences_file">Export settings to file</string>
     <string name="flashlight">Lommelykt</string>
     <string name="forecast">5-dagers værmelding</string>
+    <string name="frequently_asked_questions">frequently asked questions</string>
     <string name="gift_for_donors">Donasjon</string>
     <string name="hand_shape_arc">Bue</string>
     <string name="hand_shape_bar">Bar</string>
@@ -138,12 +192,23 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_disconnection_summary">Avslutt programmet ved ladeavbrudd</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">Trådløs lader</string>
+    <string name="help">Help and feedback</string>
     <string name="hide_background_image_in_night_mode">Skjul</string>
     <string name="hide_background_image_in_night_mode_summary">Skjul bakgrunnsbilde i nattmodus</string>
     <string name="hour">t</string>
+    <string name="ignoreBatteryOptimisation">Battery optimisation</string>
+    <string name="ignoreBatteryOptimisation_summary">It is recommended to exclude the app from battery optimisations.</string>
+    <string name="images_background_copy">Process images in the background</string>
+    <string name="images_background_service_unbound">Error processing images. Please try again.</string>
+    <string name="import_preferences">Import settings</string>
+    <string name="import_preferences_confirm">Do you want to import settings from this backup file?</string>
+    <string name="import_preferences_failed">Failed to import settings.</string>
+    <string name="import_preferences_requires_pro">Importing settings requires Pro or Actions.</string>
+    <string name="import_preferences_success">Settings imported successfully.</string>
     <string name="inner_circle_radius">Indre sirkelradius</string>
     <string name="length">Lengde</string>
     <string name="location_time">Lokasjonstid</string>
+    <string name="mailing_list">Public mailing list</string>
     <string name="manage_permissions">Rediger tillatelser</string>
     <string name="maxBrightness">Maks skjermlysstyrke</string>
     <string name="maxBrightnessBattery">Maks skjermlysstyrke på batteri</string>
@@ -163,12 +228,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">Sluttid</string>
     <string name="night_mode_timerange_label_start">Starttid</string>
     <string name="night_mode_timerange_title">Nattid</string>
+    <string name="no_alarm_set">no alarm set</string>
     <string name="noise_sensitivity">Mikrofonsensitivivet</string>
+    <string name="notificationListenerService">Meldingsservice</string>
     <string name="notification_channel_desc_alarms">Vis meldinger under alarmer</string>
+    <string name="notification_channel_desc_copy_images">Notification indicating running service for copy images</string>
     <string name="notification_channel_desc_devmsg">Meldinger angående programmet</string>
     <string name="notification_channel_desc_radio">Meldinger når web-radio kjører</string>
     <string name="notification_channel_desc_services">Meldinger angående tjenester</string>
     <string name="notification_channel_name_alarms">Alarmer</string>
+    <string name="notification_channel_name_copy_images">Copy images</string>
     <string name="notification_channel_name_devmsg">Beskjeder</string>
     <string name="notification_channel_name_radio">Radio</string>
     <string name="notification_channel_name_services">Tjenester</string>
@@ -177,16 +246,27 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_importance_low">lav</string>
     <string name="notification_importance_max">maks</string>
     <string name="notification_importance_min">min</string>
+    <string name="notification_list_delete_all">Delete all</string>
+    <string name="notification_list_delete_marked">Delete all marked</string>
+    <string name="notification_list_mark_all">Mark all</string>
     <string name="notification_lowest_importance">Viktighet er høyere eller tilsvarende</string>
-    <string name="notificationListenerService">Meldingsservice</string>
+    <string name="notification_show_mediastyle_summary">Show media player controls</string>
+    <string name="notification_show_mediastyle_title">Media controls</string>
+    <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
+    <string name="notification_show_preview_title">Notification preview</string>
     <string name="notifications">Meldinger</string>
     <string name="notificationsInStatusBarSummary">Vis meldinger på statuslinjen hvis den er skrudd på / lag en ny melding.</string>
     <string name="notificationsInStatusBarTitle">Statuslinje</string>
-    <string name="numbers">Nummer</string>
+    <string name="notifications_options">Notification options</string>
+    <string name="notifyForUpcomingAlarmsSummary">Notify for upcoming alarms</string>
+    <string name="notifyForUpcomingAlarmsTitle">Notify ahead</string>
     <string name="numberStyleArabic">Arabisk</string>
     <string name="numberStyleNone">Ingen</string>
     <string name="numberStyleRoman">Roman</string>
+    <string name="numbers">Nummer</string>
     <string name="only_animate_when_charging">Animer kun ved lading</string>
+    <string name="open_weather_map_api_key">OpenWeatherMap API Key</string>
+    <string name="open_weather_map_api_key_summary">Enter your API key for OpenWeatherMap. Get one at openweathermap.org</string>
     <string name="options_stop_alarms_error_min_one">Velg minst én bevegelse.</string>
     <string name="options_stop_alarms_long_press">Langt press</string>
     <string name="options_stop_alarms_slider">slider</string>
@@ -197,17 +277,53 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker_summary">Spor programbruk</string>
     <string name="outer_circle_radius">Ytre sirkelradius</string>
     <string name="outer_circle_width">Ytre sirkelradius</string>
+    <string-array name="particleEffectEntries">
+        <item>None</item>
+        <item>Falling Snow</item>
+        <item>Golden Stars</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">Partikkeleffekt</string>
+    <string name="permission_request">Permission request</string>
+    <string name="permission_request_location_mode">The currently enabled location mode does not allow scanning the current location.</string>
     <string name="permission_request_overlays">Autostart ikke tillatt. Vennligs gi programmet tillatelse.</string>
+    <string name="permission_request_post_notifications">Please grant the permission to post notifications.</string>
+    <string name="permission_request_storage">The permission for storage access was not granted.</string>
     <string name="persistent_battery_value_while_charging">Permanent batteristatus</string>
     <string name="persistent_battery_value_while_charging_summary">Vis batteristatus permanent under lading</string>
+    <string name="pollen_alder">Alder</string>
+    <string name="pollen_ambrosia">Ambrosia</string>
+    <string name="pollen_ash">Ash</string>
+    <string name="pollen_birch">Birch</string>
+    <string name="pollen_grass">Grass</string>
+    <string name="pollen_hazelnut">Hazelnut</string>
+    <string name="pollen_mugwort">Mugwort</string>
+    <string name="pollen_rye">Rye</string>
     <string name="power_source">Strømkilde</string>
     <string name="preferences">Innstillinger</string>
     <string name="prev">forrige</string>
     <string name="preview">Forhåndsvisning</string>
+    <string name="product_description_weather">An upgrade includes\n
+        \n- a weather status line shown below the clock
+        \n- a weather forecast
+        \n- more clock faces
+        </string>
     <string name="product_name_donation">Donasjon</string>
     <string name="product_name_pro">Full versjon</string>
+    <string name="product_name_subscription">one-year subscription</string>
     <string name="radio">Radio</string>
+    <string name="radio_connecting">connecting</string>
+    <string name="radio_muting">muting ads</string>
+    <string name="radio_next">next station</string>
+    <string name="radio_pause">pause radio</string>
+    <string name="radio_paused">paused</string>
+    <string name="radio_play">play radio</string>
+    <string name="radio_playing">playing</string>
+    <string name="radio_previous">previous station</string>
     <string name="radio_station">Radiostasjon</string>
     <string name="radio_station_dialog_title">Velg en radiostasjon</string>
     <string name="radio_station_none">Ingen radiostasjon</string>
@@ -230,50 +346,133 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi_desc">Hvis på, alarmer vil avspille radiostrømminger via WiFi</string>
     <string name="radio_stream_search">Søk</string>
     <string name="radio_stream_unreachable_url">URL ble ikke funnet</string>
+    <string name="rate">Rate this app</string>
+    <string name="rate_summary">We would like to know if you like our app</string>
     <string name="recommend">Anbefal appen</string>
     <string name="recommend_app_desc">Velg dn app for å dele din anbefaling for</string>
     <string name="recommend_app_subject">Jeg vil anbefale NightClock</string>
     <string name="remaining">tilb.</string>
+    <string name="remaining_alarm_time_end"> </string>
+    <string name="remaining_alarm_time_now">This alarm will ring soon.</string>
+    <string name="remaining_alarm_time_start">This alarm will ring in </string>
     <string name="repeat">Gjenta</string>
+    <string name="reset">reset</string>
     <string name="reset_theme_defaults_summary">Tilbakestill tilpasninger for det aktive temaet til standard.</string>
     <string name="reset_to_defaults">Tilbakestill til standard</string>
     <string name="review_request">Venligst ratifiser klokken</string>
+    <string name="rss">RSS ticker</string>
+    <string name="rss_charset">character encoding</string>
+    <string name="rss_data_error">An error occurred. No data available.</string>
+    <string name="rss_enable_summary">Enable RSS ticker</string>
+    <string name="rss_text_size">Text size</string>
+    <string name="rss_tickerspeed">Ticker speed</string>
+    <string name="rss_timeset">Refresh interval (minutes)</string>
+    <string name="rss_url_error">Url not set</string>
     <string name="scheduledAutoStart">Planlegg autostart</string>
     <string name="scheduledAutoStartChargerRequired">Bare ved lading</string>
     <string name="scheduledAutoStartEnabledDesc">Planlegg autostart for en tidsperiode</string>
     <string name="scheduledAutoStartEnabledTitle">Planlegg autostart</string>
     <string name="scheduledAutoStartTimeRange">Tidsrom</string>
+    <string name="screen">Screen</string>
+    <string name="screenOrientation">Orientering</string>
+    <string name="screenProtection">Screen burn protection</string>
+    <string name="screenProtectionFade">Fade the clock</string>
+    <string name="screenProtectionMove">Flytt på klokken</string>
+    <string name="screenProtectionNone">None</string>
     <string name="screen_orientation_automatic">Automatisk</string>
     <string name="screen_orientation_landscape">Landskap</string>
     <string name="screen_orientation_portrait">Portrett</string>
     <string name="screen_orientation_reverse_landscape">Revers landskap</string>
     <string name="screen_orientation_reverse_portrait">Revers portrett</string>
-    <string name="screenOrientation">Orientering</string>
-    <string name="screenProtectionMove">Flytt på klokken</string>
+    <string name="seconds_15">15 seconds</string>
+    <string name="seconds_30">30 seconds</string>
+    <string name="seconds_60">60 seconds</string>
     <string name="seconds_normal">100%</string>
     <string name="seconds_off">Off</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">Sett alarm</string>
-    <string name="show_calendar_events">Uthev hendelser</string>
-    <string name="show_date">Vis dato</string>
-    <string name="show_divider">Vis horisontale mellomrom</string>
-    <string name="show_temperature">Vis temperatur</string>
-    <string name="show_weather">Vis lokalt vær</string>
-    <string name="show_wind_speed">Vis vind</string>
     <string name="showAlarmsPersistently">Vis permanent</string>
     <string name="showAlarmsPersistentlySummary">Vis alltid neste alarm på skjermen</string>
+    <string name="showBattery">Show battery</string>
     <string name="showBatteryWarningMessage">NB: Ingen strømkilder er tilkoblet</string>
     <string name="showBatteryWarningSummary">Vis en oppstartsadvarsel ved lite batteri</string>
     <string name="showBatteryWarningTitle">Batteriadvarsel</string>
+    <string name="showNotifications">Show notifications</string>
+    <string name="showNotificationsAccessGranted">Access granted</string>
+    <string name="showNotificationsAccessNotGranted">Access not granted!</string>
+    <string name="showNotificationsAlertText">Notification access must be granted to show notifications.</string>
+    <string name="showPollen">Pollen risk index</string>
+    <string name="showPollenIndex">Stress level</string>
+    <string name="showPollenIndex0">none</string>
+    <string name="showPollenIndex1">none to low</string>
+    <string name="showPollenIndex2">low</string>
+    <string name="showPollenIndex3">low to moderate</string>
+    <string name="showPollenIndex4">moderate</string>
+    <string name="showPollenIndex5">moderate to high</string>
+    <string name="showPollenIndex6">high</string>
+    <string name="showPollenNoData">No data for this area. Pollen risk index only available for German locations.</string>
+    <string name="showPollenSummary">only available for German locations</string>
+    <string name="show_alarm">Show alarms</string>
+    <string name="show_apparent_temperature">include apparent temperature</string>
+    <string name="show_calendar_events">Uthev hendelser</string>
+    <string name="show_date">Vis dato</string>
+    <string name="show_divider">Vis horisontale mellomrom</string>
+    <string name="show_second_hand">show second hand</string>
+    <string name="show_seconds">Show seconds</string>
+    <string name="show_temperature">Vis temperatur</string>
+    <string name="show_weather">Vis lokalt vær</string>
+    <string name="show_wind_speed">Vis vind</string>
     <string name="sleep_time_dialog_title">Sleeptimer</string>
+    <string name="slideshow_center_animated">animated</string>
+    <string name="slideshow_center_crop">crop borders</string>
+    <string name="slideshow_center_inside">add borders</string>
+    <string name="slideshow_style">Style</string>
+    <string name="smart_home">Smart Home</string>
+    <string name="smart_home_avm">AVM Fritz!Box</string>
+    <string name="smart_home_avm_host">Host</string>
+    <string name="smart_home_avm_host_summary">Address of your Fritz!Box, e.g. http://fritz.box</string>
+    <string name="smart_home_avm_password">Password</string>
+    <string name="smart_home_avm_username">Username</string>
+    <string name="smart_home_permission_denied">Permission for local network access denied. Cannot connect to Fritz!Box.</string>
+    <string name="smart_home_purchase_request">Control your AVM smart home devices with the Pro version</string>
+    <string name="snoozeAfter">Auto snooze after</string>
+    <string name="snoozeCycles">Auto snooze cycles before auto stop</string>
     <string name="snoozeTime">Snoozetid</string>
+    <string name="snoozeUsingVolumeButtons">Snooze using the volume buttons</string>
+    <string name="speakTime">It is</string>
+    <string name="speakTimeSummary">Speaks the current time on long pressing the screen.</string>
+    <string name="speakTimeTitle">Speak the current time</string>
     <string name="speedUnit">Vindenhet</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">med skjermen på</string>
     <string name="standbyEnabledWhileDisconnectedSummary">Denne egenskapen sluker batteri</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">Innenfor tidsrammen</string>
     <string name="standbyEnabledWhileDisconnectedTitle">Standby Mode ved batteribruk</string>
     <string name="style">Stil</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="subscription_free_trial_description">%s free for trial.</string>
+    <string name="subscription_offer_price_for_period">%1$s for %2$s.</string>
+    <string name="subscription_prefix_after_period">Then</string>
+    <string name="subscription_prefix_subsequently">Subsequently</string>
+    <string name="subscription_price_per_period">%1$s per %2$s.</string>
+    <string name="subscription_renewal_info">Auto-renews. Cancel anytime.</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="suggestions_summary">Let us know if you have any suggestions upcoming versions.</string>
     <string name="temperatureUnit">Temperaturskala</string>
+    <string name="text_size">Text size</string>
+    <string-array name="themeEntries">
+        <item>Standard</item>
+        <item>Halloween Analog</item>
+        <item>Halloween Digital</item>
+        <item>Christmas Analog</item>
+        <item>Christmas Digital</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Vis animasjon med fallende snø eller gylne stjerner.</string>
     <string name="theme_animation_only_charging_summary">Pausere animasjoner på batteri for å spare strøm.</string>
     <string name="theme_reset_to_defaults">Tema tilbakestilt til standard</string>
@@ -297,16 +496,33 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="typeface_roboto_regular">Roboto Regular</string>
     <string name="typeface_roboto_thin">Roboto Thin</string>
     <string name="uninstall">Avinnstalller Applikasjonen</string>
+    <string name="unit_day">Day</string>
+    <string name="unit_days">Days</string>
+    <string name="unit_month">Month</string>
+    <string name="unit_months">Months</string>
+    <string name="unit_week">Week</string>
+    <string name="unit_weeks">Weeks</string>
+    <string name="unit_year">Year</string>
+    <string name="unit_years">Years</string>
+    <string name="unlockHint">Long press to unlock</string>
+    <string name="upgrade_now">Upgrade now!</string>
     <string name="useAlarmSwipeGesture">Opprett alarm via swipe</string>
     <string name="useAlarmSwipeGestureSummary">Opprett alarm via swipe fra nedre venstre hjørne</string>
     <string name="useDeviceLock">Bruk enhetenslås</string>
     <string name="useDeviceLockDescription">Denne skjermlåsegenskapen trenger administrasjonssprivilegier. Skru av privilegiet for å kunne avinnstallere appen.</string>
     <string name="useDeviceLockExplanation">Enheten låses mens appen kjører. For å avinnstallere den, må denne egenskapen skrus av.</string>
     <string name="weather">Vær</string>
+    <string name="weatherProvider">Værapplikasjon</string>
     <string name="weather_calculation_time">vær kalkulering tid</string>
     <string name="weather_city_id_title">Søkemotor</string>
+    <string name="weather_current_location">Current location</string>
+    <string name="weather_icon">Weather Icon</string>
+    <string name="weather_icon_animated">Animated (Android 6+)</string>
+    <string name="weather_icon_colored">Colored</string>
+    <string name="weather_icon_default">Default</string>
     <string name="weather_info_title">Informasjon</string>
-    <string name="weatherProvider">Værapplikasjon</string>
+    <string name="weather_sun_rise">Sunrise</string>
+    <string name="weather_sun_set">Sunset</string>
     <string name="weekdays">Ukedager</string>
     <string name="width">Bredde</string>
 </resources>

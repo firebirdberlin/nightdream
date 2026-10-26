@@ -38,22 +38,27 @@ OR
     <string name="alarmVolume">Громкость</string>
     <string name="allow_screen_off">Выключить экран</string>
     <string name="allow_screen_off_summary">Выключать экран в ночное время</string>
-    <string name="always_on">Всегда выключено</string>
     <string name="alwaysOnBatteryLevel">Уровень заряда АКБ более</string>
     <string name="alwaysOnStartWithLockedUI">Заблокировать пользовательский интерфейс</string>
     <string name="alwaysOnStartWithLockedUIDesc">При запуске приложение автоматически блокирует пользовательский интерфейс. Длительное нажатие на значок блокировки разблокирует опцию.</string>
+    <string name="always_on">Всегда выключено</string>
     <string name="ambient_noise">Определение шума</string>
     <string name="ambient_noise_summary">Должен ли внешний шум предотвращать переход в ночной режим?</string>
     <string name="animations">Анимации</string>
     <string name="app_name">Ночные часы</string>
     <string name="appearance">Внешний вид</string>
     <string name="auto_brightness">Авторегулировка яркости</string>
+    <string name="autostartForNotificationsSummary">Активировать приложение при новом уведомлении</string>
+    <string name="autostartForNotificationsTitle">Уведомления</string>
     <string name="autostart_message_disabled">Пожалуйста, отключите заставку (Daydream) для включения автозапуска</string>
     <string name="autostart_timerange_label_end">Время окончания</string>
     <string name="autostart_timerange_label_start">Время начала</string>
-    <string name="autostartForNotificationsSummary">Активировать приложение при новом уведомлении</string>
-    <string name="autostartForNotificationsTitle">Уведомления</string>
     <string name="background">Задний фон</string>
+    <string name="backgroundServiceDialogMessage">Прекращение работы в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
+    <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
+    <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
+    <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
+    <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
     <string name="background_auto_accent_color">Автоматический выбор цвета</string>
     <string name="background_auto_accent_summary">Автоматический выбор подходящего цвета.</string>
     <string name="background_black">Чёрный</string>
@@ -85,11 +90,6 @@ OR
     <string name="background_transparent">Прозрачный</string>
     <string name="background_zoomin">Масштабирование анимации</string>
     <string name="background_zoomin_summary">Автоматически масштабировать фоное изображение.</string>
-    <string name="backgroundServiceDialogMessage">Прекращение работы в фоне  приведет к отключению автозапуска и режима ожидания. Продолжить?</string>
-    <string name="backgroundServiceDialogTitle">Прекращение работы в фоне</string>
-    <string name="backgroundServiceNotificationText">Запущен фоновый сервис</string>
-    <string name="backgroundServiceNotificationTextLocation">Обновление местоположения в процессе</string>
-    <string name="backgroundServiceNotificationTextNightMode">Ночной режим запущен</string>
     <string name="battery">Батарея</string>
     <string name="batteryTimeout10min">10 мин</string>
     <string name="batteryTimeout15min">15 мин</string>
@@ -122,6 +122,7 @@ OR
     <string name="choose_secondary_color">Цвет текста</string>
     <string name="clear">Очистить</string>
     <string name="clock">Часы</string>
+    <string name="clockBackgroundTransparency">Прозрачность фона часов</string>
     <string name="clock_hands">Стрелки</string>
     <string name="clock_layout">Тип часов</string>
     <string name="clock_layout_analog">Аналоговые часы</string>
@@ -135,7 +136,6 @@ OR
     <string name="clock_layout_elegant_analog">Элегантные аналоговые часы</string>
     <string name="clock_layout_mirror_text">Зеркальный текст</string>
     <string name="clock_layout_modern_analog">Современные аналоговые часы</string>
-    <string name="clockBackgroundTransparency">Прозрачность фона часов</string>
     <string name="colors">Цвета</string>
     <string name="confirm_reset">Сброс</string>
     <string name="confirm_reset_question">Вы уверены в сбросе всех настроек?</string>
@@ -230,6 +230,7 @@ OR
     <string name="night_mode_timerange_title">Ночные часы</string>
     <string name="no_alarm_set">будильник не установлен</string>
     <string name="noise_sensitivity">Чувствительность микрофона</string>
+    <string name="notificationListenerService">Служба прослушивания уведомлений</string>
     <string name="notification_channel_desc_alarms">Уведомление показывать во время активного будильника</string>
     <string name="notification_channel_desc_copy_images">Уведомление, указывающее на работающую службу копирования изображений</string>
     <string name="notification_channel_desc_devmsg">Сообщения, касающиеся приложения</string>
@@ -253,17 +254,16 @@ OR
     <string name="notification_show_mediastyle_title">Управление плеером</string>
     <string name="notification_show_preview_summary">Показывать превью входящих уведомлений</string>
     <string name="notification_show_preview_title">Превью уведомлений</string>
-    <string name="notificationListenerService">Служба прослушивания уведомлений</string>
     <string name="notifications">Уведомления</string>
-    <string name="notifications_options">Настройки уведомлений</string>
     <string name="notificationsInStatusBarSummary">Показывать уведомления в строке состояния, если включено, в противном случае добавить дополнительную строку.</string>
     <string name="notificationsInStatusBarTitle">Статус-бар</string>
+    <string name="notifications_options">Настройки уведомлений</string>
     <string name="notifyForUpcomingAlarmsSummary">Уведомлять о предстоящих будильниках</string>
     <string name="notifyForUpcomingAlarmsTitle">Уведомить заранее</string>
-    <string name="numbers">Цифры</string>
     <string name="numberStyleArabic">Арабские цифры</string>
     <string name="numberStyleNone">Ничего</string>
     <string name="numberStyleRoman">Римские цифры</string>
+    <string name="numbers">Цифры</string>
     <string name="only_animate_when_charging">Анимация только при зарядке</string>
     <string name="open_weather_map_api_key">API ключ OpenWeatherMap</string>
     <string name="open_weather_map_api_key_summary">Введите ваш API ключ для OpenWeatherMap. Получите его на openweathermap.org</string>
@@ -277,6 +277,16 @@ OR
     <string name="other_apps_tinytimetracker_summary">Следите за своим рабочим временем</string>
     <string name="outer_circle_radius">Радиус внешнего круга</string>
     <string name="outer_circle_width">Ширина внешнего круга</string>
+    <string-array name="particleEffectEntries">
+        <item>None</item>
+        <item>Falling Snow</item>
+        <item>Golden Stars</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">Эффект частиц</string>
     <string name="permission_request">Запрос разрешения</string>
     <string name="permission_request_location_mode">Включенный в данный момент режим определения местоположения не позволяет сканировать текущее местоположение.</string>
@@ -364,16 +374,16 @@ OR
     <string name="scheduledAutoStartEnabledTitle">Запланированный Автозапуск</string>
     <string name="scheduledAutoStartTimeRange">временной интервал</string>
     <string name="screen">Экран</string>
-    <string name="screen_orientation_automatic">автоматически</string>
-    <string name="screen_orientation_landscape">ландшафт</string>
-    <string name="screen_orientation_portrait">портрет</string>
-    <string name="screen_orientation_reverse_landscape">перевёрнутый ландшафт</string>
-    <string name="screen_orientation_reverse_portrait">перевёрнутый портрет</string>
     <string name="screenOrientation">Ориентация экрана</string>
     <string name="screenProtection">Защита экрана от выгорания</string>
     <string name="screenProtectionFade">Исчезновение часов</string>
     <string name="screenProtectionMove">Перемещать часы по экрану</string>
     <string name="screenProtectionNone">Ничего</string>
+    <string name="screen_orientation_automatic">автоматически</string>
+    <string name="screen_orientation_landscape">ландшафт</string>
+    <string name="screen_orientation_portrait">портрет</string>
+    <string name="screen_orientation_reverse_landscape">перевёрнутый ландшафт</string>
+    <string name="screen_orientation_reverse_portrait">перевёрнутый портрет</string>
     <string name="seconds_15">15 сек.</string>
     <string name="seconds_30">30 сек.</string>
     <string name="seconds_60">60 сек.</string>
@@ -381,16 +391,6 @@ OR
     <string name="seconds_off">Ничего</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">Уст. будильник</string>
-    <string name="show_alarm">Показывать будильники</string>
-    <string name="show_apparent_temperature">Включить температуру по ощущению</string>
-    <string name="show_calendar_events">Выделить события</string>
-    <string name="show_date">Показывать дату</string>
-    <string name="show_divider">Отображать разделитель</string>
-    <string name="show_second_hand">Показывать секундную стрелку</string>
-    <string name="show_seconds">Показывать секунды</string>
-    <string name="show_temperature">Показывать температуру</string>
-    <string name="show_weather">Показывать местную погоду</string>
-    <string name="show_wind_speed">Показывать скорость ветра</string>
     <string name="showAlarmsPersistently">Постоянно показывать</string>
     <string name="showAlarmsPersistentlySummary">Показывать время следующего будильника постоянно на экране.</string>
     <string name="showBattery">Показывать батарею</string>
@@ -412,6 +412,16 @@ OR
     <string name="showPollenIndex6">высокий</string>
     <string name="showPollenNoData">Нет данных для этой области. Индекс риска пыльцы доступен только для регионов Германии.</string>
     <string name="showPollenSummary">доступно только для регионов Германии</string>
+    <string name="show_alarm">Показывать будильники</string>
+    <string name="show_apparent_temperature">Включить температуру по ощущению</string>
+    <string name="show_calendar_events">Выделить события</string>
+    <string name="show_date">Показывать дату</string>
+    <string name="show_divider">Отображать разделитель</string>
+    <string name="show_second_hand">Показывать секундную стрелку</string>
+    <string name="show_seconds">Показывать секунды</string>
+    <string name="show_temperature">Показывать температуру</string>
+    <string name="show_weather">Показывать местную погоду</string>
+    <string name="show_wind_speed">Показывать скорость ветра</string>
     <string name="sleep_time_dialog_title">Таймер сна</string>
     <string name="slideshow_center_animated">Анимация</string>
     <string name="slideshow_center_crop">Обрезать границы</string>
@@ -449,6 +459,20 @@ OR
     <string name="suggestions_summary">Дайте нам знать, если у вас есть какие-либо предложения для будущих версий.</string>
     <string name="temperatureUnit">Ед. температуры</string>
     <string name="text_size">Размер текста</string>
+    <string-array name="themeEntries">
+        <item>Standard</item>
+        <item>Halloween Analog</item>
+        <item>Halloween Digital</item>
+        <item>Christmas Analog</item>
+        <item>Christmas Digital</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Показывать анимацию падающего снега или золотых звезд.</string>
     <string name="theme_animation_only_charging_summary">Приостанавливает анимацию при работе от батареи для экономии энергии.</string>
     <string name="theme_reset_to_defaults">Тема сброшена на настройки по умолчанию</string>
@@ -488,6 +512,7 @@ OR
     <string name="useDeviceLockDescription">Функция блокировки экрана требует разрешения администратора устройства. Чтобы удалить приложение, отключите эту функцию.</string>
     <string name="useDeviceLockExplanation">Заблокируйте устройство, пока приложение активно. Чтобы удалить приложение, отмените это разрешение.</string>
     <string name="weather">Погода</string>
+    <string name="weatherProvider">Провайдер погоды</string>
     <string name="weather_calculation_time">время подсчёта погоды</string>
     <string name="weather_city_id_title">Поиск местоположения</string>
     <string name="weather_current_location">Текущее местоположение</string>
@@ -498,7 +523,6 @@ OR
     <string name="weather_info_title">Информация</string>
     <string name="weather_sun_rise">Восход</string>
     <string name="weather_sun_set">Закат</string>
-    <string name="weatherProvider">Провайдер погоды</string>
     <string name="weekdays">Дни недели</string>
     <string name="width">Ширина</string>
 </resources>

@@ -38,22 +38,27 @@ OR
     <string name="alarmVolume">Głosność</string>
     <string name="allow_screen_off">Ekran wyłączony</string>
     <string name="allow_screen_off_summary">Wyłacz ekran na noc</string>
-    <string name="always_on">Zawsze włączony</string>
     <string name="alwaysOnBatteryLevel">Poziom baterii powyżej</string>
     <string name="alwaysOnStartWithLockedUI">Blokada interfejsu użytkownika</string>
     <string name="alwaysOnStartWithLockedUIDesc">Blokada interfejsu użytkownika. Przytrzymaj przycisk Odblokuj aby zdjąć blokadę</string>
+    <string name="always_on">Zawsze włączony</string>
     <string name="ambient_noise">Wykrywanie dzwięków otoczenia</string>
     <string name="ambient_noise_summary">Czy wykrywnie dzwięków otoczenia ma być aktywne w nocy</string>
     <string name="animations">Animacje</string>
     <string name="app_name">Nocny zegar</string>
     <string name="appearance">Wygląd</string>
     <string name="auto_brightness">Auto jasność</string>
+    <string name="autostartForNotificationsSummary">Aktywuj aplikację, gdy wyświetlone zostanie nowe powiadomienie</string>
+    <string name="autostartForNotificationsTitle">Powiadomienia</string>
     <string name="autostart_message_disabled">Proszę wyłącz wygaszacz ekranu (Daydream)  żeby aktywowac opcje autostartu</string>
     <string name="autostart_timerange_label_end">Koniec</string>
     <string name="autostart_timerange_label_start">Początek</string>
-    <string name="autostartForNotificationsSummary">Aktywuj aplikację, gdy wyświetlone zostanie nowe powiadomienie</string>
-    <string name="autostartForNotificationsTitle">Powiadomienia</string>
     <string name="background">Tło</string>
+    <string name="backgroundServiceDialogMessage">Zatrzymanie usługi w tle wyłączy autouruchamianie oraz tryb uśpienia jak i wykrywanie ładowania baterii. Kontynuować?</string>
+    <string name="backgroundServiceDialogTitle">Zatrzymaj usługę w tle</string>
+    <string name="backgroundServiceNotificationText">Usługa działa w tle</string>
+    <string name="backgroundServiceNotificationTextLocation">Aktualizacja lokalizacji w trakcie</string>
+    <string name="backgroundServiceNotificationTextNightMode">Tryb nocny jest aktywny</string>
     <string name="background_auto_accent_color">Automatyczny wybór koloru</string>
     <string name="background_auto_accent_summary">Automatycznie wybierz pasujący kolor akcentu</string>
     <string name="background_black">Czarny</string>
@@ -85,11 +90,6 @@ OR
     <string name="background_transparent">Przezroczysty</string>
     <string name="background_zoomin">Animacja powiększenia</string>
     <string name="background_zoomin_summary">Automatycznie powiększaj obraz tła.</string>
-    <string name="backgroundServiceDialogMessage">Zatrzymanie usługi w tle wyłączy autouruchamianie oraz tryb uśpienia jak i wykrywanie ładowania baterii. Kontynuować?</string>
-    <string name="backgroundServiceDialogTitle">Zatrzymaj usługę w tle</string>
-    <string name="backgroundServiceNotificationText">Usługa działa w tle</string>
-    <string name="backgroundServiceNotificationTextLocation">Aktualizacja lokalizacji w trakcie</string>
-    <string name="backgroundServiceNotificationTextNightMode">Tryb nocny jest aktywny</string>
     <string name="battery">Bateria</string>
     <string name="batteryTimeout10min">Dziesięć minut</string>
     <string name="batteryTimeout15min">Piętnaście minut</string>
@@ -122,6 +122,7 @@ OR
     <string name="choose_secondary_color">Kolor tekstu</string>
     <string name="clear">Wyczyść</string>
     <string name="clock">Zegar</string>
+    <string name="clockBackgroundTransparency">Przezroczystość tła zegara</string>
     <string name="clock_hands">Wskazówki zegara</string>
     <string name="clock_layout">Szablon</string>
     <string name="clock_layout_analog">Analogowy</string>
@@ -135,7 +136,6 @@ OR
     <string name="clock_layout_elegant_analog">Elegancki zegar analogowy</string>
     <string name="clock_layout_mirror_text">Tekst lustrzany</string>
     <string name="clock_layout_modern_analog">Nowoczesny zegar analogowy</string>
-    <string name="clockBackgroundTransparency">Przezroczystość tła zegara</string>
     <string name="colors">Kolory</string>
     <string name="confirm_reset">Reset</string>
     <string name="confirm_reset_question">Czy na pewno chcesz zresetować ustawienia?</string>
@@ -230,6 +230,7 @@ OR
     <string name="night_mode_timerange_title">Czas nocny</string>
     <string name="no_alarm_set">brak ustawionego alarmu</string>
     <string name="noise_sensitivity">Czułość mikrofonu</string>
+    <string name="notificationListenerService">Usługa wykrywania powiadomień</string>
     <string name="notification_channel_desc_alarms">Powiadomienia pojawiają się podczas alarmu</string>
     <string name="notification_channel_desc_copy_images">Powiadomienie wskazujące na działającą usługę kopiowania obrazów</string>
     <string name="notification_channel_desc_devmsg">Wiadomości dotyczące aplikacji</string>
@@ -253,17 +254,16 @@ OR
     <string name="notification_show_mediastyle_title">Sterowanie mediami</string>
     <string name="notification_show_preview_summary">Pokaż podgląd przychodzących powiadomień</string>
     <string name="notification_show_preview_title">Podgląd powiadomienia</string>
-    <string name="notificationListenerService">Usługa wykrywania powiadomień</string>
     <string name="notifications">Powiadomienia</string>
-    <string name="notifications_options">Opcje powiadomień</string>
     <string name="notificationsInStatusBarSummary">Pokaż powiadomienia w pasku statusu jeśli włączone. W innym przypadku dodaj dodatkowy wiersz.</string>
     <string name="notificationsInStatusBarTitle">Pasek stanu</string>
+    <string name="notifications_options">Opcje powiadomień</string>
     <string name="notifyForUpcomingAlarmsSummary">Powiadamiaj o nadchodzących alarmach</string>
     <string name="notifyForUpcomingAlarmsTitle">Powiadamiaj wcześniej</string>
-    <string name="numbers">Liczby</string>
     <string name="numberStyleArabic">Arabskie</string>
     <string name="numberStyleNone">Nic</string>
     <string name="numberStyleRoman">Rzymskie</string>
+    <string name="numbers">Liczby</string>
     <string name="only_animate_when_charging">Animuj tylko podczas ładowania</string>
     <string name="open_weather_map_api_key">Klucz API OpenWeatherMap</string>
     <string name="open_weather_map_api_key_summary">Wprowadź swój klucz API dla OpenWeatherMap. Uzyskaj go na openweathermap.org</string>
@@ -277,6 +277,16 @@ OR
     <string name="other_apps_tinytimetracker_summary">Śledź mój dzienny czas pracy</string>
     <string name="outer_circle_radius">Promień zewnętrznego koła</string>
     <string name="outer_circle_width">Szerokość zewnętrznego koła</string>
+    <string-array name="particleEffectEntries">
+        <item>Nic</item>
+        <item>Padający śnieg</item>
+        <item>Złote Gwiazdy</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">Efekt cząsteczek</string>
     <string name="permission_request">Prośba o uprawnienia</string>
     <string name="permission_request_location_mode">Włączony tryb lokalizacji nie pozwala na wykrywanie bieżącej pozycji.</string>
@@ -363,16 +373,16 @@ OR
     <string name="scheduledAutoStartEnabledTitle">Zaplanowany Autostart</string>
     <string name="scheduledAutoStartTimeRange">zakres czasu</string>
     <string name="screen">Ekran</string>
-    <string name="screen_orientation_automatic">Automatyczna orientacja ekranu</string>
-    <string name="screen_orientation_landscape">Orientacja ekranu pionowa</string>
-    <string name="screen_orientation_portrait">Orientacja ekranu pozioma</string>
-    <string name="screen_orientation_reverse_landscape">Orientacja ekranu pionowa odwrócona</string>
-    <string name="screen_orientation_reverse_portrait">Orientacja ekranu pozioma odwrócona</string>
     <string name="screenOrientation">Orientacja ekranu</string>
     <string name="screenProtection">Ochrona przed wypaleniem ekranu</string>
     <string name="screenProtectionFade">Wygaszaj zegar</string>
     <string name="screenProtectionMove">Przesuwaj zegar na całym ekranie</string>
     <string name="screenProtectionNone">Brak</string>
+    <string name="screen_orientation_automatic">Automatyczna orientacja ekranu</string>
+    <string name="screen_orientation_landscape">Orientacja ekranu pionowa</string>
+    <string name="screen_orientation_portrait">Orientacja ekranu pozioma</string>
+    <string name="screen_orientation_reverse_landscape">Orientacja ekranu pionowa odwrócona</string>
+    <string name="screen_orientation_reverse_portrait">Orientacja ekranu pozioma odwrócona</string>
     <string name="seconds_15">15 sekund</string>
     <string name="seconds_30">30 sekund</string>
     <string name="seconds_60">60 sekund</string>
@@ -380,16 +390,6 @@ OR
     <string name="seconds_off">Brak</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">Ustaw zegar</string>
-    <string name="show_alarm">Pokaż alarmy</string>
-    <string name="show_apparent_temperature">zawieraj odczuwalną temperaturę</string>
-    <string name="show_calendar_events">Podświetl wydarzenia</string>
-    <string name="show_date">Pokaż datę</string>
-    <string name="show_divider">Pokaż podział</string>
-    <string name="show_second_hand">pokaż wskazówkę sekundnika</string>
-    <string name="show_seconds">Pokazuj sekundy</string>
-    <string name="show_temperature">Teperatura</string>
-    <string name="show_weather">Pokaż lokalną temperturę</string>
-    <string name="show_wind_speed">Szybkość wiatru</string>
     <string name="showAlarmsPersistently">Pokazuj nieprzerwanie</string>
     <string name="showAlarmsPersistentlySummary">Nieustannie pokazuj na ekranie następny czas alarmu.</string>
     <string name="showBattery">Pokaż baterię</string>
@@ -411,6 +411,16 @@ OR
     <string name="showPollenIndex6">wysoki</string>
     <string name="showPollenNoData">Brak danych dla tego obszaru. Indeks ryzyka alergii dostępny tylko dla lokalizacji w Niemczech.</string>
     <string name="showPollenSummary">dostępne tylko dla lokalizacji w Niemczech</string>
+    <string name="show_alarm">Pokaż alarmy</string>
+    <string name="show_apparent_temperature">zawieraj odczuwalną temperaturę</string>
+    <string name="show_calendar_events">Podświetl wydarzenia</string>
+    <string name="show_date">Pokaż datę</string>
+    <string name="show_divider">Pokaż podział</string>
+    <string name="show_second_hand">pokaż wskazówkę sekundnika</string>
+    <string name="show_seconds">Pokazuj sekundy</string>
+    <string name="show_temperature">Teperatura</string>
+    <string name="show_weather">Pokaż lokalną temperturę</string>
+    <string name="show_wind_speed">Szybkość wiatru</string>
     <string name="sleep_time_dialog_title">Ustawienie czasu zaśnięcia</string>
     <string name="slideshow_center_animated">animowany</string>
     <string name="slideshow_center_crop">przytnij krawędzie</string>
@@ -448,6 +458,20 @@ OR
     <string name="suggestions_summary">Daj nam znać, jeśli masz jakieś sugestie dotyczące przyszłych wersji.</string>
     <string name="temperatureUnit">Jednostka temperatury</string>
     <string name="text_size">Rozmiar tekstu</string>
+    <string-array name="themeEntries">
+        <item>Standard</item>
+        <item>Halloweenowy analog</item>
+        <item>Cyfrowy Halloween</item>
+        <item>Świąteczny analog</item>
+        <item>Świąteczny cyfrowy</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Pokaż animację padającego śniegu lub złotych gwiazd.</string>
     <string name="theme_animation_only_charging_summary">Wstrzymuje animacje podczas pracy na baterii, aby oszczędzać energię.</string>
     <string name="theme_reset_to_defaults">Motyw przywrócony do ustawień domyślnych</string>
@@ -487,6 +511,7 @@ OR
     <string name="useDeviceLockDescription">Zablokowanie ekranu potrzebuje uprawnienia administatora urządzenia Prosze wyłącz ta funkcje przed odinstalowaniem tej aplikacji.</string>
     <string name="useDeviceLockExplanation">Zablokuj urządzenie kiedy Nocny Zegar jest aktywny. Przed odinstalowaniem tej aplikacji proszę odznacz to ustawienie</string>
     <string name="weather">Pogoda</string>
+    <string name="weatherProvider">Dostawca pogody</string>
     <string name="weather_calculation_time">Częstotliwość odswieżania pogody</string>
     <string name="weather_city_id_title">Znajdź lokalizację</string>
     <string name="weather_current_location">Aktualna lokalizacja</string>
@@ -497,7 +522,6 @@ OR
     <string name="weather_info_title">Informacje</string>
     <string name="weather_sun_rise">Wschód słońca</string>
     <string name="weather_sun_set">Zachód słońca</string>
-    <string name="weatherProvider">Dostawca pogody</string>
     <string name="weekdays">dni robocze</string>
     <string name="width">Szerokość</string>
 </resources>
