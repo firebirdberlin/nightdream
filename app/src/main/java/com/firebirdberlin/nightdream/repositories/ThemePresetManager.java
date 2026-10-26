@@ -198,8 +198,8 @@ public class ThemePresetManager {
                 String json = prefs.getString("profile_json_" + ThemePreset.PRESET_NONE, "");
                 restorePreferencesFromJson(context, json);
             } else {
-                editor.putInt("clockColor", Color.parseColor("#33B5E5"));
-                editor.putInt("primaryColorNight", Color.parseColor("#33B5E5"));
+                editor.putInt("clockColor", Color.parseColor("#2196F3"));
+                editor.putInt("primaryColorNight", Color.parseColor("#1E3A8A"));
                 editor.putInt("secondaryColor", Color.parseColor("#C2C2C2"));
                 editor.putInt("secondaryColorNight", Color.parseColor("#C2C2C2"));
                 editor.remove("font");
@@ -236,8 +236,8 @@ public class ThemePresetManager {
         editor.remove("profile_json_" + activeThemeId);
 
         if (ThemePreset.PRESET_NONE.equals(activeThemeId)) {
-            editor.putInt("clockColor", Color.parseColor("#33B5E5"));
-            editor.putInt("primaryColorNight", Color.parseColor("#33B5E5"));
+            editor.putInt("clockColor", Color.parseColor("#2196F3"));
+            editor.putInt("primaryColorNight", Color.parseColor("#1E3A8A"));
             editor.putInt("secondaryColor", Color.parseColor("#C2C2C2"));
             editor.putInt("secondaryColorNight", Color.parseColor("#C2C2C2"));
             editor.remove("font");

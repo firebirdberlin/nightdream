@@ -40,6 +40,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.R;
@@ -167,35 +168,34 @@ public class SidePanel extends FlexboxLayout {
         animation.setDuration(mAnimationDuration);
         animation.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(@NonNull Animator animation) {
                 mLockedCLick = true;
             }
 
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(@NonNull Animator animation) {
                 menuIsOpen = !menuIsOpen;
                 mLockedCLick = false;
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
+            public void onAnimationCancel(@NonNull Animator animation) {
             }
 
             @Override
-            public void onAnimationRepeat(Animator animation) {
+            public void onAnimationRepeat(@NonNull Animator animation) {
             }
         });
         animation.start();
     }
 
     //Sets background drawable for all icons
-    public SidePanel setIconBackgroundResource(int iconBackground) {
+    public void setIconBackgroundResource(int iconBackground) {
         mIconBackground = iconBackground;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             child.setBackground(mIconBackground != 0 ? ContextCompat.getDrawable(getContext(), mIconBackground) : null);
         }
-        return this;
     }
 
     //Gets the Icon background

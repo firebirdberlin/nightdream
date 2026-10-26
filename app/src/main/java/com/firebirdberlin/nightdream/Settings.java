@@ -511,9 +511,9 @@ public class Settings {
         scheduledAutoStartChargerRequired = settings.getBoolean("scheduledAutoStartChargerRequired", true);
         bgpath = settings.getString("BackgroundImage", "");
         backgroundImageURI = settings.getString("backgroundImageURI", "");
-        final String defaultColorString = "#33B5E5";
+        final String defaultColorString = "#2196F3";
         clockColor = settings.getInt("clockColor", Color.parseColor(defaultColorString));
-        clockColorNight = settings.getInt("primaryColorNight", Color.parseColor(defaultColorString));
+        clockColorNight = settings.getInt("primaryColorNight", Color.parseColor("#1E3A8A"));
         clockLayout = Integer.parseInt(settings.getString("clockLayout", "0"));
         location_lat = getDouble("location_lat", 0.d);
         location_lon = getDouble("location_lon", 0.d);
