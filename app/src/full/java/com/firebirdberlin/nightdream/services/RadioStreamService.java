@@ -51,7 +51,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.IntentCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
@@ -347,7 +346,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
                         Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
                         broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
+                        sendBroadcast(broadcastIndex);
                         streamingMode = StreamingMode.RADIO;
                         currentStreamType = AudioManager.STREAM_MUSIC;
                         fadeInDelay = 50;
@@ -374,7 +373,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
                         Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
                         broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIndex);
+                        sendBroadcast(broadcastIndex);
                     }
                     break;
             }
@@ -539,7 +538,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         streamingMode = StreamingMode.INACTIVE;
 
         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        sendBroadcast(intent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             stopForeground(Service.STOP_FOREGROUND_DETACH);
         } else {
@@ -646,7 +645,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         Intent intent = new Intent(Config.ACTION_RADIO_STREAM_METADATA_UPDATED);
                         intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
                         intent.putExtra(EXTRA_TITLE, metadata.title.toString());
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        sendBroadcast(intent);
                     }
                 }
             });
@@ -668,7 +667,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
 
                 Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
                 intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                sendBroadcast(intent);
                 currentVolume = 0.f;
                 handler.postDelayed(fadeIn, muteDelayInMillis);
                 updateNotification(getResources().getString(R.string.radio_muting));

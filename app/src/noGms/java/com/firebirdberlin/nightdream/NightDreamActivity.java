@@ -56,7 +56,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
 import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
@@ -547,8 +546,8 @@ public class NightDreamActivity extends BillingHelperActivity
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
         unregister(powerSupplyReceiver);
-        unregisterLocalReceiver(nReceiver);
-        unregisterLocalReceiver(broadcastReceiver);
+        unregister(nReceiver);
+        unregister(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.shallActivateDoNotDisturb()) {
@@ -572,14 +571,6 @@ public class NightDreamActivity extends BillingHelperActivity
     private void unregister(BroadcastReceiver receiver) {
         try {
             unregisterReceiver(receiver);
-        } catch (IllegalArgumentException ignored) {
-
-        }
-    }
-
-    private void unregisterLocalReceiver(BroadcastReceiver receiver) {
-        try {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         } catch (IllegalArgumentException ignored) {
 
         }
@@ -616,7 +607,7 @@ public class NightDreamActivity extends BillingHelperActivity
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
         filter.addAction(Config.ACTION_NOTIFICATION_APPS_LISTENER);
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
@@ -627,7 +618,7 @@ public class NightDreamActivity extends BillingHelperActivity
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 

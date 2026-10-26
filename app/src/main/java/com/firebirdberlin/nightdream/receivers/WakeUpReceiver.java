@@ -30,7 +30,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
@@ -75,7 +74,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         if (next != null) {
             intent.putExtras(next.toBundle());
         }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        context.sendBroadcast(intent);
         AlarmClockViewModel.setNextAlarm(next);
         updateWidgets(context);
     }

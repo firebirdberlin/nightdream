@@ -74,7 +74,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.Graphics;
@@ -623,7 +622,7 @@ public class NightDreamUI {
             if (Settings.showNotification(mContext)) {
                 Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
                 i.putExtra("command", "list");
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
+                mContext.sendBroadcast(i);
             }
 
             controlsVisible = true;
@@ -1899,13 +1898,13 @@ public class NightDreamUI {
         filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-        LocalBroadcastManager.getInstance(mContext).registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(mContext, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
     private void unregister(BroadcastReceiver receiver) {
         try {
-            LocalBroadcastManager.getInstance(mContext).unregisterReceiver(receiver);
+            mContext.unregisterReceiver(receiver);
         } catch (IllegalArgumentException ignored) {
         }
 

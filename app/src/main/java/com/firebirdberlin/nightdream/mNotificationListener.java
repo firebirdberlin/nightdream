@@ -48,7 +48,6 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 
@@ -75,7 +74,7 @@ public class mNotificationListener extends NotificationListenerService {
         Log.d("mNotificationListener", "requestNotificationList()");
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "list");
-        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+        context.sendBroadcast(i);
     }
 
     private static Bitmap drawableToBitMap(Drawable drawable) {
@@ -125,7 +124,7 @@ public class mNotificationListener extends NotificationListenerService {
         nlServiceReceiver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        LocalBroadcastManager.getInstance(this).registerReceiver(nlServiceReceiver, filter);
+        ContextCompat.registerReceiver(this, nlServiceReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         Log.i(TAG, "**********  Notification listener STARTED");
         running = true;
 
@@ -146,7 +145,10 @@ public class mNotificationListener extends NotificationListenerService {
         super.onDestroy();
         running = false;
         Log.i(TAG, "**********  Notification listener STOPPED");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(nlServiceReceiver);
+        try {
+            unregisterReceiver(nlServiceReceiver);
+        } catch (IllegalArgumentException ignored) {
+        }
 
         if (debugRunnable != null) {
             debugHandler.removeCallbacks(debugRunnable);
@@ -169,7 +171,7 @@ public class mNotificationListener extends NotificationListenerService {
         intent.putExtra("smallIconBitmap", dummyBitmap);
         intent.putExtra("largeIconBitmap", dummyBitmap);
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        sendBroadcast(intent);
     }
 
     @Override
@@ -184,7 +186,7 @@ public class mNotificationListener extends NotificationListenerService {
         if (i != null) {
             i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("action", "added_preview");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+            sendBroadcast(i);
         }
 
         listNotifications();
@@ -271,7 +273,7 @@ public class mNotificationListener extends NotificationListenerService {
                 if (template.contains("MediaStyle")) {
                     i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
                     i.putExtra("action", "removed_media");
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+                    sendBroadcast(i);
                 }
             }
         }
@@ -338,7 +340,7 @@ public class mNotificationListener extends NotificationListenerService {
                     if (template.contains("MediaStyle")) {
                         i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
                         i.putExtra("action", "added_media");
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+                        sendBroadcast(i);
                         continue;
                     }
                     notifications.add(
@@ -369,12 +371,12 @@ public class mNotificationListener extends NotificationListenerService {
             }
             Intent intentList = new Intent("Notification.Action.notificationList");
             intentList.putParcelableArrayListExtra("notifications", (ArrayList<? extends Parcelable>) notifications);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intentList);
+            sendBroadcast(intentList);
 
             Intent intentAppsList = new Intent(Config.ACTION_NOTIFICATION_APPS_LISTENER);
             intentAppsList.putExtra("action", "scan");
             intentAppsList.putParcelableArrayListExtra("notificationApps", (ArrayList<? extends Parcelable>) notificationApps);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intentAppsList);
+            sendBroadcast(intentAppsList);
 
             if (debugMediaStyleNotification) {
                 sendDebugMediaNotification();
@@ -630,7 +632,7 @@ public class mNotificationListener extends NotificationListenerService {
     private void clearNotificationUI() {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("action", "clear");
-        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+        sendBroadcast(i);
     }
 
     private String getApplicationLabel(String packageName) {
