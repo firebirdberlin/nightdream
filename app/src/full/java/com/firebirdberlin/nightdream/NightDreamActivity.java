@@ -40,7 +40,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -48,7 +47,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -62,8 +60,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
 import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
-import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -82,7 +80,6 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
-import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.SidePanel;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
@@ -99,8 +96,6 @@ import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
-
-
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

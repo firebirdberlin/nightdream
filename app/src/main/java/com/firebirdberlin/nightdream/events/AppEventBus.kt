@@ -48,12 +48,12 @@ class AppEventBus {
 
         @JvmStatic
         fun <T> removeStickyEvent(eventType: Class<T>): T? {
-            return stickyEvents.remove(eventType) as? T
+            return eventType.cast(stickyEvents.remove(eventType))
         }
 
         @JvmStatic
         fun <T> getStickyEvent(eventType: Class<T>): T? {
-            return stickyEvents[eventType] as? T
+            return eventType.cast(stickyEvents[eventType])
         }
 
         @JvmStatic
