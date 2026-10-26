@@ -46,9 +46,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
@@ -372,7 +372,7 @@ public class WebRadioLayout extends RelativeLayout {
         filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
         filter.addAction(Config.ACTION_RADIO_STREAM_METADATA_UPDATED);
-        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
@@ -398,7 +398,7 @@ public class WebRadioLayout extends RelativeLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         try {
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(broadcastReceiver);
+            context.unregisterReceiver(broadcastReceiver);
             unregisterAudioVolumeContentObserver();
         } catch (IllegalArgumentException ignored) {
         }

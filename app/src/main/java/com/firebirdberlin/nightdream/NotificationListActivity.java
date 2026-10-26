@@ -32,7 +32,7 @@ import android.view.MenuItem;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -98,8 +98,8 @@ public class NotificationListActivity extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER)
+        ContextCompat.registerReceiver(
+                this, broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER), ContextCompat.RECEIVER_NOT_EXPORTED
         );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
@@ -130,7 +130,7 @@ public class NotificationListActivity extends AppCompatActivity {
         if (id == R.id.menuItem_delete_all) {
             Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
             i.putExtra("command", "clearall");
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+            getApplicationContext().sendBroadcast(i);
         }
 
         return super.onOptionsItemSelected(item);

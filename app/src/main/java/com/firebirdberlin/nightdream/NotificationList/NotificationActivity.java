@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -121,8 +121,8 @@ public class NotificationActivity extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                broadcastReceiver, new IntentFilter("Notification.Action.notificationList")
+        ContextCompat.registerReceiver(
+                this, broadcastReceiver, new IntentFilter("Notification.Action.notificationList"), ContextCompat.RECEIVER_NOT_EXPORTED
         );
 
         mNotificationListener.requestNotificationList(getApplicationContext());
@@ -183,7 +183,7 @@ public class NotificationActivity extends AppCompatActivity {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "clear");
         i.putExtra("notificationKeys", notificationsKeys);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        getApplicationContext().sendBroadcast(i);
     }
 
     private void deleteItem(int position) {
@@ -203,6 +203,6 @@ public class NotificationActivity extends AppCompatActivity {
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "clear");
         i.putExtra("notificationKeys", notificationKeys);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        getApplicationContext().sendBroadcast(i);
     }
 }

@@ -27,8 +27,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.Settings;
@@ -164,7 +162,7 @@ public class AlarmHandlerService extends BroadcastReceiver {
             notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
         } else {
             Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            context.sendBroadcast(intent);
         }
 
         AlarmNotificationService.cancelNotification(context);

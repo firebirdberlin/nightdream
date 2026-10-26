@@ -22,8 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.events.AppEventBus;
@@ -104,7 +102,7 @@ public class SqliteIntentService {
             }
             db.close();
         }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        context.sendBroadcast(intent);
     }
 
     static SimpleTime getLastActivatedAlarmTime() {

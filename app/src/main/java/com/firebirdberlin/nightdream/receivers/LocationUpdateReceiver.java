@@ -24,7 +24,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 public class LocationUpdateReceiver extends BroadcastReceiver {
@@ -45,18 +45,22 @@ public class LocationUpdateReceiver extends BroadcastReceiver {
         LocationUpdateReceiver receiver = new LocationUpdateReceiver();
         receiver.delegate = listener;
 
-        LocalBroadcastManager.getInstance(ctx).registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(ctx, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
     public static void unregister(Context ctx, BroadcastReceiver receiver) {
         if (receiver != null) {
-            LocalBroadcastManager.getInstance(ctx).unregisterReceiver(receiver);
+            try {
+                ctx.unregisterReceiver(receiver);
+            } catch (IllegalArgumentException ignored) {
+            }
         }
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (intent == null) return;
         if (ACTION_LOCATION_UPDATED.equals(intent.getAction())) {
             delegate.onLocationUpdated();
         } else
@@ -66,12 +70,12 @@ public class LocationUpdateReceiver extends BroadcastReceiver {
     }
 
     public static void send(Context ctx) {
-        LocalBroadcastManager.getInstance(ctx).sendBroadcast( new Intent(ACTION_LOCATION_UPDATED) );
+        ctx.sendBroadcast( new Intent(ACTION_LOCATION_UPDATED) );
     }
 
     public static void send(Context ctx, String action) {
         Log.i(TAG, action);
-        LocalBroadcastManager.getInstance(ctx).sendBroadcast( new Intent(action) );
+        ctx.sendBroadcast( new Intent(action) );
     }
 }
 

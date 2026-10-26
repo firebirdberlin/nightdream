@@ -43,7 +43,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
@@ -208,7 +208,7 @@ public class AlarmClock extends RelativeLayout {
 
     private void unregister(BroadcastReceiver receiver) {
         try {
-            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+            getContext().unregisterReceiver(receiver);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -219,7 +219,7 @@ public class AlarmClock extends RelativeLayout {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_ALARM_SET);
         filter.addAction(Config.ACTION_ALARM_DELETED);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, filter);
+        ContextCompat.registerReceiver(getContext(), receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
 
