@@ -67,6 +67,7 @@ public class CustomDigitalClock extends AutoAdjustTextView {
     private int hourColor = -1;
     private int minuteColor = -1;
     private int secondColor = -1;
+    private int secondsMode = 1;
 
     private final Runnable update = this::updateTextView;
 
@@ -158,7 +159,11 @@ public class CustomDigitalClock extends AutoAdjustTextView {
                 minuteStr = timeSegments[1];
             }
             if (timeSegments.length > 2) {
-                secondStr = " " + timeSegments[2];
+                if (secondsMode == 2) {
+                    secondStr = ":" + timeSegments[2];
+                } else {
+                    secondStr = " " + timeSegments[2];
+                }
             }
             String divider = ":";
             SpannableString spannableString = new SpannableString(
@@ -194,7 +199,9 @@ public class CustomDigitalClock extends AutoAdjustTextView {
             }
             if (secondColor != -1 && secondStart != -1) {
                 spannableString.setSpan(new ForegroundColorSpan(secondColor), secondStart, secondEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spannableString.setSpan(new RelativeSizeSpan(0.5f), secondStart, secondEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                if (secondsMode == 1) {
+                    spannableString.setSpan(new RelativeSizeSpan(0.5f), secondStart, secondEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
 
             if (!spannableString.equals(getText())){
@@ -367,6 +374,11 @@ public class CustomDigitalClock extends AutoAdjustTextView {
 
     public void setSecondColor(int color) {
         this.secondColor = color;
+        updateTextView();
+    }
+
+    public void setSecondsMode(int mode) {
+        this.secondsMode = mode;
         updateTextView();
     }
 

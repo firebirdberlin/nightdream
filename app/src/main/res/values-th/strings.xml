@@ -63,6 +63,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_keep_running_summary">เล่นวิทยุต่อเนื่องหลังจากหยุดนาฬิกาปลุกแล้ว</string>
     <string name="reset_theme_defaults_summary">รีเซ็ตการปรับแต่งสำหรับธีมที่ใช้งานเป็นค่าเริ่มต้น</string>
     <string name="screen_orientation_reverse_landscape">อุบลราชธานี</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">ปิด</string>
+    <string name="seconds_small">50%</string>
     <string name="show_calendar_events">ไฮไลท์กิจกรรม</string>
     <string name="theme_animation_enabled_summary">แสดงแอนิเมชันหิมะตกหรือดาวสีทอง</string>
     <string name="theme_animation_only_charging_summary">หยุดแอนิเมชันชั่วคราวเมื่อใช้แบตเตอรี่เพื่อประหยัดพลังงาน</string>

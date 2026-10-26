@@ -250,6 +250,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Revers portrett</string>
     <string name="screenOrientation">Orientering</string>
     <string name="screenProtectionMove">Flytt på klokken</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">Sett alarm</string>
     <string name="show_calendar_events">Uthev hendelser</string>
     <string name="show_date">Vis dato</string>

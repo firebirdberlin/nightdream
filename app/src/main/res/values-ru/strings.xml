@@ -377,6 +377,9 @@ OR
     <string name="seconds_15">15 сек.</string>
     <string name="seconds_30">30 сек.</string>
     <string name="seconds_60">60 сек.</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Ничего</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">Уст. будильник</string>
     <string name="show_alarm">Показывать будильники</string>
     <string name="show_apparent_temperature">Включить температуру по ощущению</string>

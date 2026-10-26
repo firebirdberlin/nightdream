@@ -38,6 +38,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_keep_running">Tetep uripake radio</string>
     <string name="radio_stream_keep_running_summary">Terusake muter aliran radio sawise weker dipateni.</string>
     <string name="reset_theme_defaults_summary">Riset kustomisasi kanggo tema aktif dadi standar.</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="show_calendar_events">Sorot acara</string>
     <string name="theme_animation_enabled_summary">Tampilkan animasi salju tiba utawa lintang emas.</string>
     <string name="theme_animation_only_charging_summary">Nggantung animasi nalika nganggo baterei kanggo ngirit daya.</string>

@@ -837,16 +837,33 @@ public class Settings {
         return settings.getBoolean(key, false);
     }
 
-    public void setShowSeconds(boolean showSeconds, int clockLayoutId) {
+    public void setSecondsMode(int mode, int clockLayoutId) {
         SharedPreferences.Editor prefEditor = settings.edit();
-        String key = getKeyForClockLayout("showSeconds", clockLayoutId);
-        prefEditor.putBoolean(key, showSeconds);
+        String key = getKeyForClockLayout("secondsMode", clockLayoutId);
+        prefEditor.putInt(key, mode);
+        String legacyKey = getKeyForClockLayout("showSeconds", clockLayoutId);
+        prefEditor.putBoolean(legacyKey, mode > 0);
         prefEditor.apply();
     }
 
+    public int getSecondsMode(int clockLayoutId) {
+        String key = getKeyForClockLayout("secondsMode", clockLayoutId);
+        if (settings.contains(key)) {
+            return settings.getInt(key, 0);
+        }
+        String legacyKey = getKeyForClockLayout("showSeconds", clockLayoutId);
+        if (settings.contains(legacyKey)) {
+            return settings.getBoolean(legacyKey, false) ? 1 : 0;
+        }
+        return 0;
+    }
+
+    public void setShowSeconds(boolean showSeconds, int clockLayoutId) {
+        setSecondsMode(showSeconds ? 1 : 0, clockLayoutId);
+    }
+
     public boolean getShowSeconds(int clockLayoutId) {
-        String key = getKeyForClockLayout("showSeconds", clockLayoutId);
-        return settings.getBoolean(key, false);
+        return getSecondsMode(clockLayoutId) > 0;
     }
 
     public int getColorHours(int clockLayoutId) {

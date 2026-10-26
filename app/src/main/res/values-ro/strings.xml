@@ -123,6 +123,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Portret inversat</string>
     <string name="screenOrientation">Orientarea ecranului</string>
     <string name="screenProtectionMove">Misca ceasul împrejur</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">Setează alarma</string>
     <string name="show_calendar_events">Evidențiați evenimente</string>
     <string name="show_date">Arata data</string>

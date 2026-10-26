@@ -178,6 +178,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Dikey ters</string>
     <string name="screenOrientation">Ekran yönlendirme</string>
     <string name="screenProtectionMove">Saati ekranda hareket ettir</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">Alarm kur</string>
     <string name="show_calendar_events">Etkinlikleri vurgula</string>
     <string name="show_date">Tarihi göster</string>

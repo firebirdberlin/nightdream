@@ -377,6 +377,9 @@ OR
     <string name="seconds_15">15 secondi</string>
     <string name="seconds_30">30 secondi</string>
     <string name="seconds_60">60 secondi</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Non attivo</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">imposta allarme</string>
     <string name="show_alarm">Mostra sveglie</string>
     <string name="show_apparent_temperature">Mostra stima temperatura</string>
