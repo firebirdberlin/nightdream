@@ -8,6 +8,7 @@ def getApiKeyOWM() {
     if (localPropertiesFile.exists()) {
         properties.load(localPropertiesFile.newDataInputStream())
     }
+
     return properties.getProperty("apikey.owm", "")
 }
 
@@ -81,9 +82,9 @@ android {
         unitTests.returnDefaultValues = true
     }
     compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
         buildConfig = true
@@ -103,19 +104,20 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
     implementation 'androidx.fragment:fragment-ktx:1.9.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0"
-    implementation 'androidx.palette:palette-ktx:1.0.0'
+    implementation 'androidx.palette:palette-ktx:1.1.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.work:work-multiprocess:2.12.0'
     implementation 'androidx.work:work-runtime-ktx:2.12.0'
 
     // Google Libraries
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'androidx.media3:media3-exoplayer:1.11.1'
     implementation 'androidx.media3:media3-ui:1.11.1'
     implementation 'androidx.media3:media3-session:1.11.1'
     implementation 'androidx.media3:media3-exoplayer-hls:1.11.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.14.0'
-    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'com.google.code.gson:gson:2.15.0'
 
     // Third-party Libraries
     implementation 'com.android.volley:volley:1.2.1'
@@ -129,9 +131,13 @@ dependencies {
 
     // Full flavor specific dependencies
     fullImplementation 'com.android.billingclient:billing:9.1.0'
-    fullImplementation 'com.google.android.gms:play-services-cast-framework:22.3.1'
+    fullImplementation 'com.google.android.gms:play-services-cast-framework:23.0.0'
     fullImplementation 'androidx.media3:media3-cast:1.11.1'
     fullImplementation 'com.google.android.play:review:2.0.2'
     // Testing Libraries
     testImplementation 'junit:junit:4.13.2'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
 }

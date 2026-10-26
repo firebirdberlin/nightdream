@@ -462,10 +462,10 @@ OR
     <string name="text_size">Schriftgröße</string>
     <string-array name="themeEntries">
         <item>Standard</item>
-        <item>Halloween-Analogon</item>
+        <item>Halloween Analog</item>
         <item>Halloween Digital</item>
-        <item>Weihnachtsanalog</item>
-        <item>Weihnachten digital</item>
+        <item>Weihnachten Analog</item>
+        <item>Weihnachten Digital</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
