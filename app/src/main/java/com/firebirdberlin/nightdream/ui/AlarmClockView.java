@@ -81,7 +81,7 @@ public class AlarmClockView extends View {
     private boolean useLongPress = false;
     private float sliderHandleX = -1;
     private boolean isSliding = false;
-    private int customColor = Color.parseColor("#33B5E5");
+    private int customColor = Color.parseColor("#2196F3");
     private int paddingHorizontal = 0;
     private ColorFilter customColorFilter;
     private boolean blinkStateOn = false;
