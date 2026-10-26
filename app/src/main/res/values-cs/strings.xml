@@ -22,7 +22,7 @@ OR
     <string name="action_stop">Zastavení</string>
     <string name="activateDoNotDisturb">Aktivuj - nerušit</string>
     <string name="activateDoNotDisturbAllowPriority">povolit prioritní</string>
-    <string name="activateDoNotDisturbSummary">Přejít do režimu "nerušit" když je aplikace aktivní</string>
+    <string name="activateDoNotDisturbSummary">Přejít do režimu \"nerušit\" když je aplikace aktivní</string>
     <string name="active_theme">Aktivní téma</string>
     <string name="add_custom_alarm_tone">uživatelský tón budíku</string>
     <string name="add_custom_font">uživatelské písmo</string>
@@ -38,22 +38,27 @@ OR
     <string name="alarmVolume">Hlasitost</string>
     <string name="allow_screen_off">Vypnout obrazovku</string>
     <string name="allow_screen_off_summary">Vypnout obrazovku v noci</string>
-    <string name="always_on">Vždy zapnuto</string>
     <string name="alwaysOnBatteryLevel">Stav baterie nad</string>
     <string name="alwaysOnStartWithLockedUI">Zamknout uživatelské rozhraní</string>
     <string name="alwaysOnStartWithLockedUIDesc">Při spuštění aplikace automaticky zamknout uživatelské rozhraní. Dlouhým stisknutím ikony zámku odemknete.</string>
+    <string name="always_on">Vždy zapnuto</string>
     <string name="ambient_noise">Detekce zvuků v okolí</string>
     <string name="ambient_noise_summary">Chcete aby zvuky z okolí zařízení zabránili zapnutí nočního režimu?</string>
     <string name="animations">Animace</string>
     <string name="app_name">Noční hodiny</string>
     <string name="appearance">Vzhled</string>
     <string name="auto_brightness">Automatický jas</string>
+    <string name="autostartForNotificationsSummary">Aktivovat aplikaci, když jsou zobrazena nová oznámení</string>
+    <string name="autostartForNotificationsTitle">Notifikace</string>
     <string name="autostart_message_disabled">Pro funkci automatického startu vypněte šetřič obrazovky.</string>
     <string name="autostart_timerange_label_end">Koncový čas</string>
     <string name="autostart_timerange_label_start">Počáteční čas</string>
-    <string name="autostartForNotificationsSummary">Aktivovat aplikaci, když jsou zobrazena nová oznámení</string>
-    <string name="autostartForNotificationsTitle">Notifikace</string>
     <string name="background">Pozadí</string>
+    <string name="backgroundServiceDialogMessage">Zastavení služby na pozadí zakáže automatické spouštění, stand-by režim a odhady výdrže na baterii. Widgety nebudou nadále aktualizovány. Pokračovat?</string>
+    <string name="backgroundServiceDialogTitle">Zastavit službu na pozadí</string>
+    <string name="backgroundServiceNotificationText">Služba na pozadí běží.</string>
+    <string name="backgroundServiceNotificationTextLocation">Probíhá aktualizace polohy.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Služba nočního režimu běží.</string>
     <string name="background_auto_accent_color">Automatický výběr barvy</string>
     <string name="background_auto_accent_summary">Automaticky vybrat vhodnou barvu akcentu.</string>
     <string name="background_black">Černé</string>
@@ -85,11 +90,6 @@ OR
     <string name="background_transparent">Průhledné</string>
     <string name="background_zoomin">Animace přiblížení</string>
     <string name="background_zoomin_summary">Automaticky přibližovat obrázek na pozadí.</string>
-    <string name="backgroundServiceDialogMessage">Zastavení služby na pozadí zakáže automatické spouštění, stand-by režim a odhady výdrže na baterii. Widgety nebudou nadále aktualizovány. Pokračovat?</string>
-    <string name="backgroundServiceDialogTitle">Zastavit službu na pozadí</string>
-    <string name="backgroundServiceNotificationText">Služba na pozadí běží.</string>
-    <string name="backgroundServiceNotificationTextLocation">Probíhá aktualizace polohy.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Služba nočního režimu běží.</string>
     <string name="battery">Baterie</string>
     <string name="batteryTimeout10min">10 minut</string>
     <string name="batteryTimeout15min">15 minut</string>
@@ -122,6 +122,7 @@ OR
     <string name="choose_secondary_color">Barva textu</string>
     <string name="clear">vyčistit</string>
     <string name="clock">Hodiny</string>
+    <string name="clockBackgroundTransparency">Průhlednost pozadí hodin</string>
     <string name="clock_hands">ručičkové</string>
     <string name="clock_layout">Rozložení hodín</string>
     <string name="clock_layout_analog">analogové</string>
@@ -135,7 +136,6 @@ OR
     <string name="clock_layout_elegant_analog">elegantní analogové</string>
     <string name="clock_layout_mirror_text">Zrcadlit text</string>
     <string name="clock_layout_modern_analog">moderní analogové</string>
-    <string name="clockBackgroundTransparency">Průhlednost pozadí hodin</string>
     <string name="colors">Barvy</string>
     <string name="confirm_reset">Obnova</string>
     <string name="confirm_reset_question">Opravu chcete obnovit výchozí nastavení?</string>
@@ -230,6 +230,7 @@ OR
     <string name="night_mode_timerange_title">Noční čas</string>
     <string name="no_alarm_set">není nastaven žádný budík</string>
     <string name="noise_sensitivity">Citlivost mikrofonu</string>
+    <string name="notificationListenerService">Služba naslouchání oznámením</string>
     <string name="notification_channel_desc_alarms">Oznámení zobrazené při budíku</string>
     <string name="notification_channel_desc_copy_images">Oznámení indikující běžící službu pro kopírování obrázků</string>
     <string name="notification_channel_desc_devmsg">Zprávy o aplikaci</string>
@@ -253,17 +254,16 @@ OR
     <string name="notification_show_mediastyle_title">Ovládání médií</string>
     <string name="notification_show_preview_summary">Zobrazit náhled příchozích oznámení</string>
     <string name="notification_show_preview_title">Náhled oznámení</string>
-    <string name="notificationListenerService">Služba naslouchání oznámením</string>
     <string name="notifications">Oznámení</string>
-    <string name="notifications_options">Možnosti oznámení</string>
     <string name="notificationsInStatusBarSummary">Zobrazovat oznámení ve stavovém řádku, pokud je povolený. Jinak přidat řádek.</string>
     <string name="notificationsInStatusBarTitle">Stavový řádek</string>
+    <string name="notifications_options">Možnosti oznámení</string>
     <string name="notifyForUpcomingAlarmsSummary">Upozornit na nadcházející budíky</string>
     <string name="notifyForUpcomingAlarmsTitle">Upozornit předem</string>
-    <string name="numbers">Čísla</string>
     <string name="numberStyleArabic">Arabská</string>
     <string name="numberStyleNone">Žádný</string>
     <string name="numberStyleRoman">Římská</string>
+    <string name="numbers">Čísla</string>
     <string name="only_animate_when_charging">Animovat pouze při nabíjení</string>
     <string name="open_weather_map_api_key">Klíč API OpenWeatherMap</string>
     <string name="open_weather_map_api_key_summary">Zadejte svůj klíč API pro OpenWeatherMap. Získejte jej na openweathermap.org</string>
@@ -277,6 +277,16 @@ OR
     <string name="other_apps_tinytimetracker_summary">Sledocat váš denní pracovní režim.</string>
     <string name="outer_circle_radius">Poloměr vnějšího kruhu</string>
     <string name="outer_circle_width">Tloušťka vnějšího kruhu</string>
+    <string-array name="particleEffectEntries">
+        <item>Žádný</item>
+        <item>Padající sníh</item>
+        <item>Zlaté hvězdy</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">Částicový efekt</string>
     <string name="permission_request">Žádost o povolení</string>
     <string name="permission_request_location_mode">Aktuálně povolený režim polohy neumožňuje skenování aktuální polohy.</string>
@@ -363,16 +373,16 @@ OR
     <string name="scheduledAutoStartEnabledTitle">Plánovaný automatický start</string>
     <string name="scheduledAutoStartTimeRange">časový rozsah</string>
     <string name="screen">Obrazovka</string>
-    <string name="screen_orientation_automatic">automaticky</string>
-    <string name="screen_orientation_landscape">na šířku</string>
-    <string name="screen_orientation_portrait">na výšku</string>
-    <string name="screen_orientation_reverse_landscape">obráceně na šířku</string>
-    <string name="screen_orientation_reverse_portrait">obráceně na výšku</string>
     <string name="screenOrientation">Orientace obrazovky</string>
     <string name="screenProtection">Ochrana proti vypálení obrazovky</string>
     <string name="screenProtectionFade">Stmívání hodin</string>
     <string name="screenProtectionMove">Posunovat hodiny po displeji</string>
     <string name="screenProtectionNone">Žádná</string>
+    <string name="screen_orientation_automatic">automaticky</string>
+    <string name="screen_orientation_landscape">na šířku</string>
+    <string name="screen_orientation_portrait">na výšku</string>
+    <string name="screen_orientation_reverse_landscape">obráceně na šířku</string>
+    <string name="screen_orientation_reverse_portrait">obráceně na výšku</string>
     <string name="seconds_15">15 sekund</string>
     <string name="seconds_30">30 sekund</string>
     <string name="seconds_60">60 sekund</string>
@@ -380,16 +390,6 @@ OR
     <string name="seconds_off">Žádná</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">nastavit budík</string>
-    <string name="show_alarm">Zobrazit budíky</string>
-    <string name="show_apparent_temperature">zahrnout pocitovou teplotu</string>
-    <string name="show_calendar_events">Zvýraznit události</string>
-    <string name="show_date">Zobrazit datum</string>
-    <string name="show_divider">Rozdělit linkou</string>
-    <string name="show_second_hand">zobrazit vteřinovou ručičku</string>
-    <string name="show_seconds">Zobrazit sekundy</string>
-    <string name="show_temperature">Zobrazit teplotu</string>
-    <string name="show_weather">Zobrazit místní počasí</string>
-    <string name="show_wind_speed">Zobrazit rychlost větru</string>
     <string name="showAlarmsPersistently">Zobrazovat trvale</string>
     <string name="showAlarmsPersistentlySummary">Trvale zobrazovat čas příštího budíku na obrazovce.</string>
     <string name="showBattery">Zobrazit baterii</string>
@@ -411,6 +411,16 @@ OR
     <string name="showPollenIndex6">vysoká</string>
     <string name="showPollenNoData">Žádná data pro tuto oblast. Index pylového rizika je k dispozici pouze pro německé lokality.</string>
     <string name="showPollenSummary">k dispozici pouze pro německé lokality</string>
+    <string name="show_alarm">Zobrazit budíky</string>
+    <string name="show_apparent_temperature">zahrnout pocitovou teplotu</string>
+    <string name="show_calendar_events">Zvýraznit události</string>
+    <string name="show_date">Zobrazit datum</string>
+    <string name="show_divider">Rozdělit linkou</string>
+    <string name="show_second_hand">zobrazit vteřinovou ručičku</string>
+    <string name="show_seconds">Zobrazit sekundy</string>
+    <string name="show_temperature">Zobrazit teplotu</string>
+    <string name="show_weather">Zobrazit místní počasí</string>
+    <string name="show_wind_speed">Zobrazit rychlost větru</string>
     <string name="sleep_time_dialog_title">Časovač spánku</string>
     <string name="slideshow_center_animated">animované</string>
     <string name="slideshow_center_crop">oříznout okraje</string>
@@ -448,6 +458,20 @@ OR
     <string name="suggestions_summary">Dejte nám vědět, pokud máte nějaké návrhy pro nadcházející verze.</string>
     <string name="temperatureUnit">Jednotky pro teplotu</string>
     <string name="text_size">Velikost textu</string>
+    <string-array name="themeEntries">
+        <item>Norma</item>
+        <item>Halloweenský analog</item>
+        <item>Halloween digitální</item>
+        <item>Vánoční analog</item>
+        <item>Vánoční digitální</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Zobrazit animaci padajícího sněhu nebo zlatých hvězd.</string>
     <string name="theme_animation_only_charging_summary">Pozastaví animace při provozu na baterii pro úsporu energie.</string>
     <string name="theme_reset_to_defaults">Téma obnoveno na výchozí</string>
@@ -487,6 +511,7 @@ OR
     <string name="useDeviceLockDescription">Zamykání obrazovky vyžaduje práva administrátora. Zrušte toto nastavení, abyste mohli odinstalovat aplikaci.</string>
     <string name="useDeviceLockExplanation">Zamknout zařízení, zatímco je aplikace aktivní. Zrušte toto nastavení, abyste mohli odinstalovat.</string>
     <string name="weather">Počasí</string>
+    <string name="weatherProvider">Zdroj počasí</string>
     <string name="weather_calculation_time">čas předpovědi počasí</string>
     <string name="weather_city_id_title">Vyhledat lokalitu</string>
     <string name="weather_current_location">Aktuální poloha</string>
@@ -497,7 +522,6 @@ OR
     <string name="weather_info_title">Informace</string>
     <string name="weather_sun_rise">Východ slunce</string>
     <string name="weather_sun_set">Západ slunce</string>
-    <string name="weatherProvider">Zdroj počasí</string>
     <string name="weekdays">všední dny</string>
     <string name="width">Šířka</string>
 </resources>

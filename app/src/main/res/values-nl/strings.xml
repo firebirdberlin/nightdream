@@ -38,22 +38,27 @@ OR
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off">Scherm uitzetten</string>
     <string name="allow_screen_off_summary">Scherm \'s nachts uitzetten.</string>
-    <string name="always_on">Altijd aan</string>
     <string name="alwaysOnBatteryLevel">Batterijniveau is hoger dan</string>
     <string name="alwaysOnStartWithLockedUI">Vergrendel het bedieningsscherm</string>
     <string name="alwaysOnStartWithLockedUIDesc">Vergrendel het bedieninsscherm bij het automatisch opstarten van de app. Druk lang op het ontsluitingsicoon om te ontgrendelen.</string>
+    <string name="always_on">Altijd aan</string>
     <string name="ambient_noise">Omgevingsgeluiddetectie</string>
     <string name="ambient_noise_summary">Moet omgevingsgeluid de nachtmodus verhinderen?</string>
     <string name="animations">Animaties</string>
     <string name="app_name">Nachtklok</string>
     <string name="appearance">Uiterlijk</string>
     <string name="auto_brightness">Automatische helderheid</string>
+    <string name="autostartForNotificationsSummary">Activeer de app als nieuwe berichten getoond worden</string>
+    <string name="autostartForNotificationsTitle">Berichten</string>
     <string name="autostart_message_disabled">Zet de schermbeveiliging (Dagdromen) uit om de automatische startopties te activeren.</string>
     <string name="autostart_timerange_label_end">Eindtijd</string>
     <string name="autostart_timerange_label_start">Begintijd</string>
-    <string name="autostartForNotificationsSummary">Activeer de app als nieuwe berichten getoond worden</string>
-    <string name="autostartForNotificationsTitle">Berichten</string>
     <string name="background">Achtergrond</string>
+    <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
+    <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
+    <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
+    <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
+    <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
     <string name="background_auto_accent_color">Automatische kleur selectie</string>
     <string name="background_auto_accent_summary">Selecteer automatisch een toepasselijke accent kleur</string>
     <string name="background_black">Zwart</string>
@@ -85,11 +90,6 @@ OR
     <string name="background_transparent">Transparant</string>
     <string name="background_zoomin">Zoom animatie</string>
     <string name="background_zoomin_summary">Automatisch zoomen in achtergrond foto</string>
-    <string name="backgroundServiceDialogMessage">Het stoppen van de achtergrond service zal de autostart uitschakelen en ook de standby modus en de batterijvoorspelling. Doorgaan?</string>
-    <string name="backgroundServiceDialogTitle">Stop achtergrondservice</string>
-    <string name="backgroundServiceNotificationText">Achtergrondservice actief</string>
-    <string name="backgroundServiceNotificationTextLocation">Locatie-update is bezig</string>
-    <string name="backgroundServiceNotificationTextNightMode">Nachtmodus actief</string>
     <string name="battery">Batterij</string>
     <string name="batteryTimeout10min">10 min</string>
     <string name="batteryTimeout15min">15 min</string>
@@ -122,6 +122,7 @@ OR
     <string name="choose_secondary_color">Tekstkleur</string>
     <string name="clear">wissen</string>
     <string name="clock">Klok</string>
+    <string name="clockBackgroundTransparency">Transparantie van de achtergrond van de klok</string>
     <string name="clock_hands">Wijzers</string>
     <string name="clock_layout">Indeling</string>
     <string name="clock_layout_analog">analoge klok</string>
@@ -135,7 +136,6 @@ OR
     <string name="clock_layout_elegant_analog">elegante analoge klok</string>
     <string name="clock_layout_mirror_text">Tekst spiegelen</string>
     <string name="clock_layout_modern_analog">moderne analoge klok</string>
-    <string name="clockBackgroundTransparency">Transparantie van de achtergrond van de klok</string>
     <string name="colors">Kleuren</string>
     <string name="confirm_reset">Standaardwaarden</string>
     <string name="confirm_reset_question">Weet je zeker dat je alle instellingen wilt terugzetten?</string>
@@ -230,6 +230,7 @@ OR
     <string name="night_mode_timerange_title">Nachttijd</string>
     <string name="no_alarm_set">geen alarm ingesteld</string>
     <string name="noise_sensitivity">Gevoeligheid van microfoon</string>
+    <string name="notificationListenerService">Notificatie luisterdienst</string>
     <string name="notification_channel_desc_alarms">Notificatie weergave tijdens alarm</string>
     <string name="notification_channel_desc_copy_images">Melding die aangeeft dat de service voor het kopiëren van afbeeldingen actief is</string>
     <string name="notification_channel_desc_devmsg">Berichten over deze app</string>
@@ -253,17 +254,16 @@ OR
     <string name="notification_show_mediastyle_title">Media-instellingen</string>
     <string name="notification_show_preview_summary">Toon een voorbeeld van inkomende meldingen</string>
     <string name="notification_show_preview_title">Voorbeeld van melding</string>
-    <string name="notificationListenerService">Notificatie luisterdienst</string>
     <string name="notifications">Notificaties</string>
-    <string name="notifications_options">Berichtopties</string>
     <string name="notificationsInStatusBarSummary">Meldingen weergeven in de statusbalk indien ingeschakeld. Voeg anders een extra rij toe.</string>
     <string name="notificationsInStatusBarTitle">Statusbalk</string>
+    <string name="notifications_options">Berichtopties</string>
     <string name="notifyForUpcomingAlarmsSummary">Melding voor aankomende alarmen</string>
     <string name="notifyForUpcomingAlarmsTitle">Vooraf melden</string>
-    <string name="numbers">Cijfers</string>
     <string name="numberStyleArabic">Arabisch</string>
     <string name="numberStyleNone">Geen</string>
     <string name="numberStyleRoman">Romeins</string>
+    <string name="numbers">Cijfers</string>
     <string name="only_animate_when_charging">Alleen animeren tijdens opladen</string>
     <string name="open_weather_map_api_key">OpenWeatherMap API-sleutel</string>
     <string name="open_weather_map_api_key_summary">Voer uw API-sleutel voor OpenWeatherMap in. Vraag er een aan op openweathermap.org</string>
@@ -277,6 +277,16 @@ OR
     <string name="other_apps_tinytimetracker_summary">Houd je werkuren bij.</string>
     <string name="outer_circle_radius">Straal van buitenste cirkel</string>
     <string name="outer_circle_width">Diameter van buitenste cirkel</string>
+    <string-array name="particleEffectEntries">
+        <item>None</item>
+        <item>Falling Snow</item>
+        <item>Golden Stars</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">Deeltjeseffect</string>
     <string name="permission_request">Verzoek om toestemming</string>
     <string name="permission_request_location_mode">de locatiemode laat scannen naar de huidige locatie niet toe</string>
@@ -364,16 +374,16 @@ OR
     <string name="scheduledAutoStartEnabledTitle">Gepland starten</string>
     <string name="scheduledAutoStartTimeRange">tijdgedeelte</string>
     <string name="screen">Scherm</string>
-    <string name="screen_orientation_automatic">automatisch</string>
-    <string name="screen_orientation_landscape">landschap</string>
-    <string name="screen_orientation_portrait">portret</string>
-    <string name="screen_orientation_reverse_landscape">omgekeerd landschap</string>
-    <string name="screen_orientation_reverse_portrait">omgekeerd portret</string>
     <string name="screenOrientation">Schermoriëntatie</string>
     <string name="screenProtection">Inbrandbescherming</string>
     <string name="screenProtectionFade">Laat klok vervagen</string>
     <string name="screenProtectionMove">Klok willekeurig verplaatsen</string>
     <string name="screenProtectionNone">Geen</string>
+    <string name="screen_orientation_automatic">automatisch</string>
+    <string name="screen_orientation_landscape">landschap</string>
+    <string name="screen_orientation_portrait">portret</string>
+    <string name="screen_orientation_reverse_landscape">omgekeerd landschap</string>
+    <string name="screen_orientation_reverse_portrait">omgekeerd portret</string>
     <string name="seconds_15">15 seconden</string>
     <string name="seconds_30">30 seconden</string>
     <string name="seconds_60">60 seconden</string>
@@ -381,16 +391,6 @@ OR
     <string name="seconds_off">Geen</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">alarm instellen</string>
-    <string name="show_alarm">Alarmen tonen</string>
-    <string name="show_apparent_temperature">Toon gevoelstemperatuur</string>
-    <string name="show_calendar_events">Toon agenda-events</string>
-    <string name="show_date">Datum tonen</string>
-    <string name="show_divider">Scheidingslijn tonen</string>
-    <string name="show_second_hand">Toon tweede wijzer</string>
-    <string name="show_seconds">Toon seconden</string>
-    <string name="show_temperature">Temperatuur tonen</string>
-    <string name="show_weather">Lokaal weerbericht tonen</string>
-    <string name="show_wind_speed">Windsnelheid tonen</string>
     <string name="showAlarmsPersistently">Aanhoudend tonen</string>
     <string name="showAlarmsPersistentlySummary">Toon het volgende alarm aanhoudend op het scherm</string>
     <string name="showBattery">Batterij tonen</string>
@@ -412,6 +412,16 @@ OR
     <string name="showPollenIndex6">hoog</string>
     <string name="showPollenNoData">Geen gegevens voor dit gebied. Pollenrisico-index alleen beschikbaar voor Duitse locaties.</string>
     <string name="showPollenSummary">Disponibile solo per località in Germania</string>
+    <string name="show_alarm">Alarmen tonen</string>
+    <string name="show_apparent_temperature">Toon gevoelstemperatuur</string>
+    <string name="show_calendar_events">Toon agenda-events</string>
+    <string name="show_date">Datum tonen</string>
+    <string name="show_divider">Scheidingslijn tonen</string>
+    <string name="show_second_hand">Toon tweede wijzer</string>
+    <string name="show_seconds">Toon seconden</string>
+    <string name="show_temperature">Temperatuur tonen</string>
+    <string name="show_weather">Lokaal weerbericht tonen</string>
+    <string name="show_wind_speed">Windsnelheid tonen</string>
     <string name="sleep_time_dialog_title">Bedtijd</string>
     <string name="slideshow_center_animated">geanimeerd</string>
     <string name="slideshow_center_crop">snij randen bij</string>
@@ -449,6 +459,20 @@ OR
     <string name="suggestions_summary">suggesties_samenvatting</string>
     <string name="temperatureUnit">Temperatuureenheid</string>
     <string name="text_size">Tekstgrootte</string>
+    <string-array name="themeEntries">
+        <item>Standard</item>
+        <item>Halloween Analog</item>
+        <item>Halloween Digital</item>
+        <item>Christmas Analog</item>
+        <item>Christmas Digital</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Animatie voor vallende sneeuw of gouden sterren tonen.</string>
     <string name="theme_animation_only_charging_summary">Pauzeert animaties op batterij om stroom te besparen.</string>
     <string name="theme_reset_to_defaults">Thema hersteld naar standaardwaarden</string>
@@ -488,6 +512,7 @@ OR
     <string name="useDeviceLockDescription">De vergrendel-optie heeft administrator-machtigingen nodig. Schakel deze optie uit voordat je de app verwijdert.</string>
     <string name="useDeviceLockExplanation">Apparaat vergrendelen terwijl de app draait. Trek deze machtiging in voordat je de app verwijdert.</string>
     <string name="weather">Weer</string>
+    <string name="weatherProvider">Weersdienst leverancier</string>
     <string name="weather_calculation_time">Weerberekeningstijd</string>
     <string name="weather_city_id_title">Locatie zoeken</string>
     <string name="weather_current_location">Huidige locatie</string>
@@ -498,7 +523,6 @@ OR
     <string name="weather_info_title">Informatie</string>
     <string name="weather_sun_rise">Zonsopgang</string>
     <string name="weather_sun_set">Zonsondergang</string>
-    <string name="weatherProvider">Weersdienst leverancier</string>
     <string name="weekdays">Dagen van de week</string>
     <string name="width">Breedte</string>
 </resources>

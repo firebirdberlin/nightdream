@@ -20,9 +20,9 @@ OR
     <string name="action_skip">Пропустити</string>
     <string name="action_snooze">Повторити пізніше</string>
     <string name="action_stop">Вимкнути</string>
-    <string name="activateDoNotDisturb">"Не турбувати"</string>
-    <string name="activateDoNotDisturbAllowPriority">"Не турбувати" дозволивши сповіщення</string>
-    <string name="activateDoNotDisturbSummary">"Не турбувати" коли активна програма</string>
+    <string name="activateDoNotDisturb">\"Не турбувати\"</string>
+    <string name="activateDoNotDisturbAllowPriority">\"Не турбувати\" дозволивши сповіщення</string>
+    <string name="activateDoNotDisturbSummary">\"Не турбувати\" коли активна програма</string>
     <string name="active_theme">Активна тема</string>
     <string name="add_custom_alarm_tone">Додати власний тон сигналу</string>
     <string name="add_custom_font">Додати власний шрифт</string>
@@ -38,22 +38,27 @@ OR
     <string name="alarmVolume">Гучність</string>
     <string name="allow_screen_off">Вимикати екран</string>
     <string name="allow_screen_off_summary">Вимикати екран на ніч</string>
-    <string name="always_on">Завжди включено</string>
     <string name="alwaysOnBatteryLevel">Рівень заряду батареї вище</string>
     <string name="alwaysOnStartWithLockedUI">Включати з блокуванням екрану</string>
     <string name="alwaysOnStartWithLockedUIDesc">При запуску програми автоматично блокувати інтерфейс користувача. Довге натискання на іконку замка для розблокування.</string>
+    <string name="always_on">Завжди включено</string>
     <string name="ambient_noise">Виявлення стороннього шуму</string>
     <string name="ambient_noise_summary">Вимикати нічний режим при наявності стороннього шуму?</string>
     <string name="animations">Анімації</string>
     <string name="app_name">Нічний годинник</string>
     <string name="appearance">Вигляд</string>
     <string name="auto_brightness">Автояскравість</string>
+    <string name="autostartForNotificationsSummary">Активувати програму при появі нових сповіщень.</string>
+    <string name="autostartForNotificationsTitle">Сповіщення</string>
     <string name="autostart_message_disabled">Будь ласка, вимкніть заставку (Daydream), щоб активувати меню автозапуску.</string>
     <string name="autostart_timerange_label_end">Час закінчення</string>
     <string name="autostart_timerange_label_start">Час початку</string>
-    <string name="autostartForNotificationsSummary">Активувати програму при появі нових сповіщень.</string>
-    <string name="autostartForNotificationsTitle">Сповіщення</string>
     <string name="background">Фон</string>
+    <string name="backgroundServiceDialogMessage">Зупинка фонової служби вимкне автозапуск та режим очікування. Продовжити?</string>
+    <string name="backgroundServiceDialogTitle">Зупинити фонову службу</string>
+    <string name="backgroundServiceNotificationText">Фонова служба працює.</string>
+    <string name="backgroundServiceNotificationTextLocation">Виконується оновлення місцезнаходження.</string>
+    <string name="backgroundServiceNotificationTextNightMode">Служба нічного режиму працює.</string>
     <string name="background_auto_accent_color">Автоматичний вибір кольору</string>
     <string name="background_auto_accent_summary">Автоматично вибирати відповідний колір акценту.</string>
     <string name="background_black">Чорний</string>
@@ -85,11 +90,6 @@ OR
     <string name="background_transparent">Прозорий</string>
     <string name="background_zoomin">Анімація масштабування</string>
     <string name="background_zoomin_summary">Автоматично масштабувати фонове зображення.</string>
-    <string name="backgroundServiceDialogMessage">Зупинка фонової служби вимкне автозапуск та режим очікування. Продовжити?</string>
-    <string name="backgroundServiceDialogTitle">Зупинити фонову службу</string>
-    <string name="backgroundServiceNotificationText">Фонова служба працює.</string>
-    <string name="backgroundServiceNotificationTextLocation">Виконується оновлення місцезнаходження.</string>
-    <string name="backgroundServiceNotificationTextNightMode">Служба нічного режиму працює.</string>
     <string name="battery">Батарея</string>
     <string name="batteryTimeout10min">10 хв</string>
     <string name="batteryTimeout15min">15 хв</string>
@@ -122,6 +122,7 @@ OR
     <string name="choose_secondary_color">Колір тексту</string>
     <string name="clear">очистити</string>
     <string name="clock">Годинник</string>
+    <string name="clockBackgroundTransparency">Прозорість фону годинника</string>
     <string name="clock_hands">Годинникові стрілки</string>
     <string name="clock_layout">Стиль</string>
     <string name="clock_layout_analog">аналоговий</string>
@@ -135,7 +136,6 @@ OR
     <string name="clock_layout_elegant_analog">Елегпнтний аналоговий годинник</string>
     <string name="clock_layout_mirror_text">Дзеркальний текст</string>
     <string name="clock_layout_modern_analog">Сучасний аналоговий годинник</string>
-    <string name="clockBackgroundTransparency">Прозорість фону годинника</string>
     <string name="colors">Забарвлення</string>
     <string name="confirm_reset">Скинути</string>
     <string name="confirm_reset_question">Ви дійсно бажаєте скинути налаштування?</string>
@@ -230,6 +230,7 @@ OR
     <string name="night_mode_timerange_title">Нічний час</string>
     <string name="no_alarm_set">будильник не встановлено</string>
     <string name="noise_sensitivity">Чутливість мікрофону </string>
+    <string name="notificationListenerService">Служба прослуховування сповіщень</string>
     <string name="notification_channel_desc_alarms">Сповіщення, що з’являється під час будильників</string>
     <string name="notification_channel_desc_copy_images">Сповіщення, що вказує на запущену службу копіювання зображень</string>
     <string name="notification_channel_desc_devmsg">Повідомлення стосовно програми</string>
@@ -253,17 +254,16 @@ OR
     <string name="notification_show_mediastyle_title">Керування медіа</string>
     <string name="notification_show_preview_summary">Показувати попередній перегляд вхідних сповіщень</string>
     <string name="notification_show_preview_title">Попередній перегляд сповіщень</string>
-    <string name="notificationListenerService">Служба прослуховування сповіщень</string>
     <string name="notifications">Сповіщення</string>
-    <string name="notifications_options">Параметри сповіщень</string>
     <string name="notificationsInStatusBarSummary">Показувати сповіщення в рядку стану, якщо увімкнено. В іншому випадку додати додатковий рядок.</string>
     <string name="notificationsInStatusBarTitle">Рядок стану</string>
+    <string name="notifications_options">Параметри сповіщень</string>
     <string name="notifyForUpcomingAlarmsSummary">Сповіщати про майбутні будильники</string>
     <string name="notifyForUpcomingAlarmsTitle">Сповіщати заздалегідь</string>
-    <string name="numbers">Цифри</string>
     <string name="numberStyleArabic">Арабський</string>
     <string name="numberStyleNone">Немає</string>
     <string name="numberStyleRoman">Римський</string>
+    <string name="numbers">Цифри</string>
     <string name="only_animate_when_charging">Анімація лише під час заряджання</string>
     <string name="open_weather_map_api_key">API ключ OpenWeatherMap</string>
     <string name="open_weather_map_api_key_summary">Введіть ваш API ключ для OpenWeatherMap. Отримайте його на openweathermap.org</string>
@@ -277,6 +277,16 @@ OR
     <string name="other_apps_tinytimetracker_summary">Слідкуйте, скільки часу проводите щодня за роботою.</string>
     <string name="outer_circle_radius">Зовнішній радіус кола</string>
     <string name="outer_circle_width">Зовнішня ширина кола</string>
+    <string-array name="particleEffectEntries">
+        <item>Жодного</item>
+        <item>Падає сніг</item>
+        <item>Золоті Зірки</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">Ефект частинок</string>
     <string name="permission_request">Запит дозволу</string>
     <string name="permission_request_location_mode">Поточний увімкнений режим місцезнаходження не дозволяє сканувати поточне місцезнаходження.</string>
@@ -364,16 +374,16 @@ OR
     <string name="scheduledAutoStartEnabledTitle">Запланований автозапуск</string>
     <string name="scheduledAutoStartTimeRange">часовий діапазон</string>
     <string name="screen">Екран</string>
-    <string name="screen_orientation_automatic">автоматична</string>
-    <string name="screen_orientation_landscape">горизонтальна</string>
-    <string name="screen_orientation_portrait">вертикальна</string>
-    <string name="screen_orientation_reverse_landscape">горизонтальна 180 град.</string>
-    <string name="screen_orientation_reverse_portrait">вертикальна 180 град.</string>
     <string name="screenOrientation">Орієнтація екрану</string>
     <string name="screenProtection">Захист від вигорання екрана</string>
     <string name="screenProtectionFade">Затухання годинника</string>
     <string name="screenProtectionMove">Переміщати годинник по екрану</string>
     <string name="screenProtectionNone">Немає</string>
+    <string name="screen_orientation_automatic">автоматична</string>
+    <string name="screen_orientation_landscape">горизонтальна</string>
+    <string name="screen_orientation_portrait">вертикальна</string>
+    <string name="screen_orientation_reverse_landscape">горизонтальна 180 град.</string>
+    <string name="screen_orientation_reverse_portrait">вертикальна 180 град.</string>
     <string name="seconds_15">15 секунд</string>
     <string name="seconds_30">30 секунд</string>
     <string name="seconds_60">60 секунд</string>
@@ -381,16 +391,6 @@ OR
     <string name="seconds_off">Немає</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">встановити будильник</string>
-    <string name="show_alarm">Показувати будильники</string>
-    <string name="show_apparent_temperature">включаючи відчутну температуру</string>
-    <string name="show_calendar_events">Виділити події</string>
-    <string name="show_date">Відображати дату</string>
-    <string name="show_divider">Показати розділювач</string>
-    <string name="show_second_hand">показувати секундну стрілку</string>
-    <string name="show_seconds">Показувати секунди</string>
-    <string name="show_temperature">Відображати температуру</string>
-    <string name="show_weather">Відображати погоду</string>
-    <string name="show_wind_speed">Відображати швидкість вітру</string>
     <string name="showAlarmsPersistently">Показувати постійно</string>
     <string name="showAlarmsPersistentlySummary">Постійно показувати час наступного будильника на екрані.</string>
     <string name="showBattery">Показувати батарею</string>
@@ -412,6 +412,16 @@ OR
     <string name="showPollenIndex6">високий</string>
     <string name="showPollenNoData">Немає даних для цієї області. Індекс ризику пилку доступний лише для місцевостей Німеччини.</string>
     <string name="showPollenSummary">доступно лише для місцевостей Німеччини</string>
+    <string name="show_alarm">Показувати будильники</string>
+    <string name="show_apparent_temperature">включаючи відчутну температуру</string>
+    <string name="show_calendar_events">Виділити події</string>
+    <string name="show_date">Відображати дату</string>
+    <string name="show_divider">Показати розділювач</string>
+    <string name="show_second_hand">показувати секундну стрілку</string>
+    <string name="show_seconds">Показувати секунди</string>
+    <string name="show_temperature">Відображати температуру</string>
+    <string name="show_weather">Відображати погоду</string>
+    <string name="show_wind_speed">Відображати швидкість вітру</string>
     <string name="sleep_time_dialog_title">Таймер сну</string>
     <string name="slideshow_center_animated">анімовано</string>
     <string name="slideshow_center_crop">обрізати краї</string>
@@ -449,6 +459,20 @@ OR
     <string name="suggestions_summary">Дайте нам знати, якщо у вас є пропозиції щодо майбутніх версій.</string>
     <string name="temperatureUnit">Одиниця виміру температури</string>
     <string name="text_size">Розмір тексту</string>
+    <string-array name="themeEntries">
+        <item>Стандартний</item>
+        <item>Хелловін Аналог</item>
+        <item>Хелловін цифровий</item>
+        <item>Різдвяний аналог</item>
+        <item>Різдво Digital</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">Показувати анімацію падаючого снігу або золотих зірок.</string>
     <string name="theme_animation_only_charging_summary">Призупиняє анімацію при роботі від батареї для економії енергії.</string>
     <string name="theme_reset_to_defaults">Тему скинуто до налаштувань за замовчуванням</string>
@@ -488,6 +512,7 @@ OR
     <string name="useDeviceLockDescription">Функція блокування екрану потребує дозволів адміністратора пристрою. Перед видаленням, будь-ласка, вимкніть цю функцію.</string>
     <string name="useDeviceLockExplanation">Блокувати пристрій, коли увімкнено «Нічний годинник».</string>
     <string name="weather">Погода</string>
+    <string name="weatherProvider">Постачальник погоди</string>
     <string name="weather_calculation_time">час за місцем погоди</string>
     <string name="weather_city_id_title">Пошук місцезнаходження</string>
     <string name="weather_current_location">Поточне місцезнаходження</string>
@@ -498,7 +523,6 @@ OR
     <string name="weather_info_title">Інформація</string>
     <string name="weather_sun_rise">Схід сонця</string>
     <string name="weather_sun_set">Захід сонця</string>
-    <string name="weatherProvider">Постачальник погоди</string>
     <string name="weekdays">будні</string>
     <string name="width">Ширина</string>
 </resources>

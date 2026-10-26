@@ -7,19 +7,21 @@ Translations wanted !
 If you want to contribute a translation to NightDream
 simply follow these steps
 
--> Edit the strings in this file
--> Send your file to stefan.fruhner@googlemail.com.
+ -> Edit the strings in this file
+ -> Send your file to stefan.fruhner@googlemail.com.
 OR
--> Open a pull request on Github.
+ -> Open a pull request on Github.
 
-Please preserve the xml tags and the utf8 encoding.
+ Please preserve the xml tags and the utf8 encoding.
 -->
 <resources>
     <string name="about">حول التطبيق</string>
+    <string name="action_change">يتغير</string>
     <string name="action_skip">تخطي</string>
     <string name="action_snooze">غفوة</string>
     <string name="action_stop">توقيف</string>
     <string name="activateDoNotDisturb">تفعيل السحب والإفلات</string>
+    <string name="activateDoNotDisturbAllowPriority">السماح بالأولوية</string>
     <string name="activateDoNotDisturbSummary">تمكين وضع عدم الإزعاج أثناء تنشيط التطبيق</string>
     <string name="active_theme">السمة النشطة</string>
     <string name="add_custom_alarm_tone">إضافة نغمة إنذار مخصصة</string>
@@ -27,35 +29,68 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="add_new_alarm">إضافة منبه جديد</string>
     <string name="alarm">منبه</string>
     <string name="alarmFadeIn">زيادة الصوت</string>
+    <string name="alarmFadeInDurationSeconds">تتلاشى في المدة</string>
+    <string name="alarmFadeInMaxVolumePercent">الحد الأقصى للحجم</string>
+    <string name="alarmName">اسم المنبه</string>
     <string name="alarmStartDate">تشغيل المنبه التالي</string>
     <string name="alarmStartsFrom">من</string>
     <string name="alarmUpcoming">المنبه القادم</string>
     <string name="alarmVolume">مستوى الصوت</string>
     <string name="allow_screen_off">قفل الشاشة</string>
     <string name="allow_screen_off_summary">قفل الشاشة أثناء الليل</string>
-    <string name="always_on">مفعل دائماً</string>
     <string name="alwaysOnBatteryLevel">مستوى البطارية في الأعلي</string>
+    <string name="alwaysOnStartWithLockedUI">قفل واجهة المستخدم</string>
+    <string name="alwaysOnStartWithLockedUIDesc">عند بدء تشغيل التطبيق، يتم قفل واجهة المستخدم تلقائيًا. اضغط لفترة طويلة على أيقونة القفل لفتحه.</string>
+    <string name="always_on">مفعل دائماً</string>
     <string name="ambient_noise">الكشف عن الضوضاء المحيطة</string>
     <string name="ambient_noise_summary">هل تريد منع تفعيل الوضع الليلي بواسطة الضوضاء المحيطة؟</string>
     <string name="animations">الرسوم المتحركة</string>
     <string name="app_name">الساعة الليلية</string>
     <string name="appearance">المظهر</string>
     <string name="auto_brightness">سطوع تلقائي</string>
+    <string name="autostartForNotificationsSummary">قم بتنشيط التطبيق عند ظهور إشعارات جديدة</string>
+    <string name="autostartForNotificationsTitle">إشعارات</string>
     <string name="autostart_message_disabled">يرجى تعطيل شاشات التوقف (أحلام اليقظة) للتنشيط</string>
     <string name="autostart_timerange_label_end">وقت الإنتهاء</string>
     <string name="autostart_timerange_label_start">وقت البدء</string>
-    <string name="autostartForNotificationsSummary">قم بتنشيط التطبيق عند ظهور إشعارات جديدة</string>
-    <string name="autostartForNotificationsTitle">إشعارات</string>
     <string name="background">الخلفية</string>
-    <string name="background_black">سوداء</string>
-    <string name="background_gradient">متدرجة</string>
-    <string name="background_image">صورة</string>
-    <string name="background_image_select">إختر صورة</string>
     <string name="backgroundServiceDialogMessage">سيؤدي إيقاف خدمة الخلفية إلى تعطيل وضع التشغيل التلقائي ووضع الاستعداد وكذلك التنبؤ بالبطارية.  لا يمكن تحديث الحاجيات بعد الآن.  تقدم؟</string>
     <string name="backgroundServiceDialogTitle">وقف خدمة الخلفية</string>
     <string name="backgroundServiceNotificationText">خدمة الخلفية قيد التشغيل</string>
     <string name="backgroundServiceNotificationTextLocation">تحديث الموقع قيد التقدم</string>
     <string name="backgroundServiceNotificationTextNightMode">خدمة الوضع الليلي قيد التشغيل</string>
+    <string name="background_auto_accent_color">اختيار اللون التلقائي</string>
+    <string name="background_auto_accent_summary">تحديد لون التمييز المناسب تلقائيًا.</string>
+    <string name="background_black">سوداء</string>
+    <string name="background_exif">عرض معلومات EXIF</string>
+    <string name="background_exif_summary">إظهار معلومات EXIF ​​لصورة الخلفية الحالية</string>
+    <string name="background_fadein">الرسوم المتحركة عبر التلاشي</string>
+    <string name="background_fadein_summary">التلاشي المتقاطع بين صور الخلفية.</string>
+    <string name="background_gradient">متدرجة</string>
+    <string name="background_gradient_end_color">لون النهاية</string>
+    <string name="background_gradient_start_color">ابدأ اللون</string>
+    <string name="background_image">صورة</string>
+    <string name="background_image_duration">تغيير الصورة كل</string>
+    <string name="background_image_filter">مرشح الصور</string>
+    <string name="background_image_filter_blur">طمس</string>
+    <string name="background_image_filter_contrast">مقابلة</string>
+    <string name="background_image_filter_grey">رمادي</string>
+    <string name="background_image_filter_invert">عكس</string>
+    <string name="background_image_filter_none">لا أحد</string>
+    <string name="background_image_filter_sepia">بني داكن</string>
+    <string name="background_image_filter_sketch">رسم</string>
+    <string name="background_image_select">إختر صورة</string>
+    <string name="background_movein">الرسوم المتحركة الترجمة</string>
+    <string name="background_movein_bottom">قاع</string>
+    <string name="background_movein_direction">قم بتحريك صورة الخلفية التالية إلى الشاشة من</string>
+    <string name="background_movein_left">غادر</string>
+    <string name="background_movein_right">يمين</string>
+    <string name="background_movein_top">قمة</string>
+    <string name="background_slideshow">عرض الشرائح</string>
+    <string name="background_transparent">شفاف</string>
+    <string name="background_zoomin">تكبير الرسوم المتحركة</string>
+    <string name="background_zoomin_summary">تكبير الصورة الخلفية تلقائيا.</string>
+    <string name="battery">بطارية</string>
     <string name="batteryTimeout10min">د 10</string>
     <string name="batteryTimeout15min">د 15</string>
     <string name="batteryTimeout1min">1 د</string>
@@ -68,6 +103,15 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="brightness">سطوع</string>
     <string name="brightness_night_mode">السطوع في الوضع الليلي</string>
     <string name="brightness_offset">تعويض السطوع</string>
+    <string name="brightsky_conditions_dry">جاف</string>
+    <string name="brightsky_conditions_fog">ضباب</string>
+    <string name="brightsky_conditions_hail">يشيد</string>
+    <string name="brightsky_conditions_rain">مطر</string>
+    <string name="brightsky_conditions_sleet">صقيع</string>
+    <string name="brightsky_conditions_snow">ثلج</string>
+    <string name="brightsky_conditions_thunderstorm">عاصفة رعدية</string>
+    <string name="bug">الإبلاغ عن خطأ</string>
+    <string name="bug_summary">يرجى إعلامنا إذا حدث خطأ ما.</string>
     <string name="buy">إشتري</string>
     <string name="buy_upgrade_summary">الترقية إلى الإصدار المحترف الآن</string>
     <string name="category_handle_power">وعند الاتصال بـ ...</string>
@@ -77,12 +121,17 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="choose_primary_color">لون اللهجة</string>
     <string name="choose_secondary_color">لون النص</string>
     <string name="clear">واضح</string>
+    <string name="clock">ساعة</string>
+    <string name="clockBackgroundTransparency">شفافية خلفية الساعة</string>
     <string name="clock_hands">عقارب</string>
     <string name="clock_layout">نسق</string>
     <string name="clock_layout_analog">ساعة عقارب</string>
+    <string name="clock_layout_anim_digit">الساعة المتحركة الرقمية</string>
     <string name="clock_layout_calendar">ساعة رقمية مع التقويم</string>
     <string name="clock_layout_digit_analog">ساعة عقارب مع أرقام</string>
     <string name="clock_layout_digital">ساعة رقمية</string>
+    <string name="clock_layout_digital2">الساعة الرقمية مع الطقس</string>
+    <string name="clock_layout_digital3">ساعة رقمية مع الطقس (2)</string>
     <string name="clock_layout_digital_flip">ساعة رقمية مقلوبة</string>
     <string name="clock_layout_elegant_analog">ساعة عقارب أنيقة</string>
     <string name="clock_layout_mirror_text">نص المرآة</string>
@@ -95,6 +144,7 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="contribute_beta_channel">الحصول على الإصدارات التجريبية</string>
     <string name="contribute_source_code">شفرة المصدر</string>
     <string name="contribute_translation">ترجمة</string>
+    <string name="copy_images">معالجة الصورة %1$d من %2$d</string>
     <string name="country">البلد</string>
     <string name="credits">إئتمانات</string>
     <string name="credits_pull_requests">سحب الطلبات</string>
@@ -110,18 +160,24 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="decoration_style_progress_pride">Progress Pride flag</string>
     <string name="decoration_style_rainbow">قوس قزح</string>
     <string name="decoration_style_rust">صدأ</string>
+    <string name="decoration_weather_icon_size">حجم أيقونة الطقس</string>
     <string name="delete">حذف</string>
     <string name="dialog_message_already_owned">تم شراء هذا العنصر بالفعل</string>
     <string name="dialog_message_pending_purchase">لم يتم تأكيد عملية الشراء حتى الآن بواسطة جوجل بلاي</string>
     <string name="dialog_message_thank_you">شكراً جزيلاً!</string>
     <string name="dialog_title_thank_you">شكراً</string>
     <string name="digit_emphasize_quarters">التأكيد على الأرباع</string>
+    <string name="directory_background_image_select">حدد الصور</string>
     <string name="donate">تبرع</string>
     <string name="doubleTapToFinishSummary">إنهاء التطبيق عن طريق النقر المزدوج على الشاشة</string>
     <string name="doubleTapToFinishTitle">اضغط مرتين لإنهاء</string>
     <string name="enable_particle_overlays">تفعيل تراكبات الجسيمات</string>
+    <string name="export_preferences">تصدير معلومات التطبيق</string>
+    <string name="export_preferences_email">إرسال معلومات التطبيق عبر البريد الإلكتروني</string>
+    <string name="export_preferences_file">إعدادات التصدير إلى الملف</string>
     <string name="flashlight">مصباح يدوي</string>
     <string name="forecast">توقعات الطقس لمدة 5 أيام</string>
+    <string name="frequently_asked_questions">الأسئلة المتداولة</string>
     <string name="gift_for_donors">هدية لتبرعك</string>
     <string name="hand_shape_arc">قوس</string>
     <string name="hand_shape_bar">شريط</string>
@@ -136,12 +192,23 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="handle_power_disconnection_summary">إنهاء التطبيق عند فصل الطاقة</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">شحن لاسلكي</string>
+    <string name="help">المساعدة والتعليقات</string>
     <string name="hide_background_image_in_night_mode">إخفاء</string>
     <string name="hide_background_image_in_night_mode_summary">إخفاء صورة الخلفية في الوضع الليلي</string>
     <string name="hour">س</string>
+    <string name="ignoreBatteryOptimisation">تحسين البطارية</string>
+    <string name="ignoreBatteryOptimisation_summary">يوصى باستبعاد التطبيق من تحسينات البطارية.</string>
+    <string name="images_background_copy">معالجة الصور في الخلفية</string>
+    <string name="images_background_service_unbound">خطأ في معالجة الصور. يرجى المحاولة مرة أخرى.</string>
+    <string name="import_preferences">إعدادات الاستيراد</string>
+    <string name="import_preferences_confirm">هل تريد استيراد الإعدادات من ملف النسخة الاحتياطية هذا؟</string>
+    <string name="import_preferences_failed">فشل استيراد الإعدادات.</string>
+    <string name="import_preferences_requires_pro">يتطلب استيراد الإعدادات Pro أو Actions.</string>
+    <string name="import_preferences_success">تم استيراد الإعدادات بنجاح.</string>
     <string name="inner_circle_radius">نصف القطر الداخلي للدائرة</string>
     <string name="length">الطول</string>
     <string name="location_time">وقت الموقع</string>
+    <string name="mailing_list">القائمة البريدية العامة</string>
     <string name="manage_permissions">إدارة الأذونات</string>
     <string name="maxBrightness">أقصى سطوع للشاشة</string>
     <string name="maxBrightnessBattery">أقصى سطوع للشاشة على البطارية</string>
@@ -161,12 +228,16 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="night_mode_timerange_label_end">وقت النهاية</string>
     <string name="night_mode_timerange_label_start">وقت البدء</string>
     <string name="night_mode_timerange_title">وقت الليل</string>
+    <string name="no_alarm_set">لم يتم ضبط المنبه</string>
     <string name="noise_sensitivity">حساسية الميكروفون</string>
+    <string name="notificationListenerService">خدمة إستماع الإشعارات</string>
     <string name="notification_channel_desc_alarms">ظهور الإشعارات أثناء التنبيه</string>
+    <string name="notification_channel_desc_copy_images">إشعار يشير إلى تشغيل خدمة نسخ الصور</string>
     <string name="notification_channel_desc_devmsg">رسائل متعلقة بالتطبيق</string>
     <string name="notification_channel_desc_radio">ظهور الإشعارات أثناء تشغيل الراديو</string>
     <string name="notification_channel_desc_services">خدمات تشغيل إشارات الإشعارات</string>
     <string name="notification_channel_name_alarms">تنبيهات</string>
+    <string name="notification_channel_name_copy_images">نسخ الصور</string>
     <string name="notification_channel_name_devmsg">رسائل</string>
     <string name="notification_channel_name_radio">راديو</string>
     <string name="notification_channel_name_services">خدمات</string>
@@ -175,16 +246,27 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="notification_importance_low">منخفض</string>
     <string name="notification_importance_max">أقصي</string>
     <string name="notification_importance_min">أقل</string>
+    <string name="notification_list_delete_all">احذف الكل</string>
+    <string name="notification_list_delete_marked">حذف كافة العلامات</string>
+    <string name="notification_list_mark_all">وضع علامة على الكل</string>
     <string name="notification_lowest_importance">الأهمية أعاي أو مساوية لـ</string>
-    <string name="notificationListenerService">خدمة إستماع الإشعارات</string>
+    <string name="notification_show_mediastyle_summary">إظهار عناصر التحكم في مشغل الوسائط</string>
+    <string name="notification_show_mediastyle_title">ضوابط وسائل الإعلام</string>
+    <string name="notification_show_preview_summary">عرض معاينة للإخطارات الواردة</string>
+    <string name="notification_show_preview_title">معاينة الإخطار</string>
     <string name="notifications">إشعارات</string>
     <string name="notificationsInStatusBarSummary">عرض الإشعارات في شريط الحالات إذا تم تمكينه. خلاف ذلك أضفها إي صف إضافي </string>
     <string name="notificationsInStatusBarTitle">شريط الحالات</string>
-    <string name="numbers">أرقام</string>
+    <string name="notifications_options">خيارات الإخطار</string>
+    <string name="notifyForUpcomingAlarmsSummary">إخطار للإنذارات القادمة</string>
+    <string name="notifyForUpcomingAlarmsTitle">إخطار قدما</string>
     <string name="numberStyleArabic">عربي</string>
     <string name="numberStyleNone">لا شيء</string>
     <string name="numberStyleRoman">روماني</string>
+    <string name="numbers">أرقام</string>
     <string name="only_animate_when_charging">التحريك فقط أثناء الشحن</string>
+    <string name="open_weather_map_api_key">مفتاح واجهة برمجة تطبيقات OpenWeatherMap</string>
+    <string name="open_weather_map_api_key_summary">أدخل مفتاح API الخاص بك لـ OpenWeatherMap. احصل على واحدة على openweathermap.org</string>
     <string name="options_stop_alarms_error_min_one">يرجى اختيار لفتة واحدة على الأقل.</string>
     <string name="options_stop_alarms_long_press">ضغطة مطولة</string>
     <string name="options_stop_alarms_slider">منزلق</string>
@@ -195,16 +277,52 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="other_apps_tinytimetracker_summary">تتبع وقت عملك اليومي</string>
     <string name="outer_circle_radius">نصف القطر الخارجي للدائرة</string>
     <string name="outer_circle_width">العرض الخارجي للدائرة</string>
+    <string-array name="particleEffectEntries">
+        <item>لا أحد</item>
+        <item>تساقط الثلوج</item>
+        <item>النجوم الذهبية</item>
+    </string-array>
+    <string-array name="particleEffectValues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string name="particle_effect">تأثير الجسيمات</string>
+    <string name="permission_request">طلب الإذن</string>
+    <string name="permission_request_location_mode">لا يسمح وضع الموقع الممكّن حاليًا بمسح الموقع الحالي.</string>
     <string name="permission_request_overlays">لم يتم منح إذن لإظهار التراكبات (التشغيل التلقائي).  يرجى منح هذا الإذن!</string>
+    <string name="permission_request_post_notifications">يرجى منح الإذن لنشر الإخطارات.</string>
+    <string name="permission_request_storage">لم يتم منح إذن الوصول إلى التخزين.</string>
     <string name="persistent_battery_value_while_charging">حالات البطارية المستمرة</string>
     <string name="persistent_battery_value_while_charging_summary">إظهار حالة البطارية بشكل دائم أثناء الشحن</string>
+    <string name="pollen_alder">ألدر</string>
+    <string name="pollen_ambrosia">الطعام الشهي</string>
+    <string name="pollen_ash">رماد</string>
+    <string name="pollen_birch">البتولا</string>
+    <string name="pollen_grass">عشب</string>
+    <string name="pollen_hazelnut">البندق</string>
+    <string name="pollen_mugwort">موغورت</string>
+    <string name="pollen_rye">الجاودار</string>
+    <string name="power_source">مصدر الطاقة</string>
     <string name="preferences">تفضيلات</string>
     <string name="prev">السابق</string>
     <string name="preview">العرض</string>
+    <string name="product_description_weather">تتضمن الترقية
+- خط حالة الطقس الموضح أسفل الساعة
+- توقعات الطقس
+- المزيد من وجوه الساعة</string>
     <string name="product_name_donation">تبرع</string>
     <string name="product_name_pro">النسخة الكاملة</string>
+    <string name="product_name_subscription">اشتراك لمدة سنة واحدة</string>
     <string name="radio">راديو</string>
+    <string name="radio_connecting">ربط</string>
+    <string name="radio_muting">كتم الإعلانات</string>
+    <string name="radio_next">المحطة التالية</string>
+    <string name="radio_pause">وقفة الراديو</string>
+    <string name="radio_paused">متوقف مؤقتا</string>
+    <string name="radio_play">تشغيل الراديو</string>
+    <string name="radio_playing">اللعب</string>
+    <string name="radio_previous">المحطة السابقة</string>
     <string name="radio_station">محطة الراديو</string>
     <string name="radio_station_dialog_title">إختار محطة الراديو</string>
     <string name="radio_station_none">لا توجد محطة راديو</string>
@@ -227,50 +345,133 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_require_wifi_desc">في حالة التشغيل، ستقوم الإنذارات بتشغيل موجات راديو الإنترنت فقط من خلال اتصال واي فاي ثابت</string>
     <string name="radio_stream_search">بحث</string>
     <string name="radio_stream_unreachable_url">الرابط لا يمكن الوصول إليه</string>
+    <string name="rate">قيم هذا التطبيق</string>
+    <string name="rate_summary">نود أن نعرف إذا كنت ترغب في التطبيق لدينا</string>
     <string name="recommend">توصية بالتطبيق</string>
     <string name="recommend_app_desc">إختر تطبيق لمشاركة توصيتك</string>
     <string name="recommend_app_subject">أحب أن أوصيك بتطبيق الساعة الليلية هذا</string>
     <string name="remaining">تذكير</string>
+    <string name="remaining_alarm_time_end"> </string>
+    <string name="remaining_alarm_time_now">سوف يرن هذا المنبه قريبا.</string>
+    <string name="remaining_alarm_time_start">سوف يرن هذا المنبه </string>
     <string name="repeat">تكرار</string>
+    <string name="reset">إعادة ضبط</string>
     <string name="reset_theme_defaults_summary">إعادة تعيين تخصيصات السمة النشطة إلى الافتراضية.</string>
     <string name="reset_to_defaults">إعادة الضبط الافتراضي</string>
     <string name="review_request">من فضلك قيّم هذا التطبيق، شكراً</string>
+    <string name="rss">شريط آر إس إس</string>
+    <string name="rss_charset">ترميز الأحرف</string>
+    <string name="rss_data_error">حدث خطأ. لا توجد بيانات متاحة.</string>
+    <string name="rss_enable_summary">تمكين شريط RSS</string>
+    <string name="rss_text_size">حجم النص</string>
+    <string name="rss_tickerspeed">سرعة المؤشر</string>
+    <string name="rss_timeset">الفاصل الزمني للتحديث (بالدقائق)</string>
+    <string name="rss_url_error">لم يتم تعيين عنوان URL</string>
     <string name="scheduledAutoStart">تشغيل تلقائي مجدول</string>
     <string name="scheduledAutoStartChargerRequired">عند الشحن فقط</string>
     <string name="scheduledAutoStartEnabledDesc">جدولة التشغيل التلقائي لوقت محدد</string>
     <string name="scheduledAutoStartEnabledTitle">تشغيل تلقائي مجدول</string>
     <string name="scheduledAutoStartTimeRange">نطاق الوقت</string>
+    <string name="screen">شاشة</string>
+    <string name="screenOrientation">تدوير الشاشة</string>
+    <string name="screenProtection">حماية من حرق الشاشة</string>
+    <string name="screenProtectionFade">تتلاشى الساعة</string>
+    <string name="screenProtectionMove">تَحَرُك الساعة حول الشاشة</string>
+    <string name="screenProtectionNone">لا أحد</string>
     <string name="screen_orientation_automatic">آلي</string>
     <string name="screen_orientation_landscape">منظر طبيعي</string>
     <string name="screen_orientation_portrait">صورة</string>
     <string name="screen_orientation_reverse_landscape">مشهد طبيعي عكسي</string>
     <string name="screen_orientation_reverse_portrait">صورة عكسية</string>
-    <string name="screenOrientation">تدوير الشاشة</string>
-    <string name="screenProtectionMove">تَحَرُك الساعة حول الشاشة</string>
+    <string name="seconds_15">15 ثانية</string>
+    <string name="seconds_30">30 ثانية</string>
+    <string name="seconds_60">60 ثانية</string>
     <string name="seconds_normal">100%</string>
     <string name="seconds_off">Off</string>
     <string name="seconds_small">50%</string>
     <string name="set_alarm">ضبط المنبه</string>
-    <string name="show_calendar_events">تسليط الضوء على أحداث التقويم</string>
-    <string name="show_date">إظهار التاريخ</string>
-    <string name="show_divider">إظهار الفاصل</string>
-    <string name="show_temperature">درجة الحرارة</string>
-    <string name="show_weather">إظهار الطقس المحلي</string>
-    <string name="show_wind_speed">سرعة الرياح</string>
     <string name="showAlarmsPersistently">إظهار بإستمرار</string>
     <string name="showAlarmsPersistentlySummary">عرض وقت التنبيه التالي بإستمرار علي الشاشة</string>
+    <string name="showBattery">عرض البطارية</string>
     <string name="showBatteryWarningMessage">إنتباه !! لا يوجد مصد طاقة متصل!</string>
     <string name="showBatteryWarningSummary">إظهار التنبيه عند بدء التشغيل عاي البطارية</string>
     <string name="showBatteryWarningTitle">تحذير البطارية</string>
+    <string name="showNotifications">إظهار الإخطارات</string>
+    <string name="showNotificationsAccessGranted">تم منح الوصول</string>
+    <string name="showNotificationsAccessNotGranted">لم يتم منح الوصول!</string>
+    <string name="showNotificationsAlertText">يجب منح حق الوصول إلى الإشعارات لإظهار الإشعارات.</string>
+    <string name="showPollen">مؤشر خطر حبوب اللقاح</string>
+    <string name="showPollenIndex">مستوى التوتر</string>
+    <string name="showPollenIndex0">لا أحد</string>
+    <string name="showPollenIndex1">لا شيء إلى مستوى منخفض</string>
+    <string name="showPollenIndex2">قليل</string>
+    <string name="showPollenIndex3">منخفضة إلى معتدلة</string>
+    <string name="showPollenIndex4">معتدل</string>
+    <string name="showPollenIndex5">معتدلة إلى عالية</string>
+    <string name="showPollenIndex6">عالي</string>
+    <string name="showPollenNoData">لا توجد بيانات لهذه المنطقة. مؤشر مخاطر حبوب اللقاح متاح فقط للمواقع الألمانية.</string>
+    <string name="showPollenSummary">متاح فقط للمواقع الألمانية</string>
+    <string name="show_alarm">إظهار الإنذارات</string>
+    <string name="show_apparent_temperature">تشمل درجة الحرارة الظاهرة</string>
+    <string name="show_calendar_events">تسليط الضوء على أحداث التقويم</string>
+    <string name="show_date">إظهار التاريخ</string>
+    <string name="show_divider">إظهار الفاصل</string>
+    <string name="show_second_hand">تظهر من جهة ثانية</string>
+    <string name="show_seconds">عرض ثواني</string>
+    <string name="show_temperature">درجة الحرارة</string>
+    <string name="show_weather">إظهار الطقس المحلي</string>
+    <string name="show_wind_speed">سرعة الرياح</string>
     <string name="sleep_time_dialog_title">مؤقت النوم</string>
+    <string name="slideshow_center_animated">متحرك</string>
+    <string name="slideshow_center_crop">حدود المحاصيل</string>
+    <string name="slideshow_center_inside">إضافة الحدود</string>
+    <string name="slideshow_style">أسلوب</string>
+    <string name="smart_home">المنزل الذكي</string>
+    <string name="smart_home_avm">AVM فريتز! بوكس</string>
+    <string name="smart_home_avm_host">يستضيف</string>
+    <string name="smart_home_avm_host_summary">عنوان صندوق فريتز الخاص بك، على سبيل المثال: http://fritz.box</string>
+    <string name="smart_home_avm_password">كلمة المرور</string>
+    <string name="smart_home_avm_username">اسم المستخدم</string>
+    <string name="smart_home_permission_denied">تم رفض إذن الوصول إلى الشبكة المحلية. لا يمكن الاتصال بـ Fritz!Box.</string>
+    <string name="smart_home_purchase_request">تحكم في أجهزتك المنزلية الذكية AVM باستخدام الإصدار Pro</string>
+    <string name="snoozeAfter">قيلولة بعد الظهر التلقائي بعد</string>
+    <string name="snoozeCycles">دورات الغفوة التلقائية قبل التوقف التلقائي</string>
     <string name="snoozeTime">وقت الغفوة</string>
+    <string name="snoozeUsingVolumeButtons">قيلولة بعد الظهر باستخدام أزرار الصوت</string>
+    <string name="speakTime">إنها</string>
+    <string name="speakTimeSummary">يتحدث الوقت الحالي عن طريق الضغط لفترة طويلة على الشاشة.</string>
+    <string name="speakTimeTitle">التحدث بالوقت الحالي</string>
     <string name="speedUnit">وحدة سرعة الرياح</string>
     <string name="standbyEnabledWhileDisconnectedScreepUpTitle">مع الشاشة لأعلي</string>
     <string name="standbyEnabledWhileDisconnectedSummary">هذه الميزة تستنزف البطارية بسرعة!</string>
     <string name="standbyEnabledWhileDisconnectedTimeRangeTitle">ضمن النطاق الزمني</string>
     <string name="standbyEnabledWhileDisconnectedTitle">وضع الاستعداد أثناء التفريغ</string>
     <string name="style">الأسلوب</string>
+    <string name="subscribe">يشترك</string>
+    <string name="subscription_free_trial_description">%s مجاني للتجربة.</string>
+    <string name="subscription_offer_price_for_period">%1$s لـ %2$s.</string>
+    <string name="subscription_prefix_after_period">ثم</string>
+    <string name="subscription_prefix_subsequently">تبعًا</string>
+    <string name="subscription_price_per_period">%1$s لكل %2$s.</string>
+    <string name="subscription_renewal_info">التجديد التلقائي. إلغاء في أي وقت.</string>
+    <string name="suggestions">اقتراحات</string>
+    <string name="suggestions_summary">اسمحوا لنا أن نعرف إذا كان لديك أي اقتراحات الإصدارات القادمة.</string>
     <string name="temperatureUnit">وحدة درجة الحرارة</string>
+    <string name="text_size">حجم النص</string>
+    <string-array name="themeEntries">
+        <item>معيار</item>
+        <item>التناظرية للهالوين</item>
+        <item>الهالوين الرقمي</item>
+        <item>التناظرية عيد الميلاد</item>
+        <item>عيد الميلاد الرقمي</item>
+    </string-array>
+    <string-array name="themeValues" translatable="false">
+        <item>none</item>
+        <item>halloween_analog</item>
+        <item>halloween_digital</item>
+        <item>christmas_analog</item>
+        <item>christmas_digital</item>
+    </string-array>
     <string name="theme_animation_enabled_summary">إظهار رسوم تساقط الثلج أو النجوم الذهبية.</string>
     <string name="theme_animation_only_charging_summary">إيقاف الرسوم المتحركة مؤقتًا أثناء استخدام البطارية لتوفير الطاقة.</string>
     <string name="theme_reset_to_defaults">تمت إعادة تعيين السمة إلى الافتراضية</string>
@@ -283,23 +484,44 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="tick_style_none">لا شيء</string>
     <string name="ticks">تكات</string>
     <string name="timeFormat">شكل الوقت</string>
+    <string name="timerange_label_end">وقت الانتهاء</string>
+    <string name="timerange_label_start">وقت البدء</string>
     <string name="titlePrivacyPolicy">سياسة الخصوصية</string>
     <string name="today">اليوم</string>
     <string name="tomorrow">غداً</string>
     <string name="translations">الترجمات</string>
     <string name="typeface">نوع الخط</string>
+    <string name="typeface_14_segment">14 قطعة LED</string>
     <string name="typeface_roboto_regular">روبوتو معتاد</string>
     <string name="typeface_roboto_thin">روبوتو رفيع</string>
     <string name="uninstall">إلغاء تثبيت التطبيق</string>
+    <string name="unit_day">يوم</string>
+    <string name="unit_days">أيام</string>
+    <string name="unit_month">شهر</string>
+    <string name="unit_months">شهور</string>
+    <string name="unit_week">أسبوع</string>
+    <string name="unit_weeks">أسابيع</string>
+    <string name="unit_year">سنة</string>
+    <string name="unit_years">سنين</string>
+    <string name="unlockHint">اضغط لفترة طويلة لفتح</string>
+    <string name="upgrade_now">الترقية الآن!</string>
     <string name="useAlarmSwipeGesture">ضبط المنبه بواسطة إيماء السحب</string>
     <string name="useAlarmSwipeGestureSummary">السماح بضبط منبه جديد بواسطة السخب من الزاوية اليسرى السفلية</string>
     <string name="useDeviceLock">قفل الجهاز</string>
     <string name="useDeviceLockDescription">تحتاج ميزة قفل الشاشة إلى إذن مسؤول الجهاز.  لإلغاء تثبيت التطبيق ، يرجى تعطيل هذه الميزة</string>
     <string name="useDeviceLockExplanation">قم بإغلاق الجهاز أثناء تنشيط التطبيق.  لإلغاء تثبيت التطبيق ، يرجى إلغاء هذا الإذن</string>
     <string name="weather">الطقس</string>
+    <string name="weatherProvider">مزود الطقس</string>
     <string name="weather_calculation_time">وقت حساب الطقس</string>
     <string name="weather_city_id_title">بحث الموقع</string>
+    <string name="weather_current_location">الموقع الحالي</string>
+    <string name="weather_icon">أيقونة الطقس</string>
+    <string name="weather_icon_animated">الرسوم المتحركة (أندرويد 6+)</string>
+    <string name="weather_icon_colored">ملون</string>
+    <string name="weather_icon_default">تقصير</string>
     <string name="weather_info_title">معلومات</string>
-    <string name="weatherProvider">مزود الطقس</string>
+    <string name="weather_sun_rise">شروق الشمس</string>
+    <string name="weather_sun_set">غروب</string>
+    <string name="weekdays">أيام الأسبوع</string>
     <string name="width">عرض</string>
 </resources>
