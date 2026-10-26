@@ -261,6 +261,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Spejlvendt stående</string>
     <string name="screenOrientation">Skærm orientering</string>
     <string name="screenProtectionMove">Bevæg uret rundt</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">Indstil alarm</string>
     <string name="show_apparent_temperature">inkluderer synlig temperatur</string>
     <string name="show_calendar_events">Fremhæv begivenheder</string>

@@ -147,6 +147,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">erretratua inbertitu</string>
     <string name="screenOrientation">Pantailaren orientazioa</string>
     <string name="screenProtectionMove">Erlojua pantailatik mugitu</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">alarma zehaztu</string>
     <string name="show_calendar_events">Nabarmendu gertaerak</string>
     <string name="show_date">Data erakutsi</string>

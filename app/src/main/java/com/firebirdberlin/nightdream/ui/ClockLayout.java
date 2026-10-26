@@ -791,6 +791,11 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
             setupLayoutAnalog2(parentWidth, parentHeight, config, displayInWidget);
         }
 
+        if (clock != null) {
+            Settings settings = new Settings(context);
+            ((CustomDigitalClock) clock).setSecondsMode(settings.getSecondsMode(layoutId));
+        }
+
         if (date != null) {
             date.invalidate();
         }

@@ -18,10 +18,8 @@
 
 package com.firebirdberlin.nightdream.ui;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -152,11 +150,25 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout implement
             builder.show();
         });
 
-        Switch switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
-        switchShowSeconds.setChecked(settings.getShowSeconds(ClockLayout.LAYOUT_ID_CALENDAR));
-        switchShowSeconds.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_CALENDAR);
-            onConfigChanged();
+        final int layoutId = ClockLayout.LAYOUT_ID_CALENDAR;
+        TextView secondsPreference = child.findViewById(R.id.seconds_preference);
+        updateSecondsPreferenceText(secondsPreference, settings.getSecondsMode(layoutId));
+        secondsPreference.setOnClickListener(view -> {
+            CharSequence[] items = new CharSequence[] {
+                getContext().getString(R.string.seconds_off),
+                getContext().getString(R.string.seconds_small),
+                getContext().getString(R.string.seconds_normal)
+            };
+            int currentMode = settings.getSecondsMode(layoutId);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.show_seconds)
+                    .setSingleChoiceItems(items, currentMode, (dialog, which) -> {
+                        settings.setSecondsMode(which, layoutId);
+                        updateSecondsPreferenceText(secondsPreference, which);
+                        dialog.dismiss();
+                        onConfigChanged();
+                    });
+            builder.show();
         });
 
         Switch switchShowCalendarEvents = child.findViewById(R.id.switch_show_calendar_events);
@@ -244,6 +256,24 @@ public class CustomCalendarClockPreferencesLayout extends LinearLayout implement
 
         builder.show();
     }
+    private void updateSecondsPreferenceText(TextView secondsPref, int mode) {
+        String title = getContext().getString(R.string.show_seconds);
+        String modeStr;
+        switch (mode) {
+            case 2:
+                modeStr = getContext().getString(R.string.seconds_normal);
+                break;
+            case 1:
+                modeStr = getContext().getString(R.string.seconds_small);
+                break;
+            case 0:
+            default:
+                modeStr = getContext().getString(R.string.seconds_off);
+                break;
+        }
+        secondsPref.setText(String.format("%s: %s", title, modeStr));
+    }
+
     private void onConfigChanged() {
         if (mListener != null) {
             mListener.onConfigChanged();

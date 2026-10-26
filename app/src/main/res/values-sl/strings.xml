@@ -173,6 +173,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">Obratno pokoncno</string>
     <string name="screenOrientation">Zasuk ekrana</string>
     <string name="screenProtectionMove">Premikanje prikaza ure</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">Nastavi alarm</string>
     <string name="show_calendar_events">Poudari dogodke</string>
     <string name="show_date">Prikazi datum</string>

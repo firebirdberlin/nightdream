@@ -97,16 +97,26 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout implements
             });
         }
 
-        SwitchCompat switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
-        switchShowSeconds.setChecked(settings.getShowSeconds(layoutId));
-        switchShowSeconds.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                settings.setShowSeconds(isChecked, layoutId);
-                if (mListener != null) {
-                    mListener.onConfigChanged();
-                }
-            }
+        TextView secondsPreference = child.findViewById(R.id.seconds_preference);
+        updateSecondsPreferenceText(secondsPreference, settings.getSecondsMode(layoutId));
+        secondsPreference.setOnClickListener(view -> {
+            CharSequence[] items = new CharSequence[] {
+                getContext().getString(R.string.seconds_off),
+                getContext().getString(R.string.seconds_small),
+                getContext().getString(R.string.seconds_normal)
+            };
+            int currentMode = settings.getSecondsMode(layoutId);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.show_seconds)
+                    .setSingleChoiceItems(items, currentMode, (dialog, which) -> {
+                        settings.setSecondsMode(which, layoutId);
+                        updateSecondsPreferenceText(secondsPreference, which);
+                        dialog.dismiss();
+                        if (mListener != null) {
+                            mListener.onConfigChanged();
+                        }
+                    });
+            builder.show();
         });
 
         SeekBar glowRadius = child.findViewById(R.id.glowRadius);
@@ -291,6 +301,24 @@ public class CustomDigitalClockPreferencesLayout extends LinearLayout implements
         builder.show();
     }
 
+
+    private void updateSecondsPreferenceText(TextView secondsPref, int mode) {
+        String title = getContext().getString(R.string.show_seconds);
+        String modeStr;
+        switch (mode) {
+            case 2:
+                modeStr = getContext().getString(R.string.seconds_normal);
+                break;
+            case 1:
+                modeStr = getContext().getString(R.string.seconds_small);
+                break;
+            case 0:
+            default:
+                modeStr = getContext().getString(R.string.seconds_off);
+                break;
+        }
+        secondsPref.setText(String.format("%s: %s", title, modeStr));
+    }
 
     public void setIsPurchased(boolean isPurchased) {
         this.isPurchased = isPurchased;

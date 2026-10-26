@@ -258,6 +258,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="screen_orientation_reverse_portrait">retrato invertido</string>
     <string name="screenOrientation">Orientação da tela</string>
     <string name="screenProtectionMove">Mover o relógio pela tela</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Off</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">ative o alarme</string>
     <string name="show_apparent_temperature">inclui temperatura aparente</string>
     <string name="show_calendar_events">Destacar eventos</string>

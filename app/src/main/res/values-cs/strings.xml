@@ -376,6 +376,9 @@ OR
     <string name="seconds_15">15 sekund</string>
     <string name="seconds_30">30 sekund</string>
     <string name="seconds_60">60 sekund</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Žádná</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">nastavit budík</string>
     <string name="show_alarm">Zobrazit budíky</string>
     <string name="show_apparent_temperature">zahrnout pocitovou teplotu</string>

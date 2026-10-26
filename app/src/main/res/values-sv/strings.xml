@@ -318,6 +318,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="seconds_15">15:e sekund</string>
     <string name="seconds_30">30:e sekund</string>
     <string name="seconds_60">60:e sekund</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Inget</string>
+    <string name="seconds_small">50%</string>
     <string name="set_alarm">ställ in alarm</string>
     <string name="show_apparent_temperature">Inkludera temperatur</string>
     <string name="show_calendar_events">Markera händelser</string>

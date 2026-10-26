@@ -23,14 +23,14 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
-
 
 public class CustomAnimClockPreferencesLayout extends LinearLayout {
 
@@ -62,16 +62,46 @@ public class CustomAnimClockPreferencesLayout extends LinearLayout {
 
         settings.setFontUri("file:///android_asset/fonts/roboto_thin.ttf", "Roboto Thin", 9);
 
-        boolean showSeconds =
-                settings.getShowSeconds(ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED);
-        SwitchCompat switchShowSeconds = child.findViewById(R.id.switch_show_seconds);
-        switchShowSeconds.setChecked(showSeconds);
-        switchShowSeconds.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            settings.setShowSeconds(isChecked, ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED);
-            if (mListener != null) {
-                mListener.onConfigChanged();
-            }
+        final int layoutId = ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED;
+        TextView secondsPreference = child.findViewById(R.id.seconds_preference);
+        updateSecondsPreferenceText(secondsPreference, settings.getSecondsMode(layoutId));
+        secondsPreference.setOnClickListener(view -> {
+            CharSequence[] items = new CharSequence[] {
+                getContext().getString(R.string.seconds_off),
+                getContext().getString(R.string.seconds_small),
+                getContext().getString(R.string.seconds_normal)
+            };
+            int currentMode = settings.getSecondsMode(layoutId);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.show_seconds)
+                    .setSingleChoiceItems(items, currentMode, (dialog, which) -> {
+                        settings.setSecondsMode(which, layoutId);
+                        updateSecondsPreferenceText(secondsPreference, which);
+                        dialog.dismiss();
+                        if (mListener != null) {
+                            mListener.onConfigChanged();
+                        }
+                    });
+            builder.show();
         });
+    }
+
+    private void updateSecondsPreferenceText(TextView secondsPref, int mode) {
+        String title = getContext().getString(R.string.show_seconds);
+        String modeStr;
+        switch (mode) {
+            case 2:
+                modeStr = getContext().getString(R.string.seconds_normal);
+                break;
+            case 1:
+                modeStr = getContext().getString(R.string.seconds_small);
+                break;
+            case 0:
+            default:
+                modeStr = getContext().getString(R.string.seconds_off);
+                break;
+        }
+        secondsPref.setText(String.format("%s: %s", title, modeStr));
     }
 
     public void setOnConfigChangedListener(OnConfigChangedListener listener) {

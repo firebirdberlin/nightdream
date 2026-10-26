@@ -48,6 +48,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_keep_running">라디오 계속 재생</string>
     <string name="radio_stream_keep_running_summary">알람이 중지된 후에도 라디오 스트리밍을 계속 재생합니다.</string>
     <string name="reset_theme_defaults_summary">활성 테마의 사용자 지정 설정을 기본값으로 복원합니다.</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">꺼짐</string>
+    <string name="seconds_small">50%</string>
     <string name="show_calendar_events">캘린더 이벤트 강조</string>
     <string name="theme_animation_enabled_summary">내리는 눈 또는 황금 별 애니메이션을 표시합니다.</string>
     <string name="theme_animation_only_charging_summary">전력을 절약하기 위해 배터리 사용 시 애니메이션을 일시 정지합니다.</string>
