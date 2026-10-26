@@ -440,10 +440,10 @@ OR
     <string name="style">Стиль</string>
     <string name="subscribe">Підписатися</string>
     <string name="subscription_free_trial_description">%s безкоштовно для ознайомлення.</string>
-    <string name="subscription_offer_price_for_period">%s за %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s за %2$s.</string>
     <string name="subscription_prefix_after_period">Потім</string>
     <string name="subscription_prefix_subsequently">Згодом</string>
-    <string name="subscription_price_per_period">%s за %s.</string>
+    <string name="subscription_price_per_period">%1$s за %2$s.</string>
     <string name="subscription_renewal_info">Автопродовження. Скасування в будь-який час.</string>
     <string name="suggestions">Пропозиції</string>
     <string name="suggestions_summary">Дайте нам знати, якщо у вас є пропозиції щодо майбутніх версій.</string>

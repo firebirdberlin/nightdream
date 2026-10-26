@@ -440,10 +440,10 @@ OR
     <string name="style">Style</string>
     <string name="subscribe">S\'abonner</string>
     <string name="subscription_free_trial_description">%s essai gratuit.</string>
-    <string name="subscription_offer_price_for_period">%s pour %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s pour %2$s.</string>
     <string name="subscription_prefix_after_period">Ensuite </string>
     <string name="subscription_prefix_subsequently">Par la suite </string>
-    <string name="subscription_price_per_period">%s par %s.</string>
+    <string name="subscription_price_per_period">%1$s par %2$s.</string>
     <string name="subscription_renewal_info">Renouvellement automatique. Annulation à tout moment.</string>
     <string name="suggestions">Suggestions</string>
     <string name="suggestions_summary">Faites nous connaître vos suggestions pour les futures versions</string>

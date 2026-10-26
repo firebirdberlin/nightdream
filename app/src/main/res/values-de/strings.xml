@@ -435,10 +435,10 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="standbyEnabledWhileDisconnectedTitle">Standbymodus auch beim Entladen</string>
     <string name="style">Stil</string>
     <string name="subscription_free_trial_description">%s kostenlos testen.</string>
-    <string name="subscription_offer_price_for_period">%s für %s.</string>
+    <string name="subscription_offer_price_for_period">%1$s für %2$s.</string>
     <string name="subscription_prefix_after_period">Danach </string>
     <string name="subscription_prefix_subsequently">Anschließend </string>
-    <string name="subscription_price_per_period">%s pro %s.</string>
+    <string name="subscription_price_per_period">%1$s pro %2$s.</string>
     <string name="subscription_renewal_info">Automatische Verlängerung. Jederzeit kündbar.</string>
     <string name="suggestions">Ideen</string>
     <string name="suggestions_summary">Ideen für kommende Versionen melden</string>

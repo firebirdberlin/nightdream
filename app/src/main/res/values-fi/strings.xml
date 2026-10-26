@@ -157,6 +157,9 @@ Please preserve the xml tags and the utf8 encoding.
     <string name="radio_stream_keep_running_summary">Jatka radiolähetyksen toistamista hälytyksen lopettamisen jälkeen.</string>
     <string name="reset_theme_defaults_summary">Palauta aktiivisen teeman mukautukset oletusarvoihin.</string>
     <string name="review_request">Kiitos kun arvostelet tämän sovelluksen!</string>
+    <string name="seconds_normal">100%</string>
+    <string name="seconds_off">Pois</string>
+    <string name="seconds_small">50%</string>
     <string name="show_calendar_events">Korosta tapahtumia</string>
     <string name="theme_animation_enabled_summary">Näytä satavan lumen tai kultaisten tähtien animaatio.</string>
     <string name="theme_animation_only_charging_summary">Keskeyttää animaatiot akkukäytössä virran säästämiseksi.</string>
