@@ -41,7 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
-import com.firebirdberlin.nightdream.mNotificationListener;
+import com.firebirdberlin.nightdream.MNotificationListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +125,7 @@ public class NotificationActivity extends AppCompatActivity {
                 this, broadcastReceiver, new IntentFilter("Notification.Action.notificationList"), ContextCompat.RECEIVER_NOT_EXPORTED
         );
 
-        mNotificationListener.requestNotificationList(getApplicationContext());
+        MNotificationListener.requestNotificationList(getApplicationContext());
     }
 
     @Override

@@ -102,7 +102,7 @@ public class NotificationListActivity extends AppCompatActivity {
                 this, broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER), ContextCompat.RECEIVER_NOT_EXPORTED
         );
 
-        mNotificationListener.requestNotificationList(getApplicationContext());
+        MNotificationListener.requestNotificationList(getApplicationContext());
     }
 
     @Override

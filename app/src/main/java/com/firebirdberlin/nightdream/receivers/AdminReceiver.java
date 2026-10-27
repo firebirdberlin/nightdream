@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.receivers;
 
 import android.app.admin.DeviceAdminReceiver;
 

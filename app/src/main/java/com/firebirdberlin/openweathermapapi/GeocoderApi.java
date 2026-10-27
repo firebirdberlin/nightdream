@@ -23,7 +23,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
 
-import com.firebirdberlin.HttpReader;
+import com.firebirdberlin.nightdream.util.HttpReader;
 import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.City;

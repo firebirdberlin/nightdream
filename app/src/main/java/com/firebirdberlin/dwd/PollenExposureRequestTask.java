@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
-import com.firebirdberlin.HttpReader;
+import com.firebirdberlin.nightdream.util.HttpReader;
 import com.firebirdberlin.nightdream.PollenExposure;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.GeocoderApi;

@@ -62,7 +62,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
-import com.firebirdberlin.nightdream.mNotificationListener;
+import com.firebirdberlin.nightdream.MNotificationListener;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.util.CalendarEventLoader;
@@ -759,7 +759,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         Log.d(TAG, "updateLayout() | layoutId=" + layoutId);
         if (notificationLayout != null) {
             notificationLayout.setVisibility(
-                    mNotificationListener.running
+                    MNotificationListener.running
                             && showNotifications
                             && !Settings.useNotificationStatusBar(context)
                             ? VISIBLE : GONE
