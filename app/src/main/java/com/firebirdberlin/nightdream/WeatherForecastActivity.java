@@ -23,11 +23,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +44,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
+import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.DirectionIconView;
 import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
@@ -52,7 +57,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class WeatherForecastActivity
         extends BillingHelperActivity
@@ -86,6 +93,8 @@ public class WeatherForecastActivity
     private WeatherForecastTabAdapter adapter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private WeatherEntry todayWeatherEntry = null;
+    private List<WeatherEntry> forecastWeatherEntries = null;
 
     private LocationManager locationManager = null;
     private final LocationListener locationListener = new LocationListener() {
@@ -158,6 +167,13 @@ public class WeatherForecastActivity
     public void onResume() {
         Log.d(TAG, "onResume()");
         super.onResume();
+        settings = new Settings(this);
+        if (todayWeatherEntry != null) {
+            onRequestFinished(todayWeatherEntry);
+        }
+        if (forecastWeatherEntries != null) {
+            onRequestFinished(forecastWeatherEntries);
+        }
     }
 
     void init() {
@@ -196,32 +212,137 @@ public class WeatherForecastActivity
     }
 
     public void onRequestFinished(WeatherEntry entry) {
+        this.todayWeatherEntry = entry;
         LinearLayout todayView = findViewById(R.id.todayView);
+        if (todayView == null) return;
         todayView.removeAllViews();
         if (entry == null) {
             return;
         }
         Log.d(TAG, "onRequestFinished() WeatherEntry: " + entry);
 
-        WeatherForecastLayout layout = new WeatherForecastLayout(this);
-        String timeFormat = settings.getFullTimeFormat();
-        layout.setTimeFormat(timeFormat);
-        layout.setTemperature(true, settings.temperatureUnit);
-        layout.setWindSpeed(true, settings.speedUnit);
-        layout.setSunrise(true, entry.getSunriseTime());
-        layout.setSunset(true, entry.getSunsetTime());
-        layout.setDescriptionText(entry.description);
+        View summaryView = LayoutInflater.from(this)
+                .inflate(R.layout.layout_weather_summary_today, todayView, false);
 
-        layout.update(entry);
-        layout.findViewById(R.id.timeView).setVisibility(View.GONE);
-        todayView.addView(layout);
+        TextView summaryIcon = summaryView.findViewById(R.id.summaryIcon);
+        TextView summaryTemperature = summaryView.findViewById(R.id.summaryTemperature);
+        TextView summaryDescription = summaryView.findViewById(R.id.summaryDescription);
+        TextView summaryHumidity = summaryView.findViewById(R.id.summaryHumidity);
+        TextView summarySunrise = summaryView.findViewById(R.id.summarySunrise);
+        TextView summarySunset = summaryView.findViewById(R.id.summarySunset);
+        DirectionIconView summaryWindDirection = summaryView.findViewById(R.id.summaryWindDirection);
+        TextView summaryWind = summaryView.findViewById(R.id.summaryWind);
+        TextView summaryRainIcon = summaryView.findViewById(R.id.summaryRainIcon);
+        TextView summaryRainText = summaryView.findViewById(R.id.summaryRainText);
+        View summaryRainLayout = summaryView.findViewById(R.id.summaryRainLayout);
+
+        Typeface typeface = FontCache.get(this, "fonts/meteocons.ttf");
+        if (summaryIcon != null) {
+            summaryIcon.setTypeface(typeface);
+            summaryIcon.setText(entry.weatherIconMeteoconsSymbol);
+        }
+
+        if (summaryRainIcon != null) {
+            summaryRainIcon.setTypeface(typeface);
+        }
+
+        if (summaryRainLayout != null) {
+            if (entry.rain3h > 0.) {
+                if (summaryRainIcon != null) summaryRainIcon.setText("R");
+                if (summaryRainText != null) {
+                    summaryRainText.setText(
+                            String.format(Locale.getDefault(), "%.1f mm", entry.rain3h));
+                }
+                summaryRainLayout.setVisibility(View.VISIBLE);
+            } else if (entry.rain1h > 0.) {
+                if (summaryRainIcon != null) summaryRainIcon.setText("R");
+                if (summaryRainText != null) {
+                    summaryRainText.setText(
+                            String.format(Locale.getDefault(), "%.1f mm", entry.rain1h));
+                }
+                summaryRainLayout.setVisibility(View.VISIBLE);
+            } else {
+                summaryRainLayout.setVisibility(View.GONE);
+            }
+        }
+
+        if (summaryTemperature != null) {
+            summaryTemperature.setText(entry.formatTemperatureText(
+                    settings.temperatureUnit, settings.showApparentTemperature));
+        }
+
+        if (summaryDescription != null) {
+            summaryDescription.setText(entry.description);
+            summaryDescription.setVisibility(
+                    !Utility.isEmpty(entry.description) ? View.VISIBLE : View.GONE);
+        }
+
+        if (summaryHumidity != null) {
+            String humidityText = entry.formatHumidityText();
+            if (!Utility.isEmpty(humidityText)) {
+                summaryHumidity.setText(humidityText);
+                summaryHumidity.setVisibility(View.VISIBLE);
+            } else {
+                summaryHumidity.setVisibility(View.GONE);
+            }
+        }
+
+        String timeFormat = settings.getFullTimeFormat();
+        Calendar mCalendar = Calendar.getInstance();
+
+        if (summarySunrise != null) {
+            mCalendar.setTimeInMillis(entry.getSunriseTime());
+            summarySunrise.setText(Utility.formatTime(timeFormat, mCalendar));
+        }
+
+        if (summarySunset != null) {
+            mCalendar.setTimeInMillis(entry.getSunsetTime());
+            summarySunset.setText(Utility.formatTime(timeFormat, mCalendar));
+        }
+
+        if (summaryWindDirection != null) {
+            summaryWindDirection.setColor(Color.WHITE);
+            summaryWindDirection.setDirection(entry.windDirection);
+        }
+
+        if (summaryWind != null) {
+            summaryWind.setText(formatWindText(entry, settings.speedUnit));
+        }
+
+        todayView.addView(summaryView);
 
         settings.setWeatherEntry(entry);
-        ScreenWatcherService.updateNotification(getApplicationContext(), entry, settings.temperatureUnit);
+        ScreenWatcherService.updateNotification(
+                getApplicationContext(), entry, settings.temperatureUnit);
+    }
+
+    private String formatWindText(WeatherEntry entry, int speedUnit) {
+        String windSpeedBeaufort = String.format(
+                Locale.getDefault(),
+                "%d Bft",
+                WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed)
+        );
+        String formatted = entry.formatWindText(speedUnit);
+        switch (speedUnit) {
+            case WeatherEntry.MILES_PER_HOUR:
+            case WeatherEntry.KM_PER_HOUR:
+            case WeatherEntry.KNOT:
+                return String.format("%s (%s)", formatted, windSpeedBeaufort);
+            case WeatherEntry.BEAUFORT:
+            case WeatherEntry.METERS_PER_SECOND:
+            default:
+                return String.format(
+                        Locale.getDefault(),
+                        "%.1f m/s (%s)",
+                        entry.windSpeed,
+                        windSpeedBeaufort
+                );
+        }
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {
         Log.i(TAG, "onRequestFinished()");
+        this.forecastWeatherEntries = entries;
         if (!entries.isEmpty()) {
             WeatherEntry firstEntry = entries.get(0);
             String cityName = firstEntry.cityName;

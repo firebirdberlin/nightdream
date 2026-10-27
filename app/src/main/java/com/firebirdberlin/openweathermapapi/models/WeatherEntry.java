@@ -146,7 +146,7 @@ public class WeatherEntry {
     }
 
     public String formatTemperatureText(int temperatureUnit) {
-        return formatTemperatureText(temperatureUnit, true);
+        return formatTemperatureText(temperatureUnit, false);
     }
 
     public String formatTemperatureText(int temperatureUnit, boolean showApparentTemperature) {
