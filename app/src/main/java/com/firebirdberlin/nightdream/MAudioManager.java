@@ -26,22 +26,21 @@ import android.util.Log;
 
 import com.firebirdberlin.nightdream.events.AppEventBus;
 
-public class mAudioManager{
-    final static String TAG = "mAudioManager";
+public class MAudioManager {
+    private static final String TAG = MAudioManager.class.getSimpleName();
     private Context mContext;
     private AudioManager audiomanage;
     private int currentRingerMode;
 
-
     private class OnSetRingerModeSilent {
-         private int currentRingerMode;
+        private int currentRingerMode;
 
-         public OnSetRingerModeSilent(int currentRingerMode) {
-             this.currentRingerMode = currentRingerMode;
-         }
+        public OnSetRingerModeSilent(int currentRingerMode) {
+            this.currentRingerMode = currentRingerMode;
+        }
     }
 
-    public mAudioManager(Context context){
+    public MAudioManager(Context context) {
         this.mContext = context;
         audiomanage = null;
         audiomanage = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
@@ -50,12 +49,12 @@ public class mAudioManager{
         }
     }
 
-    public void setRingerModeSilent(){
+    public void setRingerModeSilent() {
         NotificationManager notificationManager =
             (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if ( notificationManager == null ||
-                !notificationManager.isNotificationPolicyAccessGranted() ) {
+        if (notificationManager == null ||
+                !notificationManager.isNotificationPolicyAccessGranted()) {
             return;
         }
 
@@ -67,7 +66,7 @@ public class mAudioManager{
         AppEventBus.postSticky(new OnSetRingerModeSilent(currentRingerMode));
     }
 
-    public void restoreRingerMode(){
+    public void restoreRingerMode() {
         Log.i(TAG, "restoreRingerMode()");
         OnSetRingerModeSilent event = AppEventBus.removeStickyEvent(OnSetRingerModeSilent.class);
         // nothing to do

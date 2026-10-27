@@ -25,7 +25,7 @@ import android.util.Log;
 
 import androidx.annotation.Keep;
 
-import com.firebirdberlin.HttpReader;
+import com.firebirdberlin.nightdream.util.HttpReader;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.gson.Gson;

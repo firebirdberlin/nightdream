@@ -59,11 +59,10 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class mNotificationListener extends NotificationListenerService {
+public class MNotificationListener extends NotificationListenerService {
 
     public static boolean running = false;
-    private static final String STAG = "mNotificationListener";
-    private final String TAG = this.getClass().getSimpleName();
+    private static final String TAG = MNotificationListener.class.getSimpleName();
     private final ExecutorService notificationExecutor = Executors.newSingleThreadExecutor();
     private final List<com.firebirdberlin.nightdream.NotificationList.Notification> notifications = new ArrayList<>();
     private final List<NotificationApp> notificationApps = new ArrayList<>();
@@ -71,7 +70,7 @@ public class mNotificationListener extends NotificationListenerService {
     private NLServiceReceiver nlServiceReceiver;
 
     public static void requestNotificationList(Context context) {
-        Log.d("mNotificationListener", "requestNotificationList()");
+        Log.d(TAG, "requestNotificationList()");
         Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
         i.putExtra("command", "list");
         context.sendBroadcast(i);
@@ -101,7 +100,7 @@ public class mNotificationListener extends NotificationListenerService {
             drawable.draw(canvas);
             return bitmap;
         } catch (Exception e) {
-            Log.e(STAG, "Error converting drawable to bitmap", e);
+            Log.e(TAG, "Error converting drawable to bitmap", e);
             return null;
         }
     }
@@ -310,7 +309,7 @@ public class mNotificationListener extends NotificationListenerService {
         notificationExecutor.execute(() -> {
             StatusBarNotification[] notificationList = null;
             try {
-                notificationList = mNotificationListener.this.getActiveNotifications();
+                notificationList = MNotificationListener.this.getActiveNotifications();
             } catch (Throwable t) {
                 Log.e(TAG, "Error getting active notifications", t);
             }
@@ -749,7 +748,7 @@ public class mNotificationListener extends NotificationListenerService {
                     deleteNotification(intent.getStringArrayListExtra("notificationKeys"));
                     break;
                 case "clearall":
-                    mNotificationListener.this.cancelAllNotifications();
+                    MNotificationListener.this.cancelAllNotifications();
                     break;
                 case "list":
                     Log.d(TAG, "calling listNotifications()");
@@ -757,7 +756,7 @@ public class mNotificationListener extends NotificationListenerService {
                     break;
                 case "release":
                     Log.d(TAG, "calling stopSelf()");
-                    mNotificationListener.this.stopSelf();
+                    MNotificationListener.this.stopSelf();
                     break;
             }
         }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.firebirdberlin.nightdream;
+package com.firebirdberlin.nightdream.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,7 +35,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Settings;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
@@ -46,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class NotificationReceiver extends BroadcastReceiver {
-    private static final String TAG = "NotificationReceiver";
+    private static final String TAG = NotificationReceiver.class.getSimpleName();
     private final View contentView;
     private final NightDreamActivity activity;
     private int color;

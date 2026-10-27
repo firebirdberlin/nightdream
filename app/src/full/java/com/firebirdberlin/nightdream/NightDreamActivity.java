@@ -53,6 +53,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import com.firebirdberlin.nightdream.receivers.NotificationReceiver;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
@@ -130,7 +131,7 @@ public class NightDreamActivity extends BillingHelperActivity
     private final Runnable runnableSetupNightMode = this::setupNightMode;
     public CastContext mCastContext;
     Sensor lightSensor = null;
-    mAudioManager AudioManage = null;
+    MAudioManager AudioManage = null;
     private ImageView alarmClockIcon;
     private BottomPanelLayout bottomPanelLayout;
     private SidePanel sidePanelLeft;
@@ -349,7 +350,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         nightDreamUI = new NightDreamUI(this, window);
-        AudioManage = new mAudioManager(this);
+        AudioManage = new MAudioManager(this);
         mySettings = new Settings(this);
         setupCastListener();
 

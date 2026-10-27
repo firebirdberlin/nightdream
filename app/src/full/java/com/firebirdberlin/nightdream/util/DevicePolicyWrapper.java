@@ -25,7 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.AdminReceiver;
+import com.firebirdberlin.nightdream.receivers.AdminReceiver;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;

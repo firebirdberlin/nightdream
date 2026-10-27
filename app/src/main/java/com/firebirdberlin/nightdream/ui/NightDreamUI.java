@@ -84,7 +84,7 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
-import com.firebirdberlin.nightdream.mAudioManager;
+import com.firebirdberlin.nightdream.MAudioManager;
 import com.firebirdberlin.nightdream.models.ParticleEffect;
 import com.firebirdberlin.nightdream.models.ThemePreset;
 import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
@@ -155,7 +155,7 @@ public class NightDreamUI {
         }
     };
     private final BatteryIconView batteryIconView;
-    private final mAudioManager AudioManage;
+    private final MAudioManager AudioManage;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
     private int lastPointerCount = 0;
@@ -517,7 +517,7 @@ public class NightDreamUI {
         menuIcon.setVisibility(View.VISIBLE);
         setAlpha(menuIcon, 1, 0);
 
-        AudioManage = new mAudioManager(context);
+        AudioManage = new MAudioManager(context);
 
         checkForReviewRequest();
         clockLayoutContainer.setClockLayout(clockLayout);

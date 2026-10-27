@@ -16,13 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.firebirdberlin;
+package com.firebirdberlin.nightdream.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.util.Log;
 
 import com.firebirdberlin.nightdream.BuildConfig;
@@ -40,7 +38,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 public class HttpReader {
-    private static final String TAG = "HttpReader";
+    private static final String TAG = HttpReader.class.getSimpleName();
 
     private final static int READ_TIMEOUT = 10000;
     private final static int CONNECT_TIMEOUT = 10000;
