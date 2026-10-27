@@ -47,7 +47,7 @@ public class BrightSkyApi {
     private static final String ENDPOINT = "https://api.brightsky.dev";
     private static final String CACHE_FILE = "BrightSkyApi";
     private static final long CACHE_VALIDITY_TIME = WeatherEntry.REQUEST_INTERVAL - 1;
-    private static final String TAG = "BrightSkyApi";
+    private static final String TAG = BrightSkyApi.class.getSimpleName();
     private static WeakReference<Context> mContext;
     private static long requestTimestamp = 0L;
 

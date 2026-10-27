@@ -20,21 +20,21 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.annotation.Nullable;
 
 import com.firebirdberlin.nightdream.R;
 
-import java.lang.reflect.Field;
+public class PollenForecastLayout extends FrameLayout {
 
-public class PollenForecastLayout extends ConstraintLayout {
-    private static final String TAG = "PollenForecastLayout";
+    private static final String TAG = PollenForecastLayout.class.getSimpleName();
     private Context context = null;
     private ImageView pollenImage = null;
     private TextView pollenText = null;
@@ -46,22 +46,27 @@ public class PollenForecastLayout extends ConstraintLayout {
         init();
     }
 
+    public PollenForecastLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        init();
+    }
+
     private void init() {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.pollen_forecast_layout, null);
-        addView(child);
+        inflater.inflate(R.layout.pollen_forecast_layout, this, true);
 
         pollenImage = findViewById(R.id.pollenImage);
         pollenText = findViewById(R.id.pollenText);
         pollenStressLevel = findViewById(R.id.pollenStressLevel);
     }
 
-    public void setImage(Drawable image) {
+    public void setImage(@Nullable Drawable image) {
         pollenImage.setImageDrawable(image);
     }
 
-    public void setPollenText(String text) {
+    public void setPollenText(@Nullable String text) {
         pollenText.setText(text);
     }
 
@@ -96,5 +101,4 @@ public class PollenForecastLayout extends ConstraintLayout {
 
         pollenStressLevel.setText(context.getString(pollenStressId));
     }
-
 }
