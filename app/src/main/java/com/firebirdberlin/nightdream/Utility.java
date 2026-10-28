@@ -1212,4 +1212,14 @@ public class Utility {
         return cal.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                 cal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR);
     }
+
+    public static boolean isTomorrow(@Nullable Calendar cal) {
+        if (cal == null) {
+            return false;
+        }
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        return cal.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) &&
+                cal.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR);
+    }
 }

@@ -65,4 +65,24 @@ public class UtilityTest {
         Assert.assertTrue(Utility.equalsAny("3", " ", "0", "1", "2", "3"));
         Assert.assertFalse(Utility.equalsAny("0", "3", "4", "z"));
     }
+
+    @Test
+    public void testIsTodayAndTomorrow() {
+        Assert.assertFalse(Utility.isToday(null));
+        Assert.assertFalse(Utility.isTomorrow(null));
+
+        java.util.Calendar today = java.util.Calendar.getInstance();
+        Assert.assertTrue(Utility.isToday(today));
+        Assert.assertFalse(Utility.isTomorrow(today));
+
+        java.util.Calendar tomorrow = java.util.Calendar.getInstance();
+        tomorrow.add(java.util.Calendar.DAY_OF_YEAR, 1);
+        Assert.assertFalse(Utility.isToday(tomorrow));
+        Assert.assertTrue(Utility.isTomorrow(tomorrow));
+
+        java.util.Calendar yesterday = java.util.Calendar.getInstance();
+        yesterday.add(java.util.Calendar.DAY_OF_YEAR, -1);
+        Assert.assertFalse(Utility.isToday(yesterday));
+        Assert.assertFalse(Utility.isTomorrow(yesterday));
+    }
 }
