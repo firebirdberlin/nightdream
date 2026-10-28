@@ -24,7 +24,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -84,6 +84,8 @@ import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStopped;
 import com.firebirdberlin.nightdream.MAudioManager;
 import com.firebirdberlin.nightdream.models.ParticleEffect;
 import com.firebirdberlin.nightdream.models.ThemePreset;
@@ -110,6 +112,10 @@ public class NightDreamUI {
             onEvent((OnNewLightSensorValue) event);
         } else if (event instanceof OnLightSensorValueTimeout) {
             onEvent((OnLightSensorValueTimeout) event);
+        } else if (event instanceof OnRadioStreamStarted) {
+            showAlarmClock();
+        } else if (event instanceof OnRadioStreamStopped) {
+            setupAlarmClock();
         }
     };
     private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -274,7 +280,7 @@ public class NightDreamUI {
     private int vibrantColorDark = 0;
     private long lastAnimationTime = 0L;
     private long lastTouchTime = 0L;
-    private NightDreamBroadcastReceiver broadcastReceiver = null;
+
     private boolean locked = false;
     private boolean zoomFinished = false;
     public Runnable initSlideshowBackground = new Runnable() {
@@ -697,7 +703,6 @@ public class NightDreamUI {
         lockUI(this.locked);
 
         AppEventBus.addListener(eventListener);
-        broadcastReceiver = registerBroadcastReceiver();
         initLightSensor();
     }
 
@@ -1271,7 +1276,6 @@ public class NightDreamUI {
         if (lightSensorEventListener != null) {
             lightSensorEventListener.unregister();
         }
-        unregister(broadcastReceiver);
     }
 
     public void onStop() {
@@ -1892,23 +1896,7 @@ public class NightDreamUI {
 
     }
 
-    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
-        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-        ContextCompat.registerReceiver(mContext, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        return receiver;
-    }
 
-    private void unregister(BroadcastReceiver receiver) {
-        try {
-            mContext.unregisterReceiver(receiver);
-        } catch (IllegalArgumentException ignored) {
-        }
-
-    }
 
     public void onEvent(OnNewLightSensorValue event) {
         Log.i(TAG, "onEvent(OnNewLightSensorValue) = " + event.value);
@@ -1984,15 +1972,5 @@ public class NightDreamUI {
         });
     }
 
-    class NightDreamBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)) {
-                showAlarmClock();
-            } else if (Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                setupAlarmClock();
-            }
-        }
-    }
+
 }
