@@ -19,12 +19,11 @@
 package com.firebirdberlin.nightdream.services;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.DataSource;
 import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnAlarmSet;
 import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
@@ -90,19 +89,13 @@ public class SqliteIntentService {
     public static void broadcastAlarm(Context context) {
         Log.d(TAG, "broadcastNextAlarm()");
         SimpleTime next = getLastActivatedAlarmTime();
-        Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        if (next != null) {
-            intent.putExtras(next.toBundle());
-        } else {
+        if (next == null) {
             DataSource db = new DataSource(context);
             db.open();
-            SimpleTime nextAlarm = db.getNextAlarmToSchedule();
-            if (nextAlarm != null) {
-                intent.putExtras(nextAlarm.toBundle());
-            }
+            next = db.getNextAlarmToSchedule();
             db.close();
         }
-        context.sendBroadcast(intent);
+        AppEventBus.publish(new OnAlarmSet(next));
     }
 
     static SimpleTime getLastActivatedAlarmTime() {

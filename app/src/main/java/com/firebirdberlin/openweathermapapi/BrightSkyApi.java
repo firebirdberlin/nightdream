@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.List;
 
 public class BrightSkyApi {
-    public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.brightsky.dev";
     private static final String CACHE_FILE = "BrightSkyApi";
     private static final long CACHE_VALIDITY_TIME = WeatherEntry.REQUEST_INTERVAL - 1;
