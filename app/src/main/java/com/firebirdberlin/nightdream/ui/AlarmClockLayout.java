@@ -25,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
@@ -145,14 +144,6 @@ public class AlarmClockLayout extends LinearLayout {
         super(context, attrs);
         this.context = context;
         init();
-    }
-
-    public static boolean isTomorrow(Calendar d) {
-        return DateUtils.isToday(d.getTimeInMillis() - DateUtils.DAY_IN_MILLIS);
-    }
-
-    public static boolean isToday(Calendar d) {
-        return DateUtils.isToday(d.getTimeInMillis());
     }
 
     public void showSecondaryLayout(boolean on) {
@@ -354,9 +345,9 @@ public class AlarmClockLayout extends LinearLayout {
             } else if (alarmClockEntry.nextEventAfter != null && alarmClockEntry.nextEventAfter > now) {
                 // if the alarm is postponed by the user show the date of the next event
                 textWhen = String.format("%s", Utility.formatTime(dateFormat, time));
-            } else if (isToday(time)) {
+            } else if (Utility.isToday(time)) {
                 textWhen = context.getString(R.string.today);
-            } else if (isTomorrow(time)) {
+            } else if (Utility.isTomorrow(time)) {
                 textWhen = context.getString(R.string.tomorrow);
             }
 
