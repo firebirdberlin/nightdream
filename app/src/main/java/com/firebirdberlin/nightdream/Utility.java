@@ -56,6 +56,7 @@ import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
@@ -88,12 +89,11 @@ import androidx.core.view.WindowCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
-import java.io.BufferedWriter;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -114,15 +114,7 @@ import java.util.concurrent.TimeUnit;
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
     private static final String SCREENSAVER_COMPONENTS = "screensaver_components";
-    private static final SimpleDateFormat LOG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private static final String TAG = "NightDreamUtility";
-    int system_brightness_mode = System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
-    private final Context mContext;
-
-    public Utility(Context context) {
-        this.mContext = context;
-        getSystemBrightnessMode();
-    }
 
     public static void prepareDirectory(File directory) {
         if (directory.exists()) {
@@ -663,52 +655,14 @@ public class Utility {
         return Math.min(size.x, size.y);
     }
 
-    public static void logToFile(Context context, String logFileName, String text) {
 
-        // allow logging only in debug mode
-        if (!isDebuggable(context)) {
-            return;
-        }
-
-        String filePath = context.getFilesDir().getPath() + "/" + logFileName;
-        Log.d(TAG, "log file location: " + filePath);
-        File logFile = new File(filePath);
-        if (!logFile.exists()) {
-            try {
-                logFile.createNewFile();
-            } catch (IOException e) {
-                Log.i(TAG, "error creating log file ", e);
-            }
-        }
-
-        if (logFile.exists()) {
-
-            Date time = Calendar.getInstance().getTime();
-            String formattedTime = LOG_DATE_FORMAT.format(time);
-
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
-                writer.append(String.format("%s %s", formattedTime, text));
-                writer.newLine();
-                writer.flush();
-                writer.close();
-            } catch (IOException e) {
-                Log.i(TAG, "error writing to log file ", e);
-            }
-        }
-    }
 
     public static boolean isScreenOn(Context context) {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return pm.isInteractive();
     }
 
-    public static void logResponseHeaders(Map<String, List<String>> responseHeaders) {
-        for (String key : responseHeaders.keySet()) {
-            List<String> v = responseHeaders.get(key);
-            Log.i(TAG, "header: " + key + "=" + (v != null && !v.isEmpty() ? v.get(0) : "null"));
-        }
-    }
+
 
 
     public static String getSoundFileTitleFromUri(Context context, String uriString) {
@@ -877,15 +831,7 @@ public class Utility {
         return mChannel;
     }
 
-    private static void playSound(Context context) {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(context, notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public static boolean isInCall(Context context){
         AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -1010,22 +956,7 @@ public class Utility {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
-    public static int getDominantColor(Bitmap bitmap) {
-        if (bitmap == null) return -1;
-        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
-        final int color = newBitmap.getPixel(0, 0);
-        newBitmap.recycle();
-        return color;
-    }
 
-    public static int getDominantColorFromPalette(Bitmap bitmap) {
-        try {
-            Palette p = Palette.from(bitmap).generate();
-            return p.getDominantColor(Color.RED);
-        } catch (IllegalArgumentException e) {
-            return Color.RED;
-        }
-    }
 
     public static int getDarkMutedColorFromPalette(Bitmap bitmap, int defaultColor) {
         try {
@@ -1049,16 +980,7 @@ public class Utility {
         return defaultColor;
     }
 
-    public static int getScreenOrientation(Context context) {
-        /*
-        returns
-            Configuration.ORIENTATION_LANDSCAPE,
-            Configuration.ORIENTATION_PORTRAIT,
-            Configuration.ORIENTATION_UNDEFINED,
-        */
-        return context.getResources().getConfiguration().orientation;
 
-    }
 
     public static boolean hasPermission(Context context, String permission) {
         if (context == null) return false;
@@ -1111,35 +1033,7 @@ public class Utility {
         return millis;
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = mContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = mContext.getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
 
-    public void getSystemBrightnessMode() {
-        system_brightness_mode = System.getInt(mContext.getContentResolver(),
-                System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-    }
-
-    public void setManualBrightnessMode() {
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-    }
-
-    public void setAutoBrightnessMode() {
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-    }
-
-    public void restoreSystemBrightnessMode() {
-        System.putInt(mContext.getContentResolver(), System.SCREEN_BRIGHTNESS_MODE,
-                system_brightness_mode);
-    }
 
     public static boolean areSystemAnimationsEnabled(Context context) {
         float duration = android.provider.Settings.Global.getFloat(
