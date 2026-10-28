@@ -58,14 +58,6 @@
         app:key="speedUnit"
         app:title="@string/speedUnit" />
 
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        app:defaultValue="false"
-        app:key="showPollen"
-        app:summary="@string/showPollenSummary"
-        app:dependency="showWeather"
-        app:title="@string/showPollen" />
-
     <ListPreference
         app:iconSpaceReserved="false"
         app:defaultValue="1"
@@ -75,6 +67,15 @@
         app:key="weatherIconMode"
         app:title="@string/weather_icon"
         app:useSimpleSummaryProvider="true"/>
+
+    <SwitchPreferenceCompat
+        app:allowDividerAbove="true"
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="showPollen"
+        app:summary="@string/showPollenSummary"
+        app:dependency="showWeather"
+        app:title="@string/showPollen" />
 
     <ListPreference
         app:iconSpaceReserved="false"
