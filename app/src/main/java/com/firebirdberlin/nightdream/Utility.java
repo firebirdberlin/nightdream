@@ -1203,4 +1203,13 @@ public class Utility {
         }
         return null;
     }
+
+    public static boolean isToday(@Nullable Calendar cal) {
+        if (cal == null) {
+            return false;
+        }
+        Calendar today = Calendar.getInstance();
+        return cal.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                cal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR);
+    }
 }

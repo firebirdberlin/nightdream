@@ -23,16 +23,15 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -51,7 +50,7 @@ public class WeatherForecastTabPreview extends Fragment {
     final static String TAG = "WeatherForeTabPreview";
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
     }
@@ -62,15 +61,12 @@ public class WeatherForecastTabPreview extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        View.OnClickListener purchaseListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((WeatherForecastActivity) getActivity()).showSubscriptionDialog();
-                Log.d(TAG, "onclick showSubscriptionDialog");
-            }
+        View.OnClickListener purchaseListener = view1 -> {
+            ((WeatherForecastActivity) getActivity()).showSubscriptionDialog();
+            Log.d(TAG, "onclick showSubscriptionDialog");
         };
 
         int color = Utility.getRandomMaterialColor(context);
@@ -152,16 +148,9 @@ public class WeatherForecastTabPreview extends Fragment {
                     continue;
                 }
                 TextView dateView = new TextView(context);
-                if (Build.VERSION.SDK_INT >= 23) {
-                    dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
-                    if (getActivity() != null) {
-                        dateView.setTextColor(getActivity().getResources().getColor(R.color.blue, null));
-                    }
-                } else {
-                    dateView.setTextAppearance(context, android.R.style.TextAppearance_Medium);
-                    if (getActivity() != null) {
-                        dateView.setTextColor(getActivity().getResources().getColor(R.color.blue));
-                    }
+                dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
+                if (getActivity() != null) {
+                    dateView.setTextColor(getActivity().getResources().getColor(R.color.blue, null));
                 }
                 dateView.setTypeface(null, Typeface.BOLD);
 
@@ -177,7 +166,7 @@ public class WeatherForecastTabPreview extends Fragment {
 
                 WeatherForecastLayout layout = new WeatherForecastLayout(context);
                 layout.setTimeFormat(timeFormat);
-                layout.setTemperature(true, settings.temperatureUnit);
+                layout.setTemperature(true, settings.showApparentTemperature, settings.temperatureUnit);
                 layout.setWindSpeed(true, settings.speedUnit);
                 layout.update(entry);
                 scrollViewLayout.addView(layout);

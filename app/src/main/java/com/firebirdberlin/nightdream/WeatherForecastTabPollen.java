@@ -29,10 +29,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -44,7 +45,7 @@ import java.util.Map;
 
 public class WeatherForecastTabPollen extends Fragment {
 
-    final static String TAG = "ForecastTabPollen";
+    private static final String TAG = WeatherForecastTabPollen.class.getSimpleName();
     private final int[] colorResId = new int[]{
             R.color.grey,
             R.color.material_light_green,
@@ -54,35 +55,42 @@ public class WeatherForecastTabPollen extends Fragment {
             R.color.material_purple,
             R.color.material_red
     };
-    // Map to store Pollen Key -> String Resource ID
-    private static final Map<String, Integer> POLLEN_KEY_TO_STRING_RESOURCE_ID_MAP = new HashMap<String, Integer>() {
-        {
-            put("pollen_hazelnut", R.string.pollen_hazelnut);
-            put("pollen_birch", R.string.pollen_birch);
-            put("pollen_ambrosia", R.string.pollen_ambrosia);
-            put("pollen_grass", R.string.pollen_grass);
-            put("pollen_ash", R.string.pollen_ash);
-            put("pollen_mugwort", R.string.pollen_mugwort);
-            put("pollen_alder", R.string.pollen_alder);
-            put("pollen_rye", R.string.pollen_rye);
-        }
-    };
+
+    private static final Map<String, Integer> POLLEN_KEY_TO_STRING_RESOURCE_ID_MAP =
+            new HashMap<String, Integer>() {
+                {
+                    put("pollen_hazelnut", R.string.pollen_hazelnut);
+                    put("pollen_birch", R.string.pollen_birch);
+                    put("pollen_ambrosia", R.string.pollen_ambrosia);
+                    put("pollen_grass", R.string.pollen_grass);
+                    put("pollen_ash", R.string.pollen_ash);
+                    put("pollen_mugwort", R.string.pollen_mugwort);
+                    put("pollen_alder", R.string.pollen_alder);
+                    put("pollen_rye", R.string.pollen_rye);
+                }
+            };
 
     private LinearLayout scrollViewLayout = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_weather_forecast_scrollview, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         scrollViewLayout = view.findViewById(R.id.scroll_view_layout);
+        View scrollView = view.findViewById(R.id.scroll_view);
+        if (scrollView != null) {
+            scrollView.setVisibility(View.VISIBLE);
+        }
     }
 
-    public void onRequestFinished(City city, PollenExposure result) {
+    public void onRequestFinished(@Nullable City city, @Nullable PollenExposure result) {
         Log.d(TAG, "addPollen - onRequestFinished");
+        if (scrollViewLayout == null) return;
         scrollViewLayout.removeAllViews();
         Context context = getContext();
         if (context == null) {
@@ -91,12 +99,10 @@ public class WeatherForecastTabPollen extends Fragment {
 
         if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)
                 || result == null) {
-            Log.d(TAG, "addPollen - city: " + ((city == null) ? "null" : city.toJson()));
-
             TextView textView = new TextView(context);
             textView.setGravity(Gravity.CENTER);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
-            textView.setPadding(10, 10, 10, 10);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            textView.setPadding(16, 32, 16, 32);
             textView.setText(getString(R.string.showPollenNoData));
             scrollViewLayout.addView(textView);
         } else {
@@ -112,20 +118,15 @@ public class WeatherForecastTabPollen extends Fragment {
                     }
 
                     Drawable herbDrawable = ContextCompat.getDrawable(context, resID);
-
                     String pollenKeyName = "pollen_" + entrySet.getKey();
                     Integer pollenKeyId = POLLEN_KEY_TO_STRING_RESOURCE_ID_MAP.get(pollenKeyName);
 
                     if (herbDrawable != null && value != null && pollenKeyId != null) {
-                        // the index may be "0-1", "1-2"
                         value = value.substring(value.length() - 1);
                         int index = Integer.parseInt(value);
-                        index = Math.max(0, index);
-                        index = Math.min(6, index);
-                        int col = getContext().getColor(colorResId[index]);
+                        index = Math.max(0, Math.min(6, index));
+                        int col = ContextCompat.getColor(context, colorResId[index]);
                         herbDrawable.setColorFilter(col, PorterDuff.Mode.SRC_ATOP);
-                        ImageView herb = new ImageView(context);
-                        herb.setImageDrawable(herbDrawable);
 
                         PollenForecastLayout pollenLayout = new PollenForecastLayout(context);
                         pollenLayout.setImage(herbDrawable);
@@ -133,10 +134,6 @@ public class WeatherForecastTabPollen extends Fragment {
                         pollenLayout.setPollenStressLevel(index);
 
                         scrollViewLayout.addView(pollenLayout);
-                    } else {
-                        if (herbDrawable == null) Log.w(TAG, "Drawable not found for icon: " + icon);
-                        if (value == null) Log.w(TAG, "Value is null for pollen key: " + entrySet.getKey());
-                        if (pollenKeyId == null) Log.w(TAG, "String resource ID not found for pollen key: " + pollenKeyName);
                     }
                 }
             }

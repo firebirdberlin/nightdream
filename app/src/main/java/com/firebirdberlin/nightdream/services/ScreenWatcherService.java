@@ -75,9 +75,11 @@ public class ScreenWatcherService extends Service {
     public static void updateNotification(Context context, WeatherEntry weatherEntry, int temperatureUnit) {
         if (ScreenWatcherService.isRunning) {
             if (weatherEntry != null ) {
+                Settings settings = new Settings(context);
                 String title = String.format(
                         "%s | %s",
-                        weatherEntry.formatTemperatureText(temperatureUnit),
+                        weatherEntry.formatTemperatureText(
+                                temperatureUnit, settings.showApparentTemperature),
                         weatherEntry.cityName
                 );
                 String desc = weatherEntry.description;

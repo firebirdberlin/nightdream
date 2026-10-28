@@ -18,7 +18,6 @@
 
 package com.firebirdberlin.nightdream.ui;
 
-
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -27,6 +26,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Utility;
@@ -38,9 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class WeatherForecastLayout extends LinearLayout {
+public class WeatherForecastLayout extends ConstraintLayout {
 
-    private static final String TAG = "WeatherForecastLayout";
+    private static final String TAG = WeatherForecastLayout.class.getSimpleName();
     private Context context = null;
     private TextView timeView = null;
     private TextView iconClouds = null;
@@ -59,17 +62,19 @@ public class WeatherForecastLayout extends LinearLayout {
     private TextView sunriseTimeText = null;
     private LinearLayout sunsetLayout = null;
     private LinearLayout sunriseLayout = null;
+    private View layoutRain = null;
+    private boolean showApparentTemperature = false;
     private int temperatureUnit = WeatherEntry.CELSIUS;
     private int speedUnit = WeatherEntry.METERS_PER_SECOND;
     private WeatherEntry weatherEntry = null;
 
-    public WeatherForecastLayout(Context context) {
+    public WeatherForecastLayout(@NonNull Context context) {
         super(context);
         this.context = context;
         init();
     }
 
-    public WeatherForecastLayout(Context context, AttributeSet attrs) {
+    public WeatherForecastLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         init();
@@ -78,12 +83,7 @@ public class WeatherForecastLayout extends LinearLayout {
     private void init() {
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.weather_forecast_layout, null);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        addView(child, lp);
+        inflater.inflate(R.layout.weather_forecast_layout, this, true);
 
         timeView = findViewById(R.id.timeView);
         iconText = findViewById(R.id.iconText);
@@ -101,6 +101,8 @@ public class WeatherForecastLayout extends LinearLayout {
         sunsetTimeText = findViewById(R.id.sunsetTime);
         sunriseLayout = findViewById(R.id.layoutSunrise);
         sunsetLayout = findViewById(R.id.layoutSunset);
+        layoutRain = findViewById(R.id.layoutRain);
+
         Typeface typeface = FontCache.get(context, "fonts/meteocons.ttf");
         iconClouds.setTypeface(typeface);
         iconText.setTypeface(typeface);
@@ -108,18 +110,23 @@ public class WeatherForecastLayout extends LinearLayout {
         iconRain3h.setTypeface(typeface);
     }
 
-    public void setTimeFormat(String format) {
+    public void setTimeFormat(@NonNull String format) {
         timeFormat = format;
     }
 
-    public void setTemperature(boolean on, int unit) {
+    public void setTemperature(boolean on, boolean showApparentTemperature, int unit) {
+        this.showApparentTemperature = showApparentTemperature;
         this.temperatureUnit = unit;
         temperatureText.setVisibility((on) ? View.VISIBLE : View.GONE);
     }
 
-    public void setDescriptionText(String value) {
+    public void setTemperature(boolean on, int unit) {
+        setTemperature(on, false, unit);
+    }
+
+    public void setDescriptionText(@Nullable String value) {
         descriptionText.setText(value);
-        descriptionText.setVisibility((value != null) ? View.VISIBLE : View.GONE);
+        descriptionText.setVisibility((!Utility.isEmpty(value)) ? View.VISIBLE : View.GONE);
     }
 
     public void setSunrise(boolean on, long time) {
@@ -166,30 +173,29 @@ public class WeatherForecastLayout extends LinearLayout {
         windText.invalidate();
     }
 
-    public void setTypeface(Typeface typeface) {
+    public void setTypeface(@Nullable Typeface typeface) {
         temperatureText.setTypeface(typeface);
         humidityText.setTypeface(typeface);
         windText.setTypeface(typeface);
         rainText.setTypeface(typeface);
     }
 
-    public void update(WeatherEntry entry) {
-        // Log.d("WeatherForecastLayout", entry.toString());
-        // Log.d("WeatherForecastLayout", entry.formatTemperatureText(temperatureUnit));
+    public void update(@Nullable WeatherEntry entry) {
         this.weatherEntry = entry;
-        if (iconText == null || temperatureText == null) return;
+        if (entry == null || iconText == null || temperatureText == null) return;
         iconWindDirection.setColor(Color.WHITE);
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(entry.timestamp * 1000);
 
-        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat, java.util.Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
         String text = sdf.format(mCalendar.getTime());
         timeView.setText(text);
 
         iconText.setText(entry.weatherIconMeteoconsSymbol);
-        temperatureText.setText(entry.formatTemperatureText(temperatureUnit));
-        if (!entry.formatHumidityText().isEmpty()) {
+        temperatureText.setText(entry.formatTemperatureText(temperatureUnit, showApparentTemperature));
+        if (!Utility.isEmpty(entry.formatHumidityText())) {
             humidityText.setText(entry.formatHumidityText());
+            humidityText.setVisibility(View.VISIBLE);
         } else {
             humidityText.setVisibility(View.GONE);
         }
@@ -198,30 +204,42 @@ public class WeatherForecastLayout extends LinearLayout {
         iconWindDirection.setDirection(entry.windDirection);
         windText.setText(formatWindText(entry));
 
-        if (entry != null && entry.rain3h >= 0.) {
+        if (entry.rain3h > 0.) {
             iconRain3h.setText("R");
             rainText.setText(formatRainText(entry.rain3h));
-        } else if (entry != null && entry.rain1h > 0.) {
+            if (layoutRain != null) {
+                layoutRain.setVisibility(View.VISIBLE);
+            }
+        } else if (entry.rain1h > 0.) {
             iconRain3h.setText("R");
             rainText.setText(formatRainText(entry.rain1h));
+            if (layoutRain != null) {
+                layoutRain.setVisibility(View.VISIBLE);
+            }
         } else {
             iconRain3h.setText("");
-            iconRain3h.setVisibility(View.GONE);
             rainText.setText("");
-            rainText.setVisibility(View.GONE);
+            if (layoutRain != null) {
+                layoutRain.setVisibility(View.INVISIBLE);
+            }
         }
 
-        if (entry != null && entry.clouds >= 0) {
+        if (entry.clouds >= 0) {
             iconClouds.setText("Y");
             cloudText.setText(formatCloudsText(entry));
+            iconClouds.setVisibility(View.VISIBLE);
+            cloudText.setVisibility(View.VISIBLE);
         } else {
             iconClouds.setText("");
+            iconClouds.setVisibility(View.GONE);
             cloudText.setText("");
+            cloudText.setVisibility(View.GONE);
         }
 
         if (weatherEntry != null) {
             iconWind.setVisibility((weatherEntry.windDirection >= 0) ? View.GONE : View.VISIBLE);
-            iconWindDirection.setVisibility((weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
+            iconWindDirection.setVisibility(
+                    (weatherEntry.windDirection >= 0) ? View.VISIBLE : View.GONE);
         }
         fixIconWindDirectionSize();
     }
@@ -235,7 +253,11 @@ public class WeatherForecastLayout extends LinearLayout {
     }
 
     private String formatWindText(WeatherEntry entry) {
-        String windSpeedBeaufort = String.format(Locale.getDefault(), "%d Bft", WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed));
+        String windSpeedBeaufort = String.format(
+                Locale.getDefault(),
+                "%d Bft",
+                WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed)
+        );
         String formatted = entry.formatWindText(speedUnit);
         switch (speedUnit) {
             case WeatherEntry.MILES_PER_HOUR:
@@ -245,15 +267,21 @@ public class WeatherForecastLayout extends LinearLayout {
             case WeatherEntry.BEAUFORT:
             case WeatherEntry.METERS_PER_SECOND:
             default:
-                return String.format(Locale.getDefault(), "%.1f m/s (%s)", entry.windSpeed, windSpeedBeaufort);
+                return String.format(
+                        Locale.getDefault(),
+                        "%.1f m/s (%s)",
+                        entry.windSpeed,
+                        windSpeedBeaufort
+                );
         }
     }
 
     private void fixIconWindDirectionSize() {
-        temperatureText.post(new Runnable() {
-            public void run() {
-                int height = temperatureText.getHeight();
-                iconWindDirection.setLayoutParams(new LinearLayout.LayoutParams(height, height));
+        temperatureText.post(() -> {
+            int height = temperatureText.getHeight();
+            if (height > 0) {
+                iconWindDirection.setLayoutParams(
+                        new LinearLayout.LayoutParams(height, height));
                 iconWindDirection.requestLayout();
                 iconWindDirection.invalidate();
             }
