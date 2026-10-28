@@ -66,7 +66,6 @@ import java.util.Locale;
 
 public class OpenWeatherMapApi {
 
-    public static final String ACTION_WEATHER_DATA_UPDATED = "com.firebirdberlin.nightdream.WEATHER_DATA_UPDATED";
     private static final String ENDPOINT = "https://api.openweathermap.org/data/2.5";
     private static final String TAG = "OpenWeatherMapApi";
     private static final String PREFS_KEY = "NightDream preferences"; // Added PREFS_KEY

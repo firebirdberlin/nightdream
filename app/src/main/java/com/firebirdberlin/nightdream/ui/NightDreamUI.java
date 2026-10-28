@@ -82,6 +82,8 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
+import com.firebirdberlin.nightdream.events.OnAlarmStopped;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
 import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
@@ -116,6 +118,8 @@ public class NightDreamUI {
             showAlarmClock();
         } else if (event instanceof OnRadioStreamStopped) {
             setupAlarmClock();
+        } else if (event instanceof OnAlarmStarted || event instanceof OnAlarmStopped) {
+            showAlarmClock();
         }
     };
     private static final int SWIPE_MAX_OFF_PATH = 250;

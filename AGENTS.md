@@ -16,7 +16,7 @@
   - Also remove the then-unneeded `@RequiresApi`/`@TargetApi` annotations, unused
     `Build` imports and `lint` suppressions for those levels.
   - Do this only in code you are changing anyway. Do not sweep through unrelated files.
-- Source/target compatibility is **Java 8**. Do not use `var`, `List.of`, `Map.of`, `record`,
+- Source/target compatibility is **Java 17**. Do not use `var`, `List.of`, `Map.of`, `record`,
   text blocks, `String.isBlank()` or other Java 9+ language features/APIs.
   `java.time` is allowed (core library desugaring is enabled).
 - Do not add new dependencies without asking. Prefer libraries already in use:
