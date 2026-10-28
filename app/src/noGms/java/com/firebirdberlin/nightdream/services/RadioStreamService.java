@@ -69,6 +69,10 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnRadioStreamMetadataUpdated;
+import com.firebirdberlin.nightdream.events.OnRadioStreamReadyForPlayback;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStopped;
 import com.firebirdberlin.nightdream.events.OnSleepTimeChanged;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.VibrationHandler;
@@ -321,9 +325,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         alarmTime = new SimpleTime(extras);
                         radioStationIndex = intent.getIntExtra(EXTRA_RADIO_STATION_INDEX, -1);
 
-                        Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
-                        broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                        sendBroadcast(broadcastIndex);
+                        AppEventBus.publish(new OnRadioStreamStarted(radioStationIndex));
                         streamingMode = StreamingMode.RADIO;
                         currentStreamType = AudioManager.STREAM_MUSIC;
                         fadeInDelay = 50;
@@ -348,9 +350,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                         handler.removeCallbacks(timeout);
                         updateNotification(getResources().getString(R.string.radio_playing));
 
-                        Intent broadcastIndex = new Intent(Config.ACTION_RADIO_STREAM_STARTED);
-                        broadcastIndex.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                        sendBroadcast(broadcastIndex);
+                        AppEventBus.publish(new OnRadioStreamStarted(radioStationIndex));
                     }
                     break;
             }
@@ -513,8 +513,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         radioStation = null;
         streamingMode = StreamingMode.INACTIVE;
 
-        Intent intent = new Intent(Config.ACTION_RADIO_STREAM_STOPPED);
-        sendBroadcast(intent);
+        AppEventBus.publish(new OnRadioStreamStopped());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             stopForeground(Service.STOP_FOREGROUND_DETACH);
         } else {
@@ -617,10 +616,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
                     mediaMetaData = metadata;
                     if (metadata.title != null) {
                         updateNotification(metadata.title.toString());
-                        Intent intent = new Intent(Config.ACTION_RADIO_STREAM_METADATA_UPDATED);
-                        intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                        intent.putExtra(EXTRA_TITLE, metadata.title.toString());
-                        sendBroadcast(intent);
+                        AppEventBus.publish(new OnRadioStreamMetadataUpdated(radioStationIndex, metadata.title.toString()));
                     }
                 }
             });
@@ -640,9 +636,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
             case ExoPlayer.STATE_READY:
                 Log.d(TAG, "The player is able to immediately play from its current position.");
 
-                Intent intent = new Intent(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-                intent.putExtra(EXTRA_RADIO_STATION_INDEX, radioStationIndex);
-                sendBroadcast(intent);
+                AppEventBus.publish(new OnRadioStreamReadyForPlayback(radioStationIndex));
                 currentVolume = 0.f;
                 handler.postDelayed(fadeIn, muteDelayInMillis);
                 updateNotification(getResources().getString(R.string.radio_muting));

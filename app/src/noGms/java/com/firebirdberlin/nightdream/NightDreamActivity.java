@@ -63,6 +63,8 @@ import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStopped;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
@@ -114,6 +116,8 @@ public class NightDreamActivity extends BillingHelperActivity
             onEvent((OnNewLightSensorValue) event);
         } else if (event instanceof OnLightSensorValueTimeout) {
             onEvent((OnLightSensorValueTimeout) event);
+        } else if (event instanceof OnRadioStreamStarted || event instanceof OnRadioStreamStopped) {
+            setupRadioStreamUI();
         }
     };
     public static String TAG = "NightDreamActivity";
@@ -616,8 +620,6 @@ public class NightDreamActivity extends BillingHelperActivity
         Log.d(TAG, "registerReceiver()");
         NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
         filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
@@ -935,9 +937,6 @@ public class NightDreamActivity extends BillingHelperActivity
             if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
                 // #TODO can this be deleted ?
                 //mySettings = new Settings(context);
-            } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
-                    || Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                setupRadioStreamUI();
             }
 
         }
