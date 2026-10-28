@@ -15,10 +15,13 @@
         android:paddingBottom="96dp"
         tools:context="com.firebirdberlin.nightdream.WeatherForecastActivity" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="96dp"
         android:visibility="gone"
         tools:context="com.firebirdberlin.nightdream.WeatherForecastActivity">
 
@@ -27,6 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>
