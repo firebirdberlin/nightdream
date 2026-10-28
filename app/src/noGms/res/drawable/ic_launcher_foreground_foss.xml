@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Red -->
+    <path
+        android:fillColor="#E40303"
+        android:pathData="M0,0 L74,0 L0,74 Z" />
+
+    <!-- Orange -->
+    <path
+        android:fillColor="#FF8C00"
+        android:pathData="M74,0 L91,0 L0,91 L0,74 Z" />
+
+    <!-- Yellow -->
+    <path
+        android:fillColor="#FFED00"
+        android:pathData="M91,0 L108,0 L0,108 L0,91 Z" />
+
+    <!-- Green -->
+    <path
+        android:fillColor="#008026"
+        android:pathData="M108,0 L108,17 L17,108 L0,108 Z" />
+
+    <!-- Blue -->
+    <path
+        android:fillColor="#004DFF"
+        android:pathData="M108,17 L108,34 L34,108 L17,108 Z" />
+
+    <!-- Violet -->
+    <path
+        android:fillColor="#750787"
+        android:pathData="M108,34 L108,108 L34,108 Z" />
+
+    <!-- Dark clock face for contrast -->
+    <path
+        android:fillColor="#99000000"
+        android:pathData="M54,29 A25,25 0 1,1 54,79 A25,25 0 1,1 54,29 Z" />
+
+    <!-- Clock face ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,30 A24,24 0 1,1 54,78 A24,24 0 1,1 54,30 Z" />
+
+    <!-- Minute hand: pointing to 12 -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M54,54 L54,33" />
+
+    <!-- Hour hand: pointing to about 10 o'clock -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M54,54 L40,46" />
+
+    <!-- Center pivot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,51 A3,3 0 1,1 54,57 A3,3 0 1,1 54,51 Z" />
+</vector>
