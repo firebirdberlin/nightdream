@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Informasjon</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">Retning for vindstrøm</string>
+    <string name="wind_direction_icon">Vindretningsikon</string>
+    <string name="wind_direction_origin">Vindens opprinnelsesretning</string>
     <string name="weekdays">Ukedager</string>
     <string name="width">Bredde</string>
 </resources>

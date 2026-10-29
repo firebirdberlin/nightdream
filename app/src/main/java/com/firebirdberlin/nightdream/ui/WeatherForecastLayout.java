@@ -143,11 +143,14 @@ public class WeatherForecastLayout extends ConstraintLayout {
         sunsetLayout.setVisibility((on) ? View.VISIBLE : View.GONE);
     }
 
-    public void setWindSpeed(boolean on, int unit) {
+    public void setWindSpeed(boolean on, int unit, int windDirectionIconMode) {
         this.speedUnit = unit;
 
         iconWind.setVisibility((on) ? View.VISIBLE : View.GONE);
-        iconWindDirection.setVisibility((on) ? View.VISIBLE : View.GONE);
+        if (iconWindDirection != null) {
+            iconWindDirection.setMode(windDirectionIconMode);
+            iconWindDirection.setVisibility((on) ? View.VISIBLE : View.GONE);
+        }
 
         windText.setVisibility((on) ? View.VISIBLE : View.GONE);
     }

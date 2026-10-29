@@ -522,6 +522,9 @@ OR
     <string name="weather_info_title">معلومات</string>
     <string name="weather_sun_rise">شروق الشمس</string>
     <string name="weather_sun_set">غروب</string>
+    <string name="wind_direction_flow">اتجاه تدفق الرياح</string>
+    <string name="wind_direction_icon">أيقونة اتجاه الرياح</string>
+    <string name="wind_direction_origin">اتجاه مصدر الرياح</string>
     <string name="weekdays">أيام الأسبوع</string>
     <string name="width">عرض</string>
 </resources>

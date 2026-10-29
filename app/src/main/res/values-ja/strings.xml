@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">情報</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">風の流れの方向</string>
+    <string name="wind_direction_icon">風向アイコン</string>
+    <string name="wind_direction_origin">風の発生源の方向</string>
     <string name="weekdays">weekdays</string>
     <string name="width">幅</string>
 </resources>

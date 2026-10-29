@@ -319,6 +319,7 @@ public class WeatherForecastActivity
 
         if (summaryWindDirection != null) {
             summaryWindDirection.setColor(Color.WHITE);
+            summaryWindDirection.setMode(settings.windDirectionIconMode);
             summaryWindDirection.setDirection(entry.windDirection);
         }
 

@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">اطلاعات</string>
     <string name="weather_sun_rise">طلوع آفتاب</string>
     <string name="weather_sun_set">غروب آفتاب</string>
+    <string name="wind_direction_flow">جهت جریان باد</string>
+    <string name="wind_direction_icon">آیکون جهت باد</string>
+    <string name="wind_direction_origin">جهت مبدأ باد</string>
     <string name="weekdays">روزهای هفته</string>
     <string name="width">عرض</string>
 </resources>

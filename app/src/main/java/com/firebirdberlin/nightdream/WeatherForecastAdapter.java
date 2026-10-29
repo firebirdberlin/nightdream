@@ -318,6 +318,9 @@ public class WeatherForecastAdapter
 
             if (dayGroup.avgWindDirection >= 0) {
                 headerHolder.summaryWindDirectionView.setVisibility(View.VISIBLE);
+                if (settings != null) {
+                    headerHolder.summaryWindDirectionView.setMode(settings.windDirectionIconMode);
+                }
                 headerHolder.summaryWindDirectionView.setDirection(dayGroup.avgWindDirection);
                 headerHolder.summaryWindDirectionView.setColor(Color.WHITE);
             } else {
@@ -355,9 +358,11 @@ public class WeatherForecastAdapter
             boolean showApparent = (settings != null) && settings.showApparentTemperature;
             int speedUnit = (settings != null) ? settings.speedUnit : WeatherEntry.METERS_PER_SECOND;
 
+            int windDirectionIconMode = (settings != null) ? settings.windDirectionIconMode : DirectionIconView.MODE_HEADING;
+
             entryHolder.weatherForecastLayout.setTimeFormat(timeFormat);
             entryHolder.weatherForecastLayout.setTemperature(true, showApparent, tempUnit);
-            entryHolder.weatherForecastLayout.setWindSpeed(true, speedUnit);
+            entryHolder.weatherForecastLayout.setWindSpeed(true, speedUnit, windDirectionIconMode);
             entryHolder.weatherForecastLayout.update(entryItem.entry);
         } else if (holder instanceof SubscriptionHeaderViewHolder) {
             View.OnClickListener purchaseListener = view1 -> {

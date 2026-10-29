@@ -141,10 +141,13 @@ public class WeatherLayout extends LinearLayout {
         }
     }
 
-    public void setWindSpeed(boolean on, int unit) {
+    public void setWindSpeed(boolean on, int unit, int windDirectionIconMode) {
         on = content.contains("wind") && on;
         this.showWindSpeed = on;
         this.speedUnit = unit;
+        if (iconWindDirection != null) {
+            iconWindDirection.setMode(windDirectionIconMode);
+        }
         if (on) {
             cycleItems.add("wind");
         } else {

@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Informazioa</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">Haizearen fluxuaren norabidea</string>
+    <string name="wind_direction_icon">Haizearen norabidearen ikonoa</string>
+    <string name="wind_direction_origin">Haizearen jatorriaren norabidea</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>
