@@ -162,10 +162,12 @@ This section outlines the process for managing application versions and creating
 ### Changelog Creation
 
 - **Location**: Changelogs are located in `fastlane/metadata/android/en-US/changelogs/`. Each version should have its own changelog file, named sequentially by version code (e.g., `362.txt`, `363.txt`).
+- **Contents**: Changelogs shall contains major changes since the last creation of a changelog file,e.g if the new version is 363 but tha last file is 350.txt all changes since version 350 must be considered.
 - **Format**: Changelogs should be a user-facing, optimistic message summarizing new features and improvements.
     - Focus on user benefits, not technical details.
     - Keep messages concise, under 250 characters.
     - Use emojis to enhance readability and tone.
+    - In case features need more room in the description, shorten stability improvements and bugfixes.
     - Example format:
       ```
       <ul>
