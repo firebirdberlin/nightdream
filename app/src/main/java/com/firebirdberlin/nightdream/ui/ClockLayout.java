@@ -100,7 +100,7 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     public static final int LAYOUT_ID_DIGITAL2 = 7;
     public static final int LAYOUT_ID_DIGITAL3 = 8;
     public static final int LAYOUT_ID_DIGITAL_ANIMATED = 9;
-    private static final String TAG = "NightDream.ClockLayout";
+    private static final String TAG = ClockLayout.class.getSimpleName();
     private final WeatherLayout[] weatherLayouts = {null, null, null};
     private final Context context;
     private int layoutId = LAYOUT_ID_DIGITAL;
@@ -1087,6 +1087,9 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
     }
 
     public void setScaleFactor(final float factor, final boolean animated) {
+        if (Float.isNaN(factor) || Float.isInfinite(factor) || factor <= 0.0f) {
+            return;
+        }
         final float sign = mirrorText ? -1.f : 1.f;
         if (animated) {
             animate().setDuration(1000).scaleX(sign * factor).scaleY(factor);

@@ -1699,6 +1699,9 @@ public class NightDreamUI {
     private float getScaleFactor(Configuration config) {
         float s = settings.getScaleClock(config.orientation);
         float max = getMaxScaleFactor();
+        if (Float.isNaN(s) || Float.isInfinite(s)) {
+            s = -1.f;
+        }
         if (s < 0.f) {
             s = getProposedScaleFactor(max);
             settings.setScaleClock(0.8f * max, config.orientation);
@@ -1706,6 +1709,9 @@ public class NightDreamUI {
         Log.d(TAG, String.format("getScaleFactor > %f %f", s, max));
 
         s = Math.min(s, max);
+        if (Float.isNaN(s) || Float.isInfinite(s) || s <= 0.0f) {
+            return 1.f;
+        }
         if (s > 0.5f) {
             return s;
         }
@@ -1713,12 +1719,25 @@ public class NightDreamUI {
     }
 
     private float getMaxScaleFactor() {
-        Log.d(TAG, String.format("getMaxScaleFactor > %d %d",
-                clockLayoutContainer.getWidth(),
-                clockLayout.getWidth()));
-        float factor_x = (float) clockLayoutContainer.getWidth() / clockLayout.getWidth();
-        float factor_y = (float) clockLayoutContainer.getHeight() / clockLayout.getHeight();
-        return Math.min(factor_x, factor_y);
+        int containerWidth = clockLayoutContainer != null ? clockLayoutContainer.getWidth() : 0;
+        int containerHeight = clockLayoutContainer != null ? clockLayoutContainer.getHeight() : 0;
+        int layoutWidth = clockLayout != null ? clockLayout.getWidth() : 0;
+        int layoutHeight = clockLayout != null ? clockLayout.getHeight() : 0;
+
+        Log.d(TAG, String.format("getMaxScaleFactor > container: %dx%d, layout: %dx%d",
+                containerWidth, containerHeight,
+                layoutWidth, layoutHeight));
+
+        if (containerWidth <= 0 || containerHeight <= 0 || layoutWidth <= 0 || layoutHeight <= 0) {
+            return 1.0f;
+        }
+        float factor_x = (float) containerWidth / layoutWidth;
+        float factor_y = (float) containerHeight / layoutHeight;
+        float max = Math.min(factor_x, factor_y);
+        if (Float.isNaN(max) || Float.isInfinite(max) || max <= 0.0f) {
+            return 1.0f;
+        }
+        return max;
     }
 
     private float getProposedScaleFactor(float maxScaleFactor) {
