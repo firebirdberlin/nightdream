@@ -61,8 +61,12 @@ import androidx.fragment.app.FragmentManager;
 import com.firebirdberlin.AvmAhaApi.AvmAhaRequestTask;
 import com.firebirdberlin.AvmAhaApi.models.AvmAhaDevice;
 import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
+import com.firebirdberlin.nightdream.events.OnAlarmStopped;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStopped;
 import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.models.TimeRange;
@@ -86,7 +90,6 @@ import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
 import com.firebirdberlin.nightdream.ui.StopBackgroundServiceDialogFragment;
 import com.firebirdberlin.nightdream.util.DevicePolicyWrapper;
 import com.firebirdberlin.nightdream.viewmodels.BatteryReferenceViewModel;
-import com.firebirdberlin.openweathermapapi.OpenWeatherMapApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
@@ -112,13 +115,41 @@ public class NightDreamActivity extends BillingHelperActivity
         SleepTimerDialogFragment.SleepTimerDialogListener {
     private static final int PENDING_INTENT_STOP_APP = 1;
     private static final int MINIMUM_APP_RUN_TIME_MILLIS = 45000;
+    private NightDreamUI nightDreamUI = null;
     private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (handleLightSensorEvent(event)) return;
+        if (handleRadioEvent(event)) return;
+        handleAlarmEvent(event);
+    };
+
+    private boolean handleLightSensorEvent(Object event) {
         if (event instanceof OnNewLightSensorValue) {
             onEvent((OnNewLightSensorValue) event);
-        } else if (event instanceof OnLightSensorValueTimeout) {
-            onEvent((OnLightSensorValueTimeout) event);
+            return true;
         }
-    };
+        if (event instanceof OnLightSensorValueTimeout) {
+            onEvent((OnLightSensorValueTimeout) event);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleRadioEvent(Object event) {
+        if (event instanceof OnRadioStreamStarted || event instanceof OnRadioStreamStopped) {
+            setupRadioStreamUI();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleAlarmEvent(Object event) {
+        if (event instanceof OnAlarmStarted || event instanceof OnAlarmStopped) {
+            if (nightDreamUI != null) {
+                nightDreamUI.showAlarmClock();
+            }
+        }
+        return false;
+    }
     public static String TAG = "NightDreamActivity";
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
@@ -138,10 +169,8 @@ public class NightDreamActivity extends BillingHelperActivity
     private SidePanel sidePanelRight;
     private boolean screenWasOn = false;
     private float last_ambient = 4.0f;
-    private NightDreamUI nightDreamUI = null;
     private NotificationReceiver nReceiver = null;
     private LocationUpdateReceiver locationReceiver = null;
-    private NightDreamBroadcastReceiver broadcastReceiver = null;
     private PowerSupplyReceiver powerSupplyReceiver = null;
     private long resumeTime = -1L;
     private TextToSpeech textToSpeech;
@@ -528,7 +557,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         scheduleShutdown();
         nReceiver = registerNotificationReceiver();
-        broadcastReceiver = registerBroadcastReceiver();
         powerSupplyReceiver = registerShutdownReceiver();
         locationReceiver = LocationUpdateReceiver.register(this, this);
         nReceiver.setColor((mode == MODE_NIGHT) ? mySettings.secondaryColorNight : mySettings.secondaryColor);
@@ -615,7 +643,6 @@ public class NightDreamActivity extends BillingHelperActivity
         ScheduledAutoStartReceiver.schedule(this);
         unregister(powerSupplyReceiver);
         unregister(nReceiver);
-        unregister(broadcastReceiver);
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.shallActivateDoNotDisturb()) {
@@ -665,7 +692,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (textToSpeech != null) {
             textToSpeech.shutdown();
         }
-        broadcastReceiver = null;
         powerSupplyReceiver = null;
         nReceiver = null;
     }
@@ -675,17 +701,6 @@ public class NightDreamActivity extends BillingHelperActivity
         IntentFilter filter = new IntentFilter();
         filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
         filter.addAction(Config.ACTION_NOTIFICATION_APPS_LISTENER);
-        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        return receiver;
-    }
-
-    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
-        Log.d(TAG, "registerReceiver()");
-        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
-        filter.addAction(OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED);
         ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
         return receiver;
     }
@@ -997,24 +1012,6 @@ public class NightDreamActivity extends BillingHelperActivity
         if (location != null) {
             mySettings.setLocation(location);
             // onLocationUpdated();
-        }
-    }
-
-    public class NightDreamBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "onReceive() -> ");
-            if (intent == null) return;
-            String action = intent.getAction();
-            Log.i(TAG, "action -> " + action);
-            if (OpenWeatherMapApi.ACTION_WEATHER_DATA_UPDATED.equals(action)) {
-                // #TODO can this be deleted ?
-                //mySettings = new Settings(context);
-            } else if (Config.ACTION_RADIO_STREAM_STARTED.equals(action)
-                    || Config.ACTION_RADIO_STREAM_STOPPED.equals(action)) {
-                setupRadioStreamUI();
-            }
-
         }
     }
 

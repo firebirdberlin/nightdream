@@ -54,6 +54,11 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnRadioStreamMetadataUpdated;
+import com.firebirdberlin.nightdream.events.OnRadioStreamReadyForPlayback;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
+import com.firebirdberlin.nightdream.events.OnRadioStreamStopped;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -71,15 +76,34 @@ public class WebRadioLayout extends RelativeLayout {
     private boolean showConnectingHint = false;
     private ProgressBar spinner;
     private final Runnable hideConnectingHint = () -> setShowConnectingHint(false);
-    private NightDreamBroadcastReceiver broadcastReceiver = null;
+    private Settings settings;
+    private String metaTitle = null;
+    private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (event instanceof OnRadioStreamStarted) {
+            setShowConnectingHint(true);
+            updateText();
+        } else if (event instanceof OnRadioStreamReadyForPlayback) {
+            setShowConnectingHint(false);
+            updateText();
+        } else if (event instanceof OnRadioStreamMetadataUpdated) {
+            setShowConnectingHint(false);
+            metaTitle = ((OnRadioStreamMetadataUpdated) event).title;
+            showMetaTitle(metaTitle);
+        } else if (event instanceof OnRadioStreamStopped) {
+            Log.d(TAG, "AppEventBus - OnRadioStreamStopped");
+            metaTitle = null;
+            updateText();
+            setShowConnectingHint(false);
+            activeStationIndex = null;
+            updateButtonState();
+        }
+    };
     private AudioVolumeContentObserver audioVolumeContentObserver = null;
     private UserInteractionObserver userInteractionObserver;
     private int currentVolumme = -1;
     private int accentColor = -1;
     private int textColor = -1;
     private int maxNumButtons = 0;
-    private Settings settings;
-    private String metaTitle = null;
     private Integer activeStationIndex;
     private final OnClickListener buttonOnClickListener = new OnClickListener() {
         @Override
@@ -361,19 +385,8 @@ public class WebRadioLayout extends RelativeLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        broadcastReceiver = registerBroadcastReceiver();
+        AppEventBus.addListener(eventListener);
         registerAudioVolumeContentObserver();
-    }
-
-    private NightDreamBroadcastReceiver registerBroadcastReceiver() {
-        NightDreamBroadcastReceiver receiver = new NightDreamBroadcastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_RADIO_STREAM_STARTED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_STOPPED);
-        filter.addAction(Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK);
-        filter.addAction(Config.ACTION_RADIO_STREAM_METADATA_UPDATED);
-        ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        return receiver;
     }
 
     private void registerAudioVolumeContentObserver() {
@@ -397,11 +410,8 @@ public class WebRadioLayout extends RelativeLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        try {
-            context.unregisterReceiver(broadcastReceiver);
-            unregisterAudioVolumeContentObserver();
-        } catch (IllegalArgumentException ignored) {
-        }
+        AppEventBus.removeListener(eventListener);
+        unregisterAudioVolumeContentObserver();
     }
 
     public void setCustomColor(int accentColor, int textColor) {
@@ -549,35 +559,7 @@ public class WebRadioLayout extends RelativeLayout {
         return false;
     }
 
-    class NightDreamBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action) {
-                case Config.ACTION_RADIO_STREAM_STARTED:
-                    setShowConnectingHint(true);
-                    updateText();
-                    break;
-                case Config.ACTION_RADIO_STREAM_READY_FOR_PLAYBACK:
-                    setShowConnectingHint(false);
-                    updateText();
-                    break;
-                case Config.ACTION_RADIO_STREAM_METADATA_UPDATED:
-                    setShowConnectingHint(false);
-                    metaTitle = intent.getStringExtra(RadioStreamService.EXTRA_TITLE);
-                    showMetaTitle(metaTitle);
-                    break;
-                case Config.ACTION_RADIO_STREAM_STOPPED:
-                    Log.d(TAG, "BroadcastReceiver - ACTION_RADIO_STREAM_STOPPED");
-                    metaTitle = null;
-                    updateText();
-                    setShowConnectingHint(false);
-                    activeStationIndex = null;
-                    updateButtonState();
-                    break;
-            }
-        }
-    }
+
 
     class AudioVolumeContentObserver extends ContentObserver {
 

@@ -31,11 +31,12 @@ import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.PurchaseManager;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnAlarmDeleted;
 import com.firebirdberlin.nightdream.events.OnAlarmStarted;
+import com.firebirdberlin.nightdream.events.OnAlarmStopped;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.receivers.WakeUpReceiver;
-
-import com.firebirdberlin.nightdream.events.AppEventBus;
 
 import java.util.Calendar;
 
@@ -142,7 +143,8 @@ public class AlarmHandlerService extends BroadcastReceiver {
 
     private static void stopAlarm(Context context, boolean reschedule, boolean keepRadio) {
         boolean isRunning = alarmIsRunning();
-        if (AlarmService.isRunning) {
+        AlarmService.isRunning = false;
+        if (isRunning) {
             AlarmService.stop(context);
         }
 
@@ -161,8 +163,7 @@ public class AlarmHandlerService extends BroadcastReceiver {
                     (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Config.NOTIFICATION_ID_DISMISS_ALARMS);
         } else {
-            Intent intent = new Intent(Config.ACTION_ALARM_DELETED);
-            context.sendBroadcast(intent);
+            AppEventBus.publish(new OnAlarmDeleted());
         }
 
         AlarmNotificationService.cancelNotification(context);
@@ -170,6 +171,8 @@ public class AlarmHandlerService extends BroadcastReceiver {
         if (reschedule) {
             SqliteIntentService.scheduleAlarm(context);
         }
+
+        AppEventBus.publish(new OnAlarmStopped());
     }
 
     public static void skipAlarm(Context context, SimpleTime time) {

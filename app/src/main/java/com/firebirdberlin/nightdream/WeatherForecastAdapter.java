@@ -1,6 +1,6 @@
 /*
  * NightDream
- * Copyright (C) 2025 Stefan Fruhner
+ * Copyright (C) 2026 Stefan Fruhner
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,10 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.ui.DirectionIconView;
@@ -46,14 +51,32 @@ public class WeatherForecastAdapter
     private static final String TAG = WeatherForecastAdapter.class.getSimpleName();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ENTRY = 1;
+    private static final int TYPE_SUBSCRIPTION_HEADER = 2;
 
     private final Context context;
     private final List<DayGroup> dayGroups = new ArrayList<>();
     private final List<ListItem> items = new ArrayList<>();
     private Settings settings;
+    private boolean showSubscriptionHeader = false;
+    private boolean collapseAll = false;
+
+    public void setShowSubscriptionHeader(boolean show) {
+        this.showSubscriptionHeader = show;
+    }
+
+    public void setCollapseAll(boolean collapse) {
+        this.collapseAll = collapse;
+    }
 
     public interface ListItem {
         int getType();
+    }
+
+    public static class SubscriptionHeaderItem implements ListItem {
+        @Override
+        public int getType() {
+            return TYPE_SUBSCRIPTION_HEADER;
+        }
     }
 
     public static class DayGroup implements ListItem {
@@ -198,7 +221,7 @@ public class WeatherForecastAdapter
                 DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL);
                 String header = dateFormat.format(calendar.getTime());
                 boolean isToday = Utility.isToday(calendar);
-                currentGroup = new DayGroup(header, !isToday);
+                currentGroup = new DayGroup(header, collapseAll || !isToday);
                 dayGroups.add(currentGroup);
             }
 
@@ -214,6 +237,9 @@ public class WeatherForecastAdapter
 
     private void rebuildItems() {
         items.clear();
+        if (showSubscriptionHeader) {
+            items.add(new SubscriptionHeaderItem());
+        }
         for (DayGroup group : dayGroups) {
             items.add(group);
             if (!group.isCollapsed) {
@@ -237,6 +263,9 @@ public class WeatherForecastAdapter
         if (viewType == TYPE_HEADER) {
             View view = inflater.inflate(R.layout.item_weather_header, parent, false);
             return new HeaderViewHolder(view);
+        } else if (viewType == TYPE_SUBSCRIPTION_HEADER) {
+            View view = inflater.inflate(R.layout.item_weather_subscription_header, parent, false);
+            return new SubscriptionHeaderViewHolder(view);
         } else {
             View view = inflater.inflate(R.layout.item_weather_forecast_card, parent, false);
             return new EntryViewHolder(view);
@@ -330,6 +359,36 @@ public class WeatherForecastAdapter
             entryHolder.weatherForecastLayout.setTemperature(true, showApparent, tempUnit);
             entryHolder.weatherForecastLayout.setWindSpeed(true, speedUnit);
             entryHolder.weatherForecastLayout.update(entryItem.entry);
+        } else if (holder instanceof SubscriptionHeaderViewHolder) {
+            View.OnClickListener purchaseListener = view1 -> {
+                if (context instanceof WeatherForecastActivity) {
+                    ((WeatherForecastActivity) context).showSubscriptionDialog();
+                }
+                Log.d(TAG, "onclick showSubscriptionDialog");
+            };
+
+            int color = Utility.getRandomMaterialColor(context);
+            int textColor = Utility.getContrastColor(color);
+
+            TextView title = holder.itemView.findViewById(R.id.title);
+            if (title != null) {
+                title.setTextColor(textColor);
+                title.setBackgroundColor(color);
+                title.setOnClickListener(purchaseListener);
+
+                Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_googleplay);
+                if (icon != null) {
+                    icon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
+                    title.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, icon, null);
+                }
+            }
+
+            TextView upgradeNow = holder.itemView.findViewById(R.id.upgrade_now);
+            if (upgradeNow != null) {
+                upgradeNow.setOnClickListener(purchaseListener);
+                upgradeNow.setBackgroundColor(color);
+                upgradeNow.setTextColor(textColor);
+            }
         }
     }
 
@@ -399,6 +458,12 @@ public class WeatherForecastAdapter
         public EntryViewHolder(@NonNull View itemView) {
             super(itemView);
             weatherForecastLayout = itemView.findViewById(R.id.weatherForecastLayout);
+        }
+    }
+
+    public static class SubscriptionHeaderViewHolder extends RecyclerView.ViewHolder {
+        public SubscriptionHeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 }
