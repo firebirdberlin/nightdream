@@ -522,6 +522,9 @@ OR
     <string name="weather_info_title">Informatii</string>
     <string name="weather_sun_rise">Răsărit de soare</string>
     <string name="weather_sun_set">Apus de soare</string>
+    <string name="wind_direction_flow">Direcția fluxului de vânt</string>
+    <string name="wind_direction_icon">Pictogramă direcție vânt</string>
+    <string name="wind_direction_origin">Direcția de origine a vântului</string>
     <string name="weekdays">zilele lucrătoare</string>
     <string name="width">Lăţime</string>
 </resources>

@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -47,7 +48,7 @@ public class WeatherGraphView extends View {
     private static final int COLOR_RAIN_TEXT = Color.rgb(100, 180, 255);
     private static final int COLOR_TEXT = Color.argb(200, 255, 255, 255);
     private static final int COLOR_GRID = Color.argb(60, 255, 255, 255);
-
+    private static final int COLOR_NIGHT = Color.argb(40, 0, 0, 0);
     private final List<WeatherEntry> entries = new ArrayList<>();
     private String[] timeLabels = new String[0];
 
@@ -58,6 +59,7 @@ public class WeatherGraphView extends View {
     private final Paint axisPaint = new Paint();
     private final Paint textPaint = new Paint();
     private final Paint rainTextPaint = new Paint();
+    private final Paint nightPaint = new Paint();
     private final Path linePath = new Path();
     private final Path apparentLinePath = new Path();
 
@@ -119,6 +121,9 @@ public class WeatherGraphView extends View {
         rainTextPaint.setAntiAlias(true);
         rainTextPaint.setColor(COLOR_RAIN_TEXT);
         rainTextPaint.setTextSize(sp(10f));
+
+        nightPaint.setStyle(Paint.Style.FILL);
+        nightPaint.setColor(COLOR_NIGHT);
 
         timeFormat = new SimpleDateFormat(timeFormatPattern, Locale.getDefault());
     }
@@ -289,6 +294,16 @@ public class WeatherGraphView extends View {
         float yMax = plotTop;
         float yMin = plotTop + lineAreaHeight;
         float yMid = (yMax + yMin) / 2f;
+
+        // ---- night background --------------------------------------------
+        for (int i = 0; i < size - 1; i++) {
+            WeatherEntry entry = entries.get(i);
+            if (entry.isNight()) {
+                float left = plotLeft + i * stepX;
+                float right = plotLeft + (i + 1) * stepX;
+                canvas.drawRect(left, plotTop, right, plotBottom, nightPaint);
+            }
+        }
 
         canvas.drawLine(plotLeft, yMax, plotRight, yMax, gridPaint);
         canvas.drawLine(plotLeft, yMin, plotRight, yMin, gridPaint);

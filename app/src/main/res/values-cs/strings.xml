@@ -522,6 +522,9 @@ OR
     <string name="weather_info_title">Informace</string>
     <string name="weather_sun_rise">Východ slunce</string>
     <string name="weather_sun_set">Západ slunce</string>
+    <string name="wind_direction_flow">Směr proudění větru</string>
+    <string name="wind_direction_icon">Ikona směru větru</string>
+    <string name="wind_direction_origin">Směr odkud vítr vane</string>
     <string name="weekdays">všední dny</string>
     <string name="width">Šířka</string>
 </resources>

@@ -60,6 +60,16 @@
 
     <ListPreference
         app:iconSpaceReserved="false"
+        app:defaultValue="0"
+        app:dependency="showWindSpeed"
+        app:entries="@array/windDirectionIconModes"
+        app:entryValues="@array/windDirectionIconModeValues"
+        app:key="windDirectionIconMode"
+        app:title="@string/wind_direction_icon"
+        app:useSimpleSummaryProvider="true" />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
         app:defaultValue="1"
         app:dependency="showWeather"
         app:entries="@array/weatherIconModes"

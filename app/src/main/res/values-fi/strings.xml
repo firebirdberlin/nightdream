@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Information</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">Tuulen virtaussuunta</string>
+    <string name="wind_direction_icon">Tuulen suunnan kuvake</string>
+    <string name="wind_direction_origin">Tuulen alkuperäsuunta</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

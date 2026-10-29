@@ -522,6 +522,9 @@ OR
     <string name="weather_info_title">資訊</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">风流方向</string>
+    <string name="wind_direction_icon">风向图标</string>
+    <string name="wind_direction_origin">风源方向</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

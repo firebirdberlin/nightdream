@@ -892,7 +892,7 @@ public class NightDreamUI {
         clockLayout.setTemperature(
                 settings.showTemperature, settings.showApparentTemperature, settings.temperatureUnit
         );
-        clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+        clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit, settings.windDirectionIconMode);
         clockLayout.setWeatherLocation(false);
         clockLayout.setWeatherIconMode(settings.weather_icon);
 

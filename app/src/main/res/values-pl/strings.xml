@@ -522,6 +522,9 @@ OR
     <string name="weather_info_title">Informacje</string>
     <string name="weather_sun_rise">Wschód słońca</string>
     <string name="weather_sun_set">Zachód słońca</string>
+    <string name="wind_direction_flow">Kierunek przepływu wiatru</string>
+    <string name="wind_direction_icon">Ikona kierunku wiatru</string>
+    <string name="wind_direction_origin">Kierunek źródła wiatru</string>
     <string name="weekdays">dni robocze</string>
     <string name="width">Szerokość</string>
 </resources>

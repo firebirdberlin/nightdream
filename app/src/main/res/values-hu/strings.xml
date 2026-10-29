@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Információ</string>
     <string name="weather_sun_rise">Napkelte</string>
     <string name="weather_sun_set">Napnyugta</string>
+    <string name="wind_direction_flow">Széláramlás iránya</string>
+    <string name="wind_direction_icon">Szélirány ikon</string>
+    <string name="wind_direction_origin">Szél eredeti iránya</string>
     <string name="weekdays">hétköznapok</string>
     <string name="width">Szélesség</string>
 </resources>
