@@ -181,7 +181,9 @@ public class WeatherForecastActivity
 
         if (!isPurchased(PurchaseManager.ITEM_WEATHER_DATA)) {
             adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
-            adapter.addFragment(new WeatherForecastTabPreview(), getResources().getString(R.string.forecast));
+            adapter.addFragment(
+                    new WeatherForecastTabPreview(),
+                    getResources().getString(R.string.forecast));
 
             runOnUiThread(() -> {
                 viewPager.setAdapter(adapter);
@@ -189,6 +191,21 @@ public class WeatherForecastActivity
             });
 
             ((WeatherForecastTabPreview) adapter.getItem(0)).setupForecastPreview(settings);
+            actionBarSetup("Ecotopia");
+
+            WeatherEntry fakeToday = new WeatherEntry();
+            fakeToday.cityName = "Ecotopia";
+            fakeToday.temperature = 293.15;
+            fakeToday.apparentTemperature = 292.15;
+            fakeToday.humidity = 53;
+            fakeToday.clouds = 71;
+            fakeToday.windSpeed = 3.4;
+            fakeToday.windDirection = 247;
+            fakeToday.weatherIcon = "04n";
+            fakeToday.weatherIconMeteoconsSymbol = "Y";
+            fakeToday.description = "scattered clouds";
+            fakeToday.timestamp = System.currentTimeMillis() / 1000;
+            onRequestFinished(fakeToday);
         } else {
             runOnUiThread(() -> {
                 viewPager.setAdapter(adapter);

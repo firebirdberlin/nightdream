@@ -1,6 +1,6 @@
 /*
  * NightDream
- * Copyright (C) 2025 Stefan Fruhner
+ * Copyright (C) 2026 Stefan Fruhner
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,35 +19,28 @@
 package com.firebirdberlin.nightdream;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class WeatherForecastTabPreview extends Fragment {
+
     private Context context;
-    private LinearLayout scrollViewLayout = null;
-    private Settings settings;
-    final static String TAG = "WeatherForeTabPreview";
+    private RecyclerView recyclerView;
+    private WeatherForecastAdapter adapter;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,122 +49,88 @@ public class WeatherForecastTabPreview extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_weather_forecast_preview, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        View.OnClickListener purchaseListener = view1 -> {
-            ((WeatherForecastActivity) getActivity()).showSubscriptionDialog();
-            Log.d(TAG, "onclick showSubscriptionDialog");
-        };
-
-        int color = Utility.getRandomMaterialColor(context);
-        int textColor = Utility.getContrastColor(color);
-
-        TextView title = view.findViewById(R.id.title);
-        title.setTextColor(textColor);
-        title.setBackgroundColor(color);
-        title.setOnClickListener(purchaseListener);
-
-        Drawable icon = ContextCompat.getDrawable(context, R.drawable.ic_googleplay);
-        if (icon != null) {
-            icon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
-            title.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, icon, null);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        if (recyclerView != null && context != null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            adapter = new WeatherForecastAdapter(context);
+            adapter.setShowSubscriptionHeader(true);
+            adapter.setCollapseAll(true);
         }
-
-        TextView upgradeNow = view.findViewById(R.id.upgrade_now);
-        upgradeNow.setOnClickListener(purchaseListener);
-        upgradeNow.setBackgroundColor(color);
-        upgradeNow.setTextColor(textColor);
-
-        this.scrollViewLayout = view.findViewById(R.id.scroll_view_layout);
     }
 
     public void setupForecastPreview(Settings settings) {
-        this.settings = settings;
-        addWeatherEntries(getFakeEntries());
+        if (adapter != null && recyclerView != null) {
+            adapter.setEntries(getFakeEntries(), settings);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     List<WeatherEntry> getFakeEntries() {
         List<WeatherEntry> entries = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
-        Calendar now = Calendar.getInstance();
-        now.set(Calendar.MINUTE, 0);
-        now.set(Calendar.SECOND, 0);
-        now.set(Calendar.MILLISECOND, 0);
-        int hour = now.get(Calendar.HOUR);
-        int diff = ((23 + 1) / 3 * 3 + 2) - hour;
-        now.add(Calendar.HOUR, diff);
-        WeatherEntry entry1 = new WeatherEntry();
-        entry1.apparentTemperature = 292.15;
-        entry1.cityName = "Bullerby";
-        entry1.clouds = 71;
-        entry1.humidity = 53;
-        entry1.temperature = 293.15;
-        entry1.timestamp = now.getTimeInMillis() / 1000;
-        entry1.request_timestamp = System.currentTimeMillis();
-        entry1.weatherIcon = "04n";
-        entry1.windDirection = 247;
-        entry1.windSpeed = 3.4;
-        entries.add(entry1);
-        WeatherEntry entry2 = new WeatherEntry();
-        now.add(Calendar.HOUR, 3);
-        entry2.apparentTemperature = 294.15;
-        entry2.clouds = 57;
-        entry2.humidity = 57;
-        entry2.rain3h = 1.3;
-        entry2.temperature = 295.15;
-        entry2.timestamp = now.getTimeInMillis() / 1000;
-        entry1.request_timestamp = System.currentTimeMillis();
-        entry2.weatherIcon = "03n";
-        entry2.windDirection = 266;
-        entry2.windSpeed = 2.3;
-        entries.add(entry2);
+        int currentHour = cal.get(Calendar.HOUR_OF_DAY);
+        int nextHour = ((currentHour / 3) + 1) * 3;
+        if (nextHour >= 24) {
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+        } else {
+            cal.set(Calendar.HOUR_OF_DAY, nextHour);
+        }
+
+        int month = cal.get(Calendar.MONTH);
+        boolean isWinter = (month == Calendar.DECEMBER
+                || month == Calendar.JANUARY
+                || month == Calendar.FEBRUARY);
+
+        // Generate 7 days * 8 entries/day = 56 entries
+        for (int i = 0; i < 56; i++) {
+            WeatherEntry entry = new WeatherEntry();
+            entry.cityName = "Ecotopia";
+            entry.timestamp = cal.getTimeInMillis() / 1000;
+            entry.request_timestamp = System.currentTimeMillis();
+
+            int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+            double baseTemp = 288.15; // ~15°C
+            double tempVariation = 5.0 * Math.sin(2.0 * Math.PI * (hourOfDay - 6) / 24.0);
+            entry.temperature = baseTemp + tempVariation;
+            entry.apparentTemperature = entry.temperature - 1.0;
+
+            entry.humidity = 50 + (int) (20 * Math.sin(i));
+            entry.clouds = 40 + (int) (30 * Math.cos(i));
+            entry.windSpeed = 2.0 + (i % 4);
+            entry.windDirection = (i * 45) % 360;
+
+            if (isWinter) {
+                entry.weatherIcon = (hourOfDay >= 6 && hourOfDay < 18) ? "13d" : "13n";
+                if (i % 3 == 0) {
+                    entry.rain3h = 1.2;
+                }
+            } else {
+                entry.weatherIcon = (hourOfDay >= 6 && hourOfDay < 18) ? "10d" : "10n";
+                if (i % 4 == 0) {
+                    entry.rain3h = 1.5;
+                }
+            }
+
+            entries.add(entry);
+            cal.add(Calendar.HOUR_OF_DAY, 3);
+        }
+
         return entries;
     }
-
-    private void addWeatherEntries(List<WeatherEntry> entries) {
-        Log.d(TAG, "addWeatherEntries");
-        Log.d(TAG, String.format(" > got %d entries", entries.size()));
-
-        if (context != null) {
-            String timeFormat = settings.getFullTimeFormat();
-
-            int day = -1;
-            long now = System.currentTimeMillis();
-            for (WeatherEntry entry : entries) {
-                if (entry.timestamp * 1000 < now - 600000) {
-                    continue;
-                }
-                TextView dateView = new TextView(context);
-                dateView.setTextAppearance(android.R.style.TextAppearance_Medium);
-                if (getActivity() != null) {
-                    dateView.setTextColor(getActivity().getResources().getColor(R.color.blue, null));
-                }
-                dateView.setTypeface(null, Typeface.BOLD);
-
-                Calendar mCalendar = Calendar.getInstance();
-                mCalendar.setTimeInMillis(entry.timestamp * 1000);
-                if (day != mCalendar.get(Calendar.DAY_OF_MONTH)) {
-                    day = mCalendar.get(Calendar.DAY_OF_MONTH);
-                    DateFormat sdf = DateFormat.getDateInstance(DateFormat.FULL);
-                    String text = sdf.format(mCalendar.getTime());
-                    dateView.setText(text);
-                    scrollViewLayout.addView(dateView);
-                }
-
-                WeatherForecastLayout layout = new WeatherForecastLayout(context);
-                layout.setTimeFormat(timeFormat);
-                layout.setTemperature(true, settings.showApparentTemperature, settings.temperatureUnit);
-                layout.setWindSpeed(true, settings.speedUnit);
-                layout.update(entry);
-                scrollViewLayout.addView(layout);
-            }
-        }
-    }
-
 }
