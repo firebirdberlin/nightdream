@@ -144,3 +144,50 @@
   refactoring, especially in the very large `ClockLayout.java` and `NightDreamUI.java`.
 - Do not remove or implement open `TODO` comments unless asked.
 - Match the style of the surrounding file (indentation, brace style, naming).
+
+## Versioning and Release Notes
+
+This section outlines the process for managing application versions and creating release notes.
+
+### Version Bumping
+
+- **`app/build.gradle`**: The `versionCode` and `versionName` are defined in the `android.defaultConfig` block.
+    - `versionCode`: An integer used by the Play Store to determine if an update is available. This should be incremented sequentially for each release.
+    - `versionName`: A user-facing string representing the version (e.g., "2.11.40"). This should be incremented logically (e.g., `major.minor.patch`).
+- **Process**:
+    1. Determine the next `versionName` and `versionCode`.
+    2. Update these values in `app/build.gradle`.
+    3. Ensure all necessary code changes for the release are complete.
+
+### Changelog Creation
+
+- **Location**: Changelogs are located in `fastlane/metadata/android/en-US/changelogs/`. Each version should have its own changelog file, named sequentially by version code (e.g., `362.txt`, `363.txt`).
+- **Format**: Changelogs should be a user-facing, optimistic message summarizing new features and improvements.
+    - Focus on user benefits, not technical details.
+    - Keep messages concise, under 250 characters.
+    - Use emojis to enhance readability and tone.
+    - Example format:
+      ```
+      <ul>
+          <li>✨ New Feature: [Brief description of feature]</li>
+          <li>🚀 Improvements: [Brief description of improvements]</li>
+          <li>🌍 Translations: Updated for [list languages]</li>
+          <li>🛠️ Stability: Fixes for [mention key fixes]</li>
+      </ul>
+      ```
+- **Process**:
+    1. After bumping the version in `app/build.gradle`, create a new changelog file (e.g., `357.txt` if the new `versionCode` is 363).
+    2. Write the user-facing changelog message according to the specified format and constraints.
+    3. Commit both the `app/build.gradle` changes and the new changelog file.
+
+### Commit Message Format
+
+When bumping versions and updating changelogs, use the following commit message format:
+
+```
+Bump version
+
+2.11.39 (361) -> 2.11.40 (362)
+```
+
+Replace the version numbers and codes with the actual previous and current versions.
