@@ -38,6 +38,7 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.OnAlarmSet;
 import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
@@ -70,11 +71,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
             AlarmNotificationService.cancelJob(context);
         }
 
-        Intent intent = new Intent(Config.ACTION_ALARM_SET);
-        if (next != null) {
-            intent.putExtras(next.toBundle());
-        }
-        context.sendBroadcast(intent);
+        AppEventBus.publish(new OnAlarmSet(next));
         AlarmClockViewModel.setNextAlarm(next);
         updateWidgets(context);
     }

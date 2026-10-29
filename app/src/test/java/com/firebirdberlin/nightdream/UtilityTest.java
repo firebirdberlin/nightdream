@@ -65,4 +65,68 @@ public class UtilityTest {
         Assert.assertTrue(Utility.equalsAny("3", " ", "0", "1", "2", "3"));
         Assert.assertFalse(Utility.equalsAny("0", "3", "4", "z"));
     }
+
+    @Test
+    public void testIsTodayAndTomorrow() {
+        Assert.assertFalse(Utility.isToday(null));
+        Assert.assertFalse(Utility.isTomorrow(null));
+
+        java.util.Calendar today = java.util.Calendar.getInstance();
+        Assert.assertTrue(Utility.isToday(today));
+        Assert.assertFalse(Utility.isTomorrow(today));
+
+        java.util.Calendar tomorrow = java.util.Calendar.getInstance();
+        tomorrow.add(java.util.Calendar.DAY_OF_YEAR, 1);
+        Assert.assertFalse(Utility.isToday(tomorrow));
+        Assert.assertTrue(Utility.isTomorrow(tomorrow));
+
+        java.util.Calendar yesterday = java.util.Calendar.getInstance();
+        yesterday.add(java.util.Calendar.DAY_OF_YEAR, -1);
+        Assert.assertFalse(Utility.isToday(yesterday));
+        Assert.assertFalse(Utility.isTomorrow(yesterday));
+    }
+
+    @Test
+    public void testIsEmpty() {
+        Assert.assertTrue(Utility.isEmpty((String) null));
+        Assert.assertTrue(Utility.isEmpty(""));
+        Assert.assertFalse(Utility.isEmpty("abc"));
+
+        Assert.assertTrue(Utility.isEmpty((java.util.Collection<?>) null));
+        Assert.assertTrue(Utility.isEmpty(new java.util.ArrayList<>()));
+        java.util.List<String> list = new java.util.ArrayList<>();
+        list.add("test");
+        Assert.assertFalse(Utility.isEmpty(list));
+
+        Assert.assertTrue(Utility.isEmpty((java.util.Map<?, ?>) null));
+        Assert.assertTrue(Utility.isEmpty(new java.util.HashMap<>()));
+        java.util.Map<String, String> map = new java.util.HashMap<>();
+        map.put("key", "value");
+        Assert.assertFalse(Utility.isEmpty(map));
+    }
+
+    @Test
+    public void testContains() {
+        Assert.assertTrue(Utility.contains("hello world", "world"));
+        Assert.assertFalse(Utility.contains("hello world", "foo"));
+        Assert.assertFalse(Utility.contains(null, "world"));
+        Assert.assertFalse(Utility.contains("hello world", null));
+    }
+
+    @Test
+    public void testMillisToTimeTickAndUntil() {
+        long tick = Utility.millisToTimeTick(1000);
+        Assert.assertTrue(tick > 0);
+
+        long until = Utility.millisUntil(60000, 1000);
+        Assert.assertTrue(until > 0);
+    }
+
+    @Test
+    public void testGetNearestEvenIntValue() {
+        Assert.assertEquals(2, Utility.getNearestEvenIntValue(1.5f));
+        Assert.assertEquals(2, Utility.getNearestEvenIntValue(2.0f));
+        Assert.assertEquals(4, Utility.getNearestEvenIntValue(3.5f));
+        Assert.assertEquals(0, Utility.getNearestEvenIntValue(0.5f));
+    }
 }

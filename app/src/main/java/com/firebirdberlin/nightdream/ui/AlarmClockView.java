@@ -49,6 +49,9 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnAlarmStarted;
+import com.firebirdberlin.nightdream.events.OnAlarmStopped;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
@@ -114,6 +117,37 @@ public class AlarmClockView extends View {
         super(context, attrs);
         this.ctx = context;
         init(attrs);
+    }
+
+    private final java.util.function.Consumer<Object> eventListener = event -> {
+        if (event instanceof OnAlarmStarted || event instanceof OnAlarmStopped) {
+            post(() -> {
+                handler.removeCallbacks(blink);
+                blinkStateOn = false;
+                isSliding = false;
+                sliderHandleX = -1;
+                if (event instanceof OnAlarmStarted) {
+                    activateAlarmUI();
+                } else {
+                    time = null;
+                }
+                postAlarmTime();
+                invalidate();
+                requestLayout();
+            });
+        }
+    };
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        AppEventBus.addListener(eventListener);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        AppEventBus.removeListener(eventListener);
     }
 
     private void init(AttributeSet attrs) {
@@ -548,6 +582,8 @@ public class AlarmClockView extends View {
         Log.d(TAG, "stopAlarm()");
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
+        this.isSliding = false;
+        this.sliderHandleX = -1;
         if (!alarmIsRunning()) {
             SqliteIntentService.deleteAlarm(ctx, time);
         }
@@ -556,10 +592,13 @@ public class AlarmClockView extends View {
         if (RadioStreamService.streamingMode == RadioStreamService.StreamingMode.ALARM) {
             Settings settings = new Settings(ctx);
             AlarmHandlerService.stop(ctx, settings.keepRadioStreamRunning);
-            return;
+        } else {
+            AlarmHandlerService.stop(ctx);
         }
 
-        AlarmHandlerService.stop(ctx);
+        postAlarmTime();
+        invalidate();
+        requestLayout();
     }
 
     public void snooze() {
