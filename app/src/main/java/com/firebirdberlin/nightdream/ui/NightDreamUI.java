@@ -1401,13 +1401,25 @@ public class NightDreamUI {
         int rxpos = (int) (w - scaledWidth);
         int rypos = (int) (h - scaledHeight);
 
-        // determine a random position
         Random random = new Random();
-        int i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
-        int i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
+        int i1, i2;
 
-        i1 -= (int) ((clockLayout.getWidth() - scaledWidth) / 2.0f);
-        i2 -= (int) ((clockLayout.getHeight() - scaledHeight) / 2.0f);
+        float offsetX = (clockLayout.getWidth() - scaledWidth) / 2.0f;
+        float offsetY = (clockLayout.getHeight() - scaledHeight) / 2.0f;
+
+        if (Utility.isPlugged(mContext)) {
+            i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
+            i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
+        } else {
+            int maxDelta = Utility.dpToPx(mContext, 15);
+            float currentLogicalX = clockLayout.getX() + offsetX;
+            float currentLogicalY = clockLayout.getY() + offsetY;
+            i1 = (int) to_range(currentLogicalX + (random.nextInt(maxDelta * 2 + 1) - maxDelta), 0, rxpos);
+            i2 = (int) to_range(currentLogicalY + (random.nextInt(maxDelta * 2 + 1) - maxDelta), 0, rypos);
+        }
+
+        i1 -= (int) offsetX;
+        i2 -= (int) offsetY;
         clockLayout.animate().setDuration(screen_transition_animation_duration).x(i1).y(i2);
     }
 
