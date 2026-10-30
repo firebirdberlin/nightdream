@@ -51,38 +51,20 @@ public class AirQualityRequestTask {
 
     public void execute(final double latitude, final double longitude) {
         try {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        AirQualityRepository repo = new AirQualityRepository(context);
-                        final AirQualityData result = repo.getAirQualityForLocation(latitude, longitude);
-                        mainThreadHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                delegate.onRequestFinished(result);
-                            }
-                        });
-                    } catch (final Exception e) {
-                        Log.e(TAG, "Error fetching air quality data", e);
-                        mainThreadHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                delegate.onRequestError(e);
-                            }
-                        });
-                    }
+            executorService.execute(() -> {
+                try {
+                    AirQualityRepository repo = new AirQualityRepository(context);
+                    final AirQualityData result = repo.getAirQualityForLocation(latitude, longitude);
+                    mainThreadHandler.post(() -> delegate.onRequestFinished(result));
+                } catch (final Exception e) {
+                    Log.e(TAG, "Error fetching air quality data", e);
+                    mainThreadHandler.post(() -> delegate.onRequestError(e));
                 }
             });
         } catch (RejectedExecutionException e) {
             Log.e(TAG, "Task rejected", e);
             final Exception exc = new Exception("Air quality task rejected.");
-            mainThreadHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    delegate.onRequestError(exc);
-                }
-            });
+            mainThreadHandler.post(() -> delegate.onRequestError(exc));
         }
     }
 }
