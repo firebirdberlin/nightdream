@@ -235,6 +235,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         public void onStatusChanged(String s, int i, Bundle bundle) {
 
         }
