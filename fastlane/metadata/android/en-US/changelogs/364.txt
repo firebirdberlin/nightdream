@@ -1,0 +1,5 @@
+<ul>
+    <li>✨ New Feature: Settings export/import and new themes!</li>
+    <li>�� Improvements: Weather forecast layout & graphs; 3-finger brightness.</li>
+    <li>��️ Stability: Critical bug fixes and stability improvements.</li>
+</ul>
