@@ -28,8 +28,6 @@ import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 
 import java.util.ArrayList;
-
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -65,17 +63,6 @@ public class AirQualityRepository {
                 && lon >= GERMANY_MIN_LON && lon <= GERMANY_MAX_LON;
     }
 
-    public static double calculateDistanceKm(double lat1, double lon1, double lat2, double lon2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double earthRadiusKm = 6371.0;
-        return earthRadiusKm * c;
-    }
-
     @Nullable
     public AirQualityData getAirQualityForLocation(double latitude, double longitude) {
         City city = GeocoderApi.findCityByCoordinates(context, latitude, longitude);
@@ -94,7 +81,7 @@ public class AirQualityRepository {
 
         List<AirQualityStation> nearbyStations = new ArrayList<>();
         for (AirQualityStation station : allStations) {
-            double dist = calculateDistanceKm(latitude, longitude, station.latitude, station.longitude);
+            double dist = station.calculateDistanceKm(latitude, longitude);
             if (dist <= MAX_STATION_DISTANCE_KM) {
                 station.distanceKm = dist;
                 nearbyStations.add(station);
@@ -106,12 +93,7 @@ public class AirQualityRepository {
             return null;
         }
 
-        Collections.sort(nearbyStations, new Comparator<AirQualityStation>() {
-            @Override
-            public int compare(AirQualityStation s1, AirQualityStation s2) {
-                return Double.compare(s1.distanceKm, s2.distanceKm);
-            }
-        });
+        nearbyStations.sort(Comparator.comparingDouble(s -> s.distanceKm));
 
         AirQualityData bestFallback = null;
 

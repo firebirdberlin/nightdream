@@ -21,6 +21,8 @@ package com.firebirdberlin.nightdream.airquality;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.firebirdberlin.nightdream.Utility;
+
 public class AirQualityStation {
 
     @NonNull
@@ -56,5 +58,13 @@ public class AirQualityStation {
             return city + " (" + name + ")";
         }
         return name;
+    }
+
+    public double calculateDistanceKm(double lat, double lon) {
+        return Utility.calculateDistanceKm(latitude, longitude, lat, lon);
+    }
+
+    public double distanceTo(double lat, double lon) {
+        return calculateDistanceKm(lat, lon);
     }
 }
