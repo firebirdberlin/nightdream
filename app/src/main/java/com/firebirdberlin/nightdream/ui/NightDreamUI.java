@@ -1411,7 +1411,7 @@ public class NightDreamUI {
             i1 = (rxpos > 0) ? random.nextInt(rxpos) : 0;
             i2 = (rypos > 0) ? random.nextInt(rypos) : 0;
         } else {
-            int maxDelta = Utility.dpToPx(mContext, 15);
+            int maxDelta = Utility.dpToPx(mContext, 30);
             float currentLogicalX = clockLayout.getX() + offsetX;
             float currentLogicalY = clockLayout.getY() + offsetY;
             i1 = (int) to_range(currentLogicalX + (random.nextInt(maxDelta * 2 + 1) - maxDelta), 0, rxpos);
