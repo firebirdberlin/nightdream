@@ -143,7 +143,6 @@ public class AlarmHandlerService extends BroadcastReceiver {
 
     private static void stopAlarm(Context context, boolean reschedule, boolean keepRadio) {
         boolean isRunning = alarmIsRunning();
-        AlarmService.isRunning = false;
         if (isRunning) {
             AlarmService.stop(context);
         }
