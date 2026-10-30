@@ -188,7 +188,7 @@ OR
     <string name="handle_power_car">bil ur</string>
     <string name="handle_power_desk">bord ur</string>
     <string name="handle_power_disconnection">når frakoblet</string>
-    <string name="handle_power_disconnection_at_time_range_end">ved slutningen af ​​tidsintervallet for autostart</string>
+    <string name="handle_power_disconnection_at_time_range_end">ved slutningen af tidsintervallet for autostart</string>
     <string name="handle_power_disconnection_summary">Slut applikationen når strømforsyning fjernes</string>
     <string name="handle_power_usb">USB</string>
     <string name="handle_power_wireless">trådløs oplader</string>

@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">تحديد لون التمييز المناسب تلقائيًا.</string>
     <string name="background_black">سوداء</string>
     <string name="background_exif">عرض معلومات EXIF</string>
-    <string name="background_exif_summary">إظهار معلومات EXIF ​​لصورة الخلفية الحالية</string>
+    <string name="background_exif_summary">إظهار معلومات EXIF لصورة الخلفية الحالية</string>
     <string name="background_fadein">الرسوم المتحركة عبر التلاشي</string>
     <string name="background_fadein_summary">التلاشي المتقاطع بين صور الخلفية.</string>
     <string name="background_gradient">متدرجة</string>

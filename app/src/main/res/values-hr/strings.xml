@@ -62,8 +62,8 @@ OR
     <string name="background_auto_accent_color">Automatski odabir boje</string>
     <string name="background_auto_accent_summary">Automatski odaberite odgovarajuću boju naglaska.</string>
     <string name="background_black">Crno</string>
-    <string name="background_exif">Prikaz EXIF ​​informacija</string>
-    <string name="background_exif_summary">Prikaz EXIF ​​informacija za trenutnu pozadinsku sliku</string>
+    <string name="background_exif">Prikaz EXIF informacija</string>
+    <string name="background_exif_summary">Prikaz EXIF informacija za trenutnu pozadinsku sliku</string>
     <string name="background_fadein">Cross-fade animacija</string>
     <string name="background_fadein_summary">Unakrsno blijeđenje između pozadinskih slika.</string>
     <string name="background_gradient">Gradijent</string>

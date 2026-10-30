@@ -114,6 +114,7 @@ public class WeatherForecastActivity
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         public void onStatusChanged(String s, int i, Bundle bundle) {
         }
 
