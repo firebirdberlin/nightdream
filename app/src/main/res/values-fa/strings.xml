@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">به طور خودکار یک رنگ تاکیدی مناسب را انتخاب کنید.</string>
     <string name="background_black">سیاه</string>
     <string name="background_exif">نمایش اطلاعات EXIF</string>
-    <string name="background_exif_summary">نمایش اطلاعات EXIF ​​برای تصویر پس زمینه فعلی</string>
+    <string name="background_exif_summary">نمایش اطلاعات EXIF برای تصویر پس زمینه فعلی</string>
     <string name="background_fadein">انیمیشن cross-fade</string>
     <string name="background_fadein_summary">متقابل محو شدن بین تصاویر پس زمینه.</string>
     <string name="background_gradient">درجه دار</string>
@@ -408,7 +408,7 @@ OR
     <string name="showPollenIndex2">پایین</string>
     <string name="showPollenIndex3">کم تا متوسط</string>
     <string name="showPollenIndex4">متوسط</string>
-    <string name="showPollenIndex5">متوسط ​​به بالا</string>
+    <string name="showPollenIndex5">متوسط به بالا</string>
     <string name="showPollenIndex6">بالا</string>
     <string name="showPollenNoData">هیچ داده ای برای این منطقه وجود ندارد. شاخص خطر گرده فقط برای مکان های آلمانی موجود است.</string>
     <string name="showPollenSummary">فقط برای مکان های آلمانی موجود است</string>

@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">เลือกสีเน้นที่เหมาะสมโดยอัตโนมัติ</string>
     <string name="background_black">สีดำ</string>
     <string name="background_exif">แสดงข้อมูล EXIF</string>
-    <string name="background_exif_summary">แสดงข้อมูล EXIF ​​สำหรับภาพพื้นหลังปัจจุบัน</string>
+    <string name="background_exif_summary">แสดงข้อมูล EXIF สำหรับภาพพื้นหลังปัจจุบัน</string>
     <string name="background_fadein">แอนิเมชั่นแบบ Cross-Fade</string>
     <string name="background_fadein_summary">เลือนหายไประหว่างภาพพื้นหลัง</string>
     <string name="background_gradient">ไล่เฉดสี</string>

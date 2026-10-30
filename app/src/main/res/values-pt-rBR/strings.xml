@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">Seleção automática da cor de destaque</string>
     <string name="background_black">Preto</string>
     <string name="background_exif">Mostrar informações EXIF</string>
-    <string name="background_exif_summary">Mostrar informações EXIF ​​para a imagem de fundo atual</string>
+    <string name="background_exif_summary">Mostrar informações EXIF para a imagem de fundo atual</string>
     <string name="background_fadein">Animação cross-fade</string>
     <string name="background_fadein_summary">Fade cruzado entre imagens de fundo.</string>
     <string name="background_gradient">Gradiente</string>

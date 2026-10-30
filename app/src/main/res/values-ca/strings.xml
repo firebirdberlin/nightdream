@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">Seleccioneu automàticament un color d\'accent adequat.</string>
     <string name="background_black">Negre</string>
     <string name="background_exif">Mostra informació EXIF</string>
-    <string name="background_exif_summary">Mostra informació EXIF ​​per a la imatge de fons actual</string>
+    <string name="background_exif_summary">Mostra informació EXIF per a la imatge de fons actual</string>
     <string name="background_fadein">Animació de fundició creuada</string>
     <string name="background_fadein_summary">Fundició creuada entre imatges de fons.</string>
     <string name="background_gradient">Gradient</string>

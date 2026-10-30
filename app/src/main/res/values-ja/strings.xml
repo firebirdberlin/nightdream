@@ -513,7 +513,7 @@ OR
     <string name="useDeviceLockExplanation">Lock the device while the app is active. In order to uninstall the app please revoke this permission.</string>
     <string name="weather">天気</string>
     <string name="weatherProvider">Weather Provider</string>
-    <string name="weather_calculation_time">天気予報時​​間</string>
+    <string name="weather_calculation_time">天気予報時間</string>
     <string name="weather_city_id_title">場所を検索</string>
     <string name="weather_current_location">Current location</string>
     <string name="weather_icon">Weather Icon</string>
