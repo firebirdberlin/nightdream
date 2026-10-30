@@ -181,7 +181,7 @@ public class ClockWidgetProvider extends AppWidgetProvider {
                     settings.showApparentTemperature,
                     settings.temperatureUnit
             );
-            clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit);
+            clockLayout.setWindSpeed(settings.showWindSpeed, settings.speedUnit, settings.windDirectionIconMode);
             clockLayout.showWeather(showWeather && settings.shallShowWeather());
             clockLayout.setWeatherLocation(false);
             clockLayout.setWeatherIconMode(settings.weather_icon);

@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Information</string>
     <string name="weather_sun_rise">Soluppgång</string>
     <string name="weather_sun_set">Solnedgång</string>
+    <string name="wind_direction_flow">Vindflödesriktning</string>
+    <string name="wind_direction_icon">Vindriktningsikon</string>
+    <string name="wind_direction_origin">Vindens ursprungsriktning</string>
     <string name="weekdays">Veckodagar</string>
     <string name="width">Bredd</string>
 </resources>

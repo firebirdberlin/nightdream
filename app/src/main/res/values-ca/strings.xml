@@ -522,6 +522,9 @@ OR
     <string name="weather_info_title">Informació</string>
     <string name="weather_sun_rise">Sortida del sol</string>
     <string name="weather_sun_set">Posta de sol</string>
+    <string name="wind_direction_flow">Direcció del flux del vent</string>
+    <string name="wind_direction_icon">Icona de direcció del vent</string>
+    <string name="wind_direction_origin">Direcció d\'origen del vent</string>
     <string name="weekdays">dies laborables</string>
     <string name="width">Amplada</string>
 </resources>

@@ -524,6 +524,9 @@ OR
     <string name="weather_info_title">Πληροφορίες</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">Κατεύθυνση ροής ανέμου</string>
+    <string name="wind_direction_icon">Εικονίδιο κατεύθυνσης ανέμου</string>
+    <string name="wind_direction_origin">Κατεύθυνση προέλευσης ανέμου</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

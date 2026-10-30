@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Інформація</string>
     <string name="weather_sun_rise">Схід сонця</string>
     <string name="weather_sun_set">Захід сонця</string>
+    <string name="wind_direction_flow">Напрямок потоку вітру</string>
+    <string name="wind_direction_icon">Значок напрямку вітру</string>
+    <string name="wind_direction_origin">Напрямок джерела вітру</string>
     <string name="weekdays">будні</string>
     <string name="width">Ширина</string>
 </resources>
