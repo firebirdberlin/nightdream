@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">Selectați automat o culoare de accent adecvată.</string>
     <string name="background_black">Negru</string>
     <string name="background_exif">Afișați informații EXIF</string>
-    <string name="background_exif_summary">Afișați informații EXIF ​​pentru imaginea de fundal curentă</string>
+    <string name="background_exif_summary">Afișați informații EXIF pentru imaginea de fundal curentă</string>
     <string name="background_fadein">Animație încrucișată</string>
     <string name="background_fadein_summary">Fade încrucișat între imaginile de fundal.</string>
     <string name="background_gradient">Gradient</string>

@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">Uygun bir vurgu rengini otomatik olarak seçin.</string>
     <string name="background_black">Siyah</string>
     <string name="background_exif">EXIF bilgilerini göster</string>
-    <string name="background_exif_summary">Geçerli arka plan resminin EXIF ​​bilgilerini göster</string>
+    <string name="background_exif_summary">Geçerli arka plan resminin EXIF bilgilerini göster</string>
     <string name="background_fadein">Çapraz geçişli animasyon</string>
     <string name="background_fadein_summary">Arka plan görüntüleri arasında çapraz geçiş.</string>
     <string name="background_gradient">Renk geçişi</string>
@@ -486,7 +486,7 @@ OR
     <string name="ticks">Keneler</string>
     <string name="timeFormat">Saat formatı</string>
     <string name="timerange_label_end">Bitiş zamanı</string>
-    <string name="timerange_label_start">Başlangıç ​​zamanı</string>
+    <string name="timerange_label_start">Başlangıç zamanı</string>
     <string name="titlePrivacyPolicy">Gizlilik sözleşmesi</string>
     <string name="today">Bugün</string>
     <string name="tomorrow">Yarın</string>
