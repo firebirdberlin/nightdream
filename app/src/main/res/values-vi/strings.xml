@@ -63,7 +63,7 @@ OR
     <string name="background_auto_accent_summary">Tự động chọn màu nhấn thích hợp.</string>
     <string name="background_black">Đen</string>
     <string name="background_exif">Hiển thị thông tin EXIF</string>
-    <string name="background_exif_summary">Hiển thị thông tin EXIF ​​​​cho hình nền hiện tại</string>
+    <string name="background_exif_summary">Hiển thị thông tin EXIF cho hình nền hiện tại</string>
     <string name="background_fadein">Hoạt hình mờ dần</string>
     <string name="background_fadein_summary">Làm mờ chéo giữa các hình nền.</string>
     <string name="background_gradient">Bóng</string>
