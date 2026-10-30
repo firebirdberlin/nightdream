@@ -203,4 +203,12 @@
 
     </LinearLayout>
 
+    <!-- Section 4: Air Quality Container -->
+    <FrameLayout
+        android:id="@+id/airQualityContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
 </LinearLayout>

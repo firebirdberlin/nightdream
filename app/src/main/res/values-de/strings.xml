@@ -27,6 +27,16 @@ OR
     <string name="add_custom_alarm_tone">Weckton hinzufügen</string>
     <string name="add_custom_font">Schriftart hinzufügen</string>
     <string name="add_new_alarm">neuen Wecker hinzufügen</string>
+    <string name="air_quality_attribution">Umweltbundesamt mit Daten der Messnetze der Länder und des Bundes</string>
+    <string name="air_quality_info_dialog_text">Der Luftqualitätsindex (LQI) des Umweltbundesamtes bewertet die aktuelle Luftqualität anhand der Schadstoffe Feinstaub (PM2.5 und PM10), Stickstoffdioxid (NO2) und Ozon (O3).\n\nEinheit: µg/m³ (Mikrogramm pro Kubikmeter).\n\n• PM10 &amp; PM2.5 (Feinstaub): Staubpartikel aus Straßenverkehr (Abgase, Reifen- und Bremsenabrieb), Verbrennung (Heizungen, Kraftwerke) und Industrie. Können in die Atemwege und Lunge gelangen.\n• NO2 (Stickstoffdioxid): Entsteht hauptsächlich durch Verbrennungsmotoren im Straßenverkehr (insbesondere Dieselfahrzeuge). Reizt die Atemwege.\n• O3 (Ozon): Entsteht an sonnigen Tagen durch chemische Reaktionen von Abgasen (Sommersmog). Kann die Schleimhäute reizen.</string>
+    <string name="air_quality_info_title">Informationen zur Luftqualität</string>
+    <string name="air_quality_lqi_1">Sehr gut</string>
+    <string name="air_quality_lqi_2">Gut</string>
+    <string name="air_quality_lqi_3">Mäßig</string>
+    <string name="air_quality_lqi_4">Schlecht</string>
+    <string name="air_quality_lqi_5">Sehr schlecht</string>
+    <string name="air_quality_lqi_unknown">Unbekannt</string>
+    <string name="air_quality_title">Luftqualität (µg/m³)</string>
     <string name="alarm">Wecker</string>
     <string name="alarmFadeIn">Ansteigende Lautstärke</string>
     <string name="alarmFadeInDurationSeconds">Dauer</string>
