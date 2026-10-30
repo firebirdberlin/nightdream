@@ -524,6 +524,9 @@ OR
     <string name="weather_info_title">Informationen</string>
     <string name="weather_sun_rise">Sonnenaufgang</string>
     <string name="weather_sun_set">Sonnenuntergang</string>
+    <string name="wind_direction_flow">Windströmungsrichtung</string>
+    <string name="wind_direction_icon">Windrichtungssymbol</string>
+    <string name="wind_direction_origin">Windrichtung (Herkunft)</string>
     <string name="weekdays">Wochentage</string>
     <string name="width">Breite</string>
 </resources>

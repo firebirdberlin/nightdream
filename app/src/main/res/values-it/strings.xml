@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Informazioni</string>
     <string name="weather_sun_rise">Alba</string>
     <string name="weather_sun_set">Tramonto</string>
+    <string name="wind_direction_flow">Direzione del flusso del vento</string>
+    <string name="wind_direction_icon">Icona della direzione del vento</string>
+    <string name="wind_direction_origin">Direzione di origine del vento</string>
     <string name="weekdays">Giorni della settimana</string>
     <string name="width">Larghezza</string>
 </resources>

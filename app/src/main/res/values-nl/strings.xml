@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Informatie</string>
     <string name="weather_sun_rise">Zonsopgang</string>
     <string name="weather_sun_set">Zonsondergang</string>
+    <string name="wind_direction_flow">Richting van de windstroom</string>
+    <string name="wind_direction_icon">Windrichtingsicoon</string>
+    <string name="wind_direction_origin">Richting van de oorsprong van de wind</string>
     <string name="weekdays">Dagen van de week</string>
     <string name="width">Breedte</string>
 </resources>

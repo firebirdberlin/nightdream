@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Informácie</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">Smer prúdenia vetra</string>
+    <string name="wind_direction_icon">Ikona smeru vetra</string>
+    <string name="wind_direction_origin">Smer pôvodu vetra</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

@@ -31,6 +31,11 @@ import com.google.gson.Gson;
 
 import org.shredzone.commons.suncalc.SunTimes;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 @Keep
 public class WeatherEntry {
     public static int REQUEST_INTERVAL = 60 * 60 * 1000; // 1 hour
@@ -80,31 +85,58 @@ public class WeatherEntry {
     }
 
     public long getSunriseTime() {
+        // returns the sunset time of the weather entry on the same day
         if (sunriseTime > 0L) {
             return sunriseTime * 1000;
         }
-        SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
-        // The library now returns a ZonedDateTime object
-        java.time.ZonedDateTime rise = sunTime.getRise();
-        if (rise != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Convert ZonedDateTime to milliseconds since epoch
-            return rise.toInstant().toEpochMilli();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return 0L; // java.time not available natively
         }
-        return 0L;
+
+        ZoneId zone = ZoneId.systemDefault();
+
+        // The calendar day that the timestamp falls on
+        LocalDate day = Instant.ofEpochSecond(timestamp)
+                .atZone(zone)
+                .toLocalDate();
+
+        SunTimes sunTimes = SunTimes.compute()
+                .on(day)
+                .timezone(zone)
+                .at(lat, lon)
+                .oneDay()
+                .execute();
+
+        ZonedDateTime rise = sunTimes.getRise();
+        return rise != null ? rise.toInstant().toEpochMilli() : 0L;
     }
 
     public long getSunsetTime() {
+        // returns the sunset time of the weather entry on the same day
         if (sunsetTime > 0L) {
             return sunsetTime * 1000;
         }
-        SunTimes sunTime = SunTimes.compute().at(lat, lon).execute();
-        // The library now returns a ZonedDateTime object
-        java.time.ZonedDateTime set = sunTime.getSet();
-        if (set != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Convert ZonedDateTime to milliseconds since epoch
-            return set.toInstant().toEpochMilli();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return 0L; // java.time not available natively
         }
-        return 0L;
+
+        ZoneId zone = ZoneId.systemDefault();
+
+        // The calendar day that the timestamp falls on
+        LocalDate day = Instant.ofEpochSecond(timestamp)
+                .atZone(zone)
+                .toLocalDate();
+
+        SunTimes sunTimes = SunTimes.compute()
+                .on(day)
+                .timezone(zone)
+                .at(lat, lon)
+                .oneDay()
+                .execute();
+
+        ZonedDateTime set = sunTimes.getSet();
+        return set != null ? set.toInstant().toEpochMilli() : 0L;
     }
 
     public void setFakeData() {
@@ -203,6 +235,25 @@ public class WeatherEntry {
     public boolean isValid() {
         long age = ageMillis();
         return (timestamp > -1L && age < 4L * REQUEST_INTERVAL);
+    }
+
+    public boolean isNight() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return false; // java.time not available natively, cannot determine night
+        }
+        long currentTimeMillis = Instant.ofEpochSecond(timestamp).toEpochMilli();
+        long sunrise = getSunriseTime();
+        long sunset = getSunsetTime();
+
+        // If sunrise or sunset times are invalid, we can't determine night.
+        if (sunrise == 0L || sunset == 0L) {
+            return false;
+        }
+
+        // Check if current time is after sunset OR before sunrise.
+        // This handles cases where sunset is on day X and sunrise is on day X+1,
+        // which is typical for a night period spanning midnight.
+        return (currentTimeMillis >= sunset || currentTimeMillis < sunrise);
     }
 
     public String getWeatherIconIdentifier(int weatherIconMode, boolean widget) {

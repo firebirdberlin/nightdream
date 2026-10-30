@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Bilgi</string>
     <string name="weather_sun_rise">Gündoğumu</string>
     <string name="weather_sun_set">Gün batımı</string>
+    <string name="wind_direction_flow">Rüzgar akış yönü</string>
+    <string name="wind_direction_icon">Rüzgar yönü simgesi</string>
+    <string name="wind_direction_origin">Rüzgarın kaynak yönü</string>
     <string name="weekdays">hafta içi</string>
     <string name="width">Genişlik</string>
 </resources>

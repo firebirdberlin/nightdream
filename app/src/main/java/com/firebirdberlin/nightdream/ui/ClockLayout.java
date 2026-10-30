@@ -626,10 +626,10 @@ public class ClockLayout extends LinearLayout { // Implement OnDateSelectedListe
         }
     }
 
-    public void setWindSpeed(boolean on, int unit) {
+    public void setWindSpeed(boolean on, int unit, int windDirectionIconMode) {
         for (WeatherLayout layout : weatherLayouts) {
             if (layout != null) {
-                layout.setWindSpeed(on, unit);
+                layout.setWindSpeed(on, unit, windDirectionIconMode);
             }
         }
     }

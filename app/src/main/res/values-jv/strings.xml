@@ -523,6 +523,9 @@ OR
     <string name="weather_info_title">Information</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
+    <string name="wind_direction_flow">Arah aliran angin</string>
+    <string name="wind_direction_icon">Ikon arah angin</string>
+    <string name="wind_direction_origin">Arah asal angin</string>
     <string name="weekdays">weekdays</string>
     <string name="width">Width</string>
 </resources>

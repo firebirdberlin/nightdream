@@ -43,6 +43,7 @@ import com.firebirdberlin.nightdream.models.BatteryValue;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
+import com.firebirdberlin.nightdream.ui.DirectionIconView;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -78,6 +79,9 @@ public class Settings {
     public final static int WEATHER_ICON_MODE_COLORED = 2;
     public final static int WEATHER_ICON_MODE_ANIMATED = 3;
 
+    public final static int WIND_DIRECTION_ICON_HEADING = DirectionIconView.MODE_HEADING;
+    public final static int WIND_DIRECTION_ICON_ORIGIN = DirectionIconView.MODE_ORIGIN;
+
     private final static String TAG = "NightDream.Settings";
     private static final String FAVORITE_RADIO_STATIONS_KEY = "favoriteRadioStations";
     private boolean activateDoNotDisturb = false;
@@ -109,6 +113,7 @@ public class Settings {
     public boolean showApparentTemperature = false;
     public boolean showTemperature = true;
     public boolean showWindSpeed = true;
+    public int windDirectionIconMode = WIND_DIRECTION_ICON_HEADING;
     public boolean showPollen = false;
     private boolean useDeviceLock = false;
     public boolean stopAlarmOnTap = true;
@@ -561,6 +566,7 @@ public class Settings {
         sleepTimeInMillis = settings.getLong("sleepTimeInMillis", 0L);
 
         speedUnit = Integer.parseInt(settings.getString("speedUnit", "1"));
+        windDirectionIconMode = Integer.parseInt(settings.getString("windDirectionIconMode", "0"));
         screenOrientation = Integer.parseInt(settings.getString("screenOrientation", "-1"));
         temperatureUnit = Integer.parseInt(settings.getString("temperatureUnit", "1"));
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
