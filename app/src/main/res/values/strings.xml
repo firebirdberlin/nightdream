@@ -14,7 +14,7 @@ OR
 
  Please preserve the xml tags and the utf8 encoding.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="about">About</string>
     <string name="action_change">Change</string>
     <string name="action_skip">Skip</string>
@@ -27,6 +27,16 @@ OR
     <string name="add_custom_alarm_tone">Add a custom alarm tone</string>
     <string name="add_custom_font">Add a custom typeface</string>
     <string name="add_new_alarm">add new alarm</string>
+    <string name="air_quality_attribution" tools:ignore="MissingTranslation">Umweltbundesamt mit Daten der Messnetze der Länder und des Bundes</string>
+    <string name="air_quality_info_dialog_text" tools:ignore="MissingTranslation">The German Federal Environment Agency Air Quality Index (LQI) evaluates current air quality based on particulate matter (PM2.5 and PM10), nitrogen dioxide (NO2), and ozone (O3).\n\nUnit: µg/m³ (micrograms per cubic meter).\n\n• PM10 &amp; PM2.5 (Particulate Matter): Tiny particles from road traffic (exhaust, tire and brake wear), combustion (heating, power plants), and industry. Can penetrate deep into lungs.\n• NO2 (Nitrogen Dioxide): Formed mainly by combustion engines in road traffic (especially diesel vehicles). Irritates respiratory tracts.\n• O3 (Ozone): Formed on sunny days through photochemical reactions of air pollutants (summer smog). Can cause respiratory discomfort.</string>
+    <string name="air_quality_info_title" tools:ignore="MissingTranslation">Air Quality Information</string>
+    <string name="air_quality_lqi_1" tools:ignore="MissingTranslation">Very good</string>
+    <string name="air_quality_lqi_2" tools:ignore="MissingTranslation">Good</string>
+    <string name="air_quality_lqi_3" tools:ignore="MissingTranslation">Moderate</string>
+    <string name="air_quality_lqi_4" tools:ignore="MissingTranslation">Poor</string>
+    <string name="air_quality_lqi_5" tools:ignore="MissingTranslation">Very poor</string>
+    <string name="air_quality_lqi_unknown" tools:ignore="MissingTranslation">Unknown</string>
+    <string name="air_quality_title" tools:ignore="MissingTranslation">Air Quality (µg/m³)</string>
     <string name="alarm">Alarm</string>
     <string name="alarmFadeIn">Increasing volume</string>
     <string name="alarmFadeInDurationSeconds">fade in duration</string>

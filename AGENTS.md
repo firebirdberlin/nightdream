@@ -76,6 +76,8 @@
 
 - **Comments**: Write comments in English and only where the "why" is not obvious.
 
+- **Lambdas**: Use lambda expressions instead of anonymous inner classes (e.g. `new Runnable()`, `new Comparator()`) when implementing functional interfaces.
+
 ## Threading & Lifecycle
 
 - Run background work with `ExecutorService` plus `new Handler(Looper.getMainLooper())`,

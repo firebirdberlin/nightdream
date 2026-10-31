@@ -37,13 +37,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.graphics.drawable.GradientDrawable;
+import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
+import com.firebirdberlin.nightdream.airquality.AirQualityData;
+import com.firebirdberlin.nightdream.airquality.AirQualityRequestTask;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.DirectionIconView;
@@ -66,6 +73,7 @@ public class WeatherForecastActivity
         implements ForecastRequestTask.AsyncResponse,
         ForecastRequestTaskToday.AsyncResponse,
         PollenExposureRequestTask.AsyncResponse,
+        AirQualityRequestTask.AsyncResponse,
         WeatherLocationDialogFragment.WeatherLocationDialogListener {
     final static String TAG = "WeatherForecastActivity";
     final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 4000;
@@ -330,6 +338,8 @@ public class WeatherForecastActivity
 
         todayView.addView(summaryView);
 
+        new AirQualityRequestTask(this, this).execute(entry.lat, entry.lon);
+
         settings.setWeatherEntry(entry);
         ScreenWatcherService.updateNotification(
                 getApplicationContext(), entry, settings.temperatureUnit);
@@ -379,7 +389,7 @@ public class WeatherForecastActivity
     }
 
     @Override
-    public void onRequestError(Exception exception) {
+    public void onRequestError(@NonNull Exception exception) {
         Log.e(TAG, "onRequestError", exception);
     }
 
@@ -394,6 +404,100 @@ public class WeatherForecastActivity
     public void onRequestFinished(PollenExposure result) {
         Log.d(TAG, "onRequestFinished(PollenExposure)");
         ((WeatherForecastTabPollen) adapter.getItem(1)).onRequestFinished(selectedCity, result);
+    }
+
+    @Override
+    public void onRequestFinished(@Nullable AirQualityData result) {
+        Log.d(TAG, "onRequestFinished(AirQualityData): " + result);
+        View todayView = findViewById(R.id.todayView);
+        if (todayView == null) return;
+        FrameLayout container = todayView.findViewById(R.id.airQualityContainer);
+        if (container == null) return;
+        container.removeAllViews();
+
+        if (result == null || !result.hasAnyData()) {
+            container.setVisibility(View.GONE);
+            return;
+        }
+
+        View aqView = LayoutInflater.from(this)
+                .inflate(R.layout.layout_air_quality_summary, container, false);
+
+        TextView stationText = aqView.findViewById(R.id.airQualityStationText);
+        TextView lqiBadge = aqView.findViewById(R.id.airQualityLqiBadge);
+        TextView pm25 = aqView.findViewById(R.id.airQualityPm25);
+        TextView pm10 = aqView.findViewById(R.id.airQualityPm10);
+        TextView no2 = aqView.findViewById(R.id.airQualityNo2);
+        TextView o3 = aqView.findViewById(R.id.airQualityO3);
+        View infoButton = aqView.findViewById(R.id.airQualityInfoButton);
+
+        if (stationText != null) {
+            String stationStr = result.stationName + " ("
+                    + String.format(Locale.getDefault(), "%.1f km", result.distanceKm) + ")";
+            if (!Utility.isEmpty(result.timeEndCet)) {
+                String timeStr = result.timeEndCet;
+                if (timeStr.length() >= 16) {
+                    timeStr = timeStr.substring(11, 16);
+                }
+                stationStr += " • " + timeStr + " Uhr";
+            }
+            stationText.setText(stationStr);
+        }
+
+        if (lqiBadge != null) {
+            int lqiColor;
+            int lqiTextRes;
+            switch (result.lqiIndex) {
+                case AirQualityData.LQI_VERY_GOOD:
+                    lqiColor = Color.parseColor("#00B0F0");
+                    lqiTextRes = R.string.air_quality_lqi_1;
+                    break;
+                case AirQualityData.LQI_GOOD:
+                    lqiColor = Color.parseColor("#4DAF4A");
+                    lqiTextRes = R.string.air_quality_lqi_2;
+                    break;
+                case AirQualityData.LQI_MODERATE:
+                    lqiColor = Color.parseColor("#F1C40F");
+                    lqiTextRes = R.string.air_quality_lqi_3;
+                    break;
+                case AirQualityData.LQI_POOR:
+                    lqiColor = Color.parseColor("#E67E22");
+                    lqiTextRes = R.string.air_quality_lqi_4;
+                    break;
+                case AirQualityData.LQI_VERY_POOR:
+                    lqiColor = Color.parseColor("#E74C3C");
+                    lqiTextRes = R.string.air_quality_lqi_5;
+                    break;
+                default:
+                    lqiColor = Color.GRAY;
+                    lqiTextRes = R.string.air_quality_lqi_unknown;
+                    break;
+            }
+            lqiBadge.setText(lqiTextRes);
+            GradientDrawable bg = (GradientDrawable) lqiBadge.getBackground().mutate();
+            bg.setColor(lqiColor);
+        }
+
+        if (pm25 != null) pm25.setText(AirQualityData.formatValue(result.pm25));
+        if (pm10 != null) pm10.setText(AirQualityData.formatValue(result.pm10));
+        if (no2 != null) no2.setText(AirQualityData.formatValue(result.no2));
+        if (o3 != null) o3.setText(AirQualityData.formatValue(result.o3));
+
+        if (infoButton != null) {
+            infoButton.setOnClickListener(v -> showAirQualityInfoDialog());
+        }
+
+        container.addView(aqView);
+        container.setVisibility(View.VISIBLE);
+    }
+
+    private void showAirQualityInfoDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.air_quality_info_title)
+                .setMessage(getString(R.string.air_quality_info_dialog_text)
+                        + "\n\n" + getString(R.string.air_quality_attribution))
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     void addToFavoriteCities(City city) {
