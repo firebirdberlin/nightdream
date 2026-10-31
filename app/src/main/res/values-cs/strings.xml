@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Poloměr vnějšího kruhu</string>
     <string name="outer_circle_width">Tloušťka vnějšího kruhu</string>
     <string-array name="particleEffectEntries">
-        <item>Žádný</item>
         <item>Padající sníh</item>
         <item>Zlaté hvězdy</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

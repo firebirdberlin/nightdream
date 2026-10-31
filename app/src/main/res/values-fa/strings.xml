@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">شعاع دایره بیرونی</string>
     <string name="outer_circle_width">عرض دایره بیرونی</string>
     <string-array name="particleEffectEntries">
-        <item>هیچ کدام</item>
         <item>برف در حال سقوط</item>
         <item>ستاره های طلایی</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

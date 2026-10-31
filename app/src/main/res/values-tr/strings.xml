@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Dış daire yarıçapı</string>
     <string name="outer_circle_width">Dış daire genişliği</string>
     <string-array name="particleEffectEntries">
-        <item>Hiçbiri</item>
         <item>Yağan Kar</item>
         <item>Altın Yıldızlar</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

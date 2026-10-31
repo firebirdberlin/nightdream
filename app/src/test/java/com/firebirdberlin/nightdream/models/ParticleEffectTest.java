@@ -25,24 +25,21 @@ public class ParticleEffectTest {
 
     @Test
     public void testGetValues() {
-        Assert.assertEquals(0, ParticleEffect.NONE.getValue());
         Assert.assertEquals(1, ParticleEffect.SNOW.getValue());
         Assert.assertEquals(2, ParticleEffect.GOLDEN_STARS.getValue());
     }
 
     @Test
     public void testFromValueInt() {
-        Assert.assertEquals(ParticleEffect.NONE, ParticleEffect.fromValue(0));
         Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue(1));
         Assert.assertEquals(ParticleEffect.GOLDEN_STARS, ParticleEffect.fromValue(2));
-        Assert.assertEquals(ParticleEffect.NONE, ParticleEffect.fromValue(99));
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue(99));
     }
 
     @Test
     public void testFromValueString() {
-        Assert.assertEquals(ParticleEffect.NONE, ParticleEffect.fromValue("0", ParticleEffect.SNOW));
-        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("1", ParticleEffect.NONE));
-        Assert.assertEquals(ParticleEffect.GOLDEN_STARS, ParticleEffect.fromValue("2", ParticleEffect.NONE));
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("1", ParticleEffect.GOLDEN_STARS));
+        Assert.assertEquals(ParticleEffect.GOLDEN_STARS, ParticleEffect.fromValue("2", ParticleEffect.SNOW));
         Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("invalid", ParticleEffect.SNOW));
         String nullStr = null;
         Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue(nullStr, ParticleEffect.SNOW));

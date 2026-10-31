@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public enum ParticleEffect {
-    NONE(0),
     SNOW(1),
     GOLDEN_STARS(2);
 
@@ -40,7 +39,7 @@ public enum ParticleEffect {
 
     @NonNull
     public static ParticleEffect fromValue(int value) {
-        return fromValue(value, NONE);
+        return fromValue(value, SNOW);
     }
 
     @NonNull

@@ -288,12 +288,10 @@ OR
     <string name="outer_circle_radius">Outer circle radius</string>
     <string name="outer_circle_width">Outer circle width</string>
     <string-array name="particleEffectEntries">
-        <item>None</item>
         <item>Falling Snow</item>
         <item>Golden Stars</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

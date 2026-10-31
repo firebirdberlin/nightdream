@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Radio del círculo externo</string>
     <string name="outer_circle_width">Grosor del círculo externo</string>
     <string-array name="particleEffectEntries">
-        <item>Ninguno</item>
         <item>Nieve que cae</item>
         <item>estrellas doradas</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

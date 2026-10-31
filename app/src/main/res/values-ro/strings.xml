@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Raza cercului exterior</string>
     <string name="outer_circle_width">Lățimea cercului exterior</string>
     <string-array name="particleEffectEntries">
-        <item>Nici unul</item>
         <item>Zăpadă care căde</item>
         <item>Stele de Aur</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

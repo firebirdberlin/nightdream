@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Radi del cercle exterior</string>
     <string name="outer_circle_width">Amplada del cercle exterior</string>
     <string-array name="particleEffectEntries">
-        <item>Cap</item>
         <item>Neu que cau</item>
         <item>Estrelles Daurades</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

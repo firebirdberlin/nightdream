@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">A külső kör sugara</string>
     <string name="outer_circle_width">Külső kör szélessége</string>
     <string-array name="particleEffectEntries">
-        <item>Egyik sem</item>
         <item>hulló hó</item>
         <item>Arany Csillagok</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

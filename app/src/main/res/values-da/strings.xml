@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Ydre cirkel radius</string>
     <string name="outer_circle_width">Ydre cirkel bredde</string>
     <string-array name="particleEffectEntries">
-        <item>Ingen</item>
         <item>faldende sne</item>
         <item>Gyldne Stjerner</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

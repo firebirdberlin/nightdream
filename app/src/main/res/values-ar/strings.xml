@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">نصف القطر الخارجي للدائرة</string>
     <string name="outer_circle_width">العرض الخارجي للدائرة</string>
     <string-array name="particleEffectEntries">
-        <item>لا أحد</item>
         <item>تساقط الثلوج</item>
         <item>النجوم الذهبية</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

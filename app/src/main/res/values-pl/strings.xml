@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">Promień zewnętrznego koła</string>
     <string name="outer_circle_width">Szerokość zewnętrznego koła</string>
     <string-array name="particleEffectEntries">
-        <item>Nic</item>
         <item>Padający śnieg</item>
         <item>Złote Gwiazdy</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>

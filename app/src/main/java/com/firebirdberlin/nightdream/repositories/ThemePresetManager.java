@@ -205,7 +205,7 @@ public class ThemePresetManager {
                 editor.remove("font");
                 editor.putInt("clockBackgroundTransparency", 100);
                 editor.putBoolean("theme_animation_enabled", false);
-                editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.NONE.getValue()));
+                editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.SNOW.getValue()));
             }
             editor.putString(PREF_ACTIVE_PRESET, ThemePreset.PRESET_NONE);
         } else {
@@ -243,7 +243,7 @@ public class ThemePresetManager {
             editor.remove("font");
             editor.putInt("clockBackgroundTransparency", 100);
             editor.putBoolean("theme_animation_enabled", false);
-            editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.NONE.getValue()));
+            editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.SNOW.getValue()));
         } else {
             ThemePreset preset = getPreset(activeThemeId);
             if (preset != null) {

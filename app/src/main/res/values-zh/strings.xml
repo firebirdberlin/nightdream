@@ -278,12 +278,10 @@ OR
     <string name="outer_circle_radius">外圆半径</string>
     <string name="outer_circle_width">外圆宽度</string>
     <string-array name="particleEffectEntries">
-        <item>没有任何</item>
         <item>落雪</item>
         <item>金星</item>
     </string-array>
     <string-array name="particleEffectValues" translatable="false">
-        <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>
