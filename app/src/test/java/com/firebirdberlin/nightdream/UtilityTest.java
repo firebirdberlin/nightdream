@@ -129,4 +129,13 @@ public class UtilityTest {
         Assert.assertEquals(4, Utility.getNearestEvenIntValue(3.5f));
         Assert.assertEquals(0, Utility.getNearestEvenIntValue(0.5f));
     }
+
+    @Test
+    public void testCalculateDistanceKm() {
+        double distance = Utility.calculateDistanceKm(52.5200, 13.4050, 52.4014, 13.0602);
+        Assert.assertEquals(27.0, distance, 3.0);
+
+        double samePoint = Utility.calculateDistanceKm(52.5200, 13.4050, 52.5200, 13.4050);
+        Assert.assertEquals(0.0, samePoint, 0.001);
+    }
 }
