@@ -1497,7 +1497,7 @@ public class NightDreamUI {
 
         // Dim down the entire screen uniformly using the top-level scrim
         if (backgroundScrim != null) {
-            float scrimAlpha = to_range(1.0f - v, 0.0f, 0.98f);
+            float scrimAlpha = to_range(1.0f - v, 0.0f, 0.70f);
             setAlpha(backgroundScrim, scrimAlpha, millis);
         }
     }
