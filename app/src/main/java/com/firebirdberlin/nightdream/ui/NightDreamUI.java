@@ -1649,8 +1649,9 @@ public class NightDreamUI {
     public void updateThemeOverlays() {
         if (snowOverlayView == null || starsOverlayView == null) return;
 
+        boolean isEligible = ThemePresetManager.isUserEligible(mContext);
         SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
-        boolean animEnabled = prefs.getBoolean("theme_animation_enabled", true);
+        boolean animEnabled = isEligible && prefs.getBoolean("theme_animation_enabled", false);
         ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.SNOW);
 
         boolean snowEnabled = animEnabled && (particleEffect == ParticleEffect.SNOW);
