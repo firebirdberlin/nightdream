@@ -37,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,6 +65,12 @@ public class ThemePresetManager {
     private static final int CHRISTMAS_SECONDARY = Color.rgb(200, 168, 70);
     private static final int CHRISTMAS_PRIMARY_NIGHT = Color.rgb(156, 124, 56);
     private static final int CHRISTMAS_SECONDARY_NIGHT = Color.rgb(120, 95, 42);
+
+    // Belgium theme colors
+    private static final int BELGIUM_PRIMARY = Color.rgb(0x5D, 0xB8, 0xFF);
+    private static final int BELGIUM_SECONDARY = Color.rgb(0x36, 0xA2, 0xCF);
+    private static final int BELGIUM_PRIMARY_NIGHT = Color.rgb(0x3D, 0x7A, 0xA9);
+    private static final int BELGIUM_SECONDARY_NIGHT = Color.rgb(0x1D, 0x58, 0x70);
 
     static {
         ThemePreset halloweenAnalog = new ThemePreset(
@@ -123,10 +131,27 @@ public class ThemePresetManager {
                 ParticleEffect.GOLDEN_STARS
         );
 
+        ThemePreset belgiumAnalog = new ThemePreset(
+                ThemePreset.PRESET_BELGIUM_ANALOG,
+                "Belgium by night",
+                ClockLayoutType.ANALOG,
+                BELGIUM_PRIMARY,
+                BELGIUM_SECONDARY,
+                Settings.BACKGROUND_IMAGE,
+                "bg_belgium",
+                50, // translucent card
+                "",
+                ParticleEffect.GOLDEN_STARS,
+                0.25f, // sky region (upper 25%)
+                1.4f,  // star size scale
+                50     // 50 stars
+        );
+
         PRESETS.put(halloweenAnalog.id, halloweenAnalog);
         PRESETS.put(halloweenDigital.id, halloweenDigital);
         PRESETS.put(xmasAnalog.id, xmasAnalog);
         PRESETS.put(xmasDigital.id, xmasDigital);
+        PRESETS.put(belgiumAnalog.id, belgiumAnalog);
     }
 
     public static SharedPreferences getPreferences(Context context) {
@@ -281,6 +306,9 @@ public class ThemePresetManager {
         if (ThemePreset.PRESET_HALLOWEEN_ANALOG.equals(preset.id) || ThemePreset.PRESET_HALLOWEEN_DIGITAL.equals(preset.id)) {
             editor.putInt("primaryColorNight", HALLOWEEN_PRIMARY_NIGHT);
             editor.putInt("secondaryColorNight", HALLOWEEN_SECONDARY_NIGHT);
+        } else if (ThemePreset.PRESET_BELGIUM_ANALOG.equals(preset.id)) {
+            editor.putInt("primaryColorNight", BELGIUM_PRIMARY_NIGHT);
+            editor.putInt("secondaryColorNight", BELGIUM_SECONDARY_NIGHT);
         } else {
             editor.putInt("primaryColorNight", CHRISTMAS_PRIMARY_NIGHT);
             editor.putInt("secondaryColorNight", CHRISTMAS_SECONDARY_NIGHT);
@@ -307,7 +335,15 @@ public class ThemePresetManager {
             settings.setTextureId(Settings.TEXTURE_NONE, i);
         }
 
-        if (ThemePreset.PRESET_CHRISTMAS_ANALOG.equals(preset.id) || ThemePreset.PRESET_HALLOWEEN_ANALOG.equals(preset.id)) {
+        if (ThemePreset.PRESET_BELGIUM_ANALOG.equals(preset.id)) {
+            String belgiumJson = loadJsonFromAsset(context, "themes/belgium.json");
+            if (!Utility.isEmpty(belgiumJson)) {
+                for (AnalogClockConfig.Style style : AnalogClockConfig.Style.values()) {
+                    AnalogClockConfig config = new AnalogClockConfig(context, style);
+                    config.importFromJson(belgiumJson);
+                }
+            }
+        } else if (ThemePreset.PRESET_CHRISTMAS_ANALOG.equals(preset.id) || ThemePreset.PRESET_HALLOWEEN_ANALOG.equals(preset.id)) {
             for (AnalogClockConfig.Style style : AnalogClockConfig.Style.values()) {
                 AnalogClockConfig config = new AnalogClockConfig(context, style);
                 config.decoration = AnalogClockConfig.Decoration.GOLD;
@@ -344,6 +380,17 @@ public class ThemePresetManager {
         // Save initial profile JSON snapshot
         saveThemeProfileJson(context, prefs, editor, preset.id);
         editor.apply();
+    }
+
+    private static String loadJsonFromAsset(Context context, String filename) {
+        try (InputStream is = context.getAssets().open(filename)) {
+            byte[] buffer = new byte[is.available()];
+            int size = is.read(buffer);
+            return new String(buffer, 0, size, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load asset JSON: " + filename, e);
+            return null;
+        }
     }
 
     private static void saveThemeProfileJson(Context context, SharedPreferences prefs, SharedPreferences.Editor editor, String themeId) {

@@ -463,6 +463,7 @@ OR
         <item>Halloween Digital</item>
         <item>Christmas Analog</item>
         <item>Christmas Digital</item>
+        <item>Belgium by night</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
@@ -470,6 +471,7 @@ OR
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">Vis animasjon med fallende snø eller gylne stjerner.</string>
     <string name="theme_animation_only_charging_summary">Pausere animasjoner på batteri for å spare strøm.</string>

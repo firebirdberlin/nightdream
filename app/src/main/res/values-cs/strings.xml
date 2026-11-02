@@ -462,6 +462,7 @@ OR
         <item>Halloween digitální</item>
         <item>Vánoční analog</item>
         <item>Vánoční digitální</item>
+        <item>Belgium by night</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
@@ -469,6 +470,7 @@ OR
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">Zobrazit animaci padajícího sněhu nebo zlatých hvězd.</string>
     <string name="theme_animation_only_charging_summary">Pozastaví animace při provozu na baterii pro úsporu energie.</string>
