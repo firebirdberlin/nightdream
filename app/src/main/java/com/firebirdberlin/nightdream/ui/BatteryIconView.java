@@ -28,6 +28,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -60,6 +61,7 @@ public class BatteryIconView extends View {
     LinearLayout batteryTextLayout;
     TextView batteryTextView;
     BatteryValue reference = null;
+    private GradientDrawable pillDrawable;
 
     public BatteryIconView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,10 +77,15 @@ public class BatteryIconView extends View {
     private void init(Context context, AttributeSet attrs) {
         this.context = context;
 
+        pillDrawable = new GradientDrawable();
+        pillDrawable.setColor(Color.parseColor("#44000000")); // Semi-transparent dark backing
+        pillDrawable.setCornerRadius(24f);
+
         //init text view layout
         batteryTextLayout = new LinearLayout(context); //delegates attributes to text subview
+        batteryTextLayout.setBackground(pillDrawable);
         batteryTextView = new TextView(context, attrs);
-        batteryTextView.setPadding(0, 0, 0, 0); // no padding for sub view
+        batteryTextView.setPadding(16, 4, 16, 4); 
         batteryTextView.setLayoutParams(
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
