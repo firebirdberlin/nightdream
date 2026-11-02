@@ -26,6 +26,7 @@ import android.util.Log;
 import com.firebirdberlin.nightdream.BuildConfig;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 
 public class HttpReader {
     private static final String TAG = HttpReader.class.getSimpleName();
@@ -69,42 +71,51 @@ public class HttpReader {
     }
 
     private static String getResponseText(InputStream inputStream) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
+        try (
+                BufferedReader br = new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8)
+                )
+        ) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            return sb.toString();
         }
-        br.close();
-        return sb.toString();
     }
 
+    /**
+     * Writes to a temporary file first and renames it afterwards. A reader (or a crash
+     * while writing) can therefore never see a truncated cache file, and a failed write
+     * keeps the previous cache.
+     */
     private static void storeCacheFile(File cacheFile, String responseText) {
-        try {
-            FileOutputStream stream = new FileOutputStream(cacheFile);
-            stream.write(responseText.getBytes());
-            stream.close();
-            Log.i(TAG, cacheFile.toString() + " stored");
+        File tmpFile = new File(cacheFile.getParentFile(), cacheFile.getName() + ".tmp");
+        try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
+            stream.write(responseText.getBytes(StandardCharsets.UTF_8));
+            stream.flush();
         } catch (IOException e) {
-            if (cacheFile.exists()) {
-                cacheFile.delete();
-            }
+            Log.e(TAG, "could not write " + tmpFile + ": " + e.getMessage());
+            tmpFile.delete();
+            return;
+        }
+        if (tmpFile.renameTo(cacheFile)) {
+            Log.i(TAG, cacheFile.toString() + " stored");
+        } else {
+            Log.e(TAG, "could not rename " + tmpFile + " to " + cacheFile);
+            tmpFile.delete();
         }
     }
 
     private static String readFromCacheFile(File cacheFile) {
-        int length = (int) cacheFile.length();
-        byte[] bytes = new byte[length];
-
-        try {
-            FileInputStream in = new FileInputStream(cacheFile);
-            in.read(bytes);
-            in.close();
+        try (DataInputStream in = new DataInputStream(new FileInputStream(cacheFile))) {
+            byte[] bytes = new byte[(int) cacheFile.length()];
+            in.readFully(bytes); // a single read() may return fewer bytes than requested
+            return new String(bytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
             return null;
         }
-
-        return new String(bytes);
     }
 
     public static boolean hasNetworkConnection(Context context) {
@@ -136,6 +147,25 @@ public class HttpReader {
         this.cacheExpirationTimeMillis = cacheExpirationTimeMillis;
     }
 
+    /**
+     * Returns the cached response for the url even if it is older than the expiration
+     * time (e.g. when the device is offline). Returns "" if there is no cache.
+     * The caller has to decide whether the content is still usable.
+     */
+    public String readCacheIgnoringExpiry(String urlString) {
+        File cacheFile = getCacheFileForUrl(urlString);
+        if (!cacheFile.exists()) {
+            return "";
+        }
+        String text = readFromCacheFile(cacheFile);
+        if (text == null) {
+            return "";
+        }
+        requestTimestamp = cacheFile.lastModified();
+        Log.d(TAG, "Returning (possibly expired) cache for " + urlString);
+        return text;
+    }
+
     public String readUrl(String urlString, boolean overrideCache) {
         Log.d(TAG, "readUrl()");
         int responseCode = 0;
@@ -155,6 +185,8 @@ public class HttpReader {
         }
 
         // for unsuccessful attempts we need to block execution for a certain amount of time
+        // (NOTE: the lock file is also created before successful requests, so this blocks
+        // every new network request for 10 minutes, including forced refreshes)
         if (currentLockFile.exists() && currentLockFile.lastModified() > now - unsuccessfulAttemptTimeout) {
             Log.i(TAG, "Network access is locked for " + urlString);
             return responseText;
@@ -196,7 +228,8 @@ public class HttpReader {
         }
         Log.i(TAG, "Returning from network for " + urlString);
         Log.i(TAG, "responseCode: " + responseCode);
-        Log.i(TAG, "responseText: " + responseText);
+        // the body can be large (and logcat truncates long lines): log only its size
+        Log.i(TAG, "responseText length: " + responseText.length());
         return responseText;
     }
 

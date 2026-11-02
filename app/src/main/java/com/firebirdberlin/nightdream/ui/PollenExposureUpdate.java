@@ -58,7 +58,7 @@ public class PollenExposureUpdate implements PollenExposureRequestTask.AsyncResp
             return;
         }
         requestTask = new PollenExposureRequestTask(this, mContext.get());
-        requestTask.execute(weatherEntry);
+        requestTask.execute(weatherEntry.lat, weatherEntry.lon);
     }
 
     @Override

@@ -675,8 +675,7 @@ public class WeatherForecastActivity
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
             if (settings.showPollen) {
                 Log.i(TAG, "requesting pollen data for " + city.toJson());
-                WeatherEntry weatherEntry = settings.getWeatherEntry();
-                new PollenExposureRequestTask(this, this).execute(weatherEntry);
+                new PollenExposureRequestTask(this, this).execute(city.lat, city.lon);
             }
         }
     }

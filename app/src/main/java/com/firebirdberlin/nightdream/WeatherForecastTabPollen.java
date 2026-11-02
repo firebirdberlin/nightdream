@@ -97,8 +97,12 @@ public class WeatherForecastTabPollen extends Fragment {
             return;
         }
 
-        if (city == null || !"DE".equals(city.countryCode) || Utility.isEmpty(city.postalCode)
-                || result == null) {
+        boolean isGermany = (city == null) || "DE".equalsIgnoreCase(city.countryCode)
+                || "Germany".equalsIgnoreCase(city.countryName)
+                || "Deutschland".equalsIgnoreCase(city.countryName)
+                || city.countryCode == null;
+
+        if (!isGermany || result == null || result.getAreaId() == -1) {
             TextView textView = new TextView(context);
             textView.setGravity(Gravity.CENTER);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
