@@ -465,6 +465,7 @@ OR
         <item>Halloween digitális</item>
         <item>Karácsonyi analóg</item>
         <item>Karácsony digitális</item>
+        <item>Belgium by night</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
@@ -472,6 +473,7 @@ OR
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">Hulló hó vagy arany csillagok animációjának megjelenítése.</string>
     <string name="theme_animation_only_charging_summary">Szünetelteti az animációkat akkumulátorról az energiatakarékosság érdekében.</string>

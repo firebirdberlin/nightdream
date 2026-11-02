@@ -465,6 +465,7 @@ OR
         <item>Halloween Digital</item>
         <item>Christmas Analog</item>
         <item>Christmas Digital</item>
+        <item>Belgium by night</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
@@ -472,6 +473,7 @@ OR
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">แสดงแอนิเมชันหิมะตกหรือดาวสีทอง</string>
     <string name="theme_animation_only_charging_summary">หยุดแอนิเมชันชั่วคราวเมื่อใช้แบตเตอรี่เพื่อประหยัดพลังงาน</string>

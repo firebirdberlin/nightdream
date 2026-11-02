@@ -464,6 +464,7 @@ OR
         <item>الهالوين الرقمي</item>
         <item>التناظرية عيد الميلاد</item>
         <item>عيد الميلاد الرقمي</item>
+        <item>Belgium by night</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
@@ -471,6 +472,7 @@ OR
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">إظهار رسوم تساقط الثلج أو النجوم الذهبية.</string>
     <string name="theme_animation_only_charging_summary">إيقاف الرسوم المتحركة مؤقتًا أثناء استخدام البطارية لتوفير الطاقة.</string>

@@ -26,6 +26,7 @@ public class ThemePreset {
     public static final String PRESET_HALLOWEEN_DIGITAL = "halloween_digital";
     public static final String PRESET_CHRISTMAS_ANALOG = "christmas_analog";
     public static final String PRESET_CHRISTMAS_DIGITAL = "christmas_digital";
+    public static final String PRESET_BELGIUM_ANALOG = "belgium_analog";
 
     public final String id;
     public final String title;

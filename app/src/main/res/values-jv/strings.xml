@@ -465,13 +465,14 @@ OR
         <item>Halloween Digital</item>
         <item>Christmas Analog</item>
         <item>Christmas Digital</item>
-    </string-array>
-    <string-array name="themeValues" translatable="false">
+        <item>Belgium by night</item>
+    </string-array>    <string-array name="themeValues" translatable="false">
         <item>none</item>
         <item>halloween_analog</item>
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">Tampilkan animasi salju tiba utawa lintang emas.</string>
     <string name="theme_animation_only_charging_summary">Nggantung animasi nalika nganggo baterei kanggo ngirit daya.</string>

@@ -464,6 +464,7 @@ OR
         <item>Dia das Bruxas Digital</item>
         <item>Analógico de Natal</item>
         <item>Natal digital</item>
+        <item>Belgium by night</item>
     </string-array>
     <string-array name="themeValues" translatable="false">
         <item>none</item>
@@ -471,6 +472,7 @@ OR
         <item>halloween_digital</item>
         <item>christmas_analog</item>
         <item>christmas_digital</item>
+        <item>belgium_analog</item>
     </string-array>
     <string name="theme_animation_enabled_summary">Mostrar animação de neve caindo ou estrelas douradas.</string>
     <string name="theme_animation_only_charging_summary">Pausa as animações na bateria para economizar energia.</string>
