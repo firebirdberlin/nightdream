@@ -28,7 +28,6 @@ import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.openweathermapapi.apimodels.ApiCity;
 import com.firebirdberlin.openweathermapapi.apimodels.ApiCoord;
 import com.firebirdberlin.openweathermapapi.apimodels.Clouds;
-import com.firebirdberlin.openweathermapapi.apimodels.CurrentSys;
 import com.firebirdberlin.openweathermapapi.apimodels.FindCityEntry;
 import com.firebirdberlin.openweathermapapi.apimodels.ListEntry;
 import com.firebirdberlin.openweathermapapi.apimodels.Main;
@@ -281,12 +280,6 @@ public class OpenWeatherMapApi {
             entry.weatherIconMeteoconsSymbol = iconToText(firstWeather.getIcon());
         }
 
-        CurrentSys currentSys = apiResponse.getCurrentSys();
-        if (currentSys != null) {
-            entry.sunriseTime = currentSys.getSunrise();
-            entry.sunsetTime = currentSys.getSunset();
-        }
-
         entry.timestamp = apiResponse.getDt();
         entry.request_timestamp = requestTimestamp;
 
@@ -470,11 +463,6 @@ public class OpenWeatherMapApi {
 
             entry.timestamp = apiListEntry.getDt();
             entry.request_timestamp = requestTimestamp; // From when the data was requested/cached
-
-            // Sunrise/Sunset times are per city, not per forecast entry,
-            // so they are the same for all entries in the forecast list
-            entry.sunriseTime = apiCity.getSunrise();
-            entry.sunsetTime = apiCity.getSunset();
 
             // Visibility (int) and POP (double) are available in ListEntry, but not in WeatherEntry
             // if you need them, you might extend WeatherEntry.

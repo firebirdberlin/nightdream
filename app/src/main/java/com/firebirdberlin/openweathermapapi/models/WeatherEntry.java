@@ -20,7 +20,6 @@ package com.firebirdberlin.openweathermapapi.models;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -59,8 +58,6 @@ public class WeatherEntry {
     public double rain3h = -1.f;
     public double temperature = 0.f;
     public double apparentTemperature = 0.f;
-    public long sunriseTime = 0L;
-    public long sunsetTime = 0L;
     public String weatherIcon = "";
     public String weatherIconMeteoconsSymbol = "";
     public String description = "";
@@ -85,15 +82,6 @@ public class WeatherEntry {
     }
 
     public long getSunriseTime() {
-        // returns the sunset time of the weather entry on the same day
-        if (sunriseTime > 0L) {
-            return sunriseTime * 1000;
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return 0L; // java.time not available natively
-        }
-
         ZoneId zone = ZoneId.systemDefault();
 
         // The calendar day that the timestamp falls on
@@ -113,14 +101,6 @@ public class WeatherEntry {
     }
 
     public long getSunsetTime() {
-        // returns the sunset time of the weather entry on the same day
-        if (sunsetTime > 0L) {
-            return sunsetTime * 1000;
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return 0L; // java.time not available natively
-        }
-
         ZoneId zone = ZoneId.systemDefault();
 
         // The calendar day that the timestamp falls on
@@ -238,9 +218,6 @@ public class WeatherEntry {
     }
 
     public boolean isNight() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return false; // java.time not available natively, cannot determine night
-        }
         long currentTimeMillis = Instant.ofEpochSecond(timestamp).toEpochMilli();
         long sunrise = getSunriseTime();
         long sunset = getSunsetTime();

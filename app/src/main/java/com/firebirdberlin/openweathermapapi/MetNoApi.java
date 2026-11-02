@@ -226,8 +226,6 @@ public class MetNoApi {
 
                 entry.rain3h = -1f;
                 entry.request_timestamp = requestTimestamp;
-                entry.sunriseTime = 0L;
-                entry.sunsetTime = 0L;
                 entry.apparentTemperature = -273.15;
                 entry.cityName = city.name;
 
