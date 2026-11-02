@@ -159,9 +159,6 @@ public class ThemePresetManager {
     }
 
     public static boolean isUserEligible(Context context) {
-        if (BuildConfig.FLAVOR == "noGms") {
-            return true;
-        }
         PurchaseManager pm = PurchaseManager.getInstance(context);
         return pm.isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)
                 || pm.isPurchased(PurchaseManager.ITEM_PRO)
