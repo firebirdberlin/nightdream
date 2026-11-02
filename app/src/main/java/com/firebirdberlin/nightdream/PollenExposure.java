@@ -235,7 +235,7 @@ public class PollenExposure {
      * This is only an approximation (see TODOs). A 5 digit table would be better.
      * Returns -1 if there is no mapping.
      */
-    private Integer plzToArea(Integer p) {
+    static int plzToArea(int p) {
         if (isBetween(p, 25, 25)) {
             //Inseln und Marschen
             return 11;
