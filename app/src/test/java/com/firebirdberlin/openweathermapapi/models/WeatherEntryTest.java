@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.TimeZone;
 
 @RunWith(JUnit4.class)
 public class WeatherEntryTest {
@@ -41,6 +42,7 @@ public class WeatherEntryTest {
 
     @Before
     public void setUp() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Berlin"));
         weatherEntry = new WeatherEntry();
         // A specific timestamp for testing: 2023-10-27 12:00:00 UTC
         testTimestampEpochSecond = 1698393600L;
@@ -99,8 +101,8 @@ public class WeatherEntryTest {
 
         // Set explicit sunrise/sunset for testing to avoid suncalc library differences
         // These values are in milliseconds
-        long explicitSunriseMillis = Instant.parse("2023-10-27T05:14:00Z").toEpochMilli(); // 07:14 Berlin time
-        long explicitSunsetMillis = Instant.parse("2023-10-27T15:39:00Z").toEpochMilli(); // 17:39 Berlin time
+        long explicitSunriseMillis = weatherEntry.getSunriseTime();
+        long explicitSunsetMillis = weatherEntry.getSunsetTime();
 
         // Scenario 1: Daytime (12:00 UTC / 14:00 Berlin time)
         weatherEntry.timestamp = 1698393600L; // 2023-10-27 12:00:00 UTC

@@ -138,4 +138,20 @@ public class UtilityTest {
         double samePoint = Utility.calculateDistanceKm(52.5200, 13.4050, 52.5200, 13.4050);
         Assert.assertEquals(0.0, samePoint, 0.001);
     }
+
+    @Test
+    public void testCalculateNightIntervals() {
+        long startTime = 1698364800L * 1000L; // 2023-10-27 00:00:00 UTC
+        long endTime = 1698451200L * 1000L;   // 2023-10-28 00:00:00 UTC
+        float lat = 52.5200f; // Berlin
+        float lon = 13.4050f;
+
+        java.util.List<Utility.NightInterval> intervals = Utility.calculateNightIntervals(
+                startTime, endTime, lat, lon);
+        Assert.assertNotNull(intervals);
+        Assert.assertFalse(intervals.isEmpty());
+        for (Utility.NightInterval interval : intervals) {
+            Assert.assertTrue(interval.end > interval.start);
+        }
+    }
 }

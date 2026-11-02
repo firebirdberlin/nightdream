@@ -31,10 +31,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -166,6 +168,7 @@ public class WeatherGraphView extends View {
         this.entries.clear();
         if (weatherEntries != null) {
             this.entries.addAll(weatherEntries);
+            Collections.sort(this.entries, (a, b) -> Long.compare(a.timestamp, b.timestamp));
         }
         this.temperatureUnit = temperatureUnit;
         this.showApparentTemperature = showApparentTemperature;
@@ -296,12 +299,28 @@ public class WeatherGraphView extends View {
         float yMid = (yMax + yMin) / 2f;
 
         // ---- night background --------------------------------------------
-        for (int i = 0; i < size - 1; i++) {
-            WeatherEntry entry = entries.get(i);
-            if (entry.isNight()) {
-                float left = plotLeft + i * stepX;
-                float right = plotLeft + (i + 1) * stepX;
-                canvas.drawRect(left, plotTop, right, plotBottom, nightPaint);
+        if (size > 1) {
+            long startTime = entries.get(0).timestamp * 1000L;
+            long endTime = entries.get(size - 1).timestamp * 1000L;
+            float lat = 0.0f;
+            float lon = 0.0f;
+            for (WeatherEntry entry : entries) {
+                if (entry.lat != 0.0f || entry.lon != 0.0f) {
+                    lat = entry.lat;
+                    lon = entry.lon;
+                    break;
+                }
+            }
+            List<Utility.NightInterval> nightIntervals = Utility.calculateNightIntervals(
+                    startTime, endTime, lat, lon);
+            for (Utility.NightInterval interval : nightIntervals) {
+                long nightStart = Math.max(interval.start, startTime);
+                long nightEnd = Math.min(interval.end, endTime);
+                if (nightEnd > nightStart) {
+                    float left = timeToX(nightStart, startTime, endTime, plotLeft, plotWidth);
+                    float right = timeToX(nightEnd, startTime, endTime, plotLeft, plotWidth);
+                    canvas.drawRect(left, plotTop, right, plotBottom, nightPaint);
+                }
             }
         }
 
@@ -389,5 +408,11 @@ public class WeatherGraphView extends View {
         }
 
         canvas.restore();
+    }
+
+    private static float timeToX(long timeMs, long startTime, long endTime,
+                                 float plotLeft, float plotWidth) {
+        if (endTime == startTime) return plotLeft;
+        return plotLeft + (float) (timeMs - startTime) / (endTime - startTime) * plotWidth;
     }
 }

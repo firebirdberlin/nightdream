@@ -100,6 +100,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -110,6 +114,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+import org.shredzone.commons.suncalc.SunTimes;
 
 public class Utility {
     private static final String SCREENSAVER_ENABLED = "screensaver_enabled";
@@ -1126,5 +1131,63 @@ public class Utility {
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
         return cal.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR) &&
                 cal.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public static class NightInterval {
+        public final long start;
+        public final long end;
+
+        public NightInterval(long start, long end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    public static List<NightInterval> calculateNightIntervals(
+            long startTimeMillis, long endTimeMillis, float lat, float lon) {
+        List<NightInterval> intervals = new ArrayList<>();
+        if (startTimeMillis >= endTimeMillis) {
+            return intervals;
+        }
+
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDate startDate = Instant.ofEpochMilli(startTimeMillis)
+                .atZone(zone)
+                .toLocalDate()
+                .minusDays(1);
+        LocalDate endDate = Instant.ofEpochMilli(endTimeMillis)
+                .atZone(zone)
+                .toLocalDate()
+                .plusDays(1);
+
+        LocalDate current = startDate;
+        while (!current.isAfter(endDate)) {
+            SunTimes sunTimes = SunTimes.compute()
+                    .on(current)
+                    .timezone(zone)
+                    .at(lat, lon)
+                    .oneDay()
+                    .execute();
+
+            ZonedDateTime sunset = sunTimes.getSet();
+            SunTimes nextSunTimes = SunTimes.compute()
+                    .on(current.plusDays(1))
+                    .timezone(zone)
+                    .at(lat, lon)
+                    .oneDay()
+                    .execute();
+
+            ZonedDateTime nextSunrise = nextSunTimes.getRise();
+
+            if (sunset != null && nextSunrise != null) {
+                long nightStart = sunset.toInstant().toEpochMilli();
+                long nightEnd = nextSunrise.toInstant().toEpochMilli();
+                if (nightEnd > startTimeMillis && nightStart < endTimeMillis) {
+                    intervals.add(new NightInterval(nightStart, nightEnd));
+                }
+            }
+            current = current.plusDays(1);
+        }
+        return intervals;
     }
 }
