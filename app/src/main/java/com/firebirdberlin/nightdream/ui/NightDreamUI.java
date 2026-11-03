@@ -76,6 +76,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.ui.background.BackgroundBurnInProtectionHelper;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
 import com.firebirdberlin.nightdream.R;
@@ -166,6 +167,7 @@ public class NightDreamUI {
     };
     private final BatteryIconView batteryIconView;
     private final MAudioManager AudioManage;
+    private final BackgroundBurnInProtectionHelper backgroundBurnInHelper;
     private final ScaleGestureDetector mScaleDetector;
     private final GestureDetector mGestureDetector;
     private int lastPointerCount = 0;
@@ -479,6 +481,7 @@ public class NightDreamUI {
         snowOverlayView = rootView.findViewById(R.id.snow_overlay_view);
         starsOverlayView = rootView.findViewById(R.id.stars_overlay_view);
         activeBackgroundImage = 1;
+        backgroundBurnInHelper = new BackgroundBurnInProtectionHelper(mContext, handler);
 
         UserInteractionObserver bottomPanelUserInteractionObserver = this::resetAlarmClockHideDelay;
         bottomPanelLayout.setUserInteractionObserver(bottomPanelUserInteractionObserver);
@@ -838,6 +841,17 @@ public class NightDreamUI {
                     break;
             }
         }
+
+        int modeBg = settings.getBackgroundMode();
+        boolean isImageMode = (modeBg == Settings.BACKGROUND_IMAGE || modeBg == Settings.BACKGROUND_SLIDESHOW)
+                && !(mode == 0 && settings.hideBackgroundImage)
+                && !Utility.isLowRamDevice(mContext);
+        boolean isZoomInActive = (modeBg == Settings.BACKGROUND_SLIDESHOW && settings.background_zoomin);
+        if (isImageMode) {
+            backgroundBurnInHelper.start(backgroundImages[activeBackgroundImage], isZoomInActive);
+        } else {
+            backgroundBurnInHelper.reset(backgroundImages[activeBackgroundImage]);
+        }
     }
 
     private void initLightSensor() {
@@ -1048,10 +1062,10 @@ public class NightDreamUI {
             }
         }
 
-        backgroundImages[activeBackgroundImage].setScaleX(1);
-        backgroundImages[activeBackgroundImage].setScaleY(1);
-        backgroundImages[activeBackgroundImage].setTranslationX(0);
-        backgroundImages[activeBackgroundImage].setTranslationY(0);
+        boolean isZoomInActive = (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && settings.background_zoomin);
+        backgroundBurnInHelper.applyZoomAndPosition(
+                backgroundImages[activeBackgroundImage], isZoomInActive
+        );
 
         AnimationSet animationSet = new AnimationSet(true);
 
@@ -1128,10 +1142,9 @@ public class NightDreamUI {
             });
         }
 
-        backgroundImages[activeBackgroundImage].setScaleX(1);
-        backgroundImages[activeBackgroundImage].setScaleY(1);
-        backgroundImages[activeBackgroundImage].setTranslationX(0);
-        backgroundImages[activeBackgroundImage].setTranslationY(0);
+        backgroundBurnInHelper.applyZoomAndPosition(
+                backgroundImages[activeBackgroundImage], isZoomInActive
+        );
         backgroundImages[activeBackgroundImage].bringToFront();
         backgroundImages[(activeBackgroundImage + 1) % 2].setZ(4);
         backgroundImages[activeBackgroundImage].setZ(5);
@@ -1280,9 +1293,11 @@ public class NightDreamUI {
         if (lightSensorEventListener != null) {
             lightSensorEventListener.unregister();
         }
+        backgroundBurnInHelper.stop();
     }
 
     public void onStop() {
+        backgroundBurnInHelper.stop();
         removeCallbacks(moveAround);
         removeCallbacks(hideAlarmClock);
         removeCallbacks(initClockLayout);
@@ -1319,6 +1334,10 @@ public class NightDreamUI {
             }
 
             postDelayed(moveAround, Utility.millisToTimeTick(20000));
+            boolean isZoomInActive = (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW && settings.background_zoomin);
+            backgroundBurnInHelper.onConfigurationChanged(
+                    backgroundImages[activeBackgroundImage], isZoomInActive
+            );
             if (settings.getBackgroundMode() == Settings.BACKGROUND_SLIDESHOW) {
                 postBackgroundImageChange();
             }
@@ -1576,6 +1595,7 @@ public class NightDreamUI {
                 backgroundImages[activeBackgroundImage].setImageDrawable(colorBlack);
                 exifLayoutContainer.setVisibility(View.GONE);
                 removeCallbacks(backgroundChange);
+                backgroundBurnInHelper.stop();
             }
         } else if ((new_mode != 0) && (current_mode == 0)) {
             restoreRingerMode();
