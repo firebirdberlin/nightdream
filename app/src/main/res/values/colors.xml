@@ -49,4 +49,13 @@
         <item>@color/material_grey</item>
         <item>@color/material_blue_grey</item>
     </integer-array>
+
+    <color name="weather_sun">#FFB300</color>
+    <color name="weather_sunrise">#FF9800</color>
+    <color name="weather_sunset">#F4511E</color>
+    <color name="weather_moon">#90CAF9</color>
+    <color name="weather_rain">#4FC3F7</color>
+    <color name="weather_humidity">#26C6DA</color>
+    <color name="weather_wind">#81C784</color>
+
 </resources>

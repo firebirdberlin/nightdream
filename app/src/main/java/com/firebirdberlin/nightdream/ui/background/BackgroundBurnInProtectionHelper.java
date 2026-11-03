@@ -33,8 +33,7 @@ import com.firebirdberlin.nightdream.Utility;
 public class BackgroundBurnInProtectionHelper {
     private static final String TAG = BackgroundBurnInProtectionHelper.class.getSimpleName();
 
-//    private static final long INTERVAL_MS = 180000L; // 3 minutes
-    private static final long INTERVAL_MS = 30000L; // 30 seconds
+    private static final long INTERVAL_MS = 180000L; // 3 minutes
     private static final long ANIMATION_DURATION_MS = 1500L; // 1.5 seconds
     private static final int MAX_DISPLACEMENT_DP = 8;
     private static final float DEFAULT_ZOOM = 1.03f;

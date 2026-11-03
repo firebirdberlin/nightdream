@@ -107,7 +107,7 @@ public class WeatherForecastActivity
     private LocationManager locationManager = null;
     private final LocationListener locationListener = new LocationListener() {
         @Override
-        public void onLocationChanged(final Location location) {
+        public void onLocationChanged(@NonNull final Location location) {
             Log.d(TAG, "onLocationChanged");
             City city = new City();
             city.lat = location.getLatitude();
@@ -256,6 +256,9 @@ public class WeatherForecastActivity
         TextView summaryHumidity = summaryView.findViewById(R.id.summaryHumidity);
         TextView summarySunrise = summaryView.findViewById(R.id.summarySunrise);
         TextView summarySunset = summaryView.findViewById(R.id.summarySunset);
+        TextView summaryMoonrise = summaryView.findViewById(R.id.summaryMoonrise);
+        TextView summaryMoonset = summaryView.findViewById(R.id.summaryMoonset);
+        TextView summaryMoonPhase = summaryView.findViewById(R.id.summaryMoonPhase);
         DirectionIconView summaryWindDirection = summaryView.findViewById(R.id.summaryWindDirection);
         TextView summaryWind = summaryView.findViewById(R.id.summaryWind);
         TextView summaryRainIcon = summaryView.findViewById(R.id.summaryRainIcon);
@@ -324,6 +327,48 @@ public class WeatherForecastActivity
         if (summarySunset != null) {
             mCalendar.setTimeInMillis(entry.getSunsetTime());
             summarySunset.setText(Utility.formatTime(timeFormat, mCalendar));
+        }
+
+        boolean moonUp = entry.isMoonUp();
+
+        if (summaryMoonrise != null) {
+            // up:   last rise (past)
+            // down: next rise (future)
+            long moonrise = entry.getMoonriseTime();
+            if (moonrise != 0L) {
+                mCalendar.setTimeInMillis(moonrise);
+                summaryMoonrise.setText(Utility.formatTime(timeFormat, mCalendar));
+            } else {
+                summaryMoonrise.setText("-");
+            }
+        }
+        if (summaryMoonset != null) {
+            // up:   next set
+            // down: first set after the next rise (always after the rise shown above)
+            long moonset = entry.getMoonsetTime();
+            if (moonset != 0L) {
+                mCalendar.setTimeInMillis(moonset);
+//                String text = Utility.formatTime(timeFormat, mCalendar);
+
+//                java.util.Calendar ref = java.util.Calendar.getInstance();
+//                ref.setTimeInMillis(entry.timestamp * 1000L);
+//                if (mCalendar.get(java.util.Calendar.DAY_OF_YEAR) != ref.get(java.util.Calendar.DAY_OF_YEAR)
+//                        || mCalendar.get(java.util.Calendar.YEAR) != ref.get(java.util.Calendar.YEAR)) {
+//                    text += " +1";
+//                }
+//                summaryMoonset.setText(text);
+                mCalendar.setTimeInMillis(moonset);
+                summaryMoonset.setText(Utility.formatTime(timeFormat, mCalendar));
+            } else {
+                summaryMoonset.setText("-");
+            }
+        }
+
+        if (summaryMoonPhase != null) {
+            org.shredzone.commons.suncalc.MoonIllumination illumination = entry.getMoonIllumination();
+            double fraction = illumination.getFraction();
+            String moonEmoji = getMoonEmoji(illumination.getPhase());
+            summaryMoonPhase.setText(String.format(Locale.getDefault(), "%s %d%%", moonEmoji, Math.round(fraction * 100)));
         }
 
         if (summaryWindDirection != null) {
@@ -778,11 +823,31 @@ public class WeatherForecastActivity
 
             snackbar.setAction(R.string.action_change, new LocationProviderSettingListener());
             snackbar.show();
-        } else {
-            dismissSnackBar();
         }
     }
 
+    private String getMoonEmoji(double phaseDegrees) {
+        // map -180..180 (new moon at ±180, full moon at 0) to 0..1 (new moon at 0, full at 0.5)
+        double cycle = ((phaseDegrees + 180.0) % 360.0 + 360.0) % 360.0 / 360.0;
+
+        if (cycle < 0.03 || cycle > 0.97) {
+            return "🌑";
+        } else if (cycle < 0.22) {
+            return "🌒"; // waxing crescent
+        } else if (cycle < 0.28) {
+            return "🌓"; // first quarter
+        } else if (cycle < 0.47) {
+            return "🌔"; // waxing gibbous
+        } else if (cycle < 0.53) {
+            return "🌕";
+        } else if (cycle < 0.72) {
+            return "🌖"; // waning gibbous
+        } else if (cycle < 0.78) {
+            return "🌗"; // last quarter
+        } else {
+            return "🌘"; // waning crescent
+        }
+    }
     void dismissSnackBar() {
         if (snackbar != null && snackbar.isShown()) {
             snackbar.dismiss();

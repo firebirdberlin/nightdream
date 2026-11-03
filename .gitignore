@@ -46,3 +46,4 @@ output-metadata.json
 .classpath
 .project
 .settings/
+.artifacts
