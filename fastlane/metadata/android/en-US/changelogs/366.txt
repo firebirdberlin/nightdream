@@ -1,0 +1,5 @@
+<ul>
+    <li>🚀 Feature: Added air quality information for Germany (source: UBA)</li>
+    <li>🚀 Improvements: Fixed pollen data display for current location and location switching.</li>
+    <li>🛠️ Stability: Bug fixes and performance improvements.</li>
+</ul>
