@@ -53,6 +53,7 @@ public class ThemePresetManager {
     public static final String PREF_ACTIVE_PRESET = "activeThemePreset";
 
     private static final Map<String, ThemePreset> PRESETS = new HashMap<>();
+    private static final Map<String, String> THEME_ASSET_MAP = new HashMap<>();
 
     // Halloween theme colors
     private static final int HALLOWEEN_PRIMARY = Color.rgb(255, 117, 24);
@@ -152,6 +153,10 @@ public class ThemePresetManager {
         PRESETS.put(xmasAnalog.id, xmasAnalog);
         PRESETS.put(xmasDigital.id, xmasDigital);
         PRESETS.put(belgiumAnalog.id, belgiumAnalog);
+
+        THEME_ASSET_MAP.put(ThemePreset.PRESET_BELGIUM_ANALOG, "themes/belgium.json");
+        THEME_ASSET_MAP.put(ThemePreset.PRESET_CHRISTMAS_ANALOG, "themes/christmas.json");
+        THEME_ASSET_MAP.put(ThemePreset.PRESET_HALLOWEEN_ANALOG, "themes/christmas.json");
     }
 
     public static SharedPreferences getPreferences(Context context) {
@@ -332,42 +337,14 @@ public class ThemePresetManager {
             settings.setTextureId(Settings.TEXTURE_NONE, i);
         }
 
-        if (ThemePreset.PRESET_BELGIUM_ANALOG.equals(preset.id)) {
-            String belgiumJson = loadJsonFromAsset(context, "themes/belgium.json");
-            if (!Utility.isEmpty(belgiumJson)) {
+        String assetPath = THEME_ASSET_MAP.get(preset.id);
+        if (!Utility.isEmpty(assetPath)) {
+            String json = loadJsonFromAsset(context, assetPath);
+            if (!Utility.isEmpty(json)) {
                 for (AnalogClockConfig.Style style : AnalogClockConfig.Style.values()) {
                     AnalogClockConfig config = new AnalogClockConfig(context, style);
-                    config.importFromJson(belgiumJson);
+                    config.importFromJson(json);
                 }
-            }
-        } else if (ThemePreset.PRESET_CHRISTMAS_ANALOG.equals(preset.id) || ThemePreset.PRESET_HALLOWEEN_ANALOG.equals(preset.id)) {
-            for (AnalogClockConfig.Style style : AnalogClockConfig.Style.values()) {
-                AnalogClockConfig config = new AnalogClockConfig(context, style);
-                config.decoration = AnalogClockConfig.Decoration.GOLD;
-                config.digitPosition = 0.82f;
-                config.digitStyle = AnalogClockConfig.DigitStyle.ARABIC;
-                config.emphasizeHour12 = true;
-                config.showSecondHand = true;
-                config.handShape = AnalogClockConfig.HandShape.TRIANGLE;
-                config.handLengthHours = 0.72f;
-                config.handLengthMinutes = 0.92f;
-                config.handWidthHours = 0.045f;
-                config.handWidthMinutes = 0.03f;
-                config.highlightQuarterOfHour = true;
-                config.innerCircleRadius = 0.05f;
-                config.tickStartMinutes = 0.94f;
-                config.tickStyleMinutes = AnalogClockConfig.TickStyle.DASH;
-                config.tickLengthMinutes = 0.04f;
-                config.tickStartHours = 0.92f;
-                config.tickWidthHours = 0.025f;
-                config.tickWidthMinutes = 0.01f;
-                config.tickStyleHours = AnalogClockConfig.TickStyle.CIRCLE;
-                config.tickLengthHours = 0.06f;
-                config.outerCircleRadius = 1.0f;
-                config.outerCircleWidth = 0.02f;
-                config.fontSize = 0.085f;
-                config.fontUri = "file:///android_asset/fonts/dancingscript_regular.ttf";
-                config.save();
             }
         }
         
