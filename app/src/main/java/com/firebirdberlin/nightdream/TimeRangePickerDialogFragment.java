@@ -18,7 +18,6 @@
 
 package com.firebirdberlin.nightdream;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,13 +38,20 @@ import java.text.DateFormatSymbols;
 import java.util.Locale;
 
 public class TimeRangePickerDialogFragment extends DialogFragment {
-    private static String TAG = "TimeRangePickerDialogFragment";
+    private static final String TAG = TimeRangePickerDialogFragment.class.getSimpleName();
+
+    public static final String REQUEST_KEY = "TimeRangePickerDialogFragment.result";
+    public static final String KEY_REQUEST_KEY = "requestKey";
+    public static final String KEY_HOUR_START = "hourStart";
+    public static final String KEY_MINUTE_START = "minuteStart";
+    public static final String KEY_HOUR_END = "hourEnd";
+    public static final String KEY_MINUTE_END = "minuteEnd";
 
     private EditText editTextHourStart, editTextHourEnd;
     private EditText editTextMinuteStart, editTextMinuteEnd;
     private ToggleButton toggleAmPmStart, toggleAmPmEnd;
-    private Result delegate;
 
+    private String requestKey = REQUEST_KEY;
     private String amString = "am";
     private String pmString = "pm";
     private int maxHourValue = 23;
@@ -53,7 +59,7 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
     private int hourStart, hourEnd = 0;
     private int minuteStart, minuteEnd = 0;
 
-    private TextWatcher textWatcherHour = new TextWatcher() {
+    private final TextWatcher textWatcherHour = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -70,7 +76,8 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         @Override
         public void afterTextChanged(Editable s) {}
     };
-    private TextWatcher textWatcherMinute = new TextWatcher() {
+
+    private final TextWatcher textWatcherMinute = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -88,23 +95,51 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         public void afterTextChanged(Editable s) {}
     };
 
-    TimeRangePickerDialogFragment(Result listener) {
-        this.delegate = listener;
+    public TimeRangePickerDialogFragment() {
+        // Public no-arg constructor required for fragment recreation
     }
 
-    public interface Result {
-        void onTimeRangeSet(int hourStart, int minuteStart, int hourEnd, int minuteEnd);
+    public static TimeRangePickerDialogFragment newInstance(int hourStart, int minuteStart,
+                                                           int hourEnd, int minuteEnd) {
+        return newInstance(REQUEST_KEY, hourStart, minuteStart, hourEnd, minuteEnd);
+    }
+
+    public static TimeRangePickerDialogFragment newInstance(String requestKey, int hourStart,
+                                                           int minuteStart, int hourEnd,
+                                                           int minuteEnd) {
+        TimeRangePickerDialogFragment fragment = new TimeRangePickerDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(KEY_REQUEST_KEY, requestKey);
+        args.putInt(KEY_HOUR_START, hourStart);
+        args.putInt(KEY_MINUTE_START, minuteStart);
+        args.putInt(KEY_HOUR_END, hourEnd);
+        args.putInt(KEY_MINUTE_END, minuteEnd);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        setRetainInstance(true);
+        if (savedInstanceState != null) {
+            requestKey = savedInstanceState.getString(KEY_REQUEST_KEY, REQUEST_KEY);
+            hourStart = savedInstanceState.getInt(KEY_HOUR_START, 0);
+            minuteStart = savedInstanceState.getInt(KEY_MINUTE_START, 0);
+            hourEnd = savedInstanceState.getInt(KEY_HOUR_END, 0);
+            minuteEnd = savedInstanceState.getInt(KEY_MINUTE_END, 0);
+        } else if (getArguments() != null) {
+            requestKey = getArguments().getString(KEY_REQUEST_KEY, REQUEST_KEY);
+            hourStart = getArguments().getInt(KEY_HOUR_START, 0);
+            minuteStart = getArguments().getInt(KEY_MINUTE_START, 0);
+            hourEnd = getArguments().getInt(KEY_HOUR_END, 0);
+            minuteEnd = getArguments().getInt(KEY_MINUTE_END, 0);
+        }
+
         getAmPmStrings();
 
-        Activity activity = getActivity();
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        LayoutInflater inflater = activity.getLayoutInflater();
+        Context context = requireContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = getLayoutInflater();
         View v = inflater.inflate(R.layout.time_range_dialog, null);
 
         editTextHourStart = v.findViewById(R.id.editTextHourStart);
@@ -134,20 +169,68 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         toggleAmPmEnd.setVisibility(is24Hour ? View.GONE : View.VISIBLE);
 
         if (is24Hour) {
-            editTextHourStart.setText(String.format("%02d", hourStart));
-            editTextHourEnd.setText(String.format("%02d", hourEnd));
+            editTextHourStart.setText(String.format(Locale.getDefault(), "%02d", hourStart));
+            editTextHourEnd.setText(String.format(Locale.getDefault(), "%02d", hourEnd));
         } else {
-            editTextHourStart.setText(String.format("%02d", convertTo12Hour(hourStart)));
-            editTextHourEnd.setText(String.format("%02d", convertTo12Hour(hourEnd)));
+            editTextHourStart.setText(String.format(Locale.getDefault(), "%02d", convertTo12Hour(hourStart)));
+            editTextHourEnd.setText(String.format(Locale.getDefault(), "%02d", convertTo12Hour(hourEnd)));
         }
-        editTextMinuteStart.setText(String.format("%02d", minuteStart));
-        editTextMinuteEnd.setText(String.format("%02d", minuteEnd));
+        editTextMinuteStart.setText(String.format(Locale.getDefault(), "%02d", minuteStart));
+        editTextMinuteEnd.setText(String.format(Locale.getDefault(), "%02d", minuteEnd));
 
         builder.setView(v)
                .setPositiveButton(android.R.string.ok, positiveButtonClickListener)
                .setNegativeButton(android.R.string.cancel, null);
 
         return builder.create();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveCurrentValuesFromUi();
+        outState.putString(KEY_REQUEST_KEY, requestKey);
+        outState.putInt(KEY_HOUR_START, hourStart);
+        outState.putInt(KEY_MINUTE_START, minuteStart);
+        outState.putInt(KEY_HOUR_END, hourEnd);
+        outState.putInt(KEY_MINUTE_END, minuteEnd);
+    }
+
+    private void saveCurrentValuesFromUi() {
+        if (editTextHourStart == null) {
+            return;
+        }
+        int rawHStart;
+        int rawHEnd;
+
+        try {
+            rawHStart = Integer.parseInt(editTextHourStart.getText().toString());
+        } catch (NumberFormatException e) {
+            rawHStart = 0;
+        }
+        try {
+            rawHEnd = Integer.parseInt(editTextHourEnd.getText().toString());
+        } catch (NumberFormatException e) {
+            rawHEnd = 0;
+        }
+        try {
+            minuteStart = Integer.parseInt(editTextMinuteStart.getText().toString());
+        } catch (NumberFormatException e) {
+            minuteStart = 0;
+        }
+        try {
+            minuteEnd = Integer.parseInt(editTextMinuteEnd.getText().toString());
+        } catch (NumberFormatException e) {
+            minuteEnd = 0;
+        }
+        boolean is24Hour = is24HourFormat(getContext());
+        if (!is24Hour) {
+            hourStart = convertTo24Hour(rawHStart, toggleAmPmStart.isChecked());
+            hourEnd = convertTo24Hour(rawHEnd, toggleAmPmEnd.isChecked());
+        } else {
+            hourStart = rawHStart;
+            hourEnd = rawHEnd;
+        }
     }
 
     public void getAmPmStrings() {
@@ -164,7 +247,6 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         if (hour == 0) return 12;
         else if (hour > 12) return hour - 12;
         return hour;
-
     }
 
     private int convertTo24Hour(int hour, boolean isPm) {
@@ -183,59 +265,21 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         }
     }
 
-    void setStartTime(int hour, int min) {
-        minuteStart = min;
-        hourStart = hour;
-    }
-
-    void setEndTime(int hour, int min) {
-        minuteEnd = min;
-        hourEnd = hour;
-    }
-
-    @Override
-    public void onDestroyView() {
-      if (getDialog() != null && getRetainInstance())
-        getDialog().setDismissMessage(null);
-      super.onDestroyView();
-    }
-
     private boolean is24HourFormat(Context context) {
         return android.text.format.DateFormat.is24HourFormat(context);
     }
 
-    private DialogInterface.OnClickListener positiveButtonClickListener =
+    private final DialogInterface.OnClickListener positiveButtonClickListener =
         new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                saveCurrentValuesFromUi();
 
-                int hourStart, hourEnd, minuteStart, minuteEnd;
-
-                try {
-                    hourStart = Integer.parseInt(editTextHourStart.getText().toString());
-                } catch (NumberFormatException e) {
-                    hourStart = 0;
-                }
-                try {
-                    hourEnd = Integer.parseInt(editTextHourEnd.getText().toString());
-                } catch (NumberFormatException e) {
-                    hourEnd = 0;
-                }
-                try {
-                    minuteStart = Integer.parseInt(editTextMinuteStart.getText().toString());
-                } catch (NumberFormatException e) {
-                    minuteStart = 0;
-                }
-                try {
-                    minuteEnd = Integer.parseInt(editTextMinuteEnd.getText().toString());
-                } catch (NumberFormatException e) {
-                    minuteEnd = 0;
-                }
-                boolean is24Hour = is24HourFormat(getContext());
-                if (!is24Hour) {
-                    hourStart = convertTo24Hour(hourStart, toggleAmPmStart.isChecked());
-                    hourEnd = convertTo24Hour(hourEnd, toggleAmPmEnd.isChecked());
-                }
-                delegate.onTimeRangeSet(hourStart, minuteStart, hourEnd, minuteEnd);
+                Bundle result = new Bundle();
+                result.putInt(KEY_HOUR_START, hourStart);
+                result.putInt(KEY_MINUTE_START, minuteStart);
+                result.putInt(KEY_HOUR_END, hourEnd);
+                result.putInt(KEY_MINUTE_END, minuteEnd);
+                getParentFragmentManager().setFragmentResult(requestKey, result);
             }
         };
 
