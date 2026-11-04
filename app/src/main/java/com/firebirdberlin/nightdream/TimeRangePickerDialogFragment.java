@@ -22,12 +22,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -47,8 +44,8 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
     public static final String KEY_HOUR_END = "hourEnd";
     public static final String KEY_MINUTE_END = "minuteEnd";
 
-    private EditText editTextHourStart, editTextHourEnd;
-    private EditText editTextMinuteStart, editTextMinuteEnd;
+    private NumberPicker numberPickerHourStart, numberPickerHourEnd;
+    private NumberPicker numberPickerMinuteStart, numberPickerMinuteEnd;
     private ToggleButton toggleAmPmStart, toggleAmPmEnd;
 
     private String requestKey = REQUEST_KEY;
@@ -58,42 +55,6 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
     private int minHourValue = 0;
     private int hourStart, hourEnd = 0;
     private int minuteStart, minuteEnd = 0;
-
-    private final TextWatcher textWatcherHour = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            try {
-                int number = Integer.parseInt(s.toString());
-                setOkButtonEnabled(number >= minHourValue && number <= maxHourValue);
-            } catch (NumberFormatException e) {
-                setOkButtonEnabled(false);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {}
-    };
-
-    private final TextWatcher textWatcherMinute = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            try {
-                int number = Integer.parseInt(s.toString());
-                setOkButtonEnabled(number >= 0 && number < 60);
-            } catch (NumberFormatException e) {
-                setOkButtonEnabled(false);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {}
-    };
 
     public TimeRangePickerDialogFragment() {
         // Public no-arg constructor required for fragment recreation
@@ -142,10 +103,10 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         LayoutInflater inflater = getLayoutInflater();
         View v = inflater.inflate(R.layout.time_range_dialog, null);
 
-        editTextHourStart = v.findViewById(R.id.editTextHourStart);
-        editTextHourEnd = v.findViewById(R.id.editTextHourEnd);
-        editTextMinuteStart = v.findViewById(R.id.editTextMinuteStart);
-        editTextMinuteEnd = v.findViewById(R.id.editTextMinuteEnd);
+        numberPickerHourStart = v.findViewById(R.id.numberPickerHourStart);
+        numberPickerHourEnd = v.findViewById(R.id.numberPickerHourEnd);
+        numberPickerMinuteStart = v.findViewById(R.id.numberPickerMinuteStart);
+        numberPickerMinuteEnd = v.findViewById(R.id.numberPickerMinuteEnd);
 
         toggleAmPmStart = v.findViewById(R.id.toggleAmPmStart);
         toggleAmPmEnd = v.findViewById(R.id.toggleAmPmEnd);
@@ -155,11 +116,6 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         toggleAmPmEnd.setTextOff(amString);
         toggleAmPmEnd.setTextOn(pmString);
 
-        editTextHourStart.addTextChangedListener(textWatcherHour);
-        editTextHourEnd.addTextChangedListener(textWatcherHour);
-        editTextMinuteStart.addTextChangedListener(textWatcherMinute);
-        editTextMinuteEnd.addTextChangedListener(textWatcherMinute);
-
         boolean is24Hour = is24HourFormat(getContext());
         maxHourValue = (is24Hour) ? 23 : 12;
         minHourValue = (is24Hour) ? 0 : 1;
@@ -168,15 +124,33 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
         toggleAmPmStart.setVisibility(is24Hour ? View.GONE : View.VISIBLE);
         toggleAmPmEnd.setVisibility(is24Hour ? View.GONE : View.VISIBLE);
 
+        NumberPicker.Formatter twoDigitFormatter = value ->
+            String.format(Locale.getDefault(), "%02d", value);
+
+        numberPickerHourStart.setMinValue(minHourValue);
+        numberPickerHourStart.setMaxValue(maxHourValue);
+        numberPickerHourEnd.setMinValue(minHourValue);
+        numberPickerHourEnd.setMaxValue(maxHourValue);
+
+        numberPickerMinuteStart.setMinValue(0);
+        numberPickerMinuteStart.setMaxValue(59);
+        numberPickerMinuteStart.setFormatter(twoDigitFormatter);
+
+        numberPickerMinuteEnd.setMinValue(0);
+        numberPickerMinuteEnd.setMaxValue(59);
+        numberPickerMinuteEnd.setFormatter(twoDigitFormatter);
+
         if (is24Hour) {
-            editTextHourStart.setText(String.format(Locale.getDefault(), "%02d", hourStart));
-            editTextHourEnd.setText(String.format(Locale.getDefault(), "%02d", hourEnd));
+            numberPickerHourStart.setFormatter(twoDigitFormatter);
+            numberPickerHourEnd.setFormatter(twoDigitFormatter);
+            numberPickerHourStart.setValue(hourStart);
+            numberPickerHourEnd.setValue(hourEnd);
         } else {
-            editTextHourStart.setText(String.format(Locale.getDefault(), "%02d", convertTo12Hour(hourStart)));
-            editTextHourEnd.setText(String.format(Locale.getDefault(), "%02d", convertTo12Hour(hourEnd)));
+            numberPickerHourStart.setValue(convertTo12Hour(hourStart));
+            numberPickerHourEnd.setValue(convertTo12Hour(hourEnd));
         }
-        editTextMinuteStart.setText(String.format(Locale.getDefault(), "%02d", minuteStart));
-        editTextMinuteEnd.setText(String.format(Locale.getDefault(), "%02d", minuteEnd));
+        numberPickerMinuteStart.setValue(minuteStart);
+        numberPickerMinuteEnd.setValue(minuteEnd);
 
         builder.setView(v)
                .setPositiveButton(android.R.string.ok, positiveButtonClickListener)
@@ -197,32 +171,14 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
     }
 
     private void saveCurrentValuesFromUi() {
-        if (editTextHourStart == null) {
+        if (numberPickerHourStart == null) {
             return;
         }
-        int rawHStart;
-        int rawHEnd;
+        int rawHStart = numberPickerHourStart.getValue();
+        int rawHEnd = numberPickerHourEnd.getValue();
+        minuteStart = numberPickerMinuteStart.getValue();
+        minuteEnd = numberPickerMinuteEnd.getValue();
 
-        try {
-            rawHStart = Integer.parseInt(editTextHourStart.getText().toString());
-        } catch (NumberFormatException e) {
-            rawHStart = 0;
-        }
-        try {
-            rawHEnd = Integer.parseInt(editTextHourEnd.getText().toString());
-        } catch (NumberFormatException e) {
-            rawHEnd = 0;
-        }
-        try {
-            minuteStart = Integer.parseInt(editTextMinuteStart.getText().toString());
-        } catch (NumberFormatException e) {
-            minuteStart = 0;
-        }
-        try {
-            minuteEnd = Integer.parseInt(editTextMinuteEnd.getText().toString());
-        } catch (NumberFormatException e) {
-            minuteEnd = 0;
-        }
         boolean is24Hour = is24HourFormat(getContext());
         if (!is24Hour) {
             hourStart = convertTo24Hour(rawHStart, toggleAmPmStart.isChecked());
@@ -244,8 +200,11 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
     }
 
     private int convertTo12Hour(int hour) {
-        if (hour == 0) return 12;
-        else if (hour > 12) return hour - 12;
+        if (hour == 0) {
+            return 12;
+        } else if (hour > 12) {
+            return hour - 12;
+        }
         return hour;
     }
 
@@ -282,13 +241,4 @@ public class TimeRangePickerDialogFragment extends DialogFragment {
                 getParentFragmentManager().setFragmentResult(requestKey, result);
             }
         };
-
-    private void setOkButtonEnabled(boolean enabled) {
-        AlertDialog dialog = (AlertDialog) getDialog();
-        if (dialog == null) {
-            return;
-        }
-        Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        button.setEnabled(enabled);
-    }
 }
