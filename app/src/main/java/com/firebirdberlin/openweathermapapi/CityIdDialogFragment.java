@@ -33,9 +33,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.preference.PreferenceDialogFragmentCompat;
@@ -47,12 +49,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
-    private String TAG = getClass().getSimpleName();
+    private static final String TAG = CityIdDialogFragment.class.getSimpleName();
 
     CityIDPreference preference;
     private EditText queryText = null;
-    private ArrayList<City> cities = new ArrayList<City>();
-    private ArrayAdapter<City> adapter;
+    private final ArrayList<City> cities = new ArrayList<City>();
     private ListView cityListView;
     private TextView noResultsText;
     private ContentLoadingProgressBar spinner;
@@ -67,25 +68,29 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
     }
 
     @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+    protected void onPrepareDialogBuilder(@NonNull AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
-        preference = (CityIDPreference) getPreference();
+        if (getPreference() instanceof CityIDPreference) {
+            preference = (CityIDPreference) getPreference();
+        }
         builder.setNegativeButton(null, null);
-        builder.setPositiveButton(preference.getPositiveButtonText(), new DialogInterface.OnClickListener() {
+        CharSequence positiveButtonText = preference != null ? preference.getPositiveButtonText() : null;
+        builder.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                preference.persist(null);
+                if (preference != null) {
+                    preference.persist(null);
+                }
             }
         });
     }
 
     @Override
-    protected View onCreateDialogView(Context context) {
-        //return super.onCreateDialogView(context);
-        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, cities);
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.city_id_search_dialog, null);
+    protected View onCreateDialogView(@NonNull Context context) {
+        ArrayAdapter<City> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, cities);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        FrameLayout parent = new FrameLayout(context);
+        View v = inflater.inflate(R.layout.city_id_search_dialog, parent, false);
 
         queryText = (v.findViewById(R.id.query_string));
         spinner = v.findViewById(R.id.progress_bar);
@@ -111,9 +116,15 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
                 City city = (City) parent.getItemAtPosition(position);
                 Log.d(TAG, city.toString());
 
-                preference.persist(city);
-                getDialog().dismiss();
-
+                if (preference == null && getPreference() instanceof CityIDPreference) {
+                    preference = (CityIDPreference) getPreference();
+                }
+                if (preference != null) {
+                    preference.persist(city);
+                }
+                if (getDialog() != null) {
+                    getDialog().dismiss();
+                }
             }
         });
 
@@ -140,7 +151,7 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
 
             @Override
             public void afterTextChanged(Editable s) {
-                searchButton.setEnabled(queryText.getText().length() > 0 );
+                searchButton.setEnabled(queryText.getText().length() > 0);
             }
         });
 
@@ -182,6 +193,8 @@ public class CityIdDialogFragment extends PreferenceDialogFragmentCompat {
 
     @Override
     public void onDialogClosed(boolean positiveResult) {
-
+        if (positiveResult && preference != null) {
+            preference.persist(null);
+        }
     }
 }
