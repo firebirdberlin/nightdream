@@ -54,6 +54,7 @@ public class WeatherEntryTest {
         testLon = 13.4050f; // Berlin longitude
 
         weatherEntry.timestamp = testTimestampEpochSecond;
+        weatherEntry.temperature = 293.15;
         weatherEntry.lat = testLat;
         weatherEntry.lon = testLon;
     }

@@ -266,7 +266,7 @@ public class WeatherForecastActivity
         LinearLayout todayView = findViewById(R.id.todayView);
         if (todayView == null) return;
         todayView.removeAllViews();
-        if (entry == null) {
+        if (entry == null || !entry.isValid()) {
             return;
         }
         Log.d(TAG, "onRequestFinished() WeatherEntry: " + entry);
@@ -439,8 +439,13 @@ public class WeatherForecastActivity
         if (!entries.isEmpty()) {
             WeatherEntry firstEntry = entries.get(0);
             String cityName = firstEntry.cityName;
-            if (Utility.isEmpty(cityName) && !autoLocationEnabled) {
-                cityName = selectedCity.name;
+            if (Utility.isEmpty(cityName) || "current".equals(cityName)) {
+                if (!autoLocationEnabled && selectedCity != null) {
+                    cityName = selectedCity.name;
+                }
+            }
+            if (Utility.isEmpty(cityName) || "current".equals(cityName)) {
+                cityName = getString(R.string.weather_current_location);
             }
             actionBarSetup(cityName);
         }
@@ -709,15 +714,35 @@ public class WeatherForecastActivity
             @SuppressLint("MissingPermission")
             Location location = locationManager.getLastKnownLocation(provider);
             if (location == null) continue;
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            selectedCity = city;
             if (locationManager != null && locationListener != null) {
                 locationManager.removeUpdates(locationListener);
             }
-            requestWeather(city);
+            executorService.execute(() -> {
+                City city = GeocoderApi.findCityByCoordinates(
+                        getApplicationContext(),
+                        location.getLatitude(),
+                        location.getLongitude()
+                );
+                final City resolvedCity;
+                if (city == null) {
+                    resolvedCity = new City();
+                    resolvedCity.lat = location.getLatitude();
+                    resolvedCity.lon = location.getLongitude();
+                    resolvedCity.name = "current";
+                } else {
+                    if (Utility.isEmpty(city.name)) {
+                        city.name = "current";
+                    }
+                    resolvedCity = city;
+                }
+
+                runOnUiThread(() -> {
+                    selectedCity = resolvedCity;
+                    Log.i(TAG, "last known location updated " + resolvedCity.toJson());
+                    requestWeather(resolvedCity);
+                });
+            });
+            break;
         }
     }
 

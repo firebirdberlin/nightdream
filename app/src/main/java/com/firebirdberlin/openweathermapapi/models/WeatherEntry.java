@@ -268,6 +268,7 @@ public class WeatherEntry {
     }
 
     public String formatTemperatureText(int temperatureUnit, double temp) {
+        if (temp <= 0.0) return "";
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
                 return String.format(java.util.Locale.getDefault(), "%d°C", Math.round(toDegreesCelsius(temp)));
@@ -312,7 +313,7 @@ public class WeatherEntry {
 
     public boolean isValid() {
         long age = ageMillis();
-        return (timestamp > -1L && age < 4L * REQUEST_INTERVAL);
+        return (timestamp > -1L && temperature > 0.0 && age < 4L * REQUEST_INTERVAL);
     }
 
     public boolean isNight() {

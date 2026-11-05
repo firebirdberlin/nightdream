@@ -55,7 +55,7 @@ public class MetNoApi {
         mContext = new WeakReference<>(context);
         String responseText = fetchWeatherData(context, city);
         if (responseText == null || responseText.isEmpty()) {
-            return new WeatherEntry();
+            return null;
         }
         Data data = new Gson().fromJson(responseText, Data.class);
         long now = System.currentTimeMillis();
