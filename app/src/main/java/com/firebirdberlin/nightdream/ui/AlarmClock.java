@@ -36,8 +36,11 @@ import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
@@ -46,12 +49,13 @@ import com.firebirdberlin.nightdream.events.AppEventBus;
 import com.firebirdberlin.nightdream.events.OnAlarmDeleted;
 import com.firebirdberlin.nightdream.events.OnAlarmSet;
 import com.firebirdberlin.nightdream.models.SimpleTime;
+import com.firebirdberlin.nightdream.repositories.VibrationHandler;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 
 public class AlarmClock extends RelativeLayout {
-    static String TAG = "AlarmClock";
+    private static final String TAG = AlarmClock.class.getSimpleName();
     private final TextView alarmTimeTextView;
     protected AlarmClockView alarmClockView;
     private int customSecondaryColor = Color.parseColor("#C2C2C2");
@@ -74,6 +78,7 @@ public class AlarmClock extends RelativeLayout {
     @SuppressLint("ClickableViewAccessibility")
     private void init(AttributeSet attrs) {
         setClipChildren(false);
+        setHapticFeedbackEnabled(true);
         initColorFilters();
 
         alarmClockView = new AlarmClockView(getContext(), attrs);
@@ -94,13 +99,23 @@ public class AlarmClock extends RelativeLayout {
         alarmTimeTextView.setHapticFeedbackEnabled(true);
         alarmTimeTextView.setOnTouchListener(new OnTouchListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
+            boolean isLongPressed = false;
             final Runnable longPress = () -> {
-                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                Log.d(TAG, "longPress triggered");
+                isLongPressed = true;
+                alarmTimeTextView.performHapticFeedback(
+                        HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING
+                );
+                VibrationHandler vibrationHandler = new VibrationHandler(getContext());
+                vibrationHandler.startOneShotVibration(150);
             };
-            float startX = 0;
+            float startRawX = 0;
+            float startRawY = 0;
             float max_move_seen = 0;
+            boolean hasMovedBeyondSlop = false;
             long timestampDown = 0;
-            final float threshold = 0.25f;
+            final float threshold = 0.50f;
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -110,6 +125,7 @@ public class AlarmClock extends RelativeLayout {
                 int action = motionEvent.getAction();
                 float x = motionEvent.getX();
                 float rawX = motionEvent.getRawX();
+                float rawY = motionEvent.getRawY();
                 long now = System.currentTimeMillis();
 
                 switch (action) {
@@ -117,25 +133,32 @@ public class AlarmClock extends RelativeLayout {
                         Log.d(TAG, "DOWN:" + x);
                         hasUserInteraction = true;
                         timestampDown = now;
-                        startX = -1;
+                        startRawX = rawX;
+                        startRawY = rawY;
                         max_move_seen = 0;
+                        hasMovedBeyondSlop = false;
+                        isLongPressed = false;
                         handler.postDelayed(longPress, 500);
 
                         break;
                     case MotionEvent.ACTION_MOVE:
                         Log.d(TAG, "MOVE:" + x);
-                        if (now - timestampDown > 500) {
-                            if (startX < 0) {
-                                startX = rawX;
+                        float deltaX = rawX - startRawX;
+                        float deltaY = rawY - startRawY;
+                        float totalDistance = (float) Math.hypot(deltaX, deltaY);
+                        int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+                        if (!isLongPressed && totalDistance > touchSlop) {
+                            hasMovedBeyondSlop = true;
+                            handler.removeCallbacks(longPress);
+                        }
+                        if (isLongPressed) {
+                            if (deltaX > 0.f) {
+                                alarmTimeTextView.setPadding((int) deltaX, 0, 0, 0);
+                                float alpha = deltaX / (threshold * alarmTimeTextView.getWidth());
+                                alarmTimeTextView.setAlpha(Math.max(0.f, 1.f - alpha));
                             }
-                            float diff_x = rawX - startX;
-                            if (diff_x > 0.) {
-                                alarmTimeTextView.setPadding((int) diff_x, 0, 0, 0);
-                                float alpha = diff_x / (threshold * alarmTimeTextView.getWidth());
-                                alarmTimeTextView.setAlpha(1.f - alpha);
-                            }
-                            if (diff_x > max_move_seen) {
-                                max_move_seen = diff_x;
+                            if (deltaX > max_move_seen) {
+                                max_move_seen = deltaX;
                             }
                         }
                         break;
@@ -145,26 +168,32 @@ public class AlarmClock extends RelativeLayout {
                         alarmTimeTextView.setAlpha(1.f);
                         alarmTimeTextView.setPadding(0, 0, 0, 0);
                         if (
-                                now - timestampDown > 500
-                                        && rawX - startX > threshold * alarmTimeTextView.getWidth()
+                                isLongPressed
+                                        && (rawX - startRawX) > threshold * alarmTimeTextView.getWidth()
                         ) {
                             //skip next alarm
                             if (currentlyActiveAlarm != null) {
                                 SqliteIntentService.skipAlarm(getContext(), currentlyActiveAlarm);
                             }
                         } else if (
-                                now - timestampDown < 300
-                                        && max_move_seen < 0.1f * alarmTimeTextView.getWidth()
+                                !isLongPressed
+                                        && !hasMovedBeyondSlop
+                                        && now - timestampDown < 500
                         ) {
                             // treat as click
                             SetAlarmClockActivity.start(getContext());
                         }
+                        isLongPressed = false;
+                        hasMovedBeyondSlop = false;
                         hasUserInteraction = false;
                         break;
                     case MotionEvent.ACTION_CANCEL:
+                        handler.removeCallbacks(longPress);
                         Log.d(TAG, "CANCEL:" + x);
                         alarmTimeTextView.setAlpha(1.f);
                         alarmTimeTextView.setPadding(0, 0, 0, 0);
+                        isLongPressed = false;
+                        hasMovedBeyondSlop = false;
                         hasUserInteraction = false;
                         break;
                 }
@@ -241,10 +270,13 @@ public class AlarmClock extends RelativeLayout {
                 customSecondaryColor, PorterDuff.Mode.SRC_ATOP);
 
         if (alarmTimeTextView != null) {
-            Drawable icon = getResources().getDrawable(R.drawable.ic_alarm_clock);
-            icon = icon.mutate();
-            icon.setColorFilter(customColorFilterImage);
-            alarmTimeTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, null, null);
+            Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_alarm_clock);
+            if (icon != null) {
+                Drawable mutatedIcon = icon.mutate();
+                mutatedIcon.setColorFilter(customColorFilterImage);
+                alarmTimeTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        mutatedIcon, null, null, null);
+            }
             alarmTimeTextView.setCompoundDrawablePadding(Utility.dpToPx(getContext(), 20.f));
         }
     }

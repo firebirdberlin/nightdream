@@ -19,6 +19,7 @@
 package com.firebirdberlin.nightdream.repositories;
 
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -26,7 +27,7 @@ import android.os.VibratorManager;
 import android.util.Log;
 
 public class VibrationHandler {
-    static String TAG = "VibrationHandler";
+    private static final String TAG = VibrationHandler.class.getSimpleName();
 
     Vibrator vibrator;
 
@@ -34,39 +35,33 @@ public class VibrationHandler {
         Vibrator vibrator;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             VibratorManager vibratorManager = (VibratorManager) context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-            vibrator = vibratorManager.getDefaultVibrator();
+            vibrator = vibratorManager != null ? vibratorManager.getDefaultVibrator() : null;
         } else {
             vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         }
-        return vibrator.hasVibrator();
+        return vibrator != null && vibrator.hasVibrator();
     }
 
     public VibrationHandler(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             VibratorManager vibratorManager = (VibratorManager) context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-            for (int i : vibratorManager.getVibratorIds()) {
-                Log.d(TAG, String.valueOf(i));
+            if (vibratorManager != null) {
+                vibrator = vibratorManager.getDefaultVibrator();
             }
-            vibrator = vibratorManager.getDefaultVibrator();
-        } else {
+        }
+        if (vibrator == null) {
             vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         }
     }
 
     public void startVibration() {
         Log.i(TAG, "startvibration");
-        if (vibrator == null || !vibrator.hasVibrator()) {
+        if (vibrator == null) {
             return;
         }
-        // Start without a delay
-        // Vibrate for 1000 milliseconds
-        // Sleep for 100 milliseconds
         long[] pattern = {0, 1000, 100, 1000, 100};
         int[] amplitudes = {0, 255, 0, 128, 0};
 
-        // The '0' here means to repeat indefinitely
-        // '0' is actually the index at which the pattern keeps repeating from (the start)
-        // To repeat the pattern from any other point, you could increase the index, e.g. '1'
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             vibrator.vibrate(pattern, 0);
         } else {
@@ -76,14 +71,30 @@ public class VibrationHandler {
     }
 
     public void stopVibration() {
-        vibrator.cancel();
+        if (vibrator != null) {
+            vibrator.cancel();
+        }
     }
 
+    @SuppressWarnings("deprecation")
     public void startOneShotVibration(long milliseconds) {
-        if (!vibrator.hasVibrator()) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            VibrationEffect effect = VibrationEffect.createOneShot(milliseconds, 128);
-            vibrator.vibrate(effect);
+        Log.d(TAG, "startOneShotVibration: " + milliseconds + "ms, vibrator=" + vibrator);
+        if (vibrator == null) return;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                long[] timings = {0, milliseconds};
+                int[] amplitudes = {0, 255};
+                VibrationEffect effect = VibrationEffect.createWaveform(timings, amplitudes, -1);
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build();
+                vibrator.vibrate(effect, audioAttributes);
+            } else {
+                vibrator.vibrate(milliseconds);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to vibrate", e);
         }
     }
 }
