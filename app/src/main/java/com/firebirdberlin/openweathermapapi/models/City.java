@@ -20,6 +20,7 @@ package com.firebirdberlin.openweathermapapi.models;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 
@@ -35,6 +36,17 @@ public class City {
     public String postalCode;
     public double lat = 0.0f;
     public double lon = 0.0f;
+
+    public boolean isGermany() {
+        return "DE".equalsIgnoreCase(countryCode)
+                || "Germany".equalsIgnoreCase(countryName)
+                || "Deutschland".equalsIgnoreCase(countryName)
+                || (lat >= 47.2 && lat <= 55.1 && lon >= 5.8 && lon <= 15.0);
+    }
+
+    public static boolean isGermany(@Nullable City city) {
+        return city == null || city.isGermany();
+    }
 
 
     @NonNull

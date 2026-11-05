@@ -56,6 +56,7 @@ import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.DirectionIconView;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -63,6 +64,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -104,20 +107,39 @@ public class WeatherForecastActivity
     private List<WeatherEntry> forecastWeatherEntries = null;
 
     private LocationManager locationManager = null;
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(@NonNull final Location location) {
             Log.d(TAG, "onLocationChanged");
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            selectedCity = city;
-            Log.i(TAG, "location updated " + city.toJson());
             if (locationManager != null && locationListener != null) {
                 locationManager.removeUpdates(locationListener);
             }
-            requestWeather(city);
+            executorService.execute(() -> {
+                City city = GeocoderApi.findCityByCoordinates(
+                        getApplicationContext(),
+                        location.getLatitude(),
+                        location.getLongitude()
+                );
+                final City resolvedCity;
+                if (city == null) {
+                    resolvedCity = new City();
+                    resolvedCity.lat = location.getLatitude();
+                    resolvedCity.lon = location.getLongitude();
+                    resolvedCity.name = "current";
+                } else {
+                    if (Utility.isEmpty(city.name)) {
+                        city.name = "current";
+                    }
+                    resolvedCity = city;
+                }
+
+                runOnUiThread(() -> {
+                    selectedCity = resolvedCity;
+                    Log.i(TAG, "location updated " + resolvedCity.toJson());
+                    requestWeather(resolvedCity);
+                });
+            });
         }
 
         @Override
@@ -449,31 +471,20 @@ public class WeatherForecastActivity
         updateTabVisibility(selectedCity, result);
     }
 
+    @SuppressWarnings("unused")
     private void updateTabVisibility(@Nullable City city, @Nullable PollenExposure result) {
         if (tabLayout == null) return;
-        boolean isGermany = (city == null) || "DE".equalsIgnoreCase(city.countryCode)
-                || "Germany".equalsIgnoreCase(city.countryName)
-                || "Deutschland".equalsIgnoreCase(city.countryName)
-                || city.countryCode == null;
+        boolean isGermany = City.isGermany(city);
 
         if (!isGermany) {
             tabLayout.setVisibility(View.GONE);
             return;
         }
 
-        if (result != null) {
-            boolean hasPollen = result.getAreaId() != -1;
-            if (adapter != null && adapter.getCount() > 1 && hasPollen) {
-                tabLayout.setVisibility(View.VISIBLE);
-            } else {
-                tabLayout.setVisibility(View.GONE);
-            }
+        if (adapter != null && adapter.getCount() > 1) {
+            tabLayout.setVisibility(View.VISIBLE);
         } else {
-            if (adapter != null && adapter.getCount() > 1) {
-                tabLayout.setVisibility(View.VISIBLE);
-            } else {
-                tabLayout.setVisibility(View.GONE);
-            }
+            tabLayout.setVisibility(View.GONE);
         }
     }
 

@@ -42,6 +42,7 @@ public class SettingsTest {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public Set<String> getStringSet(String key, Set<String> defValues) {
             Object val = map.get(key);
             return val instanceof Set ? (Set<String>) val : defValues;
