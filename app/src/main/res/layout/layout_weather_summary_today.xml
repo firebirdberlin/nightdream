@@ -64,8 +64,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="?android:attr/listDivider"
-        android:alpha="0.2" />
+        android:alpha="0.35" />
 
     <!-- Section 2: Regen (conditional) | Wind | Humidity -->
     <LinearLayout
@@ -90,6 +89,7 @@
 
             <TextView
                 android:id="@+id/summaryRainIcon"
+                android:textColor="@color/weather_rain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -98,6 +98,7 @@
 
             <TextView
                 android:id="@+id/summaryRainText"
+                android:textColor="@color/weather_rain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="4dp"
@@ -121,6 +122,7 @@
 
             <TextView
                 android:id="@+id/summaryWind"
+                android:textColor="@color/weather_wind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="6dp"
@@ -136,6 +138,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:drawableStartCompat="@drawable/ic_humidity"
+            app:drawableTint="@color/weather_humidity"
+            android:textColor="@color/weather_humidity"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
             android:singleLine="true"
@@ -162,11 +166,23 @@
             android:gravity="start|center_vertical"
             android:orientation="horizontal">
 
+            <!-- body symbol: fixed width, centered, forced text presentation (no color emoji) -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:singleLine="true"
-                android:text="☀ ▲ "
+                android:text="☀︎"
+                android:textColor="@color/weather_sun"
+                android:textSize="14sp" />
+
+            <!-- arrow: fixed width, centered, so up/down arrows sit at the same x position -->
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="▲︎"
                 android:textSize="14sp" />
 
             <TextView
@@ -178,27 +194,150 @@
                 tools:text="06:52" />
         </LinearLayout>
 
+        <!-- Spacer (Col 2) -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <!-- Sonnenuntergang -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="end|center_vertical"
             android:orientation="horizontal">
 
+            <!-- body symbol: fixed width, centered, forced text presentation (no color emoji) -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:singleLine="true"
-                android:text="☀ ▼ "
+                android:text="☀︎"
+                android:textColor="@color/weather_sun"
+                android:textSize="14sp" />
+
+            <!-- arrow: fixed width, centered, so up/down arrows sit at the same x position -->
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="▼︎"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/summarySunset"
                 android:layout_width="wrap_content"
+                android:minWidth="64dp"
+                android:gravity="start"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textSize="14sp"
                 tools:text="16:46" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Section 4: Moon rise (left) | Moon phase (center) | Moon set (right) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <!-- Moonrise -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:orientation="horizontal">
+
+            <!-- body symbol: fixed width, centered, forced text presentation (no color emoji) -->
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="☽︎"
+                android:textColor="@color/weather_moon"
+                android:textSize="14sp" />
+
+            <!-- arrow: fixed width, centered, so up/down arrows sit at the same x position -->
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="▲︎"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/summaryMoonrise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="14sp"
+                tools:text="21:15" />
+        </LinearLayout>
+
+        <!-- Moonphase -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/summaryMoonPhase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="14sp"
+                tools:text="🌑 50%" />
+        </LinearLayout>
+
+        <!-- Moonset -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <!-- body symbol: fixed width, centered, forced text presentation (no color emoji) -->
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="☽︎"
+                android:textColor="@color/weather_moon"
+                android:textSize="14sp" />
+
+            <!-- arrow: fixed width, centered, so up/down arrows sit at the same x position -->
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="▼︎"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/summaryMoonset"
+                android:layout_width="wrap_content"
+                android:minWidth="64dp"
+                android:gravity="start"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="14sp"
+                tools:text="07:30" />
         </LinearLayout>
 
     </LinearLayout>

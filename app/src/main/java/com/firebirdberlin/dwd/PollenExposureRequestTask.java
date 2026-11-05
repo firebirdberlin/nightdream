@@ -29,6 +29,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import com.firebirdberlin.nightdream.util.HttpReader;
 import com.firebirdberlin.nightdream.PollenExposure;
+import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.models.City;
 
@@ -56,25 +57,20 @@ public class PollenExposureRequestTask {
         try {
             executorService.execute(() -> {
                 City city = GeocoderApi.findCityByCoordinates(context, lat, lon);
-                if (city == null) {
-                    Log.w(TAG, "no pollen data: geocoder returned null");
-                    mainThreadHandler.post(() -> delegate.onRequestFinished(null));
-                    return;
-                }
-                boolean isGermany = "DE".equalsIgnoreCase(city.countryCode)
-                        || "Germany".equalsIgnoreCase(city.countryName)
-                        || "Deutschland".equalsIgnoreCase(city.countryName)
-                        || (city.lat >= 47.2 && city.lat <= 55.1 && city.lon >= 5.8 && city.lon <= 15.0);
-
-                if (!isGermany) {
-                    Log.w(TAG, "no pollen data: country is " + city.countryCode
-                            + ", name=" + city.countryName);
+                if (city == null || city.countryCode == null || !city.isGermany()) {
+                    Log.w(TAG, "no pollen data: geocoder could not resolve city or countryCode is unknown / not Germany");
                     mainThreadHandler.post(() -> delegate.onRequestFinished(null));
                     return;
                 }
 
-                Log.i(TAG, "requesting pollen data for " + city.toJson());
-                final String postalCode = city.postalCode;
+                String postalCode = city.postalCode;
+                if (Utility.isEmpty(postalCode)) {
+                    Log.w(TAG, "no postal code found for city: " + city.toJson());
+                    mainThreadHandler.post(() -> delegate.onRequestFinished(null));
+                    return;
+                }
+
+                Log.i(TAG, "requesting pollen data for postalCode=" + postalCode + " (lat=" + lat + ", lon=" + lon + ")");
                 final PollenExposure pollen = new PollenExposure();
                 pollen.setPostCode(postalCode);
 
@@ -102,7 +98,6 @@ public class PollenExposureRequestTask {
      *   otherwise it tries the network. It returns "" (not null) on any failure.
      * - readUrl(url, true) skips the cache, but is blocked for 10 minutes after ANY
      *   network attempt (HttpReader's lock file). That is our refresh throttle.
-     *
      * Strategy:
      * 1. use the cache; if it is unusable (expired while offline, network locked), fall back
      *    to the old cache file. PollenExposure rejects data that is more than 2 days old.

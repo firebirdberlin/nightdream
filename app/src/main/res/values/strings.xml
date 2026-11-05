@@ -531,6 +531,9 @@ OR
     <string name="weather_icon_colored">Colored</string>
     <string name="weather_icon_default">Default</string>
     <string name="weather_info_title">Information</string>
+    <string name="weather_moon_phase" tools:ignore="MissingTranslation">Moon phase</string>
+    <string name="weather_moon_rise" tools:ignore="MissingTranslation">Moonrise</string>
+    <string name="weather_moon_set" tools:ignore="MissingTranslation">Moonset</string>
     <string name="weather_sun_rise">Sunrise</string>
     <string name="weather_sun_set">Sunset</string>
     <string name="wind_direction_flow">Wind flow direction</string>

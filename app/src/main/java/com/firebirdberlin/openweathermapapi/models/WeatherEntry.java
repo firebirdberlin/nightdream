@@ -28,8 +28,11 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.WindSpeedConversion;
 import com.google.gson.Gson;
 
+import org.shredzone.commons.suncalc.MoonIllumination;
+import org.shredzone.commons.suncalc.MoonTimes;
 import org.shredzone.commons.suncalc.SunTimes;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -47,6 +50,8 @@ public class WeatherEntry {
     public static final int BEAUFORT = 4;
     public static final int KNOT = 5;
     public static final long INVALID = -1L;
+
+    private static final Duration MOON_SEARCH_WINDOW = Duration.ofHours(36);
 
     public long timestamp = INVALID;
     public long request_timestamp = INVALID;
@@ -119,6 +124,99 @@ public class WeatherEntry {
         return set != null ? set.toInstant().toEpochMilli() : 0L;
     }
 
+    private MoonTimes computeMoonTimes(ZonedDateTime start, Duration limit) {
+        return MoonTimes.compute()
+                .on(start)
+                .timezone(start.getZone())
+                .at(lat, lon)
+                .limit(limit)
+                .execute();
+    }
+
+    /**
+     * Returns {rise, set} in epoch millis (0 = unknown), relative to `timestamp`:
+     *  - moon up at timestamp:   last rise before timestamp, next set after timestamp
+     *  - moon down at timestamp: next rise after timestamp, first set after that rise
+     * Guarantees set > rise whenever both are non-zero.
+     */
+    private long[] computeMoonRiseSet() {
+        ZoneId zone = ZoneId.systemDefault();
+        ZonedDateTime now = Instant.ofEpochSecond(timestamp).atZone(zone);
+
+        MoonTimes ahead = computeMoonTimes(now, MOON_SEARCH_WINDOW);
+        ZonedDateTime nextRise = ahead.getRise();
+        ZonedDateTime nextSet = ahead.getSet();
+
+        boolean moonUp = ahead.isAlwaysUp()
+                || (nextSet != null && (nextRise == null || nextSet.isBefore(nextRise)));
+
+        if (moonUp) {
+            ZonedDateTime lastRise = findLastRiseBefore(now);
+            return new long[]{
+                    lastRise != null ? lastRise.toInstant().toEpochMilli() : 0L,
+                    nextSet != null ? nextSet.toInstant().toEpochMilli() : 0L
+            };
+        }
+
+        if (nextRise == null) {
+            return new long[]{0L, 0L}; // moon always down / no rise in window
+        }
+
+        // first set after the upcoming rise, so set is always after rise
+        ZonedDateTime setAfterRise = computeMoonTimes(nextRise, MOON_SEARCH_WINDOW).getSet();
+        return new long[]{
+                nextRise.toInstant().toEpochMilli(),
+                setAfterRise != null ? setAfterRise.toInstant().toEpochMilli() : 0L
+        };
+    }
+
+    /** Latest moonrise strictly before `now` (searches the last 36 h), or null. */
+    private ZonedDateTime findLastRiseBefore(ZonedDateTime now) {
+        ZonedDateTime start = now.minus(MOON_SEARCH_WINDOW);
+        ZonedDateTime last = null;
+
+        for (int i = 0; i < 4; i++) { // at most a few rises fit into the window
+            Duration limit = Duration.between(start, now);
+            if (limit.isNegative() || limit.isZero()) break;
+
+            ZonedDateTime rise = computeMoonTimes(start, limit).getRise();
+            if (rise == null || !rise.isBefore(now)) break;
+
+            last = rise;
+            start = rise.plusMinutes(1);
+        }
+        return last;
+    }
+
+    public boolean isMoonUp() {
+        ZonedDateTime now = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault());
+        MoonTimes ahead = computeMoonTimes(now, MOON_SEARCH_WINDOW);
+        ZonedDateTime r = ahead.getRise();
+        ZonedDateTime s = ahead.getSet();
+        return ahead.isAlwaysUp() || (s != null && (r == null || s.isBefore(r)));
+    }
+
+    public long getMoonriseTime() {
+        return computeMoonRiseSet()[0];
+    }
+
+    public long getMoonsetTime() {
+        return computeMoonRiseSet()[1];
+    }
+
+    public MoonIllumination getMoonIllumination() {
+        ZoneId zone = ZoneId.systemDefault();
+
+        ZonedDateTime dateTime = Instant.ofEpochSecond(timestamp)
+                .atZone(zone);
+
+        return MoonIllumination.compute()
+                .on(dateTime)
+                .timezone(zone)
+                .at(lat, lon)
+                .execute();
+    }
+
     public void setFakeData() {
         request_timestamp = System.currentTimeMillis();
         timestamp = System.currentTimeMillis() / 1000;
@@ -170,6 +268,7 @@ public class WeatherEntry {
     }
 
     public String formatTemperatureText(int temperatureUnit, double temp) {
+        if (temp <= 0.0) return "";
         switch (temperatureUnit) {
             case WeatherEntry.CELSIUS:
                 return String.format(java.util.Locale.getDefault(), "%d°C", Math.round(toDegreesCelsius(temp)));
@@ -214,7 +313,7 @@ public class WeatherEntry {
 
     public boolean isValid() {
         long age = ageMillis();
-        return (timestamp > -1L && age < 4L * REQUEST_INTERVAL);
+        return (timestamp > -1L && temperature > 0.0 && age < 4L * REQUEST_INTERVAL);
     }
 
     public boolean isNight() {

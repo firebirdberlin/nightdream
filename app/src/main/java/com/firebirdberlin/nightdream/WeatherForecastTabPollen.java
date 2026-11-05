@@ -97,10 +97,7 @@ public class WeatherForecastTabPollen extends Fragment {
             return;
         }
 
-        boolean isGermany = (city == null) || "DE".equalsIgnoreCase(city.countryCode)
-                || "Germany".equalsIgnoreCase(city.countryName)
-                || "Deutschland".equalsIgnoreCase(city.countryName)
-                || city.countryCode == null;
+        boolean isGermany = City.isGermany(city);
 
         if (!isGermany || result == null || result.getAreaId() == -1) {
             TextView textView = new TextView(context);

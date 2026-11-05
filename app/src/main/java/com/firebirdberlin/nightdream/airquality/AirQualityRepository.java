@@ -39,12 +39,6 @@ public class AirQualityRepository {
     /** At most this many of the nearest stations are queried (one request each). */
     public static final int MAX_STATIONS_TO_QUERY = 5;
 
-    // Germany Bounding Box
-    private static final double GERMANY_MIN_LAT = 47.27;
-    private static final double GERMANY_MAX_LAT = 55.09;
-    private static final double GERMANY_MIN_LON = 5.87;
-    private static final double GERMANY_MAX_LON = 15.04;
-
     private final Context context;
     private final AirQualityApiClient apiClient;
 
@@ -58,20 +52,10 @@ public class AirQualityRepository {
         this.apiClient = apiClient;
     }
 
-    public static boolean isLocationInGermany(@Nullable String countryCode, double lat, double lon) {
-        if ("DE".equalsIgnoreCase(countryCode)) {
-            return true;
-        }
-        return lat >= GERMANY_MIN_LAT && lat <= GERMANY_MAX_LAT
-                && lon >= GERMANY_MIN_LON && lon <= GERMANY_MAX_LON;
-    }
-
     @Nullable
     public AirQualityData getAirQualityForLocation(double latitude, double longitude) {
         City city = GeocoderApi.findCityByCoordinates(context, latitude, longitude);
-        String countryCode = city != null ? city.countryCode : null;
-
-        if (!isLocationInGermany(countryCode, latitude, longitude)) {
+        if (city == null || !city.isGermany()) {
             Log.d(TAG, "Location (" + latitude + ", " + longitude + ") is outside Germany. Skipping.");
             return null;
         }

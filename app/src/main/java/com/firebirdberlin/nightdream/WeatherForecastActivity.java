@@ -54,9 +54,9 @@ import com.firebirdberlin.nightdream.airquality.AirQualityRequestTask;
 import com.firebirdberlin.nightdream.models.FontCache;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.ui.DirectionIconView;
-import com.firebirdberlin.nightdream.ui.WeatherForecastLayout;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTask;
 import com.firebirdberlin.openweathermapapi.ForecastRequestTaskToday;
+import com.firebirdberlin.openweathermapapi.GeocoderApi;
 import com.firebirdberlin.openweathermapapi.WeatherLocationDialogFragment;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
@@ -64,6 +64,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -75,7 +77,7 @@ public class WeatherForecastActivity
         PollenExposureRequestTask.AsyncResponse,
         AirQualityRequestTask.AsyncResponse,
         WeatherLocationDialogFragment.WeatherLocationDialogListener {
-    final static String TAG = "WeatherForecastActivity";
+    private static final String TAG = WeatherForecastActivity.class.getSimpleName();
     final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 4000;
     final int MENU_ITEM_SEARCH = 3000;
     final int MENU_ITEM_ENABLE_GPS = 3001;
@@ -105,20 +107,39 @@ public class WeatherForecastActivity
     private List<WeatherEntry> forecastWeatherEntries = null;
 
     private LocationManager locationManager = null;
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final LocationListener locationListener = new LocationListener() {
         @Override
-        public void onLocationChanged(final Location location) {
+        public void onLocationChanged(@NonNull final Location location) {
             Log.d(TAG, "onLocationChanged");
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            selectedCity = city;
-            Log.i(TAG, "location updated " + city.toJson());
             if (locationManager != null && locationListener != null) {
                 locationManager.removeUpdates(locationListener);
             }
-            requestWeather(city);
+            executorService.execute(() -> {
+                City city = GeocoderApi.findCityByCoordinates(
+                        getApplicationContext(),
+                        location.getLatitude(),
+                        location.getLongitude()
+                );
+                final City resolvedCity;
+                if (city == null) {
+                    resolvedCity = new City();
+                    resolvedCity.lat = location.getLatitude();
+                    resolvedCity.lon = location.getLongitude();
+                    resolvedCity.name = "current";
+                } else {
+                    if (Utility.isEmpty(city.name)) {
+                        city.name = "current";
+                    }
+                    resolvedCity = city;
+                }
+
+                runOnUiThread(() -> {
+                    selectedCity = resolvedCity;
+                    Log.i(TAG, "location updated " + resolvedCity.toJson());
+                    requestWeather(resolvedCity);
+                });
+            });
         }
 
         @Override
@@ -163,13 +184,11 @@ public class WeatherForecastActivity
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
         adapter.addFragment(new WeatherForecastTabWeather(), getResources().getString(R.string.forecast));
-
-        if (settings.showPollen) {
-            adapter.addFragment(new WeatherForecastTabPollen(), getResources().getString(R.string.showPollen));
-        }
+        adapter.addFragment(new WeatherForecastTabPollen(), getResources().getString(R.string.showPollen));
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        updateTabVisibility(selectedCity, null);
     }
 
     @Override
@@ -185,6 +204,7 @@ public class WeatherForecastActivity
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     void init() {
         Log.d(TAG, "init()");
 
@@ -197,6 +217,9 @@ public class WeatherForecastActivity
             runOnUiThread(() -> {
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
+                if (tabLayout != null) {
+                    tabLayout.setVisibility(View.GONE);
+                }
             });
 
             ((WeatherForecastTabPreview) adapter.getItem(0)).setupForecastPreview(settings);
@@ -219,6 +242,7 @@ public class WeatherForecastActivity
             runOnUiThread(() -> {
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);
+                updateTabVisibility(selectedCity, null);
             });
 
             if ((autoLocationEnabled && !locationAccessGranted) || (!autoLocationEnabled && selectedCity == null)) {
@@ -242,7 +266,7 @@ public class WeatherForecastActivity
         LinearLayout todayView = findViewById(R.id.todayView);
         if (todayView == null) return;
         todayView.removeAllViews();
-        if (entry == null) {
+        if (entry == null || !entry.isValid()) {
             return;
         }
         Log.d(TAG, "onRequestFinished() WeatherEntry: " + entry);
@@ -256,6 +280,9 @@ public class WeatherForecastActivity
         TextView summaryHumidity = summaryView.findViewById(R.id.summaryHumidity);
         TextView summarySunrise = summaryView.findViewById(R.id.summarySunrise);
         TextView summarySunset = summaryView.findViewById(R.id.summarySunset);
+        TextView summaryMoonrise = summaryView.findViewById(R.id.summaryMoonrise);
+        TextView summaryMoonset = summaryView.findViewById(R.id.summaryMoonset);
+        TextView summaryMoonPhase = summaryView.findViewById(R.id.summaryMoonPhase);
         DirectionIconView summaryWindDirection = summaryView.findViewById(R.id.summaryWindDirection);
         TextView summaryWind = summaryView.findViewById(R.id.summaryWind);
         TextView summaryRainIcon = summaryView.findViewById(R.id.summaryRainIcon);
@@ -326,6 +353,48 @@ public class WeatherForecastActivity
             summarySunset.setText(Utility.formatTime(timeFormat, mCalendar));
         }
 
+        boolean moonUp = entry.isMoonUp();
+
+        if (summaryMoonrise != null) {
+            // up:   last rise (past)
+            // down: next rise (future)
+            long moonrise = entry.getMoonriseTime();
+            if (moonrise != 0L) {
+                mCalendar.setTimeInMillis(moonrise);
+                summaryMoonrise.setText(Utility.formatTime(timeFormat, mCalendar));
+            } else {
+                summaryMoonrise.setText("-");
+            }
+        }
+        if (summaryMoonset != null) {
+            // up:   next set
+            // down: first set after the next rise (always after the rise shown above)
+            long moonset = entry.getMoonsetTime();
+            if (moonset != 0L) {
+                mCalendar.setTimeInMillis(moonset);
+//                String text = Utility.formatTime(timeFormat, mCalendar);
+
+//                java.util.Calendar ref = java.util.Calendar.getInstance();
+//                ref.setTimeInMillis(entry.timestamp * 1000L);
+//                if (mCalendar.get(java.util.Calendar.DAY_OF_YEAR) != ref.get(java.util.Calendar.DAY_OF_YEAR)
+//                        || mCalendar.get(java.util.Calendar.YEAR) != ref.get(java.util.Calendar.YEAR)) {
+//                    text += " +1";
+//                }
+//                summaryMoonset.setText(text);
+                mCalendar.setTimeInMillis(moonset);
+                summaryMoonset.setText(Utility.formatTime(timeFormat, mCalendar));
+            } else {
+                summaryMoonset.setText("-");
+            }
+        }
+
+        if (summaryMoonPhase != null) {
+            org.shredzone.commons.suncalc.MoonIllumination illumination = entry.getMoonIllumination();
+            double fraction = illumination.getFraction();
+            String moonEmoji = getMoonEmoji(illumination.getPhase());
+            summaryMoonPhase.setText(String.format(Locale.getDefault(), "%s %d%%", moonEmoji, Math.round(fraction * 100)));
+        }
+
         if (summaryWindDirection != null) {
             summaryWindDirection.setColor(Color.WHITE);
             summaryWindDirection.setMode(settings.windDirectionIconMode);
@@ -352,21 +421,16 @@ public class WeatherForecastActivity
                 WindSpeedConversion.metersPerSecondToBeaufort(entry.windSpeed)
         );
         String formatted = entry.formatWindText(speedUnit);
-        switch (speedUnit) {
-            case WeatherEntry.MILES_PER_HOUR:
-            case WeatherEntry.KM_PER_HOUR:
-            case WeatherEntry.KNOT:
-                return String.format("%s (%s)", formatted, windSpeedBeaufort);
-            case WeatherEntry.BEAUFORT:
-            case WeatherEntry.METERS_PER_SECOND:
-            default:
-                return String.format(
-                        Locale.getDefault(),
-                        "%.1f m/s (%s)",
-                        entry.windSpeed,
-                        windSpeedBeaufort
-                );
-        }
+        return switch (speedUnit) {
+            case WeatherEntry.MILES_PER_HOUR, WeatherEntry.KM_PER_HOUR, WeatherEntry.KNOT ->
+                    String.format("%s (%s)", formatted, windSpeedBeaufort);
+            default -> String.format(
+                    Locale.getDefault(),
+                    "%.1f m/s (%s)",
+                    entry.windSpeed,
+                    windSpeedBeaufort
+            );
+        };
     }
 
     public void onRequestFinished(List<WeatherEntry> entries) {
@@ -375,8 +439,13 @@ public class WeatherForecastActivity
         if (!entries.isEmpty()) {
             WeatherEntry firstEntry = entries.get(0);
             String cityName = firstEntry.cityName;
-            if (Utility.isEmpty(cityName) && !autoLocationEnabled) {
-                cityName = selectedCity.name;
+            if (Utility.isEmpty(cityName) || "current".equals(cityName)) {
+                if (!autoLocationEnabled && selectedCity != null) {
+                    cityName = selectedCity.name;
+                }
+            }
+            if (Utility.isEmpty(cityName) || "current".equals(cityName)) {
+                cityName = getString(R.string.weather_current_location);
             }
             actionBarSetup(cityName);
         }
@@ -404,6 +473,24 @@ public class WeatherForecastActivity
     public void onRequestFinished(PollenExposure result) {
         Log.d(TAG, "onRequestFinished(PollenExposure)");
         ((WeatherForecastTabPollen) adapter.getItem(1)).onRequestFinished(selectedCity, result);
+        updateTabVisibility(selectedCity, result);
+    }
+
+    @SuppressWarnings("unused")
+    private void updateTabVisibility(@Nullable City city, @Nullable PollenExposure result) {
+        if (tabLayout == null) return;
+        boolean isGermany = City.isGermany(city);
+
+        if (!isGermany) {
+            tabLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        if (adapter != null && adapter.getCount() > 1) {
+            tabLayout.setVisibility(View.VISIBLE);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -445,37 +532,10 @@ public class WeatherForecastActivity
         }
 
         if (lqiBadge != null) {
-            int lqiColor;
-            int lqiTextRes;
-            switch (result.lqiIndex) {
-                case AirQualityData.LQI_VERY_GOOD:
-                    lqiColor = Color.parseColor("#00B0F0");
-                    lqiTextRes = R.string.air_quality_lqi_1;
-                    break;
-                case AirQualityData.LQI_GOOD:
-                    lqiColor = Color.parseColor("#4DAF4A");
-                    lqiTextRes = R.string.air_quality_lqi_2;
-                    break;
-                case AirQualityData.LQI_MODERATE:
-                    lqiColor = Color.parseColor("#F1C40F");
-                    lqiTextRes = R.string.air_quality_lqi_3;
-                    break;
-                case AirQualityData.LQI_POOR:
-                    lqiColor = Color.parseColor("#E67E22");
-                    lqiTextRes = R.string.air_quality_lqi_4;
-                    break;
-                case AirQualityData.LQI_VERY_POOR:
-                    lqiColor = Color.parseColor("#E74C3C");
-                    lqiTextRes = R.string.air_quality_lqi_5;
-                    break;
-                default:
-                    lqiColor = Color.GRAY;
-                    lqiTextRes = R.string.air_quality_lqi_unknown;
-                    break;
-            }
-            lqiBadge.setText(lqiTextRes);
+            LqiStyle style = getLqiStyle(result.lqiIndex);
+            lqiBadge.setText(style.textResId);
             GradientDrawable bg = (GradientDrawable) lqiBadge.getBackground().mutate();
-            bg.setColor(lqiColor);
+            bg.setColor(style.color);
         }
 
         if (pm25 != null) pm25.setText(AirQualityData.formatValue(result.pm25));
@@ -654,15 +714,35 @@ public class WeatherForecastActivity
             @SuppressLint("MissingPermission")
             Location location = locationManager.getLastKnownLocation(provider);
             if (location == null) continue;
-            City city = new City();
-            city.lat = location.getLatitude();
-            city.lon = location.getLongitude();
-            city.name = "current";
-            selectedCity = city;
             if (locationManager != null && locationListener != null) {
                 locationManager.removeUpdates(locationListener);
             }
-            requestWeather(city);
+            executorService.execute(() -> {
+                City city = GeocoderApi.findCityByCoordinates(
+                        getApplicationContext(),
+                        location.getLatitude(),
+                        location.getLongitude()
+                );
+                final City resolvedCity;
+                if (city == null) {
+                    resolvedCity = new City();
+                    resolvedCity.lat = location.getLatitude();
+                    resolvedCity.lon = location.getLongitude();
+                    resolvedCity.name = "current";
+                } else {
+                    if (Utility.isEmpty(city.name)) {
+                        city.name = "current";
+                    }
+                    resolvedCity = city;
+                }
+
+                runOnUiThread(() -> {
+                    selectedCity = resolvedCity;
+                    Log.i(TAG, "last known location updated " + resolvedCity.toJson());
+                    requestWeather(resolvedCity);
+                });
+            });
+            break;
         }
     }
 
@@ -673,10 +753,9 @@ public class WeatherForecastActivity
         if (city != null) {
             new ForecastRequestTask(this, settings.getWeatherProvider(), this).execute(city.toJson());
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
-            if (settings.showPollen) {
-                Log.i(TAG, "requesting pollen data for " + city.toJson());
-                new PollenExposureRequestTask(this, this).execute(city.lat, city.lon);
-            }
+            Log.i(TAG, "requesting pollen data for " + city.toJson());
+            new PollenExposureRequestTask(this, this).execute(city.lat, city.lon);
+            updateTabVisibility(city, null);
         }
     }
 
@@ -684,35 +763,33 @@ public class WeatherForecastActivity
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
     ) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_LOCATION:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission is granted. Continue the action or workflow
-                    // in your app.
-                    Log.i(TAG, "Permission granted");
-                    locationAccessGranted = true;
-                    autoLocationEnabled = true;
-                    getWeatherForCurrentLocation();
-                    // initTabView(new City());
-                } else {
-                    // Explain to the user that the feature is unavailable because
-                    // the features requires a permission that the user has denied.
-                    // At the same time, respect the user's decision. Don't link to
-                    // system settings in an effort to convince the user to change
-                    // their decision.
-                    locationAccessGranted = false;
-                    if (cities != null && !cities.isEmpty()) {
-                        City firstCity = cities.get(0);
-                        if (firstCity != null) {
-                            Log.i(TAG, "Permission denied, activating first favorite location: " + firstCity.name);
-                            onWeatherLocationSelected(firstCity);
-                        }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted. Continue the action or workflow
+                // in your app.
+                Log.i(TAG, "Permission granted");
+                locationAccessGranted = true;
+                autoLocationEnabled = true;
+                getWeatherForCurrentLocation();
+                // initTabView(new City());
+            } else {
+                // Explain to the user that the feature is unavailable because
+                // the features requires a permission that the user has denied.
+                // At the same time, respect the user's decision. Don't link to
+                // system settings in an effort to convince the user to change
+                // their decision.
+                locationAccessGranted = false;
+                if (cities != null && !cities.isEmpty()) {
+                    City firstCity = cities.get(0);
+                    if (firstCity != null) {
+                        Log.i(TAG, "Permission denied, activating first favorite location: " + firstCity.name);
+                        onWeatherLocationSelected(firstCity);
                     }
                 }
-                invalidateOptionsMenu();
-                return;
+            }
+            invalidateOptionsMenu();
+            return;
         }
         // Other 'case' lines to check for other
         // permissions this app might request.
@@ -748,19 +825,22 @@ public class WeatherForecastActivity
     }
 
     private boolean isLocationProviderEnabled() {
-        int locationMode = 0;
-
-        try {
-            locationMode = android.provider.Settings.Secure.getInt(
-                    getContentResolver(), android.provider.Settings.Secure.LOCATION_MODE
-            );
-
-        } catch (android.provider.Settings.SettingNotFoundException e) {
-            Log.e(TAG, "Error getting location mode");
+        if (locationManager == null) {
+            return false;
         }
-
-        return locationMode != android.provider.Settings.Secure.LOCATION_MODE_OFF;
-
+        boolean gpsEnabled = false;
+        boolean networkEnabled = false;
+        try {
+            gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking GPS provider", e);
+        }
+        try {
+            networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking network provider", e);
+        }
+        return gpsEnabled || networkEnabled;
     }
 
     private void conditionallyShowSnackBar() {
@@ -778,9 +858,50 @@ public class WeatherForecastActivity
 
             snackbar.setAction(R.string.action_change, new LocationProviderSettingListener());
             snackbar.show();
-        } else {
-            dismissSnackBar();
         }
+    }
+
+    private String getMoonEmoji(double phaseDegrees) {
+        // map -180..180 (new moon at ±180, full moon at 0) to 0..1 (new moon at 0, full at 0.5)
+        double cycle = ((phaseDegrees + 180.0) % 360.0 + 360.0) % 360.0 / 360.0;
+
+        if (cycle < 0.03 || cycle > 0.97) {
+            return "🌑";
+        } else if (cycle < 0.22) {
+            return "🌒"; // waxing crescent
+        } else if (cycle < 0.28) {
+            return "🌓"; // first quarter
+        } else if (cycle < 0.47) {
+            return "🌔"; // waxing gibbous
+        } else if (cycle < 0.53) {
+            return "🌕";
+        } else if (cycle < 0.72) {
+            return "🌖"; // waning gibbous
+        } else if (cycle < 0.78) {
+            return "🌗"; // last quarter
+        } else {
+            return "🌘"; // waning crescent
+        }
+    }
+
+    // LQI: Luftqualitätsindex (Air Quality Index)
+    private record LqiStyle(int color, int textResId) {}
+
+    private LqiStyle getLqiStyle(int lqiIndex) {
+        return switch (lqiIndex) {
+            case AirQualityData.LQI_VERY_GOOD ->
+                    new LqiStyle(Color.parseColor("#00B0F0"), R.string.air_quality_lqi_1);
+            case AirQualityData.LQI_GOOD ->
+                    new LqiStyle(Color.parseColor("#4DAF4A"), R.string.air_quality_lqi_2);
+            case AirQualityData.LQI_MODERATE ->
+                    new LqiStyle(Color.parseColor("#F1C40F"), R.string.air_quality_lqi_3);
+            case AirQualityData.LQI_POOR ->
+                    new LqiStyle(Color.parseColor("#E67E22"), R.string.air_quality_lqi_4);
+            case AirQualityData.LQI_VERY_POOR ->
+                    new LqiStyle(Color.parseColor("#E74C3C"), R.string.air_quality_lqi_5);
+            default ->
+                    new LqiStyle(Color.GRAY, R.string.air_quality_lqi_unknown);
+        };
     }
 
     void dismissSnackBar() {

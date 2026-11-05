@@ -54,7 +54,7 @@ public class BrightSkyApi {
         mContext = new WeakReference<>(context);
         String responseText = fetchWeatherData(context, city);
         if (responseText == null || responseText.isEmpty()) {
-            return new WeatherEntry();
+            return null;
         }
         Data data = new Gson().fromJson(responseText, Data.class);
         long now = System.currentTimeMillis();
@@ -63,11 +63,7 @@ public class BrightSkyApi {
             Source source = data.getSourceById(weather.source_id);
             return weather.toWeatherEntry(source, city, requestTimestamp);
         } else {
-            WeatherEntry entry = new WeatherEntry();
-            entry.lat = (float) city.lat;
-            entry.lon = (float) city.lon;
-            entry.cityName = city.name;
-            return entry;
+            return null;
         }
     }
 

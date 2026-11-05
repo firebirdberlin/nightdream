@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
@@ -36,19 +37,15 @@ import androidx.preference.PreferenceViewHolder;
 import java.util.Calendar;
 import java.util.Date;
 
-
-public class TimeRangePreference
-        extends Preference
-        implements TimeRangePickerDialogFragment.Result {
+public class TimeRangePreference extends Preference {
 
     private static final String TIMERANGE = "timerange";
 
-    class SimpleTime {
-
+    static class SimpleTime {
         public int hour = 0;
         public int min = 0;
 
-        SimpleTime(long millis){
+        SimpleTime(long millis) {
             if (millis < 0L) return;
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(millis);
@@ -56,7 +53,7 @@ public class TimeRangePreference
             min = calendar.get(Calendar.MINUTE);
         }
 
-        SimpleTime(int minutes){
+        SimpleTime(int minutes) {
             this.hour = minutes / 60;
             this.min = minutes % 60;
         }
@@ -77,7 +74,7 @@ public class TimeRangePreference
             cal.set(Calendar.MILLISECOND, 0);
 
             Calendar now = Calendar.getInstance();
-            if ( cal.before(now) ) {
+            if (cal.before(now)) {
                 cal.add(Calendar.DATE, 1);
             }
 
@@ -85,7 +82,7 @@ public class TimeRangePreference
         }
     }
 
-    private Context mContext;
+    private final Context mContext;
     private SimpleTime startTime;
     private SimpleTime endTime;
     private String keyStart;
@@ -93,11 +90,9 @@ public class TimeRangePreference
     private String keyStartInMinutes;
     private String keyEndInMinutes;
 
-
     public TimeRangePreference(Context context) {
         super(context, null);
         mContext = context;
-
     }
 
     public TimeRangePreference(Context context, AttributeSet attrs) {
@@ -113,8 +108,8 @@ public class TimeRangePreference
     }
 
     private void setValuesFromXml(AttributeSet attrs) {
-        String key_suffix_start = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_start", "_start");
-        String key_suffix_end = getAttributeStringValue(attrs, TIMERANGE, "key_suffix_end", "_end");
+        String key_suffix_start = getAttributeStringValue(attrs, "key_suffix_start", "_start");
+        String key_suffix_end = getAttributeStringValue(attrs, "key_suffix_end", "_end");
 
         keyStart = getKey() + key_suffix_start;
         keyEnd = getKey() + key_suffix_end;
@@ -125,16 +120,12 @@ public class TimeRangePreference
     }
 
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-        // on android <= 6 there is still some icon space reserved. We need to manually hide
-        // this space.
         View view = holder.itemView;
-        if(view instanceof ViewGroup){
-            ViewGroup vg = (ViewGroup) view;
-            View currView;
-            for(int i = 0; i< vg.getChildCount(); i++){
-                currView = vg.getChildAt(i);
+        if (view instanceof ViewGroup vg) {
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                View currView = vg.getChildAt(i);
                 if (currView instanceof LinearLayout) {
                     currView.setVisibility(View.GONE);
                 }
@@ -143,16 +134,38 @@ public class TimeRangePreference
     }
 
     @Override
-    protected void onAttachedToHierarchy(PreferenceManager preferenceManager) {
+    protected void onAttachedToHierarchy(@NonNull PreferenceManager preferenceManager) {
         super.onAttachedToHierarchy(preferenceManager);
         setSummary(getSummary());
+        registerResultListener();
     }
 
-    private static String getAttributeStringValue(AttributeSet attrs, String namespace,
-                                                  String name, String defaultValue) {
-        String value = attrs.getAttributeValue(namespace, name);
-        if (value == null) value = defaultValue;
+    private String getRequestKey() {
+        return "TimeRangePickerDialogFragment.result." + getKey();
+    }
 
+    private void registerResultListener() {
+        if (getContext() instanceof AppCompatActivity activity && getKey() != null) {
+            activity.getSupportFragmentManager().setFragmentResultListener(
+                    getRequestKey(),
+                    activity,
+                    (requestKey, result) -> {
+                        int hStart = result.getInt(TimeRangePickerDialogFragment.KEY_HOUR_START);
+                        int mStart = result.getInt(TimeRangePickerDialogFragment.KEY_MINUTE_START);
+                        int hEnd = result.getInt(TimeRangePickerDialogFragment.KEY_HOUR_END);
+                        int mEnd = result.getInt(TimeRangePickerDialogFragment.KEY_MINUTE_END);
+                        onTimeRangeSet(hStart, mStart, hEnd, mEnd);
+                    }
+            );
+        }
+    }
+
+    private static String getAttributeStringValue(AttributeSet attrs, String name,
+                                                  String defaultValue) {
+        String value = attrs.getAttributeValue(TIMERANGE, name);
+        if (value == null) {
+            value = defaultValue;
+        }
         return value;
     }
 
@@ -162,19 +175,28 @@ public class TimeRangePreference
     }
 
     private void showTimeRangePickerDialog() {
+        if (!(getContext() instanceof AppCompatActivity)) {
+            return;
+        }
+        registerResultListener();
         FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
-        TimeRangePickerDialogFragment dialog = new TimeRangePickerDialogFragment(this);
-        dialog.show(fm, "time_range_picker");
-        if (startTime != null) {
-            dialog.setStartTime(startTime.hour, startTime.min);
-        }
-        if (endTime != null) {
-            dialog.setEndTime(endTime.hour, endTime.min);
-        }
+        int startH = startTime != null ? startTime.hour : 0;
+        int startM = startTime != null ? startTime.min : 0;
+        int endH = endTime != null ? endTime.hour : 0;
+        int endM = endTime != null ? endTime.min : 0;
+
+        TimeRangePickerDialogFragment dialog =
+                TimeRangePickerDialogFragment.newInstance(getRequestKey(), startH, startM, endH, endM);
+        dialog.show(fm, "time_range_picker_" + getKey());
     }
 
-    @Override
     public void onTimeRangeSet(int hourStart, int minuteStart, int hourEnd, int minuteEnd) {
+        if (startTime == null) {
+            startTime = new SimpleTime(0);
+        }
+        if (endTime == null) {
+            endTime = new SimpleTime(0);
+        }
         updateTime(startTime, hourStart, minuteStart);
         updateTime(endTime, hourEnd, minuteEnd);
     }
@@ -185,13 +207,16 @@ public class TimeRangePreference
         setSummary(getSummary());
         if (callChangeListener(time.getMillis())) {
             SharedPreferences sharedPreferences = getSharedPreferences();
-            SharedPreferences.Editor prefEditor = sharedPreferences.edit();
-            prefEditor.putInt(keyStartInMinutes, startTime.toMinutes());
-            prefEditor.putInt(keyEndInMinutes, endTime.toMinutes());
-            prefEditor.apply();
-            notifyChanged();
+            if (sharedPreferences != null) {
+                SharedPreferences.Editor prefEditor = sharedPreferences.edit();
+                prefEditor.putInt(keyStartInMinutes, startTime.toMinutes());
+                prefEditor.putInt(keyEndInMinutes, endTime.toMinutes());
+                prefEditor.apply();
+                notifyChanged();
+            }
         }
     }
+
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return (a.getString(index));
@@ -200,18 +225,20 @@ public class TimeRangePreference
     @Override
     protected void onSetInitialValue(Object defaultValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        int startInMinutes = sharedPreferences.getInt(keyStartInMinutes, -1);
-        int endInMinutes = sharedPreferences.getInt(keyEndInMinutes, -1);
+        if (sharedPreferences != null) {
+            int startInMinutes = sharedPreferences.getInt(keyStartInMinutes, -1);
+            int endInMinutes = sharedPreferences.getInt(keyEndInMinutes, -1);
 
-        if (startInMinutes > -1 && endInMinutes > -1) {
-            startTime = new SimpleTime(startInMinutes);
-            endTime = new SimpleTime(endInMinutes);
-        } else {
-            long startInMillis = sharedPreferences.getLong(keyStart, -1L);
-            long endInMillis = sharedPreferences.getLong(keyEnd, -1L);
+            if (startInMinutes > -1 && endInMinutes > -1) {
+                startTime = new SimpleTime(startInMinutes);
+                endTime = new SimpleTime(endInMinutes);
+            } else {
+                long startInMillis = sharedPreferences.getLong(keyStart, -1L);
+                long endInMillis = sharedPreferences.getLong(keyEnd, -1L);
 
-            startTime = new SimpleTime(startInMillis);
-            endTime = new SimpleTime(endInMillis);
+                startTime = new SimpleTime(startInMillis);
+                endTime = new SimpleTime(endInMillis);
+            }
         }
         setSummary(getSummary());
     }
@@ -228,5 +255,4 @@ public class TimeRangePreference
         return DateFormat.getTimeFormat(mContext).format(new Date(start)) + " -- " +
                DateFormat.getTimeFormat(mContext).format(new Date(end));
     }
-
 }
