@@ -19,29 +19,24 @@
 package com.firebirdberlin.nightdream;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherForecastTabAdapter extends FragmentStatePagerAdapter {
+public class WeatherForecastTabAdapter extends FragmentStateAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    public WeatherForecastTabAdapter(@NonNull FragmentManager fm, int behavior) {
-        super(fm, behavior);
-    }
-
-    public WeatherForecastTabAdapter(@NonNull FragmentManager fm) {
-        super(fm);
+    public WeatherForecastTabAdapter(@NonNull FragmentActivity fragmentActivity) {
+        super(fragmentActivity);
     }
 
     @NonNull
     @Override
-    public Fragment getItem(int position) {
+    public Fragment createFragment(int position) {
         return mFragmentList.get(position);
     }
 
@@ -50,14 +45,16 @@ public class WeatherForecastTabAdapter extends FragmentStatePagerAdapter {
         mFragmentTitleList.add(title);
     }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
+    public String getTitle(int position) {
         return mFragmentTitleList.get(position);
     }
 
+    public Fragment getFragment(int position) {
+        return mFragmentList.get(position);
+    }
+
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return mFragmentList.size();
     }
 }
