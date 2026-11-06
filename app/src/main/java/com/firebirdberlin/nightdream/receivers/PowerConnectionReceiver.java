@@ -30,7 +30,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
-import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -48,8 +47,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class PowerConnectionReceiver extends BroadcastReceiver {
-    private static String TAG = "NightDream.PowerConnectionReceiver";
-    private static int PENDING_INTENT_START_APP = 0;
+    private static final String TAG = PowerConnectionReceiver.class.getSimpleName();
 
     public static PowerConnectionReceiver register(Context ctx) {
         IntentFilter filter = new IntentFilter();
@@ -100,6 +98,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     static public void schedule(Context context) {
         Intent alarmIntent = new Intent(context, PowerConnectionReceiver.class);
+        int PENDING_INTENT_START_APP = 0;
         PendingIntent pendingIntent = Utility.getImmutableBroadcast(
                 context, PENDING_INTENT_START_APP, alarmIntent
         );
@@ -169,15 +168,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         action = (action == null) ? "none" : action;
         Log.d(TAG, action);
 
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-        wakelock.acquire();
-
         conditionallyStartApp(context, action);
-
-        if (wakelock.isHeld()) {
-           wakelock.release();
-        }
     }
 
 }
