@@ -20,6 +20,7 @@ package com.firebirdberlin.nightdream.models;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.util.Log;
 
 import java.util.Hashtable;
@@ -48,7 +49,8 @@ public class FontCache {
 
                     try {
                         if (assetName.startsWith("file://")) {
-                            tf = Typeface.createFromFile(assetName.replace("file://", ""));
+                            String filePath = Uri.parse(assetName).getPath();
+                            tf = Typeface.createFromFile(filePath);
                         } else {
                             tf = Typeface.createFromAsset(context.getAssets(), assetName);
                         }
