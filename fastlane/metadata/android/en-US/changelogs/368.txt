@@ -1,0 +1,5 @@
+<ul>
+    <li>✨ New: Added moonrise & moonset times and background burn-in protection</li>
+    <li>🚀 Improvements: Enhanced time picker and alarm deletion safety</li>
+    <li>🛠️ Fixes: Location display in weather forecast with active GPS</li>
+</ul>
