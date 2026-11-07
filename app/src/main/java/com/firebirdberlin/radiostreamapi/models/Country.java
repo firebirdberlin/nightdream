@@ -18,6 +18,8 @@
 
 package com.firebirdberlin.radiostreamapi.models;
 
+import androidx.annotation.NonNull;
+
 import java.util.Locale;
 
 public class Country {
@@ -28,10 +30,11 @@ public class Country {
     public String subRegion;
 
     public void setNameFromIsoCode() {
-        Locale loc = new Locale("", countryCode);
+        Locale loc = new Locale.Builder().setRegion(countryCode).build();
         name = loc.getDisplayCountry();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Country{" +
