@@ -38,6 +38,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -69,6 +71,34 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     FontAdapter arrayAdapter;
     Uri selectedUri;
     boolean isPurchased = false;
+
+    private final ActivityResultLauncher<Intent> selectFontLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    if (DIRECTORY == null) return;
+                    Uri uri = data.getData();
+                    if (uri == null) return;
+
+                    ContentResolver contentResolver = requireActivity().getContentResolver();
+                    try (Cursor returnCursor = contentResolver.query(uri, null, null, null, null)) {
+                        if (returnCursor == null) return;
+
+                        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (!returnCursor.moveToFirst()) return;
+
+                        String fileName = returnCursor.getString(nameIndex);
+
+                        if (extensionIs(fileName, ".zip")) {
+                            extractZipFile(uri);
+                        } else if (extensionIs(fileName, ".ttf", ".otf")) {
+                            copyFileToDirectory(uri, fileName);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error processing selected font file", e);
+                    }
+                }
+            });
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
         FileChannel inChannel = src.getChannel();
@@ -212,7 +242,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     private void selectCustomFont() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("application/*");
-        startActivityForResult(intent, 1);
+        selectFontLauncher.launch(intent);
     }
 
     private void initListView() {
@@ -261,34 +291,6 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     private FileUri getFileUri(String file, int resId) {
         Uri uri = Uri.parse("file:///android_asset/fonts/" + file);
         return new FileUri(uri, getUserFriendlyFileName(file));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 1) {
-
-            if (resultCode == RESULT_OK) {
-                if (DIRECTORY == null) return;
-                Uri uri = data.getData();
-                ContentResolver contentResolver = getActivity().getContentResolver();
-                Cursor returnCursor = contentResolver.query(uri, null, null, null, null);
-                if (returnCursor == null) return;
-
-                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                returnCursor.moveToFirst();
-
-                String fileName = returnCursor.getString(nameIndex);
-                returnCursor.close();
-
-                if (extensionIs(fileName, ".zip")) {
-                    extractZipFile(uri);
-                } else if (extensionIs(fileName, ".ttf", ".otf")) {
-                    copyFileToDirectory(uri, fileName);
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void copyFileToDirectory(Uri uri, String fileName) {
