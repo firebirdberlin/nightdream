@@ -191,8 +191,7 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     }
 
     private boolean hasPermission(String permission) {
-        return Build.VERSION.SDK_INT < 23 ||
-                (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+        return getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void selectCustomTone() {
@@ -206,7 +205,7 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
         ArrayList<FileUri> sounds = getAlarmSounds();
 
         final File[] file_list = listFiles();
-        if (file_list != null && file_list.length > 0) {
+        if (file_list != null) {
             for (File file : file_list) {
                 sounds.add(new FileUri(file));
             }
