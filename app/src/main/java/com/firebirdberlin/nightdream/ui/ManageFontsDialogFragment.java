@@ -58,7 +58,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ManageFontsDialogFragment extends AppCompatDialogFragment {
-    final static String TAG = "ManageFontsDialog";
+    private static final String TAG = ManageFontsDialogFragment.class.getSimpleName();
     final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     protected File DIRECTORY = null;
 
@@ -196,19 +196,15 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     }
 
     private boolean hasPermission(String permission) {
-        return Build.VERSION.SDK_INT < 23 ||
-                (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+        return getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    selectCustomFont();
-                }
+        if (requestCode == PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                selectCustomFont();
             }
         }
     }
@@ -304,7 +300,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         try {
             isCreated = dstFile.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating destination file", e);
             return;
         }
         if (!isCreated) {
@@ -317,14 +313,14 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
             src = (FileInputStream) contentResolver.openInputStream(uri);
             dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "File not found during copy", e);
             return;
         }
 
         try {
             copyFile(src, dst);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error copying file", e);
             return;
         }
 
@@ -372,7 +368,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
 
             zis.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error extracting zip file", e);
             return false;
         }
 

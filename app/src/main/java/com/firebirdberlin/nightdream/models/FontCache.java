@@ -55,7 +55,7 @@ public class FontCache {
                             tf = Typeface.createFromAsset(context.getAssets(), assetName);
                         }
                     } catch (RuntimeException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "Error loading font: " + name, e);
                         return null;
                     }
                     Log.d(TAG, "cache put: cacheKey=" + cacheKey + " value=" +
