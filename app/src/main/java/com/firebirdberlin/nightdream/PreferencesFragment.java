@@ -1427,7 +1427,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat {
         }
         if (particleEffectPref != null) {
             ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.SNOW);
-            particleEffectPref.setValue(String.valueOf(particleEffect.getValue()));
+            particleEffectPref.setValue(ParticleEffect.toPreferenceValue(particleEffect));
         }
         if (animOnlyChargingPref != null) {
             animOnlyChargingPref.setChecked(prefs.getBoolean("theme_animation_only_charging", false));

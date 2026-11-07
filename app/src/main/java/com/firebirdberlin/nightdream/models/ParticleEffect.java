@@ -38,48 +38,97 @@ public enum ParticleEffect {
     }
 
     @NonNull
+    public static String toPreferenceValue(@Nullable ParticleEffect effect) {
+        return String.valueOf((effect != null ? effect : SNOW).getValue());
+    }
+
+    @NonNull
     public static ParticleEffect fromValue(int value) {
         return fromValue(value, SNOW);
     }
 
     @NonNull
-    public static ParticleEffect fromValue(int value, @NonNull ParticleEffect defaultValue) {
+    public static ParticleEffect fromValue(int value, @Nullable ParticleEffect defaultValue) {
+        if (value <= 0) {
+            return SNOW;
+        }
+        ParticleEffect fallback = defaultValue != null ? defaultValue : SNOW;
         for (ParticleEffect effect : values()) {
             if (effect.value == value) {
                 return effect;
             }
         }
-        return defaultValue;
+        return fallback;
     }
 
     @NonNull
-    public static ParticleEffect fromValue(@Nullable String valueStr, @NonNull ParticleEffect defaultValue) {
+    public static ParticleEffect fromValue(@Nullable String valueStr,
+                                            @Nullable ParticleEffect defaultValue) {
+        ParticleEffect fallback = defaultValue != null ? defaultValue : SNOW;
         if (valueStr != null) {
+            if ("0".equals(valueStr) || "none".equalsIgnoreCase(valueStr)) {
+                return SNOW;
+            }
             try {
                 int val = Integer.parseInt(valueStr);
-                return fromValue(val, defaultValue);
+                return fromValue(val, fallback);
             } catch (NumberFormatException ignored) {
             }
         }
-        return defaultValue;
+        return fallback;
     }
 
     @NonNull
-    public static ParticleEffect fromPreference(@Nullable SharedPreferences prefs, @NonNull String key, @NonNull ParticleEffect defaultValue) {
-        if (prefs == null) return defaultValue;
+    public static ParticleEffect fromPreference(@Nullable SharedPreferences prefs,
+                                                @NonNull String key,
+                                                @Nullable ParticleEffect defaultValue) {
+        ParticleEffect fallback = defaultValue != null ? defaultValue : SNOW;
+        if (prefs == null) return fallback;
+
+        String str = null;
         try {
-            String str = prefs.getString(key, null);
-            if (str != null) {
-                return fromValue(str, defaultValue);
-            }
+            str = prefs.getString(key, null);
         } catch (ClassCastException e) {
             try {
-                int val = prefs.getInt(key, defaultValue.getValue());
-                return fromValue(val, defaultValue);
+                int val = prefs.getInt(key, -1);
+                if (val != -1) {
+                    str = String.valueOf(val);
+                }
             } catch (Exception ignored) {
             }
         } catch (Exception ignored) {
         }
-        return defaultValue;
+
+        if (str != null) {
+            ParticleEffect effect = fromValue(str, fallback);
+            if (isLegacyOrInvalid(str)) {
+                try {
+                    prefs.edit().putString(key, toPreferenceValue(SNOW)).apply();
+                } catch (Exception ignored) {
+                }
+                return SNOW;
+            }
+            return effect;
+        }
+
+        return fallback;
+    }
+
+    public static boolean isLegacyOrInvalid(@Nullable String valueStr) {
+        if (valueStr == null) return false;
+        if ("0".equals(valueStr) || "none".equalsIgnoreCase(valueStr)) {
+            return true;
+        }
+        try {
+            int val = Integer.parseInt(valueStr);
+            for (ParticleEffect effect : values()) {
+                if (effect.value == val) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (NumberFormatException ignored) {
+        }
+        return true;
     }
 }

@@ -94,7 +94,7 @@ public class ThemePreset {
         this.drawableResName = drawableResName;
         this.clockBackgroundTransparency = clockBackgroundTransparency;
         this.fontPath = fontPath;
-        this.particleEffect = particleEffect;
+        this.particleEffect = particleEffect != null ? particleEffect : ParticleEffect.SNOW;
         this.starMaxYRatio = starMaxYRatio;
         this.starSizeScale = starSizeScale;
         this.starCount = starCount;

@@ -44,4 +44,34 @@ public class ParticleEffectTest {
         String nullStr = null;
         Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue(nullStr, ParticleEffect.SNOW));
     }
+
+    @Test
+    public void testLegacyNoneValuesConvertedToSnow() {
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue(0, ParticleEffect.GOLDEN_STARS));
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("0", ParticleEffect.GOLDEN_STARS));
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("none", ParticleEffect.GOLDEN_STARS));
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("NONE", ParticleEffect.GOLDEN_STARS));
+    }
+
+    @Test
+    public void testToPreferenceValue() {
+        Assert.assertEquals("1", ParticleEffect.toPreferenceValue(ParticleEffect.SNOW));
+        Assert.assertEquals("2", ParticleEffect.toPreferenceValue(ParticleEffect.GOLDEN_STARS));
+        Assert.assertEquals("1", ParticleEffect.toPreferenceValue(null));
+    }
+
+    @Test
+    public void testIsLegacyOrInvalid() {
+        Assert.assertTrue(ParticleEffect.isLegacyOrInvalid("0"));
+        Assert.assertTrue(ParticleEffect.isLegacyOrInvalid("none"));
+        Assert.assertTrue(ParticleEffect.isLegacyOrInvalid("invalid"));
+        Assert.assertFalse(ParticleEffect.isLegacyOrInvalid("1"));
+        Assert.assertFalse(ParticleEffect.isLegacyOrInvalid("2"));
+    }
+
+    @Test
+    public void testFromValueNullDefaultFallback() {
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue(99, null));
+        Assert.assertEquals(ParticleEffect.SNOW, ParticleEffect.fromValue("invalid", null));
+    }
 }

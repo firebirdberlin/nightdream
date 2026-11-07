@@ -232,7 +232,7 @@ public class ThemePresetManager {
                 editor.remove("font");
                 editor.putInt("clockBackgroundTransparency", 100);
                 editor.putBoolean("theme_animation_enabled", false);
-                editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.SNOW.getValue()));
+                editor.putString("theme_particle_effect", ParticleEffect.toPreferenceValue(ParticleEffect.SNOW));
             }
             editor.putString(PREF_ACTIVE_PRESET, ThemePreset.PRESET_NONE);
         } else {
@@ -270,7 +270,7 @@ public class ThemePresetManager {
             editor.remove("font");
             editor.putInt("clockBackgroundTransparency", 100);
             editor.putBoolean("theme_animation_enabled", false);
-            editor.putString("theme_particle_effect", String.valueOf(ParticleEffect.SNOW.getValue()));
+            editor.putString("theme_particle_effect", ParticleEffect.toPreferenceValue(ParticleEffect.SNOW));
         } else {
             ThemePreset preset = getPreset(activeThemeId);
             if (preset != null) {
@@ -321,7 +321,7 @@ public class ThemePresetManager {
         editor.putInt("clockBackgroundTransparency", preset.clockBackgroundTransparency);
         editor.putBoolean("autoAccentColor", false);
         editor.putBoolean("theme_animation_enabled", true);
-        editor.putString("theme_particle_effect", String.valueOf(preset.particleEffect.getValue()));
+        editor.putString("theme_particle_effect", ParticleEffect.toPreferenceValue(preset.particleEffect));
 
         if (!Utility.isEmpty(preset.fontPath)) {
             editor.putString("font", preset.fontPath);
@@ -593,7 +593,11 @@ public class ThemePresetManager {
                         Log.d(TAG, "restorePreferencesFromJson() - key: " + key + " type: " + type + " value: " + valueObj);
                     }
 
-                    if ("boolean".equals(type) || valueObj instanceof Boolean) {
+                    if ("theme_particle_effect".equals(key)) {
+                        String rawVal = String.valueOf(valueObj);
+                        ParticleEffect effect = ParticleEffect.fromValue(rawVal, ParticleEffect.SNOW);
+                        editor.putString(key, ParticleEffect.toPreferenceValue(effect));
+                    } else if ("boolean".equals(type) || valueObj instanceof Boolean) {
                         editor.putBoolean(key, valuesObj.getBoolean(key));
                     } else if ("int".equals(type) || (valueObj instanceof Integer && type == null)) {
                         editor.putInt(key, valuesObj.getInt(key));
