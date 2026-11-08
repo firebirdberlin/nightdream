@@ -49,7 +49,7 @@ import com.google.android.flexbox.FlexboxLayout;
 
 public class SidePanel extends FlexboxLayout {
     private static final String TAG = "SidePanel";
-    private final int transparentColor = getResources().getColor(android.R.color.transparent);
+    private final int transparentColor = ContextCompat.getColor(getContext(), android.R.color.transparent);
     private final Handler handler = new Handler(Looper.getMainLooper());
     private int mIconBackground;
     private Interpolator mAnimationInterpolator;
