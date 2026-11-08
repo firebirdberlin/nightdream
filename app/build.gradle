@@ -168,10 +168,10 @@ tasks.register('jacocoTestReport', JacocoReport) {
             'android/**/*'
     ]
 
-    def fullClasses = fileTree(
-            dir: "${layout.buildDirectory.get().asFile}/intermediates/javac/fullDebug/compileFullDebugJavaWithJavac/classes",
-            excludes: fileFilter
-    )
+    def fullClasses = files([
+            fileTree(dir: "${layout.buildDirectory.get().asFile}/intermediates/javac/fullDebug", excludes: fileFilter),
+            fileTree(dir: "${layout.buildDirectory.get().asFile}/intermediates/classes/fullDebug", excludes: fileFilter)
+    ])
 
     def mainSrc = "${project.projectDir}/src/main/java"
     def fullSrc = "${project.projectDir}/src/full/java"

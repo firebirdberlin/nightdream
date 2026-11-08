@@ -241,7 +241,12 @@ public class SimpleTime {
                 Calendar cal = null;
                 if (firstEventTime != null) {
                     cal = initCalendar(firstEventTime);
-                    cal.set(Calendar.DAY_OF_WEEK, day);
+                    int currentDayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                    int daysToAdd = day - currentDayOfWeek;
+                    if (daysToAdd < 0) {
+                        daysToAdd += 7;
+                    }
+                    cal.add(Calendar.DATE, daysToAdd);
                     if (!cal.after(firstEventTime)) {
                         cal.add(Calendar.DATE, 7);
                     }
@@ -253,7 +258,12 @@ public class SimpleTime {
 
                 if (cal == null) {
                     cal = initCalendar(reference);
-                    cal.set(Calendar.DAY_OF_WEEK, day);
+                    int currentDayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                    int daysToAdd = day - currentDayOfWeek;
+                    if (daysToAdd < 0) {
+                        daysToAdd += 7;
+                    }
+                    cal.add(Calendar.DATE, daysToAdd);
                     // Usually the reference date refers to 'now'. Events shall not be raised in
                     // the past
                     if (cal.before(reference)) {
