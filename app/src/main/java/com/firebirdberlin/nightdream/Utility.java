@@ -520,6 +520,11 @@ public class Utility {
         return false;
     }
 
+    public static boolean isGermany(@Nullable Locale locale) {
+        if (locale == null) return false;
+        return "DE".equalsIgnoreCase(locale.getCountry());
+    }
+
     public static boolean isEmpty(String string) {
         return (string == null || string.isEmpty());
     }

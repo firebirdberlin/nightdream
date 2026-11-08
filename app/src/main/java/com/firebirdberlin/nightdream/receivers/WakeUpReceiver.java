@@ -180,7 +180,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
 
 
         NotificationCompat.WearableExtender wearableExtender =
-                new NotificationCompat.WearableExtender().setHintHideIcon(true);
+                new NotificationCompat.WearableExtender();
 
         Intent stopIntent = AlarmHandlerService.getStopIntent(context);
         PendingIntent pStopIntent = Utility.getImmutableBroadcast(

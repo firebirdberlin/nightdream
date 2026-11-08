@@ -154,4 +154,14 @@ public class UtilityTest {
             Assert.assertTrue(interval.end > interval.start);
         }
     }
+
+    @Test
+    public void testIsGermany() {
+        Assert.assertFalse(Utility.isGermany(null));
+        Assert.assertTrue(Utility.isGermany(Locale.GERMANY));
+        Assert.assertTrue(Utility.isGermany(Locale.forLanguageTag("de-DE")));
+        Assert.assertTrue(Utility.isGermany(Locale.forLanguageTag("en-DE")));
+        Assert.assertFalse(Utility.isGermany(Locale.US));
+        Assert.assertFalse(Utility.isGermany(Locale.GERMAN));
+    }
 }
