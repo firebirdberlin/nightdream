@@ -21,11 +21,15 @@ package com.firebirdberlin.openweathermapapi;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.util.Log;
 
-import com.firebirdberlin.nightdream.util.HttpReader;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.firebirdberlin.nightdream.BuildConfig;
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.util.HttpReader;
 import com.firebirdberlin.openweathermapapi.models.City;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -36,10 +40,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class GeocoderApi {
 
-    private static final String TAG = "GeocoderApi";
+    private static final String TAG = GeocoderApi.class.getSimpleName();
     private static final long CACHE_EXPIRATION_30_DAYS = 1000L * 60 * 60 * 24 * 30; // 30 days
 
     /**
@@ -68,34 +74,72 @@ public class GeocoderApi {
         List<City> cities = new ArrayList<>();
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
-        try {
-            List<Address> addresses = geocoder.getFromLocationName(query, 10); // Get up to 10 results
-
-            if (addresses != null) {
-                for (Address address : addresses) {
-                    City city = new City();
-                    city.name = address.getLocality(); // Use getLocality for city name
-                    city.countryCode = address.getCountryCode();
-                    city.countryName = address.getCountryName();
-                    city.postalCode = address.getPostalCode();
-                    city.lat = address.getLatitude();
-                    city.lon = address.getLongitude();
-                    // Note: Geocoder.getFromLocationName does not provide a city ID like OpenWeatherMap.
-                    // We'll leave city.id as its default value (likely 0 or null depending on City class definition).
-                    cities.add(city);
+        List<Address> addresses;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            CountDownLatch latch = new CountDownLatch(1);
+            List<Address> resultList = new ArrayList<>();
+            geocoder.getFromLocationName(query, 10, new Geocoder.GeocodeListener() {
+                @Override
+                public void onGeocode(@NonNull List<Address> addressesList) {
+                    resultList.addAll(addressesList);
+                    latch.countDown();
                 }
+
+                @Override
+                public void onError(@Nullable String errorMessage) {
+                    Log.e(TAG, "Error finding locations for query: " + query + ", "
+                            + errorMessage);
+                    latch.countDown();
+                }
+            });
+            try {
+                if (!latch.await(5, TimeUnit.SECONDS)) {
+                    Log.w(TAG, "Geocoder timed out for query: " + query);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.e(TAG, "Geocoder interrupted for query: " + query, e);
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Error finding locations for query: " + query, e);
+            addresses = resultList;
+        } else {
+            addresses = getFromLocationNameLegacy(geocoder, query, 10);
+        }
+
+        if (!Utility.isEmpty(addresses)) {
+            for (Address address : addresses) {
+                City city = new City();
+                city.name = address.getLocality(); // Use getLocality for city name
+                city.countryCode = address.getCountryCode();
+                city.countryName = address.getCountryName();
+                city.postalCode = address.getPostalCode();
+                city.lat = address.getLatitude();
+                city.lon = address.getLongitude();
+                // Note: Geocoder.getFromLocationName does not provide a city ID like
+                // OpenWeatherMap. We'll leave city.id as its default value.
+                cities.add(city);
+            }
         }
 
         return cities;
     }
 
+    @SuppressWarnings("deprecation")
+    private static List<Address> getFromLocationNameLegacy(Geocoder geocoder, String query,
+                                                          int maxResults) {
+        try {
+            return geocoder.getFromLocationName(query, maxResults);
+        } catch (IOException e) {
+            Log.e(TAG, "Error finding locations for query: " + query, e);
+            return null;
+        }
+    }
+
     /**
-     * Finds cities based on a query string using the OpenStreetMap Nominatim API and maps them to City objects.
+     * Finds cities based on a query string using the OpenStreetMap Nominatim API and maps them to
+     * City objects.
      *
-     * @param context The application context (not directly used for Nominatim, but kept for signature consistency).
+     * @param context The application context (not directly used for Nominatim, but kept for
+     *                signature consistency).
      * @param query   The city name or part of it to search for.
      * @return A list of City objects, or an empty list if no cities are found or an error occurs.
      */
@@ -108,7 +152,7 @@ public class GeocoderApi {
             final String QUERY_PARAM = "q";
             final String FORMAT_PARAM = "format";
             final String LIMIT_PARAM = "limit";
-            final String ADDRESSDETAILS_PARAM = "addressdetails"; // To get more detailed address info
+            final String ADDRESSDETAILS_PARAM = "addressdetails"; // To get detailed address info
 
             String encodedQuery = URLEncoder.encode(query, "UTF-8");
             // Request address details to better extract city, country, etc.
@@ -122,7 +166,7 @@ public class GeocoderApi {
             httpReader.setCacheExpirationTimeMillis(CACHE_EXPIRATION_30_DAYS);
             String jsonResponse = httpReader.readUrl(builtUri, false);
 
-            if (jsonResponse == null || jsonResponse.isEmpty()) {
+            if (Utility.isEmpty(jsonResponse)) {
                 Log.e(TAG, "No response from Nominatim API for query: " + query);
                 return cities;
             }
@@ -142,7 +186,6 @@ public class GeocoderApi {
                 String cityName = null;
                 String postalCode = null;
 
-
                 if (jsonObject.has("address")) {
                     JsonObject addressObject = jsonObject.getAsJsonObject("address");
                     Log.i(TAG, "addressObject: " + addressObject.toString());
@@ -158,13 +201,14 @@ public class GeocoderApi {
                         cityName = addressObject.get("state").getAsString();
                     }
 
-
                     if (addressObject.has("country_code")) {
-                        countryCode = addressObject.get("country_code").getAsString().toUpperCase(Locale.ROOT); // Use Locale.ROOT for consistent upper-casing
+                        countryCode = addressObject.get("country_code").getAsString()
+                                .toUpperCase(Locale.ROOT);
                     }
                     if (addressObject.has("country")) {
                         countryName = addressObject.get("country").getAsString();
-                    }                   if (addressObject.has("postcode")) {
+                    }
+                    if (addressObject.has("postcode")) {
                         postalCode = addressObject.get("postcode").getAsString();
                     }
                 }
@@ -188,8 +232,7 @@ public class GeocoderApi {
                 city.countryName = countryName;
                 city.postalCode = postalCode;
 
-                // Add to list only if a city name could be determined and it's not just a country or region
-                // A basic check to ensure we're getting something city-like and coordinates are not default.
+                // Add to list only if a city name could be determined and coordinates are valid
                 if (!Utility.isEmpty(city.name) && city.lat != 0.0 && city.lon != 0.0) {
                     cities.add(city);
                 }
@@ -207,7 +250,8 @@ public class GeocoderApi {
      * @param context The application context.
      * @param lat     Latitude of the location.
      * @param lon     Longitude of the location.
-     * @return A City object with available details, or null if no address is found or an error occurs.
+     * @return A City object with available details, or null if no address is found or an error
+     *         occurs.
      */
     public static City findCityByCoordinates(Context context, double lat, double lon) {
         if ("noGms".equals(BuildConfig.FLAVOR)) {
@@ -215,13 +259,40 @@ public class GeocoderApi {
         } else {
             Geocoder geocoder = new Geocoder(context, Locale.getDefault());
             Address address = null;
-            try {
-                List<Address> addressList = geocoder.getFromLocation(lat, lon, 1);
-                if (addressList != null && !addressList.isEmpty()) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                CountDownLatch latch = new CountDownLatch(1);
+                List<Address> resultList = new ArrayList<>();
+                geocoder.getFromLocation(lat, lon, 1, new Geocoder.GeocodeListener() {
+                    @Override
+                    public void onGeocode(@NonNull List<Address> addressesList) {
+                        resultList.addAll(addressesList);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(@Nullable String errorMessage) {
+                        Log.e(TAG, "Error finding location for coordinates: " + lat + ", "
+                                + lon + ", " + errorMessage);
+                        latch.countDown();
+                    }
+                });
+                try {
+                    if (!latch.await(5, TimeUnit.SECONDS)) {
+                        Log.w(TAG, "Geocoder timed out for coordinates: " + lat + ", " + lon);
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    Log.e(TAG, "Geocoder interrupted for coordinates: " + lat + ", " + lon, e);
+                }
+                if (!Utility.isEmpty(resultList)) {
+                    address = resultList.get(0);
+                }
+            } else {
+                List<Address> addressList = getFromLocationLegacy(geocoder, lat, lon, 1);
+                if (!Utility.isEmpty(addressList)) {
                     address = addressList.get(0);
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "Error finding location for coordinates: " + lat + ", " + lon, e);
             }
 
             if (address != null) {
@@ -232,9 +303,19 @@ public class GeocoderApi {
                 city.postalCode = address.getPostalCode();
                 city.lat = address.getLatitude();
                 city.lon = address.getLongitude();
-                // City ID is not available from Geocoder for coordinates
                 return city;
             }
+            return null;
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static List<Address> getFromLocationLegacy(Geocoder geocoder, double lat, double lon,
+                                                       int maxResults) {
+        try {
+            return geocoder.getFromLocation(lat, lon, maxResults);
+        } catch (IOException e) {
+            Log.e(TAG, "Error finding location for coordinates: " + lat + ", " + lon, e);
             return null;
         }
     }
@@ -242,31 +323,20 @@ public class GeocoderApi {
     /**
      * Finds city details based on latitude and longitude using the OpenStreetMap Nominatim API.
      *
-     * @param context The application context (not directly used for Nominatim, but kept for signature consistency).
+     * @param context The application context (not directly used for Nominatim, but kept for
+     *                signature consistency).
      * @param lat     Latitude of the location.
      * @param lon     Longitude of the location.
-     * @return A City object with available details, or null if no address is found or an error occurs.
+     * @return A City object with available details, or null if no address is found or an error
+     *         occurs.
      */
     static City findCityByCoordinatesOSM(Context context, double lat, double lon) {
         // Construct the URL for the Nominatim reverse geocoding API
-        final String NOMINATIM_REVERSE_BASE_URL = "https://nominatim.openstreetmap.org/reverse?";
-        final String LAT_PARAM = "lat";
-        final String LON_PARAM = "lon";
-        final String FORMAT_PARAM = "format";
-        final String ADDRESSDETAILS_PARAM = "addressdetails"; // To get more detailed address info
+        String jsonResponse = getJsonResponse(context, lat, lon);
 
-        String builtUri = NOMINATIM_REVERSE_BASE_URL +
-                LAT_PARAM + "=" + lat + "&" +
-                LON_PARAM + "=" + lon + "&" +
-                FORMAT_PARAM + "=" + "json" + "&" +
-                ADDRESSDETAILS_PARAM + "=" + "1";
-
-        HttpReader httpReader = new HttpReader(context, "nominatim_reverse_cache.json");
-        httpReader.setCacheExpirationTimeMillis(CACHE_EXPIRATION_30_DAYS);
-        String jsonResponse = httpReader.readUrl(builtUri, false);
-
-        if (jsonResponse == null || jsonResponse.isEmpty()) {
-            Log.e(TAG, "No response from Nominatim Reverse API for coordinates: " + lat + ", " + lon);
+        if (Utility.isEmpty(jsonResponse)) {
+            Log.e(TAG, "No response from Nominatim Reverse API for coordinates: "
+                    + lat + ", " + lon);
             return null;
         }
 
@@ -300,7 +370,8 @@ public class GeocoderApi {
                 }
 
                 if (addressObject.has("country_code")) {
-                    countryCode = addressObject.get("country_code").getAsString().toUpperCase(Locale.ROOT);
+                    countryCode = addressObject.get("country_code").getAsString()
+                            .toUpperCase(Locale.ROOT);
                 }
                 if (addressObject.has("country")) {
                     countryName = addressObject.get("country").getAsString();
@@ -329,5 +400,23 @@ public class GeocoderApi {
             }
         }
         return null;
+    }
+
+    private static String getJsonResponse(Context context, double lat, double lon) {
+        final String NOMINATIM_REVERSE_BASE_URL = "https://nominatim.openstreetmap.org/reverse?";
+        final String LAT_PARAM = "lat";
+        final String LON_PARAM = "lon";
+        final String FORMAT_PARAM = "format";
+        final String ADDRESSDETAILS_PARAM = "addressdetails"; // To get detailed address info
+
+        String builtUri = NOMINATIM_REVERSE_BASE_URL +
+                LAT_PARAM + "=" + lat + "&" +
+                LON_PARAM + "=" + lon + "&" +
+                FORMAT_PARAM + "=" + "json" + "&" +
+                ADDRESSDETAILS_PARAM + "=" + "1";
+
+        HttpReader httpReader = new HttpReader(context, "nominatim_reverse_cache.json");
+        httpReader.setCacheExpirationTimeMillis(CACHE_EXPIRATION_30_DAYS);
+        return httpReader.readUrl(builtUri, false);
     }
 }
