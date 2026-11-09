@@ -326,9 +326,16 @@ public class Ticker extends FrameLayout {
     }
 
     private void checkAndFillGapDuringDrag() {
-        if (headlines.isEmpty()) {
+        if (Utility.isEmpty(headlines)) {
             return;
         }
+        int width = getWidth();
+        if (width <= 0) {
+            return;
+        }
+
+        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
+
         float maxRight = Float.NEGATIVE_INFINITY;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -339,11 +346,6 @@ public class Ticker extends FrameLayout {
                     maxRight = rightEdge;
                 }
             }
-        }
-
-        int width = getWidth();
-        if (width <= 0) {
-            return;
         }
 
         while (maxRight < width) {
@@ -358,22 +360,62 @@ public class Ticker extends FrameLayout {
                 break;
             }
         }
+
+        float minLeft = Float.POSITIVE_INFINITY;
+        TextView firstChild = null;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof TextView tv) {
+                float leftEdge = tv.getTranslationX();
+                if (leftEdge < minLeft) {
+                    minLeft = leftEdge;
+                    firstChild = tv;
+                }
+            }
+        }
+
+        while (minLeft > 0 && firstChild != null) {
+            int firstIndex = index;
+            if (firstChild.getTag() instanceof Integer) {
+                firstIndex = (Integer) firstChild.getTag();
+            }
+
+            int prevIndex = firstIndex;
+            int count = 0;
+            String headline = "";
+            while (headline.isEmpty() && count < headlines.size()) {
+                prevIndex = (prevIndex - 1 + headlines.size()) % headlines.size();
+                headline = headlines.get(prevIndex).trim();
+                count++;
+            }
+
+            if (headline.isEmpty()) {
+                break;
+            }
+
+            if (animationsEnabled) {
+                headline = " +++ " + headline;
+            }
+
+            TextView tv = getTextView(animationsEnabled, headline, prevIndex);
+            int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
+            float startX = minLeft - textWidth;
+            tv.setTranslationX(startX);
+            animatedViews.add(tv);
+            addView(tv, 0);
+
+            minLeft = startX;
+            firstChild = tv;
+        }
     }
 
     private void launchNextDuringDrag(float startX) {
         boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
-        String headline = "";
-        int count = 0;
-        while (headline.isEmpty() && count < headlines.size()) {
-            index = (index + 1) % headlines.size();
-            headline = headlines.get(index).trim();
-            if (animationsEnabled) {
-                headline = " +++ " + headline;
-            }
-            count++;
-        }
+        int[] outIndex = {index};
+        String headline = getNextHeadline(headlines, index, animationsEnabled, outIndex);
+        index = outIndex[0];
 
-        TextView tv = getTextView(animationsEnabled, headline);
+        TextView tv = getTextView(animationsEnabled, headline, index);
         tv.setTranslationX(startX);
         animatedViews.add(tv);
         addView(tv);
@@ -430,6 +472,8 @@ public class Ticker extends FrameLayout {
         }
         animators.clear();
 
+        checkAndFillGapDuringDrag();
+
         List<TextView> children = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
@@ -443,7 +487,9 @@ public class Ticker extends FrameLayout {
             return;
         }
 
-        boolean hasNextBeenLaunched = children.size() > 1;
+        children.sort((v1, v2) -> Float.compare(v1.getTranslationX(), v2.getTranslationX()));
+
+        TextView rightmostView = children.get(children.size() - 1);
 
         for (TextView tv : children) {
             float curX = tv.getTranslationX();
@@ -451,10 +497,12 @@ public class Ticker extends FrameLayout {
             float stage1Boundary = getWidth() - textWidth;
             float stage2Target = -textWidth;
 
+            boolean isRightmost = (tv == rightmostView);
+
             if (curX <= stage2Target) {
                 removeView(tv);
                 animatedViews.remove(tv);
-            } else if (curX > stage1Boundary) {
+            } else if (isRightmost && curX > stage1Boundary) {
                 float dist1 = curX - stage1Boundary;
                 long dur1 = Math.max(1L, (long) (dist1 * animationSpeed));
                 tv.animate()
@@ -465,6 +513,7 @@ public class Ticker extends FrameLayout {
                             @Override
                             public void onAnimationStart(@NonNull Animator animation) {
                                 animators.add(animation);
+                                animatedViews.add(tv);
                             }
 
                             @Override
@@ -496,6 +545,7 @@ public class Ticker extends FrameLayout {
                             @Override
                             public void onAnimationStart(@NonNull Animator animation) {
                                 animators.add(animation);
+                                animatedViews.add(tv);
                             }
 
                             @Override
@@ -514,16 +564,10 @@ public class Ticker extends FrameLayout {
                             @Override
                             public void onAnimationRepeat(@NonNull Animator animation) {}
                         }).start();
-            }
-        }
 
-        if (getChildCount() == 0) {
-            launchNext();
-        } else if (!hasNextBeenLaunched && children.size() == 1) {
-            TextView tv = children.get(0);
-            int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
-            if (tv.getTranslationX() <= getWidth() - textWidth) {
-                launchNext();
+                if (isRightmost && curX <= stage1Boundary) {
+                    launchNext();
+                }
             }
         }
     }
@@ -609,7 +653,15 @@ public class Ticker extends FrameLayout {
         return maxRight < containerWidth;
     }
 
+    public static boolean shouldFillLeftGap(float minLeft) {
+        return minLeft > 0;
+    }
+
     private TextView getTextView(boolean animationsEnabled, String headline) {
+        return getTextView(animationsEnabled, headline, index);
+    }
+
+    private TextView getTextView(boolean animationsEnabled, String headline, int itemIndex) {
         TextView tv = new TextView(getContext());
         if (animationsEnabled) {
             tv.setGravity(Gravity.CENTER_VERTICAL);
@@ -623,7 +675,7 @@ public class Ticker extends FrameLayout {
         }
         tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         tv.setSingleLine(true);
-        tv.setTag(index);
+        tv.setTag(itemIndex);
         tv.setTextColor(this.textColor);
         tv.setTextSize(this.textSize);
         if (!headline.isEmpty()) {

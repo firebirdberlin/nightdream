@@ -89,4 +89,13 @@ public class TickerTest {
         Assert.assertFalse(Ticker.shouldFillGap(1000f, 1000));
         Assert.assertFalse(Ticker.shouldFillGap(1200f, 1000));
     }
+
+    @Test
+    public void testShouldFillLeftGap() {
+        // minLeft > 0 -> needs fill on left
+        Assert.assertTrue(Ticker.shouldFillLeftGap(100f));
+        // minLeft <= 0 -> no fill needed on left
+        Assert.assertFalse(Ticker.shouldFillLeftGap(0f));
+        Assert.assertFalse(Ticker.shouldFillLeftGap(-50f));
+    }
 }
