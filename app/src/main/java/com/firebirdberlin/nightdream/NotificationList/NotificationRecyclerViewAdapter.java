@@ -22,6 +22,7 @@ import android.app.PendingIntent;
 import android.content.IntentSender;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -122,9 +123,9 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         holder.notificationMessagebitmap.setImageBitmap(notification.getSmallIconBitmap());
 
         if (notification.getColor() != 0) {
-            holder.notificationMessagebitmap.setColorFilter(notification.getColor(), PorterDuff.Mode.SRC_ATOP);
+            holder.notificationMessagebitmap.setColorFilter(new PorterDuffColorFilter(notification.getColor(), PorterDuff.Mode.SRC_ATOP));
         } else {
-            holder.notificationMessagebitmap.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
+            holder.notificationMessagebitmap.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP));
         }
 
         if (notification.getBitmapLargeIcon() != null) {

@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.widget.ImageView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.IntentCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -46,7 +48,6 @@ import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
 import com.google.android.flexbox.FlexboxLayout;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -62,12 +63,14 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     public static void dumpIntent(Intent i) {
+        if (i == null) return;
         Bundle bundle = i.getExtras();
         if (bundle == null) return;
         for (String key : bundle.keySet()) {
+            @SuppressWarnings("deprecation")
             Object value = bundle.get(key);
             if (value != null) {
-                Log.d(TAG, String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
+                Log.d(TAG, String.format("%s %s (%s)", key, value, value.getClass().getName()));
             }
         }
     }
@@ -81,8 +84,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         try {
             handleOnReceive(context, intent);
         } catch (NullPointerException e) {
-            e.printStackTrace();
-            Log.e(TAG, "Unknown error in onReceive (NotificationReceiver)");
+            Log.e(TAG, "Unknown error in onReceive (NotificationReceiver)", e);
         }
     }
 
@@ -117,10 +119,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                 case "scan":
                     removeViewsFrom(R.id.notificationstatusbar);
                     removeViewsFrom(R.id.notificationbar);
-                    List<NotificationApp> notificationApps = intent.getParcelableArrayListExtra("notificationApps");
-                    if (notificationApps == null) break;
-                    for (Iterator<NotificationApp> iterator = notificationApps.iterator(); iterator.hasNext(); ) {
-                        NotificationApp app = iterator.next();
+                    List<NotificationApp> notificationApps =
+                            IntentCompat.getParcelableArrayListExtra(
+                                    intent, "notificationApps", NotificationApp.class);
+                    if (Utility.isEmpty(notificationApps)) break;
+                    for (NotificationApp app : notificationApps) {
                         if (app == null) continue;
                         Log.d(TAG, app.getName() + ": " + app.getIconId());
                         Drawable icon = getIcon(context, app);
@@ -143,19 +146,17 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private Drawable getIcon(Context context, NotificationApp notificationApp) {
         Bitmap bitmap = notificationApp.getSmallNotificationIcon();
-        Drawable icon = null;
         if (bitmap != null) {
-            icon = new BitmapDrawable(context.getResources(), bitmap);
+            return new BitmapDrawable(context.getResources(), bitmap);
         }
-        if (icon == null) {
-            icon = ContextCompat.getDrawable(context, R.drawable.ic_info);
-        }
-        return icon;
+        return ContextCompat.getDrawable(context, R.drawable.ic_info);
     }
 
-    private void removeViewsFrom(int redId) {
-        FlexboxLayout container = contentView.findViewById(redId);
-        if (container != null) container.removeAllViews();
+    private void removeViewsFrom(int resId) {
+        FlexboxLayout container = contentView.findViewById(resId);
+        if (container != null) {
+            container.removeAllViews();
+        }
     }
 
     private void addNotificationIcon(Context context, FlexboxLayout container, Drawable icon) {
@@ -163,7 +164,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         int padding = Utility.dpToPx(context, 5);
         image.setPadding(padding, 0, 0, 0);
         image.setImageDrawable(icon);
-        image.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        image.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                 FlexboxLayout.LayoutParams.WRAP_CONTENT,
                 FlexboxLayout.LayoutParams.WRAP_CONTENT
@@ -178,12 +179,14 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private Drawable getNotificationIcon(Context context, Intent intent) {
-        Bitmap smallIcon = intent.getParcelableExtra("smallIconBitmap");
+        Bitmap smallIcon =
+                IntentCompat.getParcelableExtra(intent, "smallIconBitmap", Bitmap.class);
         return new BitmapDrawable(context.getResources(), smallIcon);
     }
 
     private void removeMediaControls() {
-        ConstraintLayout mediaStyleContainer = contentView.findViewById(R.id.notification_mediacontrol_bar);
+        ConstraintLayout mediaStyleContainer =
+                contentView.findViewById(R.id.notification_mediacontrol_bar);
 
         if (mediaStyleContainer != null) {
             mediaStyleContainer.removeAllViews();

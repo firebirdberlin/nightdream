@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.util.Log;
@@ -142,7 +143,7 @@ class FontAdapter extends ArrayAdapter<FileUri> {
                     case MotionEvent.ACTION_DOWN: {
                         ImageView view = (ImageView) v;
                         //overlay is black with transparency of 0x77 (119)
-                        view.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                        view.getDrawable().setColorFilter(new PorterDuffColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP));
                         view.invalidate();
                         break;
                     }

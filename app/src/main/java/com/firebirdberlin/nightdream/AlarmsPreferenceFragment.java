@@ -104,6 +104,7 @@ public class AlarmsPreferenceFragment extends PreferenceFragmentCompat {
         MultiSelectListPreference pref = findPreference("optionsStopAlarms");
         if (pref != null) {
             pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                @SuppressWarnings("unchecked")
                 Set<String> values = (Set<String>) newValue;
                 if (values.isEmpty()) {
                     Toast.makeText(getContext(), R.string.options_stop_alarms_error_min_one, Toast.LENGTH_LONG).show();

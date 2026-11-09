@@ -25,6 +25,7 @@ import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -86,7 +87,6 @@ public class NotificationPreviewLayout extends LinearLayout {
         super(context, attrs);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, final Intent intent, Drawable smallIcon) {
         Log.i(TAG, "NotificationPreview");
         String template = intent.getStringExtra("template");
@@ -104,7 +104,7 @@ public class NotificationPreviewLayout extends LinearLayout {
         ImageView largeIconImageView = notificationPreview.findViewById(R.id.notify_largeicon);
 
         ImageView notificationMessageBitmap = notificationPreview.findViewById(R.id.notify_smallicon);
-        smallIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        smallIcon.setColorFilter(new PorterDuffColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP));
         notificationMessageBitmap.setImageDrawable(smallIcon);
 
         TextView appName = notificationPreview.findViewById(R.id.notify_appname);

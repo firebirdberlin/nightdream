@@ -150,7 +150,9 @@ public class AlarmClockWidgetPreferencesActivity extends BillingHelperActivity {
                     String.format(Locale.ENGLISH, "preferences_alarm_clock_widget_%d", appWidgetId)
             );
             SharedPreferences prefs = manager.getSharedPreferences();
-            backupValues = (Map<String, Object>) prefs.getAll();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> casted = (Map<String, Object>) prefs.getAll();
+            backupValues = casted;
             setPreferencesFromResource(R.xml.alarm_clock_widget_root_preferences, rootKey);
         }
 

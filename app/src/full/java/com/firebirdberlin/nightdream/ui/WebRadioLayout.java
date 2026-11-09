@@ -27,6 +27,7 @@ import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
@@ -201,7 +202,15 @@ public class WebRadioLayout extends RelativeLayout {
         maxNumButtons = FavoriteRadioStations.getMaxNumEntries();
 
         for (int i = 0; i < maxNumButtons; i++) {
-            int id = getResources().getIdentifier("web_radio_button" + (i + 1), "id", context.getPackageName());
+            int id = switch (i) {
+                case 0 -> R.id.web_radio_button1;
+                case 1 -> R.id.web_radio_button2;
+                case 2 -> R.id.web_radio_button3;
+                case 3 -> R.id.web_radio_button4;
+                case 4 -> R.id.web_radio_button5;
+                case 5 -> R.id.web_radio_button6;
+                default -> 0;
+            };
             Button btn = findViewById(id); // get the element
             btn.setVisibility(View.GONE);
             btn.setOnLongClickListener(buttonOnLongClickListener);
@@ -323,7 +332,15 @@ public class WebRadioLayout extends RelativeLayout {
         final int lastButtonInUseIndex = lastButtonInUseIndex();
 
         for (int i = 0; i < maxNumButtons; i++) {
-            int id = getResources().getIdentifier("web_radio_button" + (i + 1), "id", context.getPackageName());
+            int id = switch (i) {
+                case 0 -> R.id.web_radio_button1;
+                case 1 -> R.id.web_radio_button2;
+                case 2 -> R.id.web_radio_button3;
+                case 3 -> R.id.web_radio_button4;
+                case 4 -> R.id.web_radio_button5;
+                case 5 -> R.id.web_radio_button6;
+                default -> 0;
+            };
             Button b = findViewById(id);
             if (b == null) {
                 continue;
@@ -375,9 +392,9 @@ public class WebRadioLayout extends RelativeLayout {
                 new AlertDialog.Builder(context, R.style.DialogTheme)
                         .setTitle(R.string.message_mobile_data_connection)
                         .setMessage(R.string.message_mobile_data_connection_confirmation)
-                        .setNegativeButton(android.R.string.no, (dialogInterface, i) -> hideSystemUI())
+                        .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> hideSystemUI())
                         .setIcon(R.drawable.ic_attention)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             RadioStreamService.startStream(context, radioStationIndex);
                             hideSystemUI();
                         })
@@ -445,7 +462,7 @@ public class WebRadioLayout extends RelativeLayout {
         if (spinner != null) {
             Drawable drawable = spinner.getIndeterminateDrawable();
             if (drawable != null) {
-                drawable.setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(new PorterDuffColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP));
             }
         }
         colorWorkaroundForCastIcon(mMediaRouteButton, textColor);

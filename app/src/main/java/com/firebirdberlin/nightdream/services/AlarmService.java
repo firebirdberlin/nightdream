@@ -151,7 +151,7 @@ public class AlarmService extends Service
         handler.removeCallbacks(fadeIn);
         AlarmStop();
         restoreVolume();
-        stopForeground(false); // bool: true = remove Notification
+        stopForeground(Service.STOP_FOREGROUND_DETACH); // remove Notification: false
     }
 
     private void setTimerForFadeOut() {

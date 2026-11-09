@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -88,13 +89,13 @@ public class MediaControlLayout extends ViewModel {
         this.textColor.postValue(this.color);
 
         if (this.smallIcon.getValue() != null) {
-            this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            this.smallIcon.getValue().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         }
 
         if (this.actionImages.getValue() != null) {
             for (int i = 0; i < this.actionImages.getValue().size(); i++) {
                 if (this.actionImages.getValue().get(i) != null) {
-                    this.actionImages.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                    this.actionImages.getValue().get(i).setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
                 }
             }
         }
@@ -244,7 +245,7 @@ public class MediaControlLayout extends ViewModel {
         }
 
         assert smallIcon != null;
-        smallIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        smallIcon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
 
         Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
 
@@ -273,7 +274,7 @@ public class MediaControlLayout extends ViewModel {
                     notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
                     if (notificationDrawableIcon != null) {
                         notificationDrawableIcon.setColorFilter(
-                                color, PorterDuff.Mode.SRC_ATOP
+                                new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
                         );
                     }
                 }

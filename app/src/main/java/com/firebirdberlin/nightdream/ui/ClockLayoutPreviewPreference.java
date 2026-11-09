@@ -26,7 +26,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.os.Build;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,21 +38,14 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
-
-import android.net.Uri;
-import android.widget.Toast;
-import androidx.core.content.FileProvider;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import com.firebirdberlin.nightdream.PreferencesActivity;
 import com.firebirdberlin.nightdream.PurchaseManager;
@@ -61,6 +54,13 @@ import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.models.AnalogClockConfig;
 import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ClockLayoutPreviewPreference extends Preference {
     private static final String TAG = "ClockLayoutPreviewPreference";
@@ -79,11 +79,13 @@ public class ClockLayoutPreviewPreference extends Preference {
         this.importAction = action;
     }
 
+    @SuppressWarnings("unused")
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
     }
 
+    @SuppressWarnings("unused")
     public ClockLayoutPreviewPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
@@ -98,17 +100,16 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
         preferenceView = holder.itemView;
 
         View summary = preferenceView.findViewById(android.R.id.summary);
         if (summary != null) {
             ViewParent summaryParent = summary.getParent();
-            if (summaryParent instanceof ViewGroup) {
+            if (summaryParent instanceof ViewGroup summaryParent2) {
                 final LayoutInflater layoutInflater =
                         (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                ViewGroup summaryParent2 = (ViewGroup) summaryParent;
                 View view = summaryParent2.findViewWithTag("custom");
                 if (view == null) {
                     layoutInflater.inflate(R.layout.clock_layout_preference, summaryParent2, true);
@@ -239,21 +240,7 @@ public class ClockLayoutPreviewPreference extends Preference {
                 preferencesContainer.addView(prefs_calendar, lp);
                 break;
             case ClockLayout.LAYOUT_ID_DIGITAL_ANIMATED:
-                CustomAnimClockPreferencesLayout prefs_anim =
-                        new CustomAnimClockPreferencesLayout(context, settings, getActivity());
-                prefs_anim.setOnConfigChangedListener(
-                        new CustomAnimClockPreferencesLayout.OnConfigChangedListener() {
-                            @Override
-                            public void onConfigChanged() {
-                                updateView();
-                            }
-
-                            @Override
-                            public void onPurchaseRequested() {
-                                ((PreferencesActivity) context).showSubscriptionDialog();
-                            }
-                        }
-                );
+                CustomAnimClockPreferencesLayout prefs_anim = createPrefsAnim(settings);
                 preferencesContainer.addView(prefs_anim, lp);
                 break;
             case ClockLayout.LAYOUT_ID_ANALOG2:
@@ -282,6 +269,26 @@ public class ClockLayoutPreviewPreference extends Preference {
         }
     }
 
+    @NonNull
+    private CustomAnimClockPreferencesLayout createPrefsAnim(Settings settings) {
+        CustomAnimClockPreferencesLayout prefs_anim =
+                new CustomAnimClockPreferencesLayout(context, settings, getActivity());
+        prefs_anim.setOnConfigChangedListener(
+                new CustomAnimClockPreferencesLayout.OnConfigChangedListener() {
+                    @Override
+                    public void onConfigChanged() {
+                        updateView();
+                    }
+
+                    @Override
+                    public void onPurchaseRequested() {
+                        ((PreferencesActivity) context).showSubscriptionDialog();
+                    }
+                }
+        );
+        return prefs_anim;
+    }
+
     private void setupResetButton(final int clockLayoutID) {
         resetButton.setOnClickListener(v -> {
             Context context = getContext();
@@ -289,8 +296,8 @@ public class ClockLayoutPreviewPreference extends Preference {
             new AlertDialog.Builder(context)
                     .setTitle(res.getString(R.string.confirm_reset))
                     .setMessage(res.getString(R.string.confirm_reset_question_layout))
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
                         AnalogClockConfig.Style preset = AnalogClockConfig.toClockStyle(clockLayoutID);
                         AnalogClockConfig config = new AnalogClockConfig(getContext(), preset);
                         config.reset();
@@ -427,9 +434,6 @@ public class ClockLayoutPreviewPreference extends Preference {
     }
 
     private boolean showResetButton(Settings settings) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return false;
-        }
 
         int layoutID = settings.getClockLayoutID(true);
         return (

@@ -73,16 +73,6 @@ public class RadioStreamDialogFragment extends AppCompatDialogFragment {
 
         // edit the window flags in order to show the soft keyboard when the device is locked
         parentActivity.getSupportFragmentManager().executePendingTransactions();
-        if (dialogFragment.getDialog() != null) {
-            Dialog dialog = Utility.createDialogTheme(dialogFragment.getDialog());
-            Window window = dialog.getWindow();
-            if (window != null) {
-                window.setBackgroundDrawableResource(R.drawable.border_dialog);
-                window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-                window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            }
-        }
     }
 
     public void setListener(RadioStreamDialogListener listener) {

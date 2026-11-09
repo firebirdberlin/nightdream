@@ -150,7 +150,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
         return false;
     }
-    public static String TAG = "NightDreamActivity";
+    private static final String TAG = NightDreamActivity.class.getSimpleName();
     public static boolean isRunning = false;
     static long lastNoiseTime = System.currentTimeMillis();
     public static final int MODE_NIGHT = 0;
@@ -360,13 +360,14 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
-        context = this;
+        context = getApplicationContext();
 
         setContentView(R.layout.main);
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -403,7 +404,10 @@ public class NightDreamActivity extends BillingHelperActivity
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(this::initTextToSpeech);
+        executor.execute(() -> {
+            initTextToSpeech();
+            executor.shutdown();
+        });
 
         String manufacturer = android.os.Build.MANUFACTURER;
         if (("samsung".equalsIgnoreCase(manufacturer) || "oppo".equalsIgnoreCase(manufacturer) || "oneplus".equalsIgnoreCase(manufacturer))
@@ -716,7 +720,11 @@ public class NightDreamActivity extends BillingHelperActivity
         return receiver;
     }
 
+    @Override
     public boolean onTouch(View view, MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_UP) {
+            view.performClick();
+        }
         return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e);
     }
 
@@ -941,6 +949,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void setKeepScreenOn(boolean keepScreenOn) {
         Log.i(TAG, "setKeepScreenOn(" + keepScreenOn + ") requested.");
         Window window = getWindow();

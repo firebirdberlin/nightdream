@@ -31,6 +31,7 @@ public class VibrationHandler {
 
     Vibrator vibrator;
 
+    @SuppressWarnings("deprecation")
     public static boolean hasVibrator(Context context) {
         Vibrator vibrator;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -42,6 +43,7 @@ public class VibrationHandler {
         return vibrator != null && vibrator.hasVibrator();
     }
 
+    @SuppressWarnings("deprecation")
     public VibrationHandler(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             VibratorManager vibratorManager = (VibratorManager) context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
@@ -54,6 +56,7 @@ public class VibrationHandler {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void startVibration() {
         Log.i(TAG, "startvibration");
         if (vibrator == null) {
