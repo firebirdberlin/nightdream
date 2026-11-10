@@ -33,6 +33,8 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -247,7 +249,7 @@ public class MediaControlLayout extends ViewModel {
         assert smallIcon != null;
         smallIcon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
 
-        Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
+        Bitmap coverBitmap = IntentCompat.getParcelableExtra(intent, "largeIconBitmap", Bitmap.class);
 
         ArrayList<Drawable> notificationActionImages = new ArrayList<>();
         ArrayList<View.OnClickListener> notificationActionClick = new ArrayList<>();
@@ -263,7 +265,7 @@ public class MediaControlLayout extends ViewModel {
         }
 
         Notification.Action[] actions =
-                (Notification.Action[]) intent.getParcelableArrayExtra("actions");
+                (Notification.Action[]) IntentCompat.getParcelableArrayExtra(intent, "actions", Notification.Action.class);
         if (actions != null) {
             int index = 0;
             for (final Notification.Action action : actions) {
@@ -351,7 +353,7 @@ public class MediaControlLayout extends ViewModel {
 
         android.media.session.MediaSession.Token token = null;
         if (intent.hasExtra("mediaSessionToken")) {
-            token = intent.getParcelableExtra("mediaSessionToken");
+            token = IntentCompat.getParcelableExtra(intent, "mediaSessionToken", android.media.session.MediaSession.Token.class);
         }
 
         if (token != null) {

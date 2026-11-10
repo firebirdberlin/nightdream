@@ -81,7 +81,6 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -431,7 +430,7 @@ public class Utility {
 
     public static boolean isScreenLocked(Context context) {
         KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        return myKM.inKeyguardRestrictedInputMode();
+        return myKM != null && myKM.isKeyguardLocked();
     }
 
     public static int pixelsToDp(Context context, float px) {
@@ -720,11 +719,7 @@ public class Utility {
     }
 
     public static NotificationCompat.Builder buildNotification(Context context, String channel_id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return new NotificationCompat.Builder(context);
-        } else {
-            return new NotificationCompat.Builder(context, channel_id);
-        }
+        return new NotificationCompat.Builder(context, channel_id);
     }
 
 
@@ -888,7 +883,7 @@ public class Utility {
 
     public static boolean isLowRamDevice(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        return (ActivityManagerCompat.isLowRamDevice(activityManager));
+        return activityManager != null && activityManager.isLowRamDevice();
     }
 
     public static ArrayList<File> listFiles(File path, final String fileEnding) {

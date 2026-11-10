@@ -208,7 +208,7 @@ public class GifDecoder {
                 }
             }
         }
-        image = Bitmap.createBitmap(dest, width, height, Bitmap.Config.ARGB_4444);
+        image = Bitmap.createBitmap(dest, width, height, Bitmap.Config.ARGB_8888);
     }
 
     /**
@@ -577,7 +577,7 @@ public class GifDecoder {
         }
         frameCount++;
         // create new image to receive frame data
-        image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+        image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         setPixels(); // transfer pixel data to image
         frames.addElement(new GifFrame(image, delay)); // add image to frame
         // list

@@ -25,6 +25,8 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.content.IntentCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -58,7 +60,7 @@ public class NotificationActivity extends AppCompatActivity {
             Log.d(TAG, "onReceive");
 
             if (intent.hasExtra("notifications")) {
-                List<Notification> notifications = intent.getParcelableArrayListExtra("notifications");
+                List<Notification> notifications = IntentCompat.getParcelableArrayListExtra(intent, "notifications", Notification.class);
 
                 NotificationList oldNotificationList = new NotificationList(
                         notificationList.getNotifications()

@@ -46,7 +46,7 @@ public class GifMovie extends AnimationDrawable {
         mTmpBitmap = mGifDecoder.getFrame(0);
         height = mTmpBitmap.getHeight();
         width = mTmpBitmap.getWidth();
-        addFrame(new BitmapDrawable(mTmpBitmap), mGifDecoder.getDelay(0));
+        addFrame(new BitmapDrawable(null, mTmpBitmap), mGifDecoder.getDelay(0));
         setOneShot(mGifDecoder.getLoopCount() != 0);
         setVisible(true, true);
         Runnable loader = () -> {
@@ -55,7 +55,7 @@ public class GifMovie extends AnimationDrawable {
             for (i = 1; i < n; i++) {
                 mTmpBitmap = mGifDecoder.getFrame(i);
                 t = mGifDecoder.getDelay(i);
-                addFrame(new BitmapDrawable(mTmpBitmap), t);
+                addFrame(new BitmapDrawable(null, mTmpBitmap), t);
             }
             decoded = true;
             mGifDecoder = null;

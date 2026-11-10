@@ -32,6 +32,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import androidx.core.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -119,7 +121,7 @@ public class NotificationPreviewLayout extends LinearLayout {
         TextView text = notificationPreview.findViewById(R.id.notify_text);
         text.setText(intent.getStringExtra("text"));
 
-        Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
+        Bitmap coverBitmap = IntentCompat.getParcelableExtra(intent, "largeIconBitmap", Bitmap.class);
         if (coverBitmap == null) {
             largeIconImageView.setVisibility(View.GONE);
         } else {
@@ -129,7 +131,7 @@ public class NotificationPreviewLayout extends LinearLayout {
 
         OnClickListener onNotificationPreviewClickListener = new OnClickListener() {
             public void onClick(View v) {
-                PendingIntent contentIntent = intent.getParcelableExtra("contentIntent");
+                PendingIntent contentIntent = IntentCompat.getParcelableExtra(intent, "contentIntent", PendingIntent.class);
                 if (contentIntent != null) {
                     try {
                         contentIntent.send();

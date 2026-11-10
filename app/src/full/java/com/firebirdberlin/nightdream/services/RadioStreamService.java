@@ -30,7 +30,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -48,6 +47,7 @@ import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.IntentCompat;
@@ -538,11 +538,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         streamingMode = StreamingMode.INACTIVE;
 
         AppEventBus.publish(new OnRadioStreamStopped());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            stopForeground(Service.STOP_FOREGROUND_DETACH);
-        } else {
-            stopForeground(false);
-        }
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_DETACH);
     }
 
     public void setAlarmVolume(int volume, boolean useMusicStream) {

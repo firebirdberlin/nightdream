@@ -26,6 +26,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.content.IntentCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -63,7 +65,7 @@ public class NotificationListActivity extends AppCompatActivity {
                 }
             }
 
-            notificationApps = intent.getParcelableArrayListExtra("notificationApps");
+            notificationApps = IntentCompat.getParcelableArrayListExtra(intent, "notificationApps", NotificationApp.class);
             if (notificationApps != null) {
                 notificationAppList.replace(notificationApps);
             }
