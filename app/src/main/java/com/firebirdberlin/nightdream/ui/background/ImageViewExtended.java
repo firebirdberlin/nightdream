@@ -133,10 +133,7 @@ public class ImageViewExtended extends AppCompatImageView {
         }
 
         int width = (int) textPaint.measureText(text);
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
+        Point size = Utility.getDisplaySize(context);
         if (width > size.x) {
             width = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_PX,
@@ -144,18 +141,12 @@ public class ImageViewExtended extends AppCompatImageView {
                     context.getResources().getDisplayMetrics());
         }
 
-        StaticLayout mTextLayout;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            StaticLayout.Builder builder = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, width)
-                    .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                    .setLineSpacing(0, 1)
-                    .setIncludePad(false)
-                    .setMaxLines(5);
-            mTextLayout = builder.build();
-        } else {
-            mTextLayout = new StaticLayout(text, textPaint,
-                    width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-        }
+        StaticLayout mTextLayout = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, width)
+                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                .setLineSpacing(0, 1)
+                .setIncludePad(false)
+                .setMaxLines(5)
+                .build();
 
         Bitmap image = Bitmap.createBitmap(width, mTextLayout.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image);

@@ -144,6 +144,7 @@ public class WebRadioLayout extends RelativeLayout {
         init(attrs);
     }
 
+    @SuppressWarnings("deprecation")
     private void init(AttributeSet attrs) {
         settings = new Settings(context);
         stations = settings.getFavoriteRadioStations();

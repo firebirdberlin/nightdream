@@ -60,6 +60,7 @@ public class NotificationListActivity extends AppCompatActivity {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 for (String key : bundle.keySet()) {
+                    @SuppressWarnings("deprecation")
                     Object val = bundle.get(key);
                     Log.d(TAG, key + " : " + (val != null ? val : "NULL"));
                 }

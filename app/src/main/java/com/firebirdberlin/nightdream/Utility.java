@@ -85,6 +85,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
@@ -572,48 +574,40 @@ public class Utility {
     public static void hideSystemUI(Window window) {
         if (window == null) return;
         WindowCompat.setDecorFitsSystemWindows(window, false);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            // Use WindowInsetsController for Android 11 (API 33) and above
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                // Hide status bars and navigation bars
-                controller.hide(WindowInsets.Type.systemBars());
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-
-            }
-        } else {
-            View decorView = window.getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, window.getDecorView());
+        controller.hide(WindowInsetsCompat.Type.systemBars());
+        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
     }
 
     public static void showSystemUI(Window window) {
         if (window == null) return;
         WindowCompat.setDecorFitsSystemWindows(window, false);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            // Use WindowInsetsController for Android 11 (API 33) and above
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                // Hide status bars and navigation bars
-                controller.show(WindowInsets.Type.systemBars());
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
-
-            }
-        }
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, window.getDecorView());
+        controller.show(WindowInsetsCompat.Type.systemBars());
+        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_DEFAULT);
     }
 
     public static Point getDisplaySize(Context context) {
         Point size = new Point();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        display.getSize(size);
+        if (wm == null) {
+            return size;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Rect bounds = wm.getCurrentWindowMetrics().getBounds();
+            size.set(bounds.width(), bounds.height());
+        } else {
+            getDisplaySizeLegacy(wm, size);
+        }
         return size;
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void getDisplaySizeLegacy(WindowManager wm, Point size) {
+        Display display = wm.getDefaultDisplay();
+        if (display != null) {
+            display.getSize(size);
+        }
     }
 
     public static Rect getSafeWindowRect(Activity context) {
@@ -851,6 +845,7 @@ public class Utility {
         Bundle bundle = data.getExtras();
         if (bundle != null) {
             for (String key : bundle.keySet()) {
+                @SuppressWarnings("deprecation")
                 Object value = bundle.get(key);
                 String strValue = (value != null) ? value.toString() : "";
                 Log.d(TAG, String.format("> %s = '%s'", key, strValue));

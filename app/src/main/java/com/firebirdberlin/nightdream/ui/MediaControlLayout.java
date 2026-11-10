@@ -304,10 +304,9 @@ public class MediaControlLayout extends ViewModel {
                                     Bundle optionsBundle = null;
                                     if (Build.VERSION.SDK_INT >= 34) {
                                         ActivityOptions options = ActivityOptions.makeBasic();
-                                        options.setPendingIntentBackgroundActivityStartMode(
-                                                ActivityOptions
-                                                        .MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                                        );
+                                        @SuppressWarnings("deprecation")
+                                        int startMode = ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED;
+                                        options.setPendingIntentBackgroundActivityStartMode(startMode);
                                         optionsBundle = options.toBundle();
                                     }
                                     action.actionIntent.send(

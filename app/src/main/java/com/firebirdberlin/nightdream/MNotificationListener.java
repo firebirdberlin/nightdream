@@ -29,7 +29,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -48,6 +47,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.IntentCompat;
 
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 
@@ -91,10 +91,7 @@ public class MNotificationListener extends NotificationListenerService {
         try {
             int width = drawable.getIntrinsicWidth() > 0 ? drawable.getIntrinsicWidth() : 128;
             int height = drawable.getIntrinsicHeight() > 0 ? drawable.getIntrinsicHeight() : 128;
-            Bitmap bitmap = Bitmap.createBitmap(
-                    width, height,
-                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565
-            );
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.setBounds(0, 0, width, height);
             drawable.draw(canvas);
@@ -267,7 +264,7 @@ public class MNotificationListener extends NotificationListenerService {
 
         Intent i = getIntentForBroadCast(sbn);
         if (i != null) {
-            String template = (String) i.getSerializableExtra("template");
+            String template = IntentCompat.getSerializableExtra(i, "template", String.class);
             if (template != null) {
                 if (template.contains("MediaStyle")) {
                     i.setAction(Config.ACTION_NOTIFICATION_LISTENER);
@@ -278,6 +275,7 @@ public class MNotificationListener extends NotificationListenerService {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void deleteNotification(ArrayList<String> delete) {
         Log.d(TAG, "deleteNotification");
 
@@ -332,7 +330,7 @@ public class MNotificationListener extends NotificationListenerService {
                     if (i == null) {
                         continue;
                     }
-                    String template = (String) i.getSerializableExtra("template");
+                    String template = IntentCompat.getSerializableExtra(i, "template", String.class);
                     if (template == null) {
                         continue;
                     }
@@ -383,6 +381,7 @@ public class MNotificationListener extends NotificationListenerService {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private Intent getIntentForBroadCast(StatusBarNotification sbn) {
         final Context context = this;
         if (sbn == null){
@@ -561,6 +560,7 @@ public class MNotificationListener extends NotificationListenerService {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private int getIconId(Notification notification) {
         Log.d(TAG, "getIconId(" + notification.toString() + ")");
         try {
@@ -601,6 +601,7 @@ public class MNotificationListener extends NotificationListenerService {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     private void logNotification(StatusBarNotification sbn) {
         if (sbn == null || Build.VERSION.SDK_INT < 26) return;
         Notification notification = sbn.getNotification();
@@ -647,6 +648,7 @@ public class MNotificationListener extends NotificationListenerService {
         return (String) pm.getApplicationLabel(ai);
     }
 
+    @SuppressWarnings("deprecation")
     private Bitmap getLargeIconBitmap(Context context, StatusBarNotification sbn) {
         Notification notification = sbn.getNotification();
 
