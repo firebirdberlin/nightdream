@@ -261,7 +261,7 @@ public class MediaControlLayout extends ViewModel {
                             intent.getStringExtra("packageName"), 0
                     );
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to create package context for " + intent.getStringExtra("packageName"), e);
         }
 
         Notification.Action[] actions =

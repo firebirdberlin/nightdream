@@ -79,8 +79,7 @@ public class HttpStatusCheckTask {
             try {
                 getFinalURL(new URL(url));
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-                e.printStackTrace();
+                Log.e(TAG, "Error checking status for URL: " + url, e);
             }
             if (cancelled) return;
             HttpStatusCheckResult result = new HttpStatusCheckResult(latestURL, responseCode, responseHeaders, numRedirects);

@@ -228,11 +228,10 @@ public class AlarmService extends Service
         try {
             mMediaPlayer.setDataSource(this, soundUri);
         } catch (IOException | IllegalStateException | SecurityException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to set data source for URI: " + soundUri, e);
             return false;
         }
         return true;
-
     }
 
     @Override

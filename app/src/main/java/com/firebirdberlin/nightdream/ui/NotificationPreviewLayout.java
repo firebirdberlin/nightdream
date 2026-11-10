@@ -49,7 +49,7 @@ import androidx.annotation.RequiresApi;
 import com.firebirdberlin.nightdream.R;
 
 public class NotificationPreviewLayout extends LinearLayout {
-    private static final String TAG = "NotificationPreviewLayout";
+    private static final String TAG = NotificationPreviewLayout.class.getSimpleName();
     final private Handler handler = new Handler(Looper.getMainLooper());
     private View notificationPreview;
     private final Runnable fadePreview = new Runnable() {
@@ -136,11 +136,7 @@ public class NotificationPreviewLayout extends LinearLayout {
                     try {
                         contentIntent.send();
                     } catch (PendingIntent.CanceledException e) {
-                        try {
-                            throw new IntentSender.SendIntentException(e);
-                        } catch (IntentSender.SendIntentException ex) {
-                            ex.printStackTrace();
-                        }
+                        Log.e(TAG, "Failed to send content intent", e);
                     }
                 }
             }

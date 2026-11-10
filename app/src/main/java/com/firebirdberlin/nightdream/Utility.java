@@ -426,7 +426,7 @@ public class Utility {
             wl.acquire();
             wl.release();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to acquire/release test wake lock", e);
         }
     }
 
@@ -507,7 +507,7 @@ public class Utility {
                 || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
             );
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to check power plugged status", e);
             return false;
         }
     }
@@ -914,7 +914,7 @@ public class Utility {
             ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
             return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to read Exif orientation from file", e);
         }
         return 0;
     }
@@ -924,7 +924,7 @@ public class Utility {
             ExifInterface exif = new ExifInterface(fileDescriptor);
             return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to read Exif orientation from file descriptor", e);
         }
         return 0;
     }
