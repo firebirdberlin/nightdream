@@ -77,6 +77,7 @@ public class Ticker extends FrameLayout {
     private boolean isClickValid = false;
     private boolean isDragging = false;
     private String pendingUrl = null;
+    private boolean isPaused = false;
     private int touchSlop;
     private int longPressTimeout;
 
@@ -174,6 +175,7 @@ public class Ticker extends FrameLayout {
 
     public void restart() {
         Log.i(TAG, "restart()");
+        isPaused = false;
         for (Animator animator : new ArrayList<>(animators)) {
             animator.cancel();
         }
@@ -235,6 +237,7 @@ public class Ticker extends FrameLayout {
 
     public void pause() {
         Log.d(TAG, "pause()");
+        isPaused = true;
         for (Animator animator : new ArrayList<>(animators)) {
             animator.pause();
         }
@@ -243,6 +246,10 @@ public class Ticker extends FrameLayout {
 
     public void resume() {
         Log.d(TAG, "resume()");
+        if (!isPaused) {
+            return;
+        }
+        isPaused = false;
         if (Utility.areSystemAnimationsEnabled(context)) {
             for (Animator animator : new ArrayList<>(animators)) {
                 animator.resume();
@@ -259,7 +266,6 @@ public class Ticker extends FrameLayout {
         int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                pause();
                 downX = event.getX();
                 downY = event.getY();
                 lastX = downX;
@@ -278,7 +284,10 @@ public class Ticker extends FrameLayout {
 
                 if (totalDx > touchSlop || totalDy > touchSlop) {
                     isClickValid = false;
-                    isDragging = true;
+                    if (!isDragging) {
+                        isDragging = true;
+                        pause();
+                    }
                 }
 
                 if (isDragging) {
@@ -294,8 +303,6 @@ public class Ticker extends FrameLayout {
             case MotionEvent.ACTION_UP:
                 if (isDragging) {
                     resumeFromDrag();
-                } else {
-                    resume();
                 }
 
                 long duration = event.getEventTime() - downTime;
@@ -311,8 +318,6 @@ public class Ticker extends FrameLayout {
             case MotionEvent.ACTION_CANCEL:
                 if (isDragging) {
                     resumeFromDrag();
-                } else {
-                    resume();
                 }
                 isClickValid = false;
                 isDragging = false;

@@ -1185,4 +1185,28 @@ public class Utility {
         }
         return intervals;
     }
+
+    public static Bitmap scaleBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        if (bitmap == null) {
+            return null;
+        }
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        if (width <= maxWidth && height <= maxHeight) {
+            return bitmap;
+        }
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxWidth;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxHeight;
+            width = (int) (height * bitmapRatio);
+        }
+        try {
+            return Bitmap.createScaledBitmap(bitmap, width, height, true);
+        } catch (Exception e) {
+            return bitmap;
+        }
+    }
 }

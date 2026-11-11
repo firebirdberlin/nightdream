@@ -574,7 +574,9 @@ public class NightDreamActivity extends BillingHelperActivity
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
         unregister(powerSupplyReceiver);
-        unregister(nReceiver);
+        if (nReceiver != null) {
+            nReceiver.unregister();
+        }
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.shallActivateDoNotDisturb()) {
@@ -630,10 +632,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(this);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        filter.addAction(Config.ACTION_NOTIFICATION_APPS_LISTENER);
-        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
+        receiver.register();
         return receiver;
     }
 
@@ -698,6 +697,10 @@ public class NightDreamActivity extends BillingHelperActivity
 
     public void onWeatherForecastClick(View v) {
         WeatherForecastActivity.start(this);
+    }
+
+    public void onNotificationActivityClick(View v) {
+        NotificationListActivity.start(this);
     }
 
     public void onNotificationListClick(View v) {

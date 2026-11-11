@@ -18,12 +18,9 @@
 
 package com.firebirdberlin.nightdream.receivers;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -43,23 +40,46 @@ import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
 import com.firebirdberlin.nightdream.databinding.NotificationMediacontrolBinding;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnMediaNotificationEvent;
+import com.firebirdberlin.nightdream.events.OnNotificationAppsUpdated;
+import com.firebirdberlin.nightdream.events.OnNotificationPreviewEvent;
 import com.firebirdberlin.nightdream.ui.ClockLayout;
 import com.firebirdberlin.nightdream.ui.MediaControlLayout;
 import com.firebirdberlin.nightdream.ui.NotificationPreviewLayout;
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class NotificationReceiver extends BroadcastReceiver {
+public class NotificationReceiver {
     private static final String TAG = NotificationReceiver.class.getSimpleName();
     private final View contentView;
     private final NightDreamActivity activity;
+    private final Consumer<Object> eventListener;
     private int color;
 
     public NotificationReceiver(NightDreamActivity context) {
         Window window = context.getWindow();
         contentView = window.getDecorView().findViewById(android.R.id.content);
         activity = context;
+        eventListener = event -> {
+            if (event instanceof OnNotificationAppsUpdated appsEvent) {
+                handleNotificationApps(activity, appsEvent.notificationApps);
+            } else if (event instanceof OnNotificationPreviewEvent previewEvent) {
+                handleNotificationPreview(activity, previewEvent.action, previewEvent.intent);
+            } else if (event instanceof OnMediaNotificationEvent mediaEvent) {
+                handleMediaNotification(activity, mediaEvent.action, mediaEvent.intent);
+            }
+        };
+    }
+
+    public void register() {
+        AppEventBus.addListener(eventListener);
+    }
+
+    public void unregister() {
+        AppEventBus.removeListener(eventListener);
     }
 
     public static void dumpIntent(Intent i) {
@@ -79,29 +99,11 @@ public class NotificationReceiver extends BroadcastReceiver {
         this.color = color;
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        try {
-            handleOnReceive(context, intent);
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Unknown error in onReceive (NotificationReceiver)", e);
-        }
-    }
-
-    private void handleOnReceive(final Context context, Intent intent) {
-
-        if (intent == null || context == null) return;
-        if (Utility.isDebuggable(context)) {
-            Log.d(TAG, "Broadcast received.");
-            dumpIntent(intent);
-        }
-        String action = intent.getStringExtra("action");
-        Log.d(TAG, "action:" + action);
+    private void handleNotificationApps(final Context context, List<NotificationApp> notificationApps) {
+        if (context == null) return;
 
         boolean showNotification = Settings.showNotification(context);
-        Log.d(TAG, "showNotification: " + showNotification);
-
-        if (!showNotification || "clear".equals(action)) {
+        if (!showNotification) {
             removeViewsFrom(R.id.notificationstatusbar);
             removeViewsFrom(R.id.notificationbar);
             return;
@@ -113,34 +115,39 @@ public class NotificationReceiver extends BroadcastReceiver {
             return;
         }
 
-        Log.d(TAG, "action:" + action);
-        if (action != null) {
-            switch (action) {
-                case "scan":
-                    removeViewsFrom(R.id.notificationstatusbar);
-                    removeViewsFrom(R.id.notificationbar);
-                    List<NotificationApp> notificationApps =
-                            IntentCompat.getParcelableArrayListExtra(
-                                    intent, "notificationApps", NotificationApp.class);
-                    if (Utility.isEmpty(notificationApps)) break;
-                    for (NotificationApp app : notificationApps) {
-                        if (app == null) continue;
-                        Log.d(TAG, app.getName() + ": " + app.getIconId());
-                        Drawable icon = getIcon(context, app);
-                        addNotificationIcon(context, container, icon);
-                    }
-                    break;
-                case "added_media":
-                    setupMediaControls(context, intent);
-                    break;
-                case "removed_media":
-                    removeMediaControls();
-                    break;
-                case "added_preview":
-                    setupNotificationPreview(context, intent);
-                    break;
-                default:
-            }
+        removeViewsFrom(R.id.notificationstatusbar);
+        removeViewsFrom(R.id.notificationbar);
+        if (Utility.isEmpty(notificationApps)) return;
+        for (NotificationApp app : notificationApps) {
+            if (app == null) continue;
+            Log.d(TAG, app.getName() + ": " + app.getIconId());
+            Drawable icon = getIcon(context, app);
+            addNotificationIcon(context, container, icon);
+        }
+    }
+
+    private void handleNotificationPreview(final Context context, String action, Intent intent) {
+        if (context == null) return;
+
+        boolean showNotification = Settings.showNotification(context);
+        if (!showNotification || "clear".equals(action)) {
+            removeViewsFrom(R.id.notificationstatusbar);
+            removeViewsFrom(R.id.notificationbar);
+            return;
+        }
+
+        if ("added_preview".equals(action) && intent != null) {
+            setupNotificationPreview(context, intent);
+        }
+    }
+
+    private void handleMediaNotification(final Context context, String action, Intent intent) {
+        if (context == null) return;
+
+        if ("added_media".equals(action) && intent != null) {
+            setupMediaControls(context, intent);
+        } else if ("removed_media".equals(action)) {
+            removeMediaControls();
         }
     }
 
@@ -161,10 +168,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private void addNotificationIcon(Context context, FlexboxLayout container, Drawable icon) {
         ImageView image = new ImageView(context);
-        int padding = Utility.dpToPx(context, 5);
-        image.setPadding(padding, 0, 0, 0);
+        int padding = Utility.dpToPx(context, 2);
+        image.setPadding(padding, padding, padding, padding);
         image.setImageDrawable(icon);
-        image.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                 FlexboxLayout.LayoutParams.WRAP_CONTENT,
                 FlexboxLayout.LayoutParams.WRAP_CONTENT
@@ -197,6 +203,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
         }
     }
+
     private void setupMediaControls(Context context, Intent intent) {
         if (!Settings.showMediaStyleNotification(context) || activity == null) {
             return;

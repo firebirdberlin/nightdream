@@ -18,32 +18,27 @@
 
 package com.firebirdberlin.nightdream;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-
-import androidx.core.content.IntentCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.NotificationList.BrowseNotificationApps;
 import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
 import com.firebirdberlin.nightdream.NotificationList.NotificationAppList;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnNotificationAppsUpdated;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class NotificationListActivity extends AppCompatActivity {
 
@@ -51,26 +46,12 @@ public class NotificationListActivity extends AppCompatActivity {
     List<NotificationApp> notificationApps = new ArrayList<>();
     NotificationAppList notificationAppList;
     private BrowseNotificationApps adapter;
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive");
-            if (intent == null) return;
-
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                for (String key : bundle.keySet()) {
-                    @SuppressWarnings("deprecation")
-                    Object val = bundle.get(key);
-                    Log.d(TAG, key + " : " + (val != null ? val : "NULL"));
-                }
-            }
-
-            notificationApps = IntentCompat.getParcelableArrayListExtra(intent, "notificationApps", NotificationApp.class);
+    private final Consumer<Object> eventListener = event -> {
+        if (event instanceof OnNotificationAppsUpdated updatedEvent) {
+            notificationApps = updatedEvent.notificationApps;
             if (notificationApps != null) {
                 notificationAppList.replace(notificationApps);
             }
-
             adapter.updateData(notificationAppList.get());
         }
     };
@@ -101,22 +82,14 @@ public class NotificationListActivity extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        ContextCompat.registerReceiver(
-                this, broadcastReceiver, new IntentFilter(Config.ACTION_NOTIFICATION_APPS_LISTENER), ContextCompat.RECEIVER_NOT_EXPORTED
-        );
+        AppEventBus.addListener(eventListener);
 
         MNotificationListener.requestNotificationList(getApplicationContext());
     }
 
     @Override
     public void onDestroy() {
-        try {
-            if (broadcastReceiver != null) {
-                unregisterReceiver(broadcastReceiver);
-            }
-        } catch (IllegalArgumentException ignored) {
-        }
-
+        AppEventBus.removeListener(eventListener);
         super.onDestroy();
     }
 
@@ -131,9 +104,7 @@ public class NotificationListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menuItem_delete_all) {
-            Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-            i.putExtra("command", "clearall");
-            getApplicationContext().sendBroadcast(i);
+            MNotificationListener.clearAllNotifications();
         }
 
         return super.onOptionsItemSelected(item);

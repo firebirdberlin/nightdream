@@ -77,6 +77,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.MNotificationListener;
 import com.firebirdberlin.nightdream.ui.background.BackgroundBurnInProtectionHelper;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -634,9 +635,7 @@ public class NightDreamUI {
 
             //Update Notifications in ClockLayout
             if (Settings.showNotification(mContext)) {
-                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                i.putExtra("command", "list");
-                mContext.sendBroadcast(i);
+                MNotificationListener.requestNotificationList(mContext);
             }
 
             controlsVisible = true;

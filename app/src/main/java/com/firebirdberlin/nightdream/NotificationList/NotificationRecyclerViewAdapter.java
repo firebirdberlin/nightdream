@@ -23,7 +23,6 @@ import android.content.IntentSender;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +31,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,8 +42,8 @@ import java.util.ArrayList;
 public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
     public static String TAG = "CustomRecyclerViewAdapter";
     private final int[] colorResId = new int[]{
-            R.color.white,
-            R.color.material_light_blue_grey
+            R.color.grey_bg,
+            R.color.material_blue_grey
     };
     NotificationList notificationList;
 
@@ -101,7 +101,6 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     }
 
     //Called by RecyclerView to display the data at the specified position.
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
 
@@ -121,12 +120,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         cardView.setBackgroundResource(colorResId[isSelected ? 1 : 0]);
 
         holder.notificationMessagebitmap.setImageBitmap(notification.getSmallIconBitmap());
-
-        if (notification.getColor() != 0) {
-            holder.notificationMessagebitmap.setColorFilter(new PorterDuffColorFilter(notification.getColor(), PorterDuff.Mode.SRC_ATOP));
-        } else {
-            holder.notificationMessagebitmap.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP));
-        }
+        holder.notificationMessagebitmap.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP));
 
         if (notification.getBitmapLargeIcon() != null) {
             holder.notificationMessageLargeIcon.setVisibility(View.VISIBLE);
@@ -155,7 +149,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                         Log.d(TAG, "ShowActionText (" + positionAction + "): " + action.title.toString().toUpperCase());
                         holder.notificationActionText[positionAction].setVisibility(View.VISIBLE);
                         holder.notificationActionText[positionAction].setText(action.title.toString().toUpperCase());
-                        holder.notificationActionText[positionAction].setTextColor(Color.rgb(0, 0, 200));
+                        holder.notificationActionText[positionAction].setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.material_amber));
 
                         holder.notificationActionText[positionAction].setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {

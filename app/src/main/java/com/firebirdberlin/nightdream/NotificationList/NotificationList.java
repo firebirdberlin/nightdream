@@ -20,6 +20,8 @@ package com.firebirdberlin.nightdream.NotificationList;
 
 import android.content.Context;
 
+import com.firebirdberlin.nightdream.Utility;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -115,9 +117,9 @@ public class NotificationList {
     }
 
     private boolean shallShowNotification(Notification notification, String packageName) {
-        return (
-                notification.isClearable()
-                        && notification.getPackageName().equals(packageName)
-        );
+        if (!notification.isClearable()) {
+            return false;
+        }
+        return Utility.isEmpty(packageName) || notification.getPackageName().equals(packageName);
     }
 }
