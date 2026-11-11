@@ -26,6 +26,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -1207,6 +1208,27 @@ public class Utility {
             return Bitmap.createScaledBitmap(bitmap, width, height, true);
         } catch (Exception e) {
             return bitmap;
+        }
+    }
+
+    public static void sendPendingIntent(Context context, PendingIntent pendingIntent) {
+        if (pendingIntent == null) {
+            return;
+        }
+        try {
+            Bundle optionsBundle = null;
+            if (Build.VERSION.SDK_INT >= 34) {
+                ActivityOptions options = ActivityOptions.makeBasic();
+                @SuppressWarnings("deprecation")
+                int startMode = ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED;
+                options.setPendingIntentBackgroundActivityStartMode(startMode);
+                optionsBundle = options.toBundle();
+            }
+            pendingIntent.send(context, 0, null, null, null, null, optionsBundle);
+        } catch (PendingIntent.CanceledException e) {
+            Log.e(TAG, "PendingIntent canceled", e);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to send PendingIntent", e);
         }
     }
 }

@@ -18,8 +18,6 @@
 
 package com.firebirdberlin.nightdream.NotificationList;
 
-import android.app.PendingIntent;
-import android.content.IntentSender;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -30,12 +28,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 
 import java.util.ArrayList;
 
@@ -153,11 +151,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
                         holder.notificationActionText[positionAction].setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                try {
-                                    action.actionIntent.send();
-                                } catch (Exception ex) {
-                                    Log.e(TAG, ex.toString());
-                                }
+                                Utility.sendPendingIntent(v.getContext(), action.actionIntent);
                             }
                         });
                         positionAction++;
@@ -280,15 +274,11 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     }
 
     // Interface definition for a callback to be invoked when a view is clicked.
-    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws IntentSender.SendIntentException {
+    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) {
         int itemPosition = recyclerView.getChildLayoutPosition(itemView);
         Notification notification = this.notificationList.get(itemPosition);
-        try {
-            if (notification.getPendingIntent() != null) {
-                notification.getPendingIntent().send();
-            }
-        } catch (PendingIntent.CanceledException e) {
-            throw new IntentSender.SendIntentException(e);
+        if (notification.getPendingIntent() != null) {
+            Utility.sendPendingIntent(recyclerView.getContext(), notification.getPendingIntent());
         }
     }
 

@@ -47,6 +47,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 
 public class NotificationPreviewLayout extends LinearLayout {
     private static final String TAG = NotificationPreviewLayout.class.getSimpleName();
@@ -133,11 +134,7 @@ public class NotificationPreviewLayout extends LinearLayout {
             public void onClick(View v) {
                 PendingIntent contentIntent = IntentCompat.getParcelableExtra(intent, "contentIntent", PendingIntent.class);
                 if (contentIntent != null) {
-                    try {
-                        contentIntent.send();
-                    } catch (PendingIntent.CanceledException e) {
-                        Log.e(TAG, "Failed to send content intent", e);
-                    }
+                    Utility.sendPendingIntent(v.getContext(), contentIntent);
                 }
             }
         };
