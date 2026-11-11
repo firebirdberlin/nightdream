@@ -511,6 +511,7 @@ public class NightDreamActivity extends BillingHelperActivity
             setupFlashlight();
             setupRadioStreamUI();
             setupAlarmClockIcon();
+            setupNotificationActivityIcon();
 
             showToastIfNotCharging();
 
@@ -774,6 +775,18 @@ public class NightDreamActivity extends BillingHelperActivity
     private void setupAlarmClockIcon() {
         alarmClockIcon.setVisibility(View.VISIBLE);
         Utility.setIconSize(this, alarmClockIcon);
+    }
+
+    private void setupNotificationActivityIcon() {
+        ImageView notificationActivityIcon = findViewById(R.id.notification_activity_icon);
+        if (notificationActivityIcon != null) {
+            if (BuildConfig.DEBUG) {
+                notificationActivityIcon.setVisibility(View.VISIBLE);
+                Utility.setIconSize(this, notificationActivityIcon);
+            } else {
+                notificationActivityIcon.setVisibility(View.GONE);
+            }
+        }
     }
 
     public void onWeatherForecastClick(View v) {
