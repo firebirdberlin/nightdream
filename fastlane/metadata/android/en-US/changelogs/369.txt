@@ -1,0 +1,5 @@
+<ul>
+    <li>🚀 RSS Ticker: Interactive scrolling & pause on touch</li>
+    <li>☀️ Weather: Improved forecast timeline plotting & updates</li>
+    <li>🛠️ Stability: Notification handling fixes & general updates</li>
+</ul>
