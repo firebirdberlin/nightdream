@@ -65,6 +65,7 @@ import com.firebirdberlin.nightdream.events.OnAlarmStarted;
 import com.firebirdberlin.nightdream.events.OnAlarmStopped;
 import com.firebirdberlin.nightdream.events.OnLightSensorValueTimeout;
 import com.firebirdberlin.nightdream.events.OnNewLightSensorValue;
+import com.firebirdberlin.nightdream.events.OnPowerConnectionChanged;
 import com.firebirdberlin.nightdream.events.OnRadioStreamStarted;
 import com.firebirdberlin.nightdream.events.OnRadioStreamStopped;
 import com.firebirdberlin.nightdream.models.BatteryValue;
@@ -973,6 +974,7 @@ public class NightDreamActivity extends BillingHelperActivity
             String action = intent.getAction();
             Log.i(TAG, "action -> " + action);
             if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
+                AppEventBus.publish(new OnPowerConnectionChanged(false));
                 scheduleShutdown();
                 nightDreamUI.onPowerDisconnected();
                 if (
@@ -987,6 +989,7 @@ public class NightDreamActivity extends BillingHelperActivity
                     }
                 }
             } else if (Intent.ACTION_POWER_CONNECTED.equals(action)) {
+                AppEventBus.publish(new OnPowerConnectionChanged(true));
                 scheduleShutdown();
                 handler.removeCallbacks(finishApp);
                 nightDreamUI.onPowerConnected();

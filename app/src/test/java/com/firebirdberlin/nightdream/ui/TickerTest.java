@@ -61,6 +61,30 @@ public class TickerTest {
     }
 
     @Test
+    public void testGetPreviousHeadline_normal() {
+        List<String> headlines = Arrays.asList("Headline 1", "Headline 2", "Headline 3");
+        int[] outIndex = {1};
+
+        String prev1 = Ticker.getPreviousHeadline(headlines, outIndex[0], true, outIndex);
+        Assert.assertEquals(" +++ Headline 1", prev1);
+        Assert.assertEquals(0, outIndex[0]);
+
+        String prev2 = Ticker.getPreviousHeadline(headlines, outIndex[0], false, outIndex);
+        Assert.assertEquals("Headline 3", prev2);
+        Assert.assertEquals(2, outIndex[0]);
+    }
+
+    @Test
+    public void testGetPreviousHeadline_skipsEmpty() {
+        List<String> headlines = Arrays.asList("Valid Headline", "", "   ");
+        int[] outIndex = {2};
+
+        String prev = Ticker.getPreviousHeadline(headlines, outIndex[0], false, outIndex);
+        Assert.assertEquals("Valid Headline", prev);
+        Assert.assertEquals(0, outIndex[0]);
+    }
+
+    @Test
     public void testIsDragExceeded() {
         int touchSlop = 8;
         // Within touch slop

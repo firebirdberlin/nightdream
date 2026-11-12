@@ -33,7 +33,7 @@ import com.firebirdberlin.nightdream.viewmodels.AlarmClockViewModel;
 
 
 public class BottomPanelLayout extends FrameLayout {
-    private static final String TAG = "BottomPanelLayout";
+    private static final String TAG = BottomPanelLayout.class.getSimpleName();
 
     private AlarmClock view = null;
     private Panel activePanel = Panel.ALARM_CLOCK;
@@ -80,6 +80,16 @@ public class BottomPanelLayout extends FrameLayout {
         }
     };
 
+    private final Runnable showTickerAfterDelay = new Runnable() {
+        @Override
+        public void run() {
+            handler.removeCallbacks(showTickerAfterDelay);
+            if (shallShowTicker() && tickerLayout == null && !AlarmHandlerService.alarmIsRunning() && !RadioStreamService.isRunning && activePanel != Panel.WEB_RADIO) {
+                showTickerView();
+            }
+        }
+    };
+
     public BottomPanelLayout(Context context) {
         super(context);
         this.context = context;
@@ -122,6 +132,7 @@ public class BottomPanelLayout extends FrameLayout {
         super.onDetachedFromWindow();
         handler.removeCallbacks(hidePanel);
         handler.removeCallbacks(hideTicker);
+        handler.removeCallbacks(showTickerAfterDelay);
     }
 
     public void setPaddingHorizontal(int paddingHorizontal) {
@@ -202,6 +213,10 @@ public class BottomPanelLayout extends FrameLayout {
     private void showAlarmViewIfNoRadioIsPlaying() {
         Log.d(TAG, "showAlarmViewIfNoRadioIsPlaying");
         if (RadioStreamService.isRunning) return;
+        if (shallShowTicker()) {
+            showTickerView();
+            return;
+        }
 
         removeAllViews();
         clearViews();
@@ -251,13 +266,22 @@ public class BottomPanelLayout extends FrameLayout {
     public void setup() {
         Log.d(TAG, "setup()");
         if (AlarmHandlerService.alarmIsRunning()) {
+            handler.removeCallbacks(showTickerAfterDelay);
             showAlarmView();
         } else if (RadioStreamService.isRunning || activePanel == Panel.WEB_RADIO) {
+            handler.removeCallbacks(showTickerAfterDelay);
             showWebRadioView();
         } else {
             if (shallShowTicker()) {
-                showTickerView();
+                if (tickerLayout != null) {
+                    showTickerView();
+                } else {
+                    showAlarmView();
+                    handler.removeCallbacks(showTickerAfterDelay);
+                    handler.postDelayed(showTickerAfterDelay, 30000L);
+                }
             } else {
+                handler.removeCallbacks(showTickerAfterDelay);
                 showAlarmView();
             }
         }
@@ -270,7 +294,7 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     private boolean mayHideAlarm() {
-        Log.i(TAG, "mayHIdeAlarm() -> nextAlarmTIme: " + nextAlarmTime);
+        Log.i(TAG, "mayHideAlarm() -> nextAlarmTIme: " + nextAlarmTime);
         return (
                 nextAlarmTime == null
                         || !notifyForUpcomingAlarms
@@ -307,14 +331,17 @@ public class BottomPanelLayout extends FrameLayout {
         Log.d(TAG, "showTickerView()");
 
         if (tickerLayout != null && tickerLayout.getParent() == this) {
+            show();
             return;
         }
 
         if (tickerLayout != null) {
             removeAllViews();
             addView(tickerLayout);
+            show();
             return;
         }
+        removeAllViews();
         clearViews();
 
         tickerLayout = new Ticker(context);
@@ -323,6 +350,7 @@ public class BottomPanelLayout extends FrameLayout {
         addView(tickerLayout);
         invalidate();
         tickerLayout.run(false);
+        show();
     }
 
     public boolean isWebRadioViewActive() {

@@ -1,6 +1,6 @@
 /*
  * NightDream
- * Copyright (C) 2025 Stefan Fruhner
+ * Copyright (C) 2026 Stefan Fruhner
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -46,58 +47,41 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebirdberlin.nightdream.Utility;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnPowerConnectionChanged;
 import com.firebirdberlin.nightdream.models.RssFeedItem;
 import com.firebirdberlin.nightdream.viewmodels.RSSViewModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 //shows text scrolling from right to left
 public class Ticker extends FrameLayout {
 
     private static final String TAG = Ticker.class.getSimpleName();
-    private long animationSpeed = 5L;
-    private final List<String> headlines = new ArrayList<>();
-    private final List<String> urls = new ArrayList<>();
-    private final Set<View> animatedViews = new HashSet<>();
-    private final Set<Animator> animators = new HashSet<>();
-    private int textColor = Color.WHITE;
-    private int index = -1;
     private final Context context;
-    private float textSize = 28.f;
-    private boolean running = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
-
-    private float downX;
-    private float downY;
-    private float lastX;
-    private long downTime;
-    private boolean isClickValid = false;
-    private boolean isDragging = false;
-    private String pendingUrl = null;
-    private boolean isPaused = false;
-    private int touchSlop;
-    private int longPressTimeout;
+    private final TickerAnimationController animationController;
+    private final TickerTouchHandler touchHandler;
 
     public Ticker(Context context) {
         super(context);
         this.context = context;
+        this.animationController = new TickerAnimationController(context);
+        this.touchHandler = new TickerTouchHandler(ViewConfiguration.get(context));
         init(null);
     }
 
     public Ticker(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        this.animationController = new TickerAnimationController(context);
+        this.touchHandler = new TickerTouchHandler(ViewConfiguration.get(context));
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
-        ViewConfiguration vc = ViewConfiguration.get(context);
-        touchSlop = vc.getScaledTouchSlop();
-        longPressTimeout = ViewConfiguration.getLongPressTimeout();
-
         GradientDrawable background = new GradientDrawable();
         background.setColor(Color.parseColor("#AA212121"));
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});
@@ -115,18 +99,18 @@ public class Ticker extends FrameLayout {
         });
 
         RSSViewModel.observeSpeed(context, speed -> {
-            Log.d(TAG,"change rss speed: "+speed);
+            Log.d(TAG, "change rss speed: " + speed);
             setTickerSpeed(speed);
         });
 
         RSSViewModel.observeInterval(context, interval -> {
-            Log.d(TAG,"change rss interval: "+interval);
+            Log.d(TAG, "change rss interval: " + interval);
             RSSViewModel.loadDataPeriodicFromWorker(context, (AppCompatActivity) context);
         });
 
         RSSViewModel.observeTextSize(context, textSize -> {
-            Log.i(TAG,"change rss textSize: "+ textSize);
-            this.textSize = textSize;
+            Log.i(TAG, "change rss textSize: " + textSize);
+            animationController.setTextSize(textSize);
             restart();
         });
     }
@@ -134,33 +118,17 @@ public class Ticker extends FrameLayout {
     public void setHeadlines(List<RssFeedItem> items) {
         Log.i(TAG, "setHeadlines()");
         if (items != null && !items.isEmpty()) {
-            this.headlines.clear();
-            this.urls.clear();
-            Log.d(TAG, "setHeadlines(List<RssFeedItem> articles)");
-            int count = 0;
-            for (RssFeedItem item : items) {
-                String title = item.getTitle();
-                String link = item.getLink();
-                String time = item.getPubDate();
-                Log.d(TAG, "rss Date: " + time);
-                Log.d(TAG, "rss Title: " + title);
-                Log.d(TAG, "rss Link: " + link);
-                headlines.add(title);
-                urls.add(link);
-                if (++count >= 15) { // only up to 15 messages
-                    break;
-                }
-            }
+            animationController.setHeadlines(items);
             restart();
         }
     }
 
     public void addHeadline(String headline) {
-        this.headlines.add(headline);
+        animationController.addHeadline(headline);
     }
 
     public void setTextColor(int color) {
-        this.textColor = color;
+        animationController.setTextColor(color);
     }
 
     public void setBackColor(int color) {
@@ -168,20 +136,26 @@ public class Ticker extends FrameLayout {
     }
 
     public void setCustomColor(int accentColor, int textColor) {
-        this.textColor = textColor;
-
+        animationController.setTextColor(textColor);
         updateChildren();
+    }
+
+    public void setTickerSpeed(Long speed) {
+        Log.d(TAG, "setTickerSpeed(): " + speed);
+        animationController.setTickerSpeed(speed);
     }
 
     public void restart() {
         Log.i(TAG, "restart()");
-        isPaused = false;
-        for (Animator animator : new ArrayList<>(animators)) {
-            animator.cancel();
+        animationController.setPaused(false);
+        handler.removeCallbacksAndMessages(null);
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.animate().setListener(null);
+            child.animate().cancel();
         }
-        animators.clear();
-        animatedViews.clear();
-        removeAllViewsInLayout();
+        animationController.cancelAnimations();
+        removeAllViews();
         requestLayout();
         invalidate();
         run(true);
@@ -192,39 +166,43 @@ public class Ticker extends FrameLayout {
         for (int i = 0; i < childCount; i++) {
             View v = getChildAt(i);
             if (v instanceof TextView) {
-                ((TextView) v).setTextColor(textColor);
+                ((TextView) v).setTextColor(animationController.getTextColor());
             }
-        }
-    }
-
-    public void setTickerSpeed(Long speed) {
-        Log.d(TAG, "setTickerSpeed(): " + speed);
-        if (animationSpeed != speed) {
-            animationSpeed = speed;
         }
     }
 
     //start scrolling headlines
     public void run(boolean restart) {
-        if (headlines.isEmpty()) {
+        if (animationController.getHeadlines().isEmpty()) {
             Log.d(TAG, "No headlines set");
             return;
         }
-        if (!this.running || restart) {
-            this.running = true;
+        if (!animationController.isRunning() || restart) {
+            animationController.setRunning(true);
             launchNext();
         }
+    }
+
+    private final Consumer<Object> eventListener = event -> {
+        if (event instanceof OnPowerConnectionChanged) {
+            Log.d(TAG, "OnPowerConnectionChanged received: "
+                    + ((OnPowerConnectionChanged) event).isConnected);
+            restart();
+        }
+    };
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        AppEventBus.addListener(eventListener);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        AppEventBus.removeListener(eventListener);
         handler.removeCallbacksAndMessages(null);
-        for (Animator animator : new ArrayList<>(animators)) {
-            animator.cancel();
-        }
-        animators.clear();
-        animatedViews.clear();
+        animationController.cancelAnimations();
     }
 
     @Override
@@ -237,23 +215,19 @@ public class Ticker extends FrameLayout {
 
     public void pause() {
         Log.d(TAG, "pause()");
-        isPaused = true;
-        for (Animator animator : new ArrayList<>(animators)) {
-            animator.pause();
-        }
+        animationController.setPaused(true);
+        animationController.pauseAnimations();
         handler.removeCallbacksAndMessages(null);
     }
 
     public void resume() {
         Log.d(TAG, "resume()");
-        if (!isPaused) {
+        if (!animationController.isPaused()) {
             return;
         }
-        isPaused = false;
-        if (Utility.areSystemAnimationsEnabled(context)) {
-            for (Animator animator : new ArrayList<>(animators)) {
-                animator.resume();
-            }
+        animationController.setPaused(false);
+        if (animationController.isAnimationActive()) {
+            animationController.resumeAnimations();
         } else {
             handler.removeCallbacksAndMessages(null);
             handler.postDelayed(this::launchNext, 10000);
@@ -266,62 +240,60 @@ public class Ticker extends FrameLayout {
         int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                downX = event.getX();
-                downY = event.getY();
-                lastX = downX;
-                downTime = event.getEventTime();
-                isClickValid = true;
-                isDragging = false;
-                pendingUrl = resolveUrlAt(downX, downY);
+                touchHandler.setDownX(event.getX());
+                touchHandler.setDownY(event.getY());
+                touchHandler.setLastX(touchHandler.getDownX());
+                touchHandler.setDownTime(event.getEventTime());
+                touchHandler.setClickValid(true);
+                touchHandler.setDragging(false);
+                touchHandler.setPendingUrl(resolveUrlAt(touchHandler.getDownX(), touchHandler.getDownY()));
                 return true;
 
             case MotionEvent.ACTION_MOVE:
                 float currentX = event.getX();
                 float currentY = event.getY();
-                float dx = currentX - lastX;
-                float totalDx = Math.abs(currentX - downX);
-                float totalDy = Math.abs(currentY - downY);
+                float dx = currentX - touchHandler.getLastX();
+                float totalDx = Math.abs(currentX - touchHandler.getDownX());
+                float totalDy = Math.abs(currentY - touchHandler.getDownY());
 
-                if (totalDx > touchSlop || totalDy > touchSlop) {
-                    isClickValid = false;
-                    if (!isDragging) {
-                        isDragging = true;
+                if (totalDx > touchHandler.getTouchSlop() || totalDy > touchHandler.getTouchSlop()) {
+                    touchHandler.setClickValid(false);
+                    if (!touchHandler.isDragging()) {
+                        touchHandler.setDragging(true);
                         pause();
                     }
                 }
 
-                if (isDragging) {
+                if (touchHandler.isDragging()) {
                     for (int i = 0; i < getChildCount(); i++) {
                         View child = getChildAt(i);
                         child.setTranslationX(child.getTranslationX() + dx);
                     }
-                    checkAndFillGapDuringDrag();
+                    if (animationController.isAnimationActive()) {
+                        checkAndFillGapDuringDrag();
+                    }
                 }
-                lastX = currentX;
+                touchHandler.setLastX(currentX);
                 return true;
 
             case MotionEvent.ACTION_UP:
-                if (isDragging) {
+                if (touchHandler.isDragging()) {
                     resumeFromDrag();
                 }
 
-                long duration = event.getEventTime() - downTime;
-                if (isClickValid && !isDragging && duration <= longPressTimeout) {
-                    performUrlClick(pendingUrl);
+                long duration = event.getEventTime() - touchHandler.getDownTime();
+                if (TickerTouchHandler.isValidTap(touchHandler.isClickValid(), duration, touchHandler.getLongPressTimeout())) {
+                    performUrlClick(touchHandler.getPendingUrl());
                 }
 
-                isClickValid = false;
-                isDragging = false;
-                pendingUrl = null;
+                touchHandler.reset();
                 return true;
 
             case MotionEvent.ACTION_CANCEL:
-                if (isDragging) {
+                if (touchHandler.isDragging()) {
                     resumeFromDrag();
                 }
-                isClickValid = false;
-                isDragging = false;
-                pendingUrl = null;
+                touchHandler.reset();
                 return true;
 
             default:
@@ -331,7 +303,7 @@ public class Ticker extends FrameLayout {
     }
 
     private void checkAndFillGapDuringDrag() {
-        if (Utility.isEmpty(headlines)) {
+        if (Utility.isEmpty(animationController.getHeadlines())) {
             return;
         }
         int width = getWidth();
@@ -339,7 +311,7 @@ public class Ticker extends FrameLayout {
             return;
         }
 
-        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
+        boolean animationsEnabled = animationController.isAnimationActive();
 
         float maxRight = Float.NEGATIVE_INFINITY;
         for (int i = 0; i < getChildCount(); i++) {
@@ -380,7 +352,7 @@ public class Ticker extends FrameLayout {
         }
 
         while (minLeft > 0 && firstChild != null) {
-            int firstIndex = index;
+            int firstIndex = animationController.getIndex();
             if (firstChild.getTag() instanceof Integer) {
                 firstIndex = (Integer) firstChild.getTag();
             }
@@ -388,6 +360,7 @@ public class Ticker extends FrameLayout {
             int prevIndex = firstIndex;
             int count = 0;
             String headline = "";
+            List<String> headlines = animationController.getHeadlines();
             while (headline.isEmpty() && count < headlines.size()) {
                 prevIndex = (prevIndex - 1 + headlines.size()) % headlines.size();
                 headline = headlines.get(prevIndex).trim();
@@ -406,7 +379,7 @@ public class Ticker extends FrameLayout {
             int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
             float startX = minLeft - textWidth;
             tv.setTranslationX(startX);
-            animatedViews.add(tv);
+            animationController.addAnimatedView(tv);
             addView(tv, 0);
 
             minLeft = startX;
@@ -415,27 +388,29 @@ public class Ticker extends FrameLayout {
     }
 
     private void launchNextDuringDrag(float startX) {
-        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
-        int[] outIndex = {index};
-        String headline = getNextHeadline(headlines, index, animationsEnabled, outIndex);
-        index = outIndex[0];
+        boolean animationsEnabled = animationController.isAnimationActive();
+        int[] outIndex = {animationController.getIndex()};
+        String headline = getNextHeadline(animationController.getHeadlines(), animationController.getIndex(), animationsEnabled, outIndex);
+        animationController.setIndex(outIndex[0]);
 
-        TextView tv = getTextView(animationsEnabled, headline, index);
+        TextView tv = getTextView(animationsEnabled, headline, animationController.getIndex());
         tv.setTranslationX(startX);
-        animatedViews.add(tv);
+        animationController.addAnimatedView(tv);
         addView(tv);
     }
 
     private String resolveUrlAt(float x, float y) {
         View child = findChildViewUnder(x, y);
+        List<String> urls = animationController.getUrls();
         if (child != null && child.getTag() instanceof Integer) {
             int itemIndex = (Integer) child.getTag();
             if (itemIndex >= 0 && itemIndex < urls.size()) {
                 return urls.get(itemIndex);
             }
         }
-        if (index >= 0 && index < urls.size()) {
-            return urls.get(index);
+        int currentIndex = animationController.getIndex();
+        if (currentIndex >= 0 && currentIndex < urls.size()) {
+            return urls.get(currentIndex);
         }
         return null;
     }
@@ -464,9 +439,16 @@ public class Ticker extends FrameLayout {
 
     private void resumeFromDrag() {
         Log.d(TAG, "resumeFromDrag()");
-        if (!Utility.areSystemAnimationsEnabled(context)) {
+        if (!animationController.isAnimationActive()) {
             handler.removeCallbacksAndMessages(null);
-            handler.postDelayed(this::launchNext, 10000);
+            float dragDistance = touchHandler.getLastX() - touchHandler.getDownX();
+            if (dragDistance < -touchHandler.getTouchSlop()) {
+                animateToNextHeadline();
+            } else if (dragDistance > touchHandler.getTouchSlop()) {
+                animateToPreviousHeadline();
+            } else {
+                launchCurrent();
+            }
             return;
         }
 
@@ -475,7 +457,7 @@ public class Ticker extends FrameLayout {
             v.animate().setListener(null);
             v.animate().cancel();
         }
-        animators.clear();
+        animationController.cancelAnimations();
 
         checkAndFillGapDuringDrag();
 
@@ -506,10 +488,10 @@ public class Ticker extends FrameLayout {
 
             if (curX <= stage2Target) {
                 removeView(tv);
-                animatedViews.remove(tv);
+                animationController.removeAnimatedView(tv);
             } else if (isRightmost && curX > stage1Boundary) {
                 float dist1 = curX - stage1Boundary;
-                long dur1 = Math.max(1L, (long) (dist1 * animationSpeed));
+                long dur1 = Math.max(1L, (long) (dist1 * animationController.getAnimationSpeed()));
                 tv.animate()
                         .translationX(stage1Boundary)
                         .setDuration(dur1)
@@ -517,13 +499,13 @@ public class Ticker extends FrameLayout {
                         .setListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(@NonNull Animator animation) {
-                                animators.add(animation);
-                                animatedViews.add(tv);
+                                animationController.addAnimator(animation);
+                                animationController.addAnimatedView(tv);
                             }
 
                             @Override
                             public void onAnimationEnd(@NonNull Animator animation) {
-                                animators.remove(animation);
+                                animationController.removeAnimator(animation);
                                 if (tv.getParent() != null) {
                                     animationEnd(tv);
                                     launchNext();
@@ -532,8 +514,8 @@ public class Ticker extends FrameLayout {
 
                             @Override
                             public void onAnimationCancel(@NonNull Animator animation) {
-                                animators.remove(animation);
-                                animatedViews.remove(tv);
+                                animationController.removeAnimator(animation);
+                                animationController.removeAnimatedView(tv);
                             }
 
                             @Override
@@ -541,7 +523,7 @@ public class Ticker extends FrameLayout {
                         }).start();
             } else {
                 float dist2 = curX - stage2Target;
-                long dur2 = Math.max(1L, (long) (dist2 * animationSpeed));
+                long dur2 = Math.max(1L, (long) (dist2 * animationController.getAnimationSpeed()));
                 tv.animate()
                         .translationX(stage2Target)
                         .setDuration(dur2)
@@ -549,21 +531,21 @@ public class Ticker extends FrameLayout {
                         .setListener(new Animator.AnimatorListener() {
                             @Override
                             public void onAnimationStart(@NonNull Animator animation) {
-                                animators.add(animation);
-                                animatedViews.add(tv);
+                                animationController.addAnimator(animation);
+                                animationController.addAnimatedView(tv);
                             }
 
                             @Override
                             public void onAnimationEnd(@NonNull Animator animation) {
                                 removeView(tv);
-                                animators.remove(animation);
-                                animatedViews.remove(tv);
+                                animationController.removeAnimator(animation);
+                                animationController.removeAnimatedView(tv);
                             }
 
                             @Override
                             public void onAnimationCancel(@NonNull Animator animation) {
-                                animators.remove(animation);
-                                animatedViews.remove(tv);
+                                animationController.removeAnimator(animation);
+                                animationController.removeAnimatedView(tv);
                             }
 
                             @Override
@@ -597,17 +579,113 @@ public class Ticker extends FrameLayout {
 
     private void launchNext() {
         Log.i(TAG, "launchNext()");
-        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
-        int[] outIndex = {index};
-        String headline = getNextHeadline(headlines, index, animationsEnabled, outIndex);
-        index = outIndex[0];
+        boolean animationsEnabled = animationController.isAnimationActive();
+        int[] outIndex = {animationController.getIndex()};
+        String headline = getNextHeadline(animationController.getHeadlines(), animationController.getIndex(), animationsEnabled, outIndex);
+        animationController.setIndex(outIndex[0]);
+        displayHeadline(animationsEnabled, headline);
+    }
 
+    private void animateToNextHeadline() {
+        Log.i(TAG, "animateToNextHeadline()");
+        int width = getWidth() > 0 ? getWidth() : 1000;
+        int[] outIndex = {animationController.getIndex()};
+        String headline = getNextHeadline(animationController.getHeadlines(), animationController.getIndex(), false, outIndex);
+        animationController.setIndex(outIndex[0]);
+
+        final View oldView = getChildCount() > 0 ? getChildAt(getChildCount() - 1) : null;
+        if (oldView != null) {
+            oldView.animate()
+                    .translationX(-width)
+                    .setDuration(250)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .withEndAction(() -> removeView(oldView))
+                    .start();
+        }
+
+        TextView newTv = getTextView(false, headline);
+        newTv.setTranslationX(width);
+        addView(newTv);
+        newTv.animate()
+                .translationX(0)
+                .setDuration(250)
+                .setInterpolator(new DecelerateInterpolator())
+                .start();
+
+        handler.removeCallbacksAndMessages(null);
+        handler.postDelayed(this::launchNext, 10000);
+    }
+
+    private void animateToPreviousHeadline() {
+        Log.i(TAG, "animateToPreviousHeadline()");
+        int width = getWidth() > 0 ? getWidth() : 1000;
+        int[] outIndex = {animationController.getIndex()};
+        String headline = getPreviousHeadline(animationController.getHeadlines(), animationController.getIndex(), false, outIndex);
+        animationController.setIndex(outIndex[0]);
+
+        final View oldView = getChildCount() > 0 ? getChildAt(getChildCount() - 1) : null;
+        if (oldView != null) {
+            oldView.animate()
+                    .translationX(width)
+                    .setDuration(250)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .withEndAction(() -> removeView(oldView))
+                    .start();
+        }
+
+        TextView newTv = getTextView(false, headline);
+        newTv.setTranslationX(-width);
+        addView(newTv);
+        newTv.animate()
+                .translationX(0)
+                .setDuration(250)
+                .setInterpolator(new DecelerateInterpolator())
+                .start();
+
+        handler.removeCallbacksAndMessages(null);
+        handler.postDelayed(this::launchNext, 10000);
+    }
+
+    private void launchPrevious() {
+        Log.i(TAG, "launchPrevious()");
+        boolean animationsEnabled = animationController.isAnimationActive();
+        int[] outIndex = {animationController.getIndex()};
+        String headline = getPreviousHeadline(animationController.getHeadlines(), animationController.getIndex(), animationsEnabled, outIndex);
+        animationController.setIndex(outIndex[0]);
+        displayHeadline(animationsEnabled, headline);
+    }
+
+    private void launchCurrent() {
+        Log.i(TAG, "launchCurrent()");
+        boolean animationsEnabled = animationController.isAnimationActive();
+        int currentIndex = animationController.getIndex();
+        List<String> headlines = animationController.getHeadlines();
+        if (currentIndex < 0 || currentIndex >= headlines.size()) {
+            launchNext();
+            return;
+        }
+        if (!animationsEnabled && getChildCount() > 0) {
+            View oldView = getChildAt(getChildCount() - 1);
+            oldView.animate()
+                    .translationX(0)
+                    .setDuration(150)
+                    .start();
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(this::launchNext, 10000);
+            return;
+        }
+        String headline = headlines.get(currentIndex).trim();
+        if (!headline.isEmpty() && animationsEnabled) {
+            headline = " +++ " + headline;
+        }
+        displayHeadline(animationsEnabled, headline);
+    }
+
+    private void displayHeadline(boolean animationsEnabled, String headline) {
         TextView tv = getTextView(animationsEnabled, headline);
-        if (Utility.areSystemAnimationsEnabled(context)) {
+        if (animationsEnabled) {
             removeNonAnimatedViews();
             tv.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                // View's dimensions are available only after the layout pass.
-                // Now is the time to start animating it.
                 Log.i(TAG, "addOnLayoutChangeListener");
                 animationStart((TextView) v);
             });
@@ -644,14 +722,36 @@ public class Ticker extends FrameLayout {
         return headline;
     }
 
+    public static String getPreviousHeadline(List<String> headlines, int currentIndex, boolean animationsEnabled, int[] outIndex) {
+        if (Utility.isEmpty(headlines)) {
+            if (outIndex != null && outIndex.length > 0) {
+                outIndex[0] = currentIndex;
+            }
+            return "";
+        }
+        int count = 0;
+        int index = currentIndex;
+        String headline = "";
+        while (headline.isEmpty() && count < headlines.size()) {
+            index = (index - 1 + headlines.size()) % headlines.size();
+            headline = headlines.get(index).trim();
+            count++;
+        }
+        if (!headline.isEmpty() && animationsEnabled) {
+            headline = " +++ " + headline;
+        }
+        if (outIndex != null && outIndex.length > 0) {
+            outIndex[0] = index;
+        }
+        return headline;
+    }
+
     public static boolean isDragExceeded(float downX, float downY, float currentX, float currentY, int touchSlop) {
-        float totalDx = Math.abs(currentX - downX);
-        float totalDy = Math.abs(currentY - downY);
-        return totalDx > touchSlop || totalDy > touchSlop;
+        return TickerTouchHandler.isDragExceeded(downX, downY, currentX, currentY, touchSlop);
     }
 
     public static boolean isValidTap(boolean isClickValid, long duration, int longPressTimeout) {
-        return isClickValid && duration <= longPressTimeout;
+        return TickerTouchHandler.isValidTap(isClickValid, duration, longPressTimeout);
     }
 
     public static boolean shouldFillGap(float maxRight, int containerWidth) {
@@ -663,7 +763,7 @@ public class Ticker extends FrameLayout {
     }
 
     private TextView getTextView(boolean animationsEnabled, String headline) {
-        return getTextView(animationsEnabled, headline, index);
+        return getTextView(animationsEnabled, headline, animationController.getIndex());
     }
 
     private TextView getTextView(boolean animationsEnabled, String headline, int itemIndex) {
@@ -681,8 +781,8 @@ public class Ticker extends FrameLayout {
         tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         tv.setSingleLine(true);
         tv.setTag(itemIndex);
-        tv.setTextColor(this.textColor);
-        tv.setTextSize(this.textSize);
+        tv.setTextColor(animationController.getTextColor());
+        tv.setTextSize(animationController.getTextSize());
         if (!headline.isEmpty()) {
             tv.setText(headline);
         }
@@ -690,37 +790,36 @@ public class Ticker extends FrameLayout {
     }
 
     void removeNonAnimatedViews() {
-        for (int i=0; i < getChildCount(); i++) {
-           View view = getChildAt(i) ;
-            if (! animatedViews.contains(view)) {
-                removeView(view);
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            View view = getChildAt(i);
+            if (!animationController.isViewAnimated(view)) {
+                removeViewAt(i);
             }
         }
-
     }
+
     private void animationStart(final TextView tv) {
-        if (animatedViews.contains(tv)) {
+        if (animationController.isViewAnimated(tv)) {
             return;
         }
 
-        //move view out off screen.
         tv.setTranslationX(getWidth());
         int distance = (int) tv.getPaint().measureText(tv.getText().toString());
         tv.animate()
                 .translationXBy(-distance)
-                .setDuration(distance * animationSpeed)
+                .setDuration(distance * animationController.getAnimationSpeed())
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(@NonNull Animator animation) {
                         Log.d(TAG, "start animation");
-                        animators.add(animation);
-                        animatedViews.add(tv);
+                        animationController.addAnimator(animation);
+                        animationController.addAnimatedView(tv);
                     }
 
                     @Override
                     public void onAnimationEnd(@NonNull Animator animation) {
-                        animators.remove(animation);
+                        animationController.removeAnimator(animation);
                         if (tv.getParent() != null) {
                             animationEnd(tv);
                             launchNext();
@@ -729,8 +828,8 @@ public class Ticker extends FrameLayout {
 
                     @Override
                     public void onAnimationCancel(@NonNull Animator animation) {
-                        animators.remove(animation);
-                        animatedViews.remove(tv);
+                        animationController.removeAnimator(animation);
+                        animationController.removeAnimatedView(tv);
                     }
 
                     @Override
@@ -743,26 +842,25 @@ public class Ticker extends FrameLayout {
         int distance = getWidth();
         tv.animate()
                 .translationXBy(-distance)
-                .setDuration(distance * animationSpeed)
+                .setDuration(distance * animationController.getAnimationSpeed())
                 .setInterpolator(new LinearInterpolator())
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(@NonNull Animator animation) {
-                        animators.add(animation);
+                        animationController.addAnimator(animation);
                     }
 
                     @Override
                     public void onAnimationEnd(@NonNull Animator animation) {
                         removeView(tv);
-                        animators.remove(animation);
-                        animatedViews.remove(tv);
+                        animationController.removeAnimator(animation);
+                        animationController.removeAnimatedView(tv);
                     }
 
                     @Override
                     public void onAnimationCancel(@NonNull Animator animation) {
-                        //Remove view from set
-                        animatedViews.remove(tv);
-                        animators.remove(animation);
+                        animationController.removeAnimatedView(tv);
+                        animationController.removeAnimator(animation);
                     }
 
                     @Override
