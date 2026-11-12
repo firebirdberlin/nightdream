@@ -53,7 +53,7 @@
             app:tabMode="fixed"
             app:tabGravity="fill" />
 
-        <androidx.viewpager.widget.ViewPager
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

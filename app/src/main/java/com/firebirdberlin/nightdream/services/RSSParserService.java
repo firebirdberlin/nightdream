@@ -42,8 +42,6 @@ import java.util.List;
 
 public class RSSParserService extends Worker {
     private static final String TAG = "RSSParserService";
-    private String urlString = "https://www.tagesschau.de/xml/rss2/";
-//    private String urlString = "https://www.rbb24.de/index.xml/feed=rss.xml";
     public static MutableLiveData<List<RssFeedItem>> articleListLive = new MutableLiveData<>();
 
     public RSSParserService(@NonNull Context context, @NonNull WorkerParameters params) {
@@ -92,14 +90,12 @@ public class RSSParserService extends Worker {
     }
 
     private List<RssFeedItem> parse(InputStream in) throws XmlPullParserException, IOException {
-        try {
+        try (in) {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
             return readFeed(parser);
-        } finally {
-            in.close();
         }
     }
 
@@ -143,14 +139,11 @@ public class RSSParserService extends Worker {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("title")) {
-                title = readTitle(parser);
-            } else if (name.equals("link")) {
-                link = readLink(parser);
-            } else if (name.equals("pubDate")) {
-                pubDate = readPubDate(parser);
-            } else {
-                skip(parser);
+            switch (name) {
+                case "title" -> title = readTitle(parser);
+                case "link" -> link = readLink(parser);
+                case "pubDate" -> pubDate = readPubDate(parser);
+                default -> skip(parser);
             }
         }
         return new RssFeedItem(title, link, pubDate);

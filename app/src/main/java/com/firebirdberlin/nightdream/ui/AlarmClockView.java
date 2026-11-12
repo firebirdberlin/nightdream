@@ -640,6 +640,7 @@ public class AlarmClockView extends View {
         });
     }
 
+    @SuppressWarnings("deprecation")
     void toast(final CharSequence text) {
         mHandler.post(new Runnable() {
             @Override

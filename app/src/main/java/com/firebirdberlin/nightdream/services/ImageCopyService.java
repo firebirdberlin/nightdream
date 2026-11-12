@@ -134,7 +134,7 @@ public class ImageCopyService extends Service {
                 CopyImagesDataHolder.getInstance().updateImageCopyServiceStatus(running);
 
                 Log.d(TAG, "Work done. stopForeground + stopSelf");
-                stopForeground(true);
+                stopForeground(Service.STOP_FOREGROUND_REMOVE);
                 stopSelf();
             }).start();
         } catch (Exception ex) {

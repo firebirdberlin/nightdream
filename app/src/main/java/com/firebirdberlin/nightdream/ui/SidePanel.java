@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
@@ -49,7 +50,7 @@ import com.google.android.flexbox.FlexboxLayout;
 
 public class SidePanel extends FlexboxLayout {
     private static final String TAG = "SidePanel";
-    private final int transparentColor = getResources().getColor(android.R.color.transparent);
+    private final int transparentColor = ContextCompat.getColor(getContext(), android.R.color.transparent);
     private final Handler handler = new Handler(Looper.getMainLooper());
     private int mIconBackground;
     private Interpolator mAnimationInterpolator;
@@ -313,14 +314,14 @@ public class SidePanel extends FlexboxLayout {
 
     private void setIconActive(ImageView icon) {
         post(() -> {
-            icon.setColorFilter(mAccentColor, PorterDuff.Mode.SRC_ATOP);
+            icon.setColorFilter(new PorterDuffColorFilter(mAccentColor, PorterDuff.Mode.SRC_ATOP));
             setIconSize(getContext(), icon);
         });
     }
 
     private void setIconInactive(ImageView icon) {
         post(() -> {
-            icon.setColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP);
+            icon.setColorFilter(new PorterDuffColorFilter(mIconColor, PorterDuff.Mode.SRC_ATOP));
             setIconSize(getContext(), icon);
         });
     }

@@ -517,7 +517,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             stopForeground(Service.STOP_FOREGROUND_DETACH);
         } else {
-            stopForeground(false);
+            stopForeground(Service.STOP_FOREGROUND_DETACH);
         }
     }
 

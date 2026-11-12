@@ -223,8 +223,7 @@ public class HttpReader {
             Log.e(TAG, "Unknown host for " + urlString);
             return responseText;
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e), e);
-            e.printStackTrace();
+            Log.e(TAG, "Network error reading URL: " + urlString, e);
         }
         Log.i(TAG, "Returning from network for " + urlString);
         Log.i(TAG, "responseCode: " + responseCode);

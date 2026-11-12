@@ -306,10 +306,14 @@ public class BottomPanelLayout extends FrameLayout {
     private void showTickerView() {
         Log.d(TAG, "showTickerView()");
 
-        removeAllViews();
+        if (tickerLayout != null && tickerLayout.getParent() == this) {
+            return;
+        }
+
         if (tickerLayout != null) {
+            removeAllViews();
             addView(tickerLayout);
-            return; // already visible
+            return;
         }
         clearViews();
 

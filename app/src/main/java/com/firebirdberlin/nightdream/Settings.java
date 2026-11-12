@@ -501,7 +501,7 @@ public class Settings {
         background_exif = settings.getBoolean("backgroundEXIF", false);
         fade_clock = settings.getBoolean("fadeClock", false);
         background_mode_auto_color = settings.getBoolean("autoAccentColor", true);
-        rssURL = settings.getString("rssURL", "");
+        rssURL = settings.getString("rssURL", getDefaultRssUrl());
         rssCharSet = settings.getString("rssCharSetMode", "utf-8");
         rssEnabled = settings.getBoolean("enableRSS", false);
         rssIntervalMode = Integer.parseInt(settings.getString("rssIntervalMode", "60"));
@@ -1019,6 +1019,13 @@ public class Settings {
             return false;
         }
         return scheduledAutoStartEnabled;
+    }
+
+    public static String getDefaultRssUrl() {
+        if (Utility.isGermany(Locale.getDefault())) {
+            return "https://www.tagesschau.de/xml/rss2/";
+        }
+        return "";
     }
 
     private String getDefaultDateFormat() {

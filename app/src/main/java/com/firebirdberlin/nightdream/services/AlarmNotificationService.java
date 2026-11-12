@@ -162,7 +162,7 @@ public class AlarmNotificationService extends JobService {
                         .setContentIntent(contentIntent);
 
         NotificationCompat.WearableExtender wearableExtender =
-                new NotificationCompat.WearableExtender().setHintHideIcon(true);
+                new NotificationCompat.WearableExtender();
 
         String textActionSkip = context.getString(R.string.action_skip);
         Intent skipIntent = AlarmHandlerService.getSkipIntent(context, nextAlarmTime);

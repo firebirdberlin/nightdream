@@ -51,7 +51,7 @@ import java.util.Random;
 
 public class RadioBrowserApi {
 
-    private static String TAG = "RadioBrowserApi";
+    private static final String TAG = RadioBrowserApi.class.getSimpleName();
 
     private static final String COUNTRIES_CACHE_FILE = "radioBrowserCountries.json";
 
@@ -68,7 +68,7 @@ public class RadioBrowserApi {
                 servers.add(item.getCanonicalHostName());
             }
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to resolve radio-browser host name", e);
         }
         if (servers.isEmpty()) {
             return "de1.api.radio-browser.info";
@@ -127,8 +127,7 @@ public class RadioBrowserApi {
             return stationList;
         }
         catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            e.printStackTrace();
+            Log.e(TAG, "Error fetching stations", e);
         }
 
         Log.i(TAG, " >> response " + response);
@@ -151,7 +150,7 @@ public class RadioBrowserApi {
                     }
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error parsing station JSON response", e);
             }
         } else {
             Log.w(TAG, " >> responseCode " + String.valueOf(responseCode));
@@ -231,8 +230,7 @@ public class RadioBrowserApi {
             return countries;
         }
         catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e), e);
-            e.printStackTrace();
+            Log.e(TAG, "Error fetching countries", e);
         }
 
         Log.i(TAG, " >> response " + response);
@@ -246,14 +244,14 @@ public class RadioBrowserApi {
                     try {
                         writeCountryResponseToCache(responseText, cacheDir);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "Error caching country response", e);
                         //TODO
                         // 1. no caching possible for some reason, so disable fetchCountries at all to save api requests
                         // 2. fall back to a static list of countries provided within the app to save api requests
                     }
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error decoding country JSON response", e);
                 //TODO resilience (count errors and if error threshold is reached (API service broken), disable fetchCountries for some time to save api requests)
             }
 
@@ -325,7 +323,7 @@ public class RadioBrowserApi {
                 is = new FileInputStream(cacheFile);
                 response = getResponseText(is);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error reading countries from cache file", e);
             } finally {
                 if (is != null) {
                     try {

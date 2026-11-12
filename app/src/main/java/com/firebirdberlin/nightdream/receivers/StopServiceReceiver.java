@@ -29,6 +29,7 @@ import com.firebirdberlin.nightdream.NightDreamActivity;
 
 public class StopServiceReceiver extends BroadcastReceiver {
     @Override
+    @SuppressWarnings("deprecation")
     public void onReceive(final Context context, final Intent intent) {
         if (intent == null) return;
         String action = intent.getAction();

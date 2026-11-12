@@ -2,6 +2,7 @@ package com.firebirdberlin.nightdream.events
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -15,6 +16,7 @@ import java.util.function.Consumer
 
 class AppEventBus {
     companion object {
+        private val TAG = AppEventBus::class.java.simpleName
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         private val mainHandler = Handler(Looper.getMainLooper())
 
@@ -34,7 +36,7 @@ class AppEventBus {
                     try {
                         consumer.accept(event)
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Log.e(TAG, "Error notifying event listener", e)
                     }
                 }
             }

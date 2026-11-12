@@ -31,7 +31,6 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -48,11 +47,9 @@ public class MetNoApi {
     private static final String CACHE_FILE = "MetNoApi";
     private static final long CACHE_VALIDITY_TIME = WeatherEntry.REQUEST_INTERVAL - 1;
     private static final String TAG = "MetNoApi";
-    private static WeakReference<Context> mContext;
     private static long requestTimestamp = 0L;
 
     public static WeatherEntry fetchCurrentWeatherData(Context context, City city) {
-        mContext = new WeakReference<>(context);
         String responseText = fetchWeatherData(context, city);
         if (responseText == null || responseText.isEmpty()) {
             return null;
@@ -103,7 +100,7 @@ public class MetNoApi {
 
             return responseText;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Malformed URL for forecast request", e);
             return null;
         }
     }
@@ -290,25 +287,17 @@ public class MetNoApi {
                 if (Utility.equalsAny(code, "snowshowers", "snowshowers_day")) return "U";
                 if (Utility.equalsAny(code, "snowshowersandthunder", "snowshowersandthunder_day", "snowshowersandthunder_night")) return "O";
 
-                switch (code) {
-                    case "clearsky_night":
-                        return "C";
-                    case "cloudy":
-                        return "N";
-                    case "fair_night":
-                        return "I";
-                    case "fog":
-                        return "M";
-                    case "partlycloudy_night":
-                        return "I";
-                    case "rain":
-                        return "R";
-                    case "sleet":
-                        return "X";
-                    case "snow":
-                        return "W";
-                }
-                return "";
+                return switch (code) {
+                    case "clearsky_night" -> "C";
+                    case "cloudy" -> "N";
+                    case "fair_night" -> "I";
+                    case "fog" -> "M";
+                    case "partlycloudy_night" -> "I";
+                    case "rain" -> "R";
+                    case "sleet" -> "X";
+                    case "snow" -> "W";
+                    default -> "";
+                };
             }
 
             @Keep

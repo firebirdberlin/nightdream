@@ -28,7 +28,7 @@ import java.util.Locale;
 public class UtilityTest {
     @Test
     public void testGetWeekdayStringsForLocaleDe() {
-        String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("de"));
+        String[] weekdays = Utility.getWeekdayStringsForLocale(Locale.forLanguageTag("de"));
 
         for (int i = 0; i < weekdays.length; i++) {
             System.out.println(weekdays[i]);
@@ -41,7 +41,7 @@ public class UtilityTest {
 
     @Test
     public void testGetWeekdayStringsForLocaleUs() {
-        String[] weekdays = Utility.getWeekdayStringsForLocale(new Locale("us"));
+        String[] weekdays = Utility.getWeekdayStringsForLocale(Locale.forLanguageTag("us"));
         String[] expected = {"", "S", "M", "T", "W", "T", "F", "S"};
 
         Assert.assertEquals(8, weekdays.length);
@@ -153,5 +153,15 @@ public class UtilityTest {
         for (Utility.NightInterval interval : intervals) {
             Assert.assertTrue(interval.end > interval.start);
         }
+    }
+
+    @Test
+    public void testIsGermany() {
+        Assert.assertFalse(Utility.isGermany(null));
+        Assert.assertTrue(Utility.isGermany(Locale.GERMANY));
+        Assert.assertTrue(Utility.isGermany(Locale.forLanguageTag("de-DE")));
+        Assert.assertTrue(Utility.isGermany(Locale.forLanguageTag("en-DE")));
+        Assert.assertFalse(Utility.isGermany(Locale.US));
+        Assert.assertFalse(Utility.isGermany(Locale.GERMAN));
     }
 }

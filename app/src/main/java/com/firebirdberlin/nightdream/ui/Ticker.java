@@ -33,7 +33,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -53,21 +55,31 @@ import java.util.List;
 import java.util.Set;
 
 //shows text scrolling from right to left
-public class Ticker extends FrameLayout implements View.OnClickListener {
+public class Ticker extends FrameLayout {
 
-    public static String TAG = "Ticker";
+    private static final String TAG = Ticker.class.getSimpleName();
     private long animationSpeed = 5L;
     private final List<String> headlines = new ArrayList<>();
     private final List<String> urls = new ArrayList<>();
     private final Set<View> animatedViews = new HashSet<>();
     private final Set<Animator> animators = new HashSet<>();
     private int textColor = Color.WHITE;
-    private int accentColor = Color.WHITE;
     private int index = -1;
     private final Context context;
     private float textSize = 28.f;
     private boolean running = false;
-    final private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private float downX;
+    private float downY;
+    private float lastX;
+    private long downTime;
+    private boolean isClickValid = false;
+    private boolean isDragging = false;
+    private String pendingUrl = null;
+    private boolean isPaused = false;
+    private int touchSlop;
+    private int longPressTimeout;
 
     public Ticker(Context context) {
         super(context);
@@ -82,6 +94,10 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
 
     private void init(AttributeSet attrs) {
+        ViewConfiguration vc = ViewConfiguration.get(context);
+        touchSlop = vc.getScaledTouchSlop();
+        longPressTimeout = ViewConfiguration.getLongPressTimeout();
+
         GradientDrawable background = new GradientDrawable();
         background.setColor(Color.parseColor("#AA212121"));
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});
@@ -152,7 +168,6 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     }
 
     public void setCustomColor(int accentColor, int textColor) {
-        this.accentColor = accentColor;
         this.textColor = textColor;
 
         updateChildren();
@@ -160,6 +175,12 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
 
     public void restart() {
         Log.i(TAG, "restart()");
+        isPaused = false;
+        for (Animator animator : new ArrayList<>(animators)) {
+            animator.cancel();
+        }
+        animators.clear();
+        animatedViews.clear();
         removeAllViewsInLayout();
         requestLayout();
         invalidate();
@@ -199,22 +220,360 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         handler.removeCallbacksAndMessages(null);
+        for (Animator animator : new ArrayList<>(animators)) {
+            animator.cancel();
+        }
+        animators.clear();
+        animatedViews.clear();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (oldw > 0 && w != oldw) {
+            restart();
+        }
     }
 
     public void pause() {
         Log.d(TAG, "pause()");
-        for (Animator animator: animators) {
+        isPaused = true;
+        for (Animator animator : new ArrayList<>(animators)) {
             animator.pause();
         }
+        handler.removeCallbacksAndMessages(null);
     }
+
     public void resume() {
         Log.d(TAG, "resume()");
-        if(Utility.areSystemAnimationsEnabled(context) ) {
-            for (Animator animator: animators) {
+        if (!isPaused) {
+            return;
+        }
+        isPaused = false;
+        if (Utility.areSystemAnimationsEnabled(context)) {
+            for (Animator animator : new ArrayList<>(animators)) {
                 animator.resume();
             }
         } else {
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(this::launchNext, 10000);
+        }
+    }
+
+    @Override
+    @SuppressLint("ClickableViewAccessibility")
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                downX = event.getX();
+                downY = event.getY();
+                lastX = downX;
+                downTime = event.getEventTime();
+                isClickValid = true;
+                isDragging = false;
+                pendingUrl = resolveUrlAt(downX, downY);
+                return true;
+
+            case MotionEvent.ACTION_MOVE:
+                float currentX = event.getX();
+                float currentY = event.getY();
+                float dx = currentX - lastX;
+                float totalDx = Math.abs(currentX - downX);
+                float totalDy = Math.abs(currentY - downY);
+
+                if (totalDx > touchSlop || totalDy > touchSlop) {
+                    isClickValid = false;
+                    if (!isDragging) {
+                        isDragging = true;
+                        pause();
+                    }
+                }
+
+                if (isDragging) {
+                    for (int i = 0; i < getChildCount(); i++) {
+                        View child = getChildAt(i);
+                        child.setTranslationX(child.getTranslationX() + dx);
+                    }
+                    checkAndFillGapDuringDrag();
+                }
+                lastX = currentX;
+                return true;
+
+            case MotionEvent.ACTION_UP:
+                if (isDragging) {
+                    resumeFromDrag();
+                }
+
+                long duration = event.getEventTime() - downTime;
+                if (isClickValid && !isDragging && duration <= longPressTimeout) {
+                    performUrlClick(pendingUrl);
+                }
+
+                isClickValid = false;
+                isDragging = false;
+                pendingUrl = null;
+                return true;
+
+            case MotionEvent.ACTION_CANCEL:
+                if (isDragging) {
+                    resumeFromDrag();
+                }
+                isClickValid = false;
+                isDragging = false;
+                pendingUrl = null;
+                return true;
+
+            default:
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void checkAndFillGapDuringDrag() {
+        if (Utility.isEmpty(headlines)) {
+            return;
+        }
+        int width = getWidth();
+        if (width <= 0) {
+            return;
+        }
+
+        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
+
+        float maxRight = Float.NEGATIVE_INFINITY;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof TextView tv) {
+                int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
+                float rightEdge = tv.getTranslationX() + textWidth;
+                if (rightEdge > maxRight) {
+                    maxRight = rightEdge;
+                }
+            }
+        }
+
+        while (maxRight < width) {
+            float startX = (maxRight == Float.NEGATIVE_INFINITY) ? width : maxRight;
+            launchNextDuringDrag(startX);
+
+            View newChild = getChildAt(getChildCount() - 1);
+            if (newChild instanceof TextView tv) {
+                int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
+                maxRight = tv.getTranslationX() + textWidth;
+            } else {
+                break;
+            }
+        }
+
+        float minLeft = Float.POSITIVE_INFINITY;
+        TextView firstChild = null;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child instanceof TextView tv) {
+                float leftEdge = tv.getTranslationX();
+                if (leftEdge < minLeft) {
+                    minLeft = leftEdge;
+                    firstChild = tv;
+                }
+            }
+        }
+
+        while (minLeft > 0 && firstChild != null) {
+            int firstIndex = index;
+            if (firstChild.getTag() instanceof Integer) {
+                firstIndex = (Integer) firstChild.getTag();
+            }
+
+            int prevIndex = firstIndex;
+            int count = 0;
+            String headline = "";
+            while (headline.isEmpty() && count < headlines.size()) {
+                prevIndex = (prevIndex - 1 + headlines.size()) % headlines.size();
+                headline = headlines.get(prevIndex).trim();
+                count++;
+            }
+
+            if (headline.isEmpty()) {
+                break;
+            }
+
+            if (animationsEnabled) {
+                headline = " +++ " + headline;
+            }
+
+            TextView tv = getTextView(animationsEnabled, headline, prevIndex);
+            int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
+            float startX = minLeft - textWidth;
+            tv.setTranslationX(startX);
+            animatedViews.add(tv);
+            addView(tv, 0);
+
+            minLeft = startX;
+            firstChild = tv;
+        }
+    }
+
+    private void launchNextDuringDrag(float startX) {
+        boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
+        int[] outIndex = {index};
+        String headline = getNextHeadline(headlines, index, animationsEnabled, outIndex);
+        index = outIndex[0];
+
+        TextView tv = getTextView(animationsEnabled, headline, index);
+        tv.setTranslationX(startX);
+        animatedViews.add(tv);
+        addView(tv);
+    }
+
+    private String resolveUrlAt(float x, float y) {
+        View child = findChildViewUnder(x, y);
+        if (child != null && child.getTag() instanceof Integer) {
+            int itemIndex = (Integer) child.getTag();
+            if (itemIndex >= 0 && itemIndex < urls.size()) {
+                return urls.get(itemIndex);
+            }
+        }
+        if (index >= 0 && index < urls.size()) {
+            return urls.get(index);
+        }
+        return null;
+    }
+
+    private View findChildViewUnder(float x, float y) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
+            View child = getChildAt(i);
+            float left = child.getLeft() + child.getTranslationX();
+            float right = left + child.getWidth();
+            float top = child.getTop() + child.getTranslationY();
+            float bottom = top + child.getHeight();
+            if (x >= left && x <= right && y >= top && y <= bottom) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    private void performUrlClick(String url) {
+        if (!Utility.isEmpty(url) && context != null) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+            browserIntent.setData(Uri.parse(url));
+            context.startActivity(browserIntent);
+        }
+    }
+
+    private void resumeFromDrag() {
+        Log.d(TAG, "resumeFromDrag()");
+        if (!Utility.areSystemAnimationsEnabled(context)) {
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(this::launchNext, 10000);
+            return;
+        }
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
+            v.animate().setListener(null);
+            v.animate().cancel();
+        }
+        animators.clear();
+
+        checkAndFillGapDuringDrag();
+
+        List<TextView> children = new ArrayList<>();
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
+            if (v instanceof TextView) {
+                children.add((TextView) v);
+            }
+        }
+
+        if (children.isEmpty()) {
             launchNext();
+            return;
+        }
+
+        children.sort((v1, v2) -> Float.compare(v1.getTranslationX(), v2.getTranslationX()));
+
+        TextView rightmostView = children.get(children.size() - 1);
+
+        for (TextView tv : children) {
+            float curX = tv.getTranslationX();
+            int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
+            float stage1Boundary = getWidth() - textWidth;
+            float stage2Target = -textWidth;
+
+            boolean isRightmost = (tv == rightmostView);
+
+            if (curX <= stage2Target) {
+                removeView(tv);
+                animatedViews.remove(tv);
+            } else if (isRightmost && curX > stage1Boundary) {
+                float dist1 = curX - stage1Boundary;
+                long dur1 = Math.max(1L, (long) (dist1 * animationSpeed));
+                tv.animate()
+                        .translationX(stage1Boundary)
+                        .setDuration(dur1)
+                        .setInterpolator(new LinearInterpolator())
+                        .setListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(@NonNull Animator animation) {
+                                animators.add(animation);
+                                animatedViews.add(tv);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(@NonNull Animator animation) {
+                                animators.remove(animation);
+                                if (tv.getParent() != null) {
+                                    animationEnd(tv);
+                                    launchNext();
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationCancel(@NonNull Animator animation) {
+                                animators.remove(animation);
+                                animatedViews.remove(tv);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(@NonNull Animator animation) {}
+                        }).start();
+            } else {
+                float dist2 = curX - stage2Target;
+                long dur2 = Math.max(1L, (long) (dist2 * animationSpeed));
+                tv.animate()
+                        .translationX(stage2Target)
+                        .setDuration(dur2)
+                        .setInterpolator(new LinearInterpolator())
+                        .setListener(new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(@NonNull Animator animation) {
+                                animators.add(animation);
+                                animatedViews.add(tv);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(@NonNull Animator animation) {
+                                removeView(tv);
+                                animators.remove(animation);
+                                animatedViews.remove(tv);
+                            }
+
+                            @Override
+                            public void onAnimationCancel(@NonNull Animator animation) {
+                                animators.remove(animation);
+                                animatedViews.remove(tv);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(@NonNull Animator animation) {}
+                        }).start();
+
+                if (isRightmost && curX <= stage1Boundary) {
+                    launchNext();
+                }
+            }
         }
     }
 
@@ -226,8 +585,7 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
 
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            if (child instanceof TextView) {
-                TextView tv = (TextView) child;
+            if (child instanceof TextView tv) {
                 textPaint.setTextSize(tv.getTextSize());
                 String text = tv.getText().toString();
                 int w = (int) textPaint.measureText(text, 0, text.length());
@@ -237,38 +595,18 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        Object tag = v.getTag();
-        if (tag instanceof Integer && context != null) {
-            String url = urls.get(index);
-            if ((url != null) && (!url.isEmpty())) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-                browserIntent.setData(Uri.parse(url));
-                context.startActivity(browserIntent);
-            }
-        }
-    }
-
     private void launchNext() {
         Log.i(TAG, "launchNext()");
         boolean animationsEnabled = Utility.areSystemAnimationsEnabled(context);
-        String headline = "";
-        int count = 0;
-        while (headline.isEmpty() && count < headlines.size()) {
-            index = (index + 1) % headlines.size();
-            headline = headlines.get(index).trim();
-            if (animationsEnabled) {
-                headline = " +++ " + headline;
-            }
-            count++;
-        }
+        int[] outIndex = {index};
+        String headline = getNextHeadline(headlines, index, animationsEnabled, outIndex);
+        index = outIndex[0];
 
         TextView tv = getTextView(animationsEnabled, headline);
-        if( Utility.areSystemAnimationsEnabled(context) ) {
+        if (Utility.areSystemAnimationsEnabled(context)) {
             removeNonAnimatedViews();
             tv.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                // View\'s dimensions are available only after the layout pass.
+                // View's dimensions are available only after the layout pass.
                 // Now is the time to start animating it.
                 Log.i(TAG, "addOnLayoutChangeListener");
                 animationStart((TextView) v);
@@ -282,7 +620,53 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
         addView(tv);
     }
 
+    public static String getNextHeadline(List<String> headlines, int currentIndex, boolean animationsEnabled, int[] outIndex) {
+        if (Utility.isEmpty(headlines)) {
+            if (outIndex != null && outIndex.length > 0) {
+                outIndex[0] = currentIndex;
+            }
+            return "";
+        }
+        int count = 0;
+        int index = currentIndex;
+        String headline = "";
+        while (headline.isEmpty() && count < headlines.size()) {
+            index = (index + 1) % headlines.size();
+            headline = headlines.get(index).trim();
+            count++;
+        }
+        if (!headline.isEmpty() && animationsEnabled) {
+            headline = " +++ " + headline;
+        }
+        if (outIndex != null && outIndex.length > 0) {
+            outIndex[0] = index;
+        }
+        return headline;
+    }
+
+    public static boolean isDragExceeded(float downX, float downY, float currentX, float currentY, int touchSlop) {
+        float totalDx = Math.abs(currentX - downX);
+        float totalDy = Math.abs(currentY - downY);
+        return totalDx > touchSlop || totalDy > touchSlop;
+    }
+
+    public static boolean isValidTap(boolean isClickValid, long duration, int longPressTimeout) {
+        return isClickValid && duration <= longPressTimeout;
+    }
+
+    public static boolean shouldFillGap(float maxRight, int containerWidth) {
+        return maxRight < containerWidth;
+    }
+
+    public static boolean shouldFillLeftGap(float minLeft) {
+        return minLeft > 0;
+    }
+
     private TextView getTextView(boolean animationsEnabled, String headline) {
+        return getTextView(animationsEnabled, headline, index);
+    }
+
+    private TextView getTextView(boolean animationsEnabled, String headline, int itemIndex) {
         TextView tv = new TextView(getContext());
         if (animationsEnabled) {
             tv.setGravity(Gravity.CENTER_VERTICAL);
@@ -295,9 +679,8 @@ public class Ticker extends FrameLayout implements View.OnClickListener {
             tv.setHorizontallyScrolling(true);
         }
         tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        tv.setOnClickListener(this);
         tv.setSingleLine(true);
-        tv.setTag(index);
+        tv.setTag(itemIndex);
         tv.setTextColor(this.textColor);
         tv.setTextSize(this.textSize);
         if (!headline.isEmpty()) {

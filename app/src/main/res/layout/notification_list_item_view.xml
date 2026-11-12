@@ -4,17 +4,22 @@
     android:id="@+id/notify_cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:padding="16dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
     android:minWidth="300dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="5dp">
+    app:cardBackgroundColor="@color/grey_bg"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="10"
+        android:background="@android:color/transparent"
+        android:padding="12dp"
         android:visibility="visible">
 
         <ImageView
@@ -28,7 +33,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/ic_about" />
+            app:srcCompat="@drawable/ic_about"
+            app:tint="@android:color/white" />
 
         <TextView
             android:id="@+id/notify_appname"
@@ -37,8 +43,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="AppName"
-            android:textColor="#000000"
+            android:textColor="@color/material_light_blue_grey"
             android:textSize="12sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/notify_smallicon"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +56,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="TimeStamp"
-            android:textColor="#000000"
+            android:textColor="@color/material_grey"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/notify_appname"
             app:layout_constraintTop_toTopOf="parent" />
@@ -59,11 +66,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
+            android:lineSpacingMultiplier="1.25"
             android:text="Title"
-            android:textColor="#000000"
-            android:textSize="14sp"
+            android:textColor="@color/light_grey"
+            android:textSize="15sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/notify_text"
             app:layout_constraintEnd_toStartOf="@+id/notify_largeicon"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,9 +83,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
+            android:lineSpacingMultiplier="1.25"
             android:text="Text"
-            android:textColor="#000000"
+            android:textColor="@color/material_light_blue_grey"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/notify_largeicon"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +123,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="ActionText1"
-            android:textColor="#000000"
+            android:textColor="@color/material_amber"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +138,7 @@
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="8dp"
             android:text="ActionText2"
-            android:textColor="#000000"
+            android:textColor="@color/material_amber"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/notify_actiontext3"
@@ -142,11 +153,11 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="ActionText3"
-            android:textColor="#000000"
+            android:textColor="@color/material_amber"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/notify_actiontext2"
-            app:layout_constraintTop_toBottomOf="@id/notify_largepicture" />
+            app:layout_constraintTop_toBottomOf="@+id/notify_largepicture" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

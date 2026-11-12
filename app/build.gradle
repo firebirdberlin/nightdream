@@ -1,5 +1,10 @@
 plugins {
     id 'com.android.application'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.12"
 }
 
 def getApiKeyOWM() {
@@ -74,12 +79,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
         debug {
+            enableUnitTestCoverage true
             proguardFiles 'proguard-project.txt'
         }
     }
 
     testOptions {
         unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                excludes = ['jdk.internal.*', 'sun.*', 'com.sun.*']
+            }
+        }
     }
     compileOptions {
         coreLibraryDesugaringEnabled = true
@@ -138,4 +149,42 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+}
+
+tasks.register('jacocoTestReport', JacocoReport) {
+    dependsOn 'testFullDebugUnitTest', 'testNoGmsDebugUnitTest'
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    def fileFilter = [
+            '**/R.class',
+            '**/R$*.class',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            '**/*Test*.*',
+            'android/**/*'
+    ]
+
+    def fullClasses = files([
+            fileTree(dir: "${layout.buildDirectory.get().asFile}/intermediates/javac/fullDebug", excludes: fileFilter),
+            fileTree(dir: "${layout.buildDirectory.get().asFile}/intermediates/classes/fullDebug", excludes: fileFilter)
+    ])
+
+    def mainSrc = "${project.projectDir}/src/main/java"
+    def fullSrc = "${project.projectDir}/src/full/java"
+
+    sourceDirectories.setFrom(files([mainSrc, fullSrc]))
+    classDirectories.setFrom(files([fullClasses]))
+    executionData.setFrom(fileTree(
+            dir: layout.buildDirectory.get().asFile,
+            includes: [
+                    'outputs/unit_test_code_coverage/fullDebugUnitTest/testFullDebugUnitTest.exec',
+                    'outputs/unit_test_code_coverage/noGmsDebugUnitTest/testNoGmsDebugUnitTest.exec',
+                    'jacoco/testFullDebugUnitTest.exec',
+                    'jacoco/testNoGmsDebugUnitTest.exec'
+            ]
+    ))
 }

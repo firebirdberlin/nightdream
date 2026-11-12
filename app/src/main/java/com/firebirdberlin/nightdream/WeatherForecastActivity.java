@@ -45,8 +45,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import com.firebirdberlin.dwd.PollenExposureRequestTask;
 import com.firebirdberlin.nightdream.airquality.AirQualityData;
@@ -102,9 +104,18 @@ public class WeatherForecastActivity
     private Snackbar snackbar;
     private WeatherForecastTabAdapter adapter;
     private TabLayout tabLayout;
-    private ViewPager viewPager;
+    private ViewPager2 viewPager;
     private WeatherEntry todayWeatherEntry = null;
     private List<WeatherEntry> forecastWeatherEntries = null;
+    private PollenExposure pollenExposureResult = null;
+
+    public PollenExposure getPollenExposureResult() {
+        return pollenExposureResult;
+    }
+
+    public City getSelectedCity() {
+        return selectedCity;
+    }
 
     private LocationManager locationManager = null;
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -182,12 +193,14 @@ public class WeatherForecastActivity
         selectedCity = settings.getCityForWeather();
         autoLocationEnabled = settings.getWeatherAutoLocationEnabled();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
+        adapter = new WeatherForecastTabAdapter(this);
         adapter.addFragment(new WeatherForecastTabWeather(), getResources().getString(R.string.forecast));
         adapter.addFragment(new WeatherForecastTabPollen(), getResources().getString(R.string.showPollen));
 
         viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            tab.setText(adapter.getTitle(position));
+        }).attach();
         updateTabVisibility(selectedCity, null);
     }
 
@@ -202,6 +215,9 @@ public class WeatherForecastActivity
         if (forecastWeatherEntries != null) {
             onRequestFinished(forecastWeatherEntries);
         }
+        if (pollenExposureResult != null) {
+            onRequestFinished(pollenExposureResult);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -209,20 +225,22 @@ public class WeatherForecastActivity
         Log.d(TAG, "init()");
 
         if (!isPurchased(PurchaseManager.ITEM_WEATHER_DATA)) {
-            adapter = new WeatherForecastTabAdapter(getSupportFragmentManager());
+            adapter = new WeatherForecastTabAdapter(this);
             adapter.addFragment(
                     new WeatherForecastTabPreview(),
                     getResources().getString(R.string.forecast));
 
             runOnUiThread(() -> {
                 viewPager.setAdapter(adapter);
-                tabLayout.setupWithViewPager(viewPager);
+                new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+                    tab.setText(adapter.getTitle(position));
+                }).attach();
                 if (tabLayout != null) {
                     tabLayout.setVisibility(View.GONE);
                 }
             });
 
-            ((WeatherForecastTabPreview) adapter.getItem(0)).setupForecastPreview(settings);
+            ((WeatherForecastTabPreview) adapter.getFragment(0)).setupForecastPreview(settings);
             actionBarSetup("Ecotopia");
 
             WeatherEntry fakeToday = new WeatherEntry();
@@ -241,7 +259,9 @@ public class WeatherForecastActivity
         } else {
             runOnUiThread(() -> {
                 viewPager.setAdapter(adapter);
-                tabLayout.setupWithViewPager(viewPager);
+                new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+                    tab.setText(adapter.getTitle(position));
+                }).attach();
                 updateTabVisibility(selectedCity, null);
             });
 
@@ -450,7 +470,7 @@ public class WeatherForecastActivity
             actionBarSetup(cityName);
         }
         try {
-            ((WeatherForecastTabWeather) adapter.getItem(0)).onRequestFinished(entries, settings);
+            ((WeatherForecastTabWeather) adapter.getFragment(0)).onRequestFinished(entries, settings);
         } catch (ClassCastException e) {
             Log.e(TAG, "ClaascastException e");
         }
@@ -472,7 +492,11 @@ public class WeatherForecastActivity
 
     public void onRequestFinished(PollenExposure result) {
         Log.d(TAG, "onRequestFinished(PollenExposure)");
-        ((WeatherForecastTabPollen) adapter.getItem(1)).onRequestFinished(selectedCity, result);
+        pollenExposureResult = result;
+        Fragment fragment = adapter.getFragment(1);
+        if (fragment instanceof WeatherForecastTabPollen) {
+            ((WeatherForecastTabPollen) fragment).onRequestFinished(selectedCity, result);
+        }
         updateTabVisibility(selectedCity, result);
     }
 
@@ -486,7 +510,7 @@ public class WeatherForecastActivity
             return;
         }
 
-        if (adapter != null && adapter.getCount() > 1) {
+        if (adapter != null && adapter.getItemCount() > 1) {
             tabLayout.setVisibility(View.VISIBLE);
         } else {
             tabLayout.setVisibility(View.GONE);
@@ -751,6 +775,7 @@ public class WeatherForecastActivity
             return;
         }
         if (city != null) {
+            pollenExposureResult = null;
             new ForecastRequestTask(this, settings.getWeatherProvider(), this).execute(city.toJson());
             new ForecastRequestTaskToday(this, settings.getWeatherProvider(), this).execute(city.toJson());
             Log.i(TAG, "requesting pollen data for " + city.toJson());

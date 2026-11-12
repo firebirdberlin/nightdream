@@ -120,7 +120,7 @@ public class RadioStreamDialog
                         context.getResources().getString(R.string.message_no_data_connection))
                 );
             } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to load no data connection string resource", e);
             }
         }
 

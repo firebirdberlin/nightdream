@@ -24,6 +24,9 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.core.content.IntentCompat;
+import androidx.core.os.ParcelCompat;
+
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
@@ -61,19 +64,19 @@ public class NotificationApp implements Parcelable {
     private long postTimestamp;
 
     protected NotificationApp(Parcel parcel) {
-        this.picture = parcel.readParcelable(Bitmap.class.getClassLoader());
+        this.picture = ParcelCompat.readParcelable(parcel, Bitmap.class.getClassLoader(), Bitmap.class);
         this.postTimestamp = parcel.readLong();
         this.name = parcel.readString();
         this.packageName = parcel.readString();
-        this.smallNotificationIcon = parcel.readParcelable(Bitmap.class.getClassLoader());
+        this.smallNotificationIcon = ParcelCompat.readParcelable(parcel, Bitmap.class.getClassLoader(), Bitmap.class);
     }
 
     public NotificationApp(Intent intent) {
         this.iconId = intent.getIntExtra("iconId", -1);
         this.name = intent.getStringExtra("applicationName");
         this.packageName = intent.getStringExtra("packageName");
-        this.picture = intent.getParcelableExtra("bitmap");
-        this.smallNotificationIcon = intent.getParcelableExtra("smallIconBitmap");
+        this.picture = IntentCompat.getParcelableExtra(intent, "bitmap", Bitmap.class);
+        this.smallNotificationIcon = IntentCompat.getParcelableExtra(intent, "smallIconBitmap", Bitmap.class);
         this.postTimestamp = intent.getLongExtra("postTimestamp", 0L);
     }
 

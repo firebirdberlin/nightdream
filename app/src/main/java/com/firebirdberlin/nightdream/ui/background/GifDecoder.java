@@ -19,12 +19,14 @@
 package com.firebirdberlin.nightdream.ui.background;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 
 public class GifDecoder {
+    private static final String TAG = GifDecoder.class.getSimpleName();
     public static final int STATUS_OK = 0;
     /**
      * File read status: Error decoding file (may be partially decoded)
@@ -208,7 +210,7 @@ public class GifDecoder {
                 }
             }
         }
-        image = Bitmap.createBitmap(dest, width, height, Bitmap.Config.ARGB_4444);
+        image = Bitmap.createBitmap(dest, width, height, Bitmap.Config.ARGB_8888);
     }
 
     /**
@@ -412,7 +414,7 @@ public class GifDecoder {
                     n += count;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error reading block", e);
             }
             if (n < blockSize) {
                 status = STATUS_FORMAT_ERROR;
@@ -435,7 +437,7 @@ public class GifDecoder {
         try {
             n = in.read(c);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error reading color table", e);
         }
         if (n < nbytes) {
             status = STATUS_FORMAT_ERROR;
@@ -577,7 +579,7 @@ public class GifDecoder {
         }
         frameCount++;
         // create new image to receive frame data
-        image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
+        image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         setPixels(); // transfer pixel data to image
         frames.addElement(new GifFrame(image, delay)); // add image to frame
         // list

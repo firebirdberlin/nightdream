@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.events.OnAlarmEntryChanged;
 import com.firebirdberlin.nightdream.events.OnAlarmEntryDeleted;
@@ -435,7 +436,7 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
         if (conditionallyShowSnackBar()) return;
         if (Utility.languageIs("de", "en")) {
             Snackbar snackbar = Snackbar.make(scrollView, entry.getRemainingTimeString(context), Snackbar.LENGTH_LONG);
-            snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+            snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.material_grey));
             snackbar.show();
         }
     }

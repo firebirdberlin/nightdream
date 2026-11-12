@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -96,7 +97,7 @@ public class AnimDigit extends ImageViewExtended {
 
             Drawable drawable = ResourcesCompat.getDrawable(getResources(), resourceId, getContext().getTheme());
             if (drawable != null) {
-                drawable.setColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(new PorterDuffColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP));
                 setImageDrawable(drawable);
             }
         }
@@ -105,7 +106,7 @@ public class AnimDigit extends ImageViewExtended {
 
     public void setTextColor(int color) {
         mNumberPaint.setColor(color);
-        setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         invalidate();
     }
 
@@ -171,7 +172,7 @@ public class AnimDigit extends ImageViewExtended {
         if (resourceId != -1) {
             Drawable drawable = ResourcesCompat.getDrawable(getResources(), resourceId, getContext().getTheme());
             if (drawable != null) {
-                drawable.setColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(new PorterDuffColorFilter(mNumberPaint.getColor(), PorterDuff.Mode.SRC_ATOP));
                 setImageDrawable(drawable);
             }
             this.number = index;

@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -47,11 +48,17 @@ import java.util.List;
 
 
 class AlarmToneAdapter extends ArrayAdapter<FileUri> {
+    private static final String TAG = AlarmToneAdapter.class.getSimpleName();
     private final Context context;
     private final int viewId;
     private int selectedPosition = -1;
     private MediaPlayer mediaPlayer;
     private OnDeleteRequestListener listener;
+
+    static class ViewHolder {
+        RadioButton button;
+        ImageView buttonDelete;
+    }
 
     AlarmToneAdapter(Context context, int viewId, List<FileUri> values) {
         super(context, viewId, R.id.text1, values);
@@ -69,25 +76,36 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         super.getView(position, convertView, parent);
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View v = inflater.inflate(viewId, parent, false);
-        RadioButton button = v.findViewById(R.id.text1);
+
+        ViewHolder viewHolder;
         final FileUri item = getItem(position);
-        String name = item.name;
-        if (!"content".equals(item.uri.getScheme())) {
+
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            convertView = inflater.inflate(viewId, parent, false);
+            viewHolder.button = convertView.findViewById(R.id.text1);
+            viewHolder.buttonDelete = convertView.findViewById(R.id.buttonDelete);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        String name = item != null ? item.name : "";
+        if (item != null && !"content".equals(item.uri.getScheme())) {
             name = Utility.getSoundFileTitleFromUri(context, item.uri);
         }
-        button.setText(name);
-        button.setChecked(position == selectedPosition);
-        button.setTag(position);
-        button.setOnClickListener(view -> {
+        viewHolder.button.setText(name);
+        viewHolder.button.setChecked(position == selectedPosition);
+        viewHolder.button.setTag(position);
+        viewHolder.button.setOnClickListener(view -> {
             boolean samePosition = selectedPosition == (Integer) view.getTag();
             selectedPosition = (Integer) view.getTag();
             notifyDataSetChanged();
 
             boolean justStop = (samePosition && mediaPlayer != null && mediaPlayer.isPlaying());
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                releaseMediaplayer();
+                releaseMediaPlayer();
             }
 
             if (justStop || !shallPlaySound()) {
@@ -104,22 +122,22 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
             );
 
             try {
-                mediaPlayer.setDataSource(context, item.uri);
+                if (item != null) {
+                    mediaPlayer.setDataSource(context, item.uri);
+                }
                 mediaPlayer.setLooping(false);
                 mediaPlayer.prepare();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "cannot setDataSource");
             }
             mediaPlayer.start();
-
         });
-        ImageView buttonDelete = v.findViewById(R.id.buttonDelete);
 
-        buttonDelete.setVisibility(
-                "file".equals(item.uri.getScheme()) && !item.uri.toString().contains("android_asset")
+        viewHolder.buttonDelete.setVisibility(
+                item != null && "file".equals(item.uri.getScheme()) && !item.uri.toString().contains("android_asset")
                         ? View.VISIBLE : View.GONE
         );
-        buttonDelete.setOnClickListener(view -> {
+        viewHolder.buttonDelete.setOnClickListener(view -> {
             Log.i("DIALOG", "delete clicked");
             if (listener != null) {
                 listener.onDeleteRequested(item);
@@ -131,17 +149,16 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
             if (selected != null) {
                 setSelectedUri(selected.uri);
             }
-            releaseMediaplayer();
-
+            releaseMediaPlayer();
         });
 
         // click effect
-        buttonDelete.setOnTouchListener((v1, event) -> {
+        viewHolder.buttonDelete.setOnTouchListener((v1, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN: {
                     ImageView view = (ImageView) v1;
                     //overlay is black with transparency of 0x77 (119)
-                    view.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                    view.getDrawable().setColorFilter(new PorterDuffColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP));
                     view.invalidate();
                     break;
                 }
@@ -158,22 +175,15 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
             return false;
         });
 
-        return v;
+        return convertView;
     }
 
     private boolean shallPlaySound() {
         AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        switch (audio.getRingerMode()) {
-            case AudioManager.RINGER_MODE_NORMAL:
-                return true;
-            case AudioManager.RINGER_MODE_SILENT:
-            case AudioManager.RINGER_MODE_VIBRATE:
-                return false;
-        }
-        return false;
+        return (audio != null && audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL);
     }
 
-    private void releaseMediaplayer() {
+    private void releaseMediaPlayer() {
         if (mediaPlayer == null) {
             return;
         }
@@ -183,7 +193,7 @@ class AlarmToneAdapter extends ArrayAdapter<FileUri> {
     }
 
     public void release() {
-        releaseMediaplayer();
+        releaseMediaPlayer();
     }
 
     public FileUri getSelectedUri() {

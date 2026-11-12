@@ -19,13 +19,20 @@
 package com.firebirdberlin.nightdream.models;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class SimpleTimeTest {
+
+    @BeforeClass
+    public static void setUpClass() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Berlin"));
+    }
 
     private Calendar getReference(int hour, int minute) {
         Calendar reference = Calendar.getInstance();

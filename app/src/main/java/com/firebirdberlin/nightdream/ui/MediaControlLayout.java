@@ -26,12 +26,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.core.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -88,13 +91,13 @@ public class MediaControlLayout extends ViewModel {
         this.textColor.postValue(this.color);
 
         if (this.smallIcon.getValue() != null) {
-            this.smallIcon.getValue().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+            this.smallIcon.getValue().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         }
 
         if (this.actionImages.getValue() != null) {
             for (int i = 0; i < this.actionImages.getValue().size(); i++) {
                 if (this.actionImages.getValue().get(i) != null) {
-                    this.actionImages.getValue().get(i).setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                    this.actionImages.getValue().get(i).setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
                 }
             }
         }
@@ -244,9 +247,9 @@ public class MediaControlLayout extends ViewModel {
         }
 
         assert smallIcon != null;
-        smallIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        smallIcon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
 
-        Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
+        Bitmap coverBitmap = IntentCompat.getParcelableExtra(intent, "largeIconBitmap", Bitmap.class);
 
         ArrayList<Drawable> notificationActionImages = new ArrayList<>();
         ArrayList<View.OnClickListener> notificationActionClick = new ArrayList<>();
@@ -258,11 +261,11 @@ public class MediaControlLayout extends ViewModel {
                             intent.getStringExtra("packageName"), 0
                     );
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to create package context for " + intent.getStringExtra("packageName"), e);
         }
 
         Notification.Action[] actions =
-                (Notification.Action[]) intent.getParcelableArrayExtra("actions");
+                (Notification.Action[]) IntentCompat.getParcelableArrayExtra(intent, "actions", Notification.Action.class);
         if (actions != null) {
             int index = 0;
             for (final Notification.Action action : actions) {
@@ -273,7 +276,7 @@ public class MediaControlLayout extends ViewModel {
                     notificationDrawableIcon = icon.loadDrawable(remotePackageContext);
                     if (notificationDrawableIcon != null) {
                         notificationDrawableIcon.setColorFilter(
-                                color, PorterDuff.Mode.SRC_ATOP
+                                new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP)
                         );
                     }
                 }
@@ -301,10 +304,9 @@ public class MediaControlLayout extends ViewModel {
                                     Bundle optionsBundle = null;
                                     if (Build.VERSION.SDK_INT >= 34) {
                                         ActivityOptions options = ActivityOptions.makeBasic();
-                                        options.setPendingIntentBackgroundActivityStartMode(
-                                                ActivityOptions
-                                                        .MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                                        );
+                                        @SuppressWarnings("deprecation")
+                                        int startMode = ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED;
+                                        options.setPendingIntentBackgroundActivityStartMode(startMode);
                                         optionsBundle = options.toBundle();
                                     }
                                     action.actionIntent.send(
@@ -350,7 +352,7 @@ public class MediaControlLayout extends ViewModel {
 
         android.media.session.MediaSession.Token token = null;
         if (intent.hasExtra("mediaSessionToken")) {
-            token = intent.getParcelableExtra("mediaSessionToken");
+            token = IntentCompat.getParcelableExtra(intent, "mediaSessionToken", android.media.session.MediaSession.Token.class);
         }
 
         if (token != null) {

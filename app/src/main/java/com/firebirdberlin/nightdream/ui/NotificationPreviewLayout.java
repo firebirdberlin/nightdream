@@ -25,12 +25,15 @@ import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import androidx.core.content.IntentCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -44,9 +47,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 
 public class NotificationPreviewLayout extends LinearLayout {
-    private static final String TAG = "NotificationPreviewLayout";
+    private static final String TAG = NotificationPreviewLayout.class.getSimpleName();
     final private Handler handler = new Handler(Looper.getMainLooper());
     private View notificationPreview;
     private final Runnable fadePreview = new Runnable() {
@@ -86,7 +90,6 @@ public class NotificationPreviewLayout extends LinearLayout {
         super(context, attrs);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void setupFromNotificationIntent(Context context, final Intent intent, Drawable smallIcon) {
         Log.i(TAG, "NotificationPreview");
         String template = intent.getStringExtra("template");
@@ -104,7 +107,7 @@ public class NotificationPreviewLayout extends LinearLayout {
         ImageView largeIconImageView = notificationPreview.findViewById(R.id.notify_largeicon);
 
         ImageView notificationMessageBitmap = notificationPreview.findViewById(R.id.notify_smallicon);
-        smallIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        smallIcon.setColorFilter(new PorterDuffColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP));
         notificationMessageBitmap.setImageDrawable(smallIcon);
 
         TextView appName = notificationPreview.findViewById(R.id.notify_appname);
@@ -119,7 +122,7 @@ public class NotificationPreviewLayout extends LinearLayout {
         TextView text = notificationPreview.findViewById(R.id.notify_text);
         text.setText(intent.getStringExtra("text"));
 
-        Bitmap coverBitmap = intent.getParcelableExtra("largeIconBitmap");
+        Bitmap coverBitmap = IntentCompat.getParcelableExtra(intent, "largeIconBitmap", Bitmap.class);
         if (coverBitmap == null) {
             largeIconImageView.setVisibility(View.GONE);
         } else {
@@ -129,17 +132,9 @@ public class NotificationPreviewLayout extends LinearLayout {
 
         OnClickListener onNotificationPreviewClickListener = new OnClickListener() {
             public void onClick(View v) {
-                PendingIntent contentIntent = intent.getParcelableExtra("contentIntent");
+                PendingIntent contentIntent = IntentCompat.getParcelableExtra(intent, "contentIntent", PendingIntent.class);
                 if (contentIntent != null) {
-                    try {
-                        contentIntent.send();
-                    } catch (PendingIntent.CanceledException e) {
-                        try {
-                            throw new IntentSender.SendIntentException(e);
-                        } catch (IntentSender.SendIntentException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+                    Utility.sendPendingIntent(v.getContext(), contentIntent);
                 }
             }
         };

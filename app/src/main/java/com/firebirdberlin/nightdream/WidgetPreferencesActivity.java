@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class WidgetPreferencesActivity extends BillingHelperActivity {
-    public static String TAG = "WidgetPreferencesActivity";
+    private static final String TAG = WidgetPreferencesActivity.class.getSimpleName();
 
     public int appWidgetId = -1;
     private SettingsFragment fragment = null;
@@ -53,7 +53,8 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
                     .beginTransaction()
                     .replace(R.id.settings, fragment)
                     .commit();
-
+        } else {
+            fragment = (SettingsFragment) getSupportFragmentManager().findFragmentById(R.id.settings);
         }
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -66,7 +67,12 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
     }
 
     public void cancel(View view) {
-        fragment.restoreValues();
+        if (fragment == null) {
+            fragment = (SettingsFragment) getSupportFragmentManager().findFragmentById(R.id.settings);
+        }
+        if (fragment != null) {
+            fragment.restoreValues();
+        }
         int appWidgetId = getWidgetId();
         Intent resultValue = new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_CANCELED, resultValue);
@@ -78,6 +84,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
     protected void onPurchasesInitialized() {
         Log.d(TAG, "onPurchasesInitialized()");
         runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     fragment = SettingsFragment.newInstance(appWidgetId,
                             isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
                     );
@@ -95,6 +102,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         super.onItemPurchased(sku);
         Log.d(TAG, "onItemPurchased( " + sku + ")");
         runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     fragment = SettingsFragment.newInstance(appWidgetId,
                             isPurchased(PurchaseManager.ITEM_WEATHER_DATA)
                     );
@@ -111,7 +119,9 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         int appWidgetId = getWidgetId();
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.clock_widget);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        if (appWidgetManager != null) {
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
 
         Intent resultValue = new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         setResult(RESULT_OK, resultValue);
@@ -121,14 +131,16 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
 
     private int getWidgetId() {
         Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-        if (extras != null) {
-            appWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
+        if (intent == null) {
+            return AppWidgetManager.INVALID_APPWIDGET_ID;
         }
-        return appWidgetId;
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            return AppWidgetManager.INVALID_APPWIDGET_ID;
+        }
+        return extras.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -142,6 +154,7 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
                     }
                     return true;
                 };
+
         public static SettingsFragment newInstance(int appWidgetId, boolean isPurchased) {
             Bundle args = new Bundle();
             args.putInt("appWidgetId", appWidgetId);
@@ -155,71 +168,86 @@ public class WidgetPreferencesActivity extends BillingHelperActivity {
         public void onResume() {
             Log.d(TAG, "onResume");
             super.onResume();
-            initPurchasePreference("purchaseDesignPackage");
+            initPurchasePreference();
         }
 
         public void restoreValues() {
-            SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
+            if (Utility.isEmpty(backupValues)) return;
+            PreferenceManager manager = getPreferenceManager();
+            if (manager == null) return;
+            SharedPreferences prefs = manager.getSharedPreferences();
+            if (prefs == null) return;
+            SharedPreferences.Editor editor = prefs.edit();
+            if (editor == null) return;
             for (Map.Entry<String, Object> entry : backupValues.entrySet()) {
+                if (entry == null) {
+                    continue;
+                }
                 String key = entry.getKey();
                 Object value = entry.getValue();
+                if (key == null) {
+                    continue;
+                }
                 if (value instanceof String) {
                     editor.putString(key, (String) value);
-                } else
-                if (value instanceof Integer) {
+                } else if (value instanceof Integer) {
                     editor.putInt(key, (Integer) value);
-                } else
-                if (value instanceof Boolean) {
+                } else if (value instanceof Boolean) {
                     editor.putBoolean(key, (Boolean) value);
-                } else
-                if (value instanceof Float) {
+                } else if (value instanceof Float) {
                     editor.putFloat(key, (Float) value);
                 }
-        }
+            }
             editor.apply();
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-
             int appWidgetId = 0;
-            if (getArguments() != null) {
-                appWidgetId = getArguments().getInt("appWidgetId", 0);
+            Bundle args = getArguments();
+            if (args != null) {
+                appWidgetId = args.getInt("appWidgetId", 0);
             }
             PreferenceManager manager = getPreferenceManager();
-            manager.setSharedPreferencesName(
-                    String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId)
-            );
-            SharedPreferences prefs = manager.getSharedPreferences();
-            backupValues = (Map<String, Object>) prefs.getAll();
+            if (manager != null) {
+                manager.setSharedPreferencesName(
+                        String.format(Locale.ENGLISH, "preferences_widget_%d", appWidgetId)
+                );
+                SharedPreferences prefs = manager.getSharedPreferences();
+                if (prefs != null) {
+                    backupValues = (Map<String, Object>) prefs.getAll();
+                }
+            }
             setPreferencesFromResource(R.xml.widget_root_preferences, rootKey);
         }
 
-        private void initPurchasePreference(String key) {
-            Log.d(TAG, "initPurchasePreference(" + key + ")");
-            Preference purchasePreference = findPreference(key);
+        private void initPurchasePreference() {
+            Log.d(TAG, "initPurchasePreference(" + "purchaseDesignPackage" + ")");
+            Preference purchasePreference = findPreference("purchaseDesignPackage");
             if (purchasePreference != null) {
                 purchasePreference.setOnPreferenceClickListener(purchasePreferenceClickListener);
             }
             boolean is_purchased = false;
-            if (getArguments() != null) {
-                is_purchased = getArguments().getBoolean("is_purchased", false);
+            Bundle args = getArguments();
+            if (args != null) {
+                is_purchased = args.getBoolean("is_purchased", false);
             }
-            showPreference("purchaseDesignPackage", !is_purchased);
-            enablePreference("category_appearance", is_purchased);
+            showPreference(!is_purchased);
+            enablePreference(is_purchased);
         }
 
-        private void showPreference(String key, boolean visible) {
-            Log.d(TAG, "showPreference(" + key + "," + visible + ")");
-            Preference preference = findPreference(key);
+        private void showPreference(boolean visible) {
+            Log.d(TAG, "showPreference(" + "purchaseDesignPackage" + "," + visible + ")");
+            Preference preference = findPreference("purchaseDesignPackage");
             if (preference != null) {
                 preference.setVisible(visible);
             }
         }
 
-        private void enablePreference(String key, boolean visible) {
-            Log.d(TAG, "enablePreference(" + key + "," + visible + ")");
-            Preference preference = findPreference(key);
+        private void enablePreference(boolean visible) {
+            Log.d(TAG, "enablePreference(" + "category_appearance" + "," + visible + ")");
+            Preference preference = findPreference("category_appearance");
             if (preference != null) {
                 preference.setEnabled(visible);
             }

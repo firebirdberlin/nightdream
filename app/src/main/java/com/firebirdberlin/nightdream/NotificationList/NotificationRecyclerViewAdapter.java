@@ -18,11 +18,9 @@
 
 package com.firebirdberlin.nightdream.NotificationList;
 
-import android.app.PendingIntent;
-import android.content.IntentSender;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Build;
+import android.graphics.PorterDuffColorFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,19 +28,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.Utility;
 
 import java.util.ArrayList;
 
 public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
     public static String TAG = "CustomRecyclerViewAdapter";
     private final int[] colorResId = new int[]{
-            R.color.white,
-            R.color.material_light_blue_grey
+            R.color.grey_bg,
+            R.color.material_blue_grey
     };
     NotificationList notificationList;
 
@@ -100,7 +99,6 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     }
 
     //Called by RecyclerView to display the data at the specified position.
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
 
@@ -120,12 +118,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         cardView.setBackgroundResource(colorResId[isSelected ? 1 : 0]);
 
         holder.notificationMessagebitmap.setImageBitmap(notification.getSmallIconBitmap());
-
-        if (notification.getColor() != 0) {
-            holder.notificationMessagebitmap.setColorFilter(notification.getColor(), PorterDuff.Mode.SRC_ATOP);
-        } else {
-            holder.notificationMessagebitmap.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
-        }
+        holder.notificationMessagebitmap.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_ATOP));
 
         if (notification.getBitmapLargeIcon() != null) {
             holder.notificationMessageLargeIcon.setVisibility(View.VISIBLE);
@@ -154,15 +147,11 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                         Log.d(TAG, "ShowActionText (" + positionAction + "): " + action.title.toString().toUpperCase());
                         holder.notificationActionText[positionAction].setVisibility(View.VISIBLE);
                         holder.notificationActionText[positionAction].setText(action.title.toString().toUpperCase());
-                        holder.notificationActionText[positionAction].setTextColor(Color.rgb(0, 0, 200));
+                        holder.notificationActionText[positionAction].setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.material_amber));
 
                         holder.notificationActionText[positionAction].setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                try {
-                                    action.actionIntent.send();
-                                } catch (Exception ex) {
-                                    Log.e(TAG, ex.toString());
-                                }
+                                Utility.sendPendingIntent(v.getContext(), action.actionIntent);
                             }
                         });
                         positionAction++;
@@ -285,15 +274,11 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
     }
 
     // Interface definition for a callback to be invoked when a view is clicked.
-    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) throws IntentSender.SendIntentException {
+    private void handleRecyclerItemClick(RecyclerView recyclerView, View itemView) {
         int itemPosition = recyclerView.getChildLayoutPosition(itemView);
         Notification notification = this.notificationList.get(itemPosition);
-        try {
-            if (notification.getPendingIntent() != null) {
-                notification.getPendingIntent().send();
-            }
-        } catch (PendingIntent.CanceledException e) {
-            throw new IntentSender.SendIntentException(e);
+        if (notification.getPendingIntent() != null) {
+            Utility.sendPendingIntent(recyclerView.getContext(), notification.getPendingIntent());
         }
     }
 

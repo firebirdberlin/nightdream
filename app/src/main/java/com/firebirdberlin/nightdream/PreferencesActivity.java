@@ -31,7 +31,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
@@ -42,7 +41,7 @@ import java.util.Calendar;
 public class PreferencesActivity extends BillingHelperActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
-    public static final String TAG = "PreferencesActivity";
+    private static final String TAG = PreferencesActivity.class.getSimpleName();
     private static final String ROOT_KEY = "rootKey";
     private static final String KEY_TITLE = "title";
     private static final String KEY_LAUNCHED_EXTERNALLY = "launched_externally";
@@ -215,9 +214,9 @@ public class PreferencesActivity extends BillingHelperActivity
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.import_preferences)
                         .setMessage(R.string.import_preferences_confirm)
-                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            importPrefs.executeImport(data, this::recreate);
-                        })
+                        .setPositiveButton(android.R.string.ok, (dialog, which) ->
+                            importPrefs.executeImport(data, this::recreate)
+                        )
                         .setNegativeButton(android.R.string.cancel, null)
                         .show();
             }
@@ -376,16 +375,6 @@ public class PreferencesActivity extends BillingHelperActivity
     @Override
     protected void onItemConsumed(String sku) {
         super.onItemConsumed(sku);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        for (Fragment activeFragment : getSupportFragmentManager().getFragments()) {
-            if (activeFragment instanceof PreferencesFragment) {
-                activeFragment.onActivityResult(requestCode, resultCode, data);
-            }
-        }
     }
 
     void initTitleBar() {

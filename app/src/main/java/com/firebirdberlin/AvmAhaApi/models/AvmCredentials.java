@@ -18,11 +18,15 @@
 
 package com.firebirdberlin.AvmAhaApi.models;
 
+import android.util.Log;
+
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class AvmCredentials {
+    private static final String TAG = AvmCredentials.class.getSimpleName();
 
     public String host;
     public String username;
@@ -37,25 +41,25 @@ public class AvmCredentials {
 
     public String getSecret(String challenge) {
         String to_hash = challenge + "-" + password;
-        Charset utf16 = Charset.forName("UTF-16LE");
+        Charset utf16 = StandardCharsets.UTF_16LE;
         try {
             // Create MD5 Hash
             MessageDigest digest = MessageDigest.getInstance("MD5");
             digest.update(to_hash.getBytes(utf16));
-            byte messageDigest[] = digest.digest();
+            byte[] messageDigest = digest.digest();
 
             // Create Hex String
             StringBuilder hexString = new StringBuilder();
             for (byte aMessageDigest : messageDigest) {
-                String h = Integer.toHexString(0xFF & aMessageDigest);
-                while (h.length() < 2) h = "0" + h;
+                StringBuilder h = new StringBuilder(Integer.toHexString(0xFF & aMessageDigest));
+                while (h.length() < 2) h.insert(0, "0");
                 hexString.append(h);
             }
             String hashed = hexString.toString();
             return String.format("%s-%s", challenge, hashed);
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Log.e(TAG, "MD5 algorithm not available", e);
         }
         return null;
     }

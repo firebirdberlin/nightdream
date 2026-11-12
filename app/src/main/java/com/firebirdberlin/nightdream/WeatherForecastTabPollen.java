@@ -19,8 +19,6 @@
 package com.firebirdberlin.nightdream;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +33,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 
 import com.firebirdberlin.nightdream.ui.PollenForecastLayout;
@@ -86,6 +85,11 @@ public class WeatherForecastTabPollen extends Fragment {
         if (scrollView != null) {
             scrollView.setVisibility(View.VISIBLE);
         }
+        if (getActivity() instanceof WeatherForecastActivity activity) {
+            if (activity.getPollenExposureResult() != null) {
+                onRequestFinished(activity.getSelectedCity(), activity.getPollenExposureResult());
+            }
+        }
     }
 
     public void onRequestFinished(@Nullable City city, @Nullable PollenExposure result) {
@@ -107,12 +111,11 @@ public class WeatherForecastTabPollen extends Fragment {
             textView.setText(getString(R.string.showPollenNoData));
             scrollViewLayout.addView(textView);
         } else {
-            Resources res = context.getResources();
             for (Map<String, String> map : result.getPollenList()) {
                 for (Map.Entry<String, String> entrySet : map.entrySet()) {
-                    String icon = "ic_" + entrySet.getKey();
+                    String key = entrySet.getKey();
                     String value = entrySet.getValue();
-                    int resID = res.getIdentifier(icon, "drawable", context.getPackageName());
+                    int resID = PollenExposure.getDrawableResId(key);
 
                     if (resID == 0) {
                         continue;
@@ -127,7 +130,7 @@ public class WeatherForecastTabPollen extends Fragment {
                         int index = Integer.parseInt(value);
                         index = Math.max(0, Math.min(6, index));
                         int col = ContextCompat.getColor(context, colorResId[index]);
-                        herbDrawable.setColorFilter(col, PorterDuff.Mode.SRC_ATOP);
+                        DrawableCompat.setTint(herbDrawable, col);
 
                         PollenForecastLayout pollenLayout = new PollenForecastLayout(context);
                         pollenLayout.setImage(herbDrawable);

@@ -19,8 +19,6 @@
 package com.firebirdberlin.nightdream.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +26,7 @@ import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -74,12 +73,11 @@ public class PollenExposureLayout extends ViewModel {
 
         ArrayList<Drawable> setupPollenImages = new ArrayList<>();
 
-        Resources res = mContext.getResources();
         for (Map<String, String> map : result.getPollenList()) {
             for (Map.Entry<String, String> entrySet : map.entrySet()) {
-                String icon = "ic_" + entrySet.getKey();
+                String key = entrySet.getKey();
                 String value = entrySet.getValue();
-                int resID = res.getIdentifier(icon, "drawable", mContext.getPackageName());
+                int resID = PollenExposure.getDrawableResId(key);
 
                 if (resID == 0) {
                     continue;
@@ -93,8 +91,8 @@ public class PollenExposureLayout extends ViewModel {
                     int index = Integer.parseInt(value);
                     index = Math.max(0, index);
                     index = Math.min(6, index);
-                    int col = res.getColor(colorResId[index]);
-                    herbDrawable.setColorFilter(col, PorterDuff.Mode.SRC_ATOP);
+                    int col = ContextCompat.getColor(mContext, colorResId[index]);
+                    DrawableCompat.setTint(herbDrawable, col);
                     setupPollenImages.add(herbDrawable);
                 }
             }

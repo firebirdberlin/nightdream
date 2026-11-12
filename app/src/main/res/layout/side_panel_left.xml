@@ -73,4 +73,16 @@
             android:visibility="visible"
             app:srcCompat="@drawable/ic_radio" />
 
+        <ImageView
+            android:id="@+id/notification_activity_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/notifications"
+            android:focusable="true"
+            android:onClick="onNotificationActivityClick"
+            android:padding="5dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_email" />
+
 </com.firebirdberlin.nightdream.ui.SidePanel>

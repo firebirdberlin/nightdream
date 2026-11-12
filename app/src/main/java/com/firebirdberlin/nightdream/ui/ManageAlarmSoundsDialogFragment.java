@@ -24,7 +24,6 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -42,6 +41,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -52,14 +52,13 @@ import com.firebirdberlin.nightdream.models.FileUri;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
-    final static String TAG = "ManageAlarmSoundsDialog";
+    private static final String TAG = ManageAlarmSoundsDialogFragment.class.getSimpleName();
     private File DIRECTORY = null;
     private ManageAlarmSoundsDialogListener mListener;
     private ListView listView;
@@ -68,8 +67,88 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     private boolean isPurchased = false;
     private Context context;
 
+    private Context getResolvedContext() {
+        if (context != null) {
+            return context;
+        }
+        Context ctx = getContext();
+        if (ctx != null) {
+            return ctx;
+        }
+        return getActivity();
+    }
+
+    private final ActivityResultLauncher<Intent> selectToneLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    if (DIRECTORY == null) {
+                        return;
+                    }
+                    Uri uri = data.getData();
+                    if (uri == null) {
+                        return;
+                    }
+
+                    Context ctx = getResolvedContext();
+                    if (ctx == null) {
+                        return;
+                    }
+
+                    ContentResolver contentResolver = ctx.getContentResolver();
+                    try (Cursor returnCursor = contentResolver.query(uri, null, null, null, null)) {
+                        if (returnCursor == null) {
+                            return;
+                        }
+
+                        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (nameIndex == -1 || !returnCursor.moveToFirst()) {
+                            return;
+                        }
+
+                        String fileName = returnCursor.getString(nameIndex);
+                        if (Utility.isEmpty(fileName)) {
+                            return;
+                        }
+                        File dstFile = new File(DIRECTORY, fileName);
+                        FileUri uriDst = new FileUri(dstFile);
+
+                        boolean isCreated;
+                        try {
+                            isCreated = dstFile.createNewFile();
+                        } catch (IOException e) {
+                            Log.e(TAG, "Error creating destination file", e);
+                            return;
+                        }
+                        if (!isCreated) {
+                            return;
+                        }
+
+                        try (FileInputStream src = (FileInputStream) contentResolver.openInputStream(uri);
+                             FileOutputStream dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri)) {
+                            if (src != null && dst != null) {
+                                copyFile(src, dst);
+                            }
+                        } catch (IOException e) {
+                            Log.e(TAG, "Error copying file", e);
+                            return;
+                        }
+
+                        if (arrayAdapter != null) {
+                            arrayAdapter.add(uriDst);
+                            arrayAdapter.setSelectedUri(uriDst.uri);
+                            // scroll to the position
+                            listView.setSelection(arrayAdapter.getSelectedPosition());
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error processing selected alarm sound file", e);
+                    }
+                }
+            });
+
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                Context ctx = getResolvedContext();
                 if (isGranted) {
                     // Permission is granted
                     Log.d(TAG, "ActivityResultLauncher Permission granted");
@@ -77,26 +156,19 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
                 } else {
                     // Permission is denied, feature is unavailable
                     Log.d(TAG, "ActivityResultLauncher already been shown and permission is denied");
-                    Toast.makeText(
-                            context,
-                            context.getString(R.string.permission_request_storage),
-                            Toast.LENGTH_LONG
-                    ).show();
+                    if (ctx != null) {
+                        Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.permission_request_storage),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
                 }
             });
 
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
-        FileChannel inChannel = src.getChannel();
-        FileChannel outChannel = dst.getChannel();
-
-        try {
+        try (FileChannel inChannel = src.getChannel(); FileChannel outChannel = dst.getChannel()) {
             inChannel.transferTo(0, inChannel.size(), outChannel);
-        } finally {
-            if (inChannel != null) {
-                inChannel.close();
-            }
-
-            outChannel.close();
         }
     }
 
@@ -105,7 +177,9 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     }
 
     private File[] listFiles() {
-        if (DIRECTORY == null) return null;
+        if (DIRECTORY == null) {
+            return null;
+        }
         return DIRECTORY.listFiles();
     }
 
@@ -117,21 +191,26 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
         selectedUri = (uriString != null) ? Uri.parse(uriString) : null;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        DIRECTORY = getActivity().getDir("Alarms", Context.MODE_PRIVATE);
+        final Context ctx = getResolvedContext();
+        if (ctx == null) {
+            return super.onCreateDialog(savedInstanceState);
+        }
+        DIRECTORY = ctx.getDir("Alarms", Context.MODE_PRIVATE);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx, R.style.DialogTheme);
+        LayoutInflater inflater = LayoutInflater.from(ctx);
 
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
         listView = view.findViewById(R.id.listView);
         Button addCustomAlarmTone = view.findViewById(R.id.addCustomAlarmTone);
-        String btnTxt = getActivity().getString(R.string.add_custom_alarm_tone);
+        String btnTxt = ctx.getString(R.string.add_custom_alarm_tone);
         if (!isPurchased) {
-            String productName = getActivity().getString(R.string.product_name_pro);
+            String productName = ctx.getString(R.string.product_name_pro);
             btnTxt += "\n (" + productName + ")";
-            int color = Utility.getRandomMaterialColor(context);
+            int color = Utility.getRandomMaterialColor(ctx);
             int textColor = Utility.getContrastColor(color);
             addCustomAlarmTone.setBackgroundColor(color);
             addCustomAlarmTone.setTextColor(textColor);
@@ -162,67 +241,76 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
         builder.setTitle(R.string.choose_alarm_sound)
                 .setIcon(R.drawable.ic_alarm_clock)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (arrayAdapter != null) {
-                            if (mListener != null) {
-                                FileUri fileUri = arrayAdapter.getSelectedUri();
-                                if (fileUri != null) {
-                                    Settings.setDefaultAlarmTone(context, fileUri.uri.toString());
-                                    mListener.onAlarmToneSelected(fileUri.uri, fileUri.name);
-                                }
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    if (arrayAdapter != null) {
+                        if (mListener != null) {
+                            FileUri fileUri = arrayAdapter.getSelectedUri();
+                            if (fileUri != null && fileUri.uri != null) {
+                                Settings.setDefaultAlarmTone(ctx, fileUri.uri.toString());
+                                mListener.onAlarmToneSelected(fileUri.uri, fileUri.name);
                             }
-                            arrayAdapter.release();
                         }
-
+                        arrayAdapter.release();
                     }
+
                 })
-                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (arrayAdapter != null) {
-                            arrayAdapter.release();
-                        }
+                .setNeutralButton(android.R.string.cancel, (dialog, id) -> {
+                    if (arrayAdapter != null) {
+                        arrayAdapter.release();
                     }
                 });
-        Dialog dialog = (Dialog) builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.border_dialog);
+        }
         return dialog;
     }
 
     private boolean hasPermission(String permission) {
-        return Build.VERSION.SDK_INT < 23 ||
-                (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
+        Context ctx = getResolvedContext();
+        if (ctx == null) {
+            return false;
+        }
+        return ctx.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void selectCustomTone() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("audio/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1);
+        selectToneLauncher.launch(intent);
     }
 
     private void initListView() {
+        Context ctx = getResolvedContext();
+        if (ctx == null || listView == null) {
+            return;
+        }
+
         ArrayList<FileUri> sounds = getAlarmSounds();
 
         final File[] file_list = listFiles();
-        if (file_list != null && file_list.length > 0) {
+        if (file_list != null) {
             for (File file : file_list) {
-                sounds.add(new FileUri(file));
-            }
-
-        }
-        arrayAdapter = new AlarmToneAdapter(getActivity(), R.layout.list_item_alarm_tone, sounds);
-        arrayAdapter.setSelectedUri(selectedUri);
-        arrayAdapter.setOnDeleteRequestListener(new AlarmToneAdapter.OnDeleteRequestListener() {
-            @Override
-            public void onDeleteRequested(FileUri file) {
-                if (file == null || file.uri == null) {
-                    return;
+                if (file != null) {
+                    sounds.add(new FileUri(file));
                 }
-                File f = new File(file.uri.getPath());
-                if (f.exists()) {
-                    f.delete();
+            }
+        }
+        arrayAdapter = new AlarmToneAdapter(ctx, R.layout.list_item_alarm_tone, sounds);
+        arrayAdapter.setSelectedUri(selectedUri);
+        arrayAdapter.setOnDeleteRequestListener(file -> {
+            if (file == null || file.uri == null) {
+                return;
+            }
+            String path = file.uri.getPath();
+            if (path == null) {
+                return;
+            }
+            File f = new File(path);
+            if (f.exists()) {
+                boolean deleted = f.delete();
+                if (!deleted) {
+                    Log.w(TAG, "Failed to delete file: " + path);
                 }
             }
         });
@@ -232,87 +320,31 @@ public class ManageAlarmSoundsDialogFragment extends AppCompatDialogFragment {
     }
 
     public ArrayList<FileUri> getAlarmSounds() {
-        RingtoneManager manager = new RingtoneManager(getActivity());
-        manager.setType(RingtoneManager.TYPE_ALARM);
-        Cursor cursor = manager.getCursor();
+        Context ctx = getResolvedContext();
         ArrayList<FileUri> list = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            String id = cursor.getString(RingtoneManager.ID_COLUMN_INDEX);
-            String title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-            String uriString = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
-            Uri uri = Uri.parse(uriString + "/" + id);
-            list.add(new FileUri(uri, title));
+        if (ctx == null) {
+            return list;
+        }
+        RingtoneManager manager = new RingtoneManager(ctx);
+        manager.setType(RingtoneManager.TYPE_ALARM);
+        try (Cursor cursor = manager.getCursor()) {
+            if (cursor == null) {
+                return list;
+            }
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(RingtoneManager.ID_COLUMN_INDEX);
+                String title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
+                String uriString = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
+                if (uriString != null && id != null) {
+                    Uri uri = Uri.parse(uriString + "/" + id);
+                    list.add(new FileUri(uri, title));
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting alarm sounds", e);
         }
 
         return list;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 1) {
-
-            if (resultCode == RESULT_OK) {
-                if (DIRECTORY == null) return;
-                //the selected audio.
-                Uri uri = data.getData();
-
-                ContentResolver contentResolver = getActivity().getContentResolver();
-                Cursor returnCursor = contentResolver.query(uri, null, null, null, null);
-                if (returnCursor == null) return;
-                /*
-                 * Get the column indexes of the data in the Cursor,
-                 * move to the first row in the Cursor, get the data,
-                 * and display it.
-                 */
-                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                //int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-                returnCursor.moveToFirst();
-
-                String fileName = returnCursor.getString(nameIndex);
-                //String mimeType = contentResolver.getType(uri);
-                //long fileSize = returnCursor.getLong(sizeIndex);
-                returnCursor.close();
-                File dstFile = new File(DIRECTORY, fileName);
-                FileUri uriDst = new FileUri(dstFile);
-
-                boolean isCreated;
-                try {
-                    isCreated = dstFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                if (!isCreated) {
-                    return;
-                }
-
-                FileInputStream src;
-                FileOutputStream dst;
-                try {
-                    src = (FileInputStream) contentResolver.openInputStream(uri);
-                    dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    return;
-                }
-
-                try {
-                    copyFile(src, dst);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-
-                if (arrayAdapter != null) {
-                    arrayAdapter.add(uriDst);
-                    arrayAdapter.setSelectedUri(uriDst.uri);
-                    // scroll to the position
-                    listView.setSelection(arrayAdapter.getSelectedPosition());
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     void setOnAlarmToneSelectedListener(ManageAlarmSoundsDialogListener listener) {

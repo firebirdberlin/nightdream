@@ -24,7 +24,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -36,7 +35,6 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +68,7 @@ public class WeatherGraphView extends View {
     private SimpleDateFormat timeFormat;
     private String timeFormatPattern = DEFAULT_TIME_FORMAT;
 
-    public WeatherGraphView(@NonNull Context context) {
+    public WeatherGraphView(@Nullable Context context) {
         super(context);
         init();
     }
@@ -81,11 +79,17 @@ public class WeatherGraphView extends View {
     }
 
     private float dp(float value) {
+        if (getResources() == null || getResources().getDisplayMetrics() == null) {
+            return value;
+        }
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, value, getResources().getDisplayMetrics());
     }
 
     private float sp(float value) {
+        if (getResources() == null || getResources().getDisplayMetrics() == null) {
+            return value;
+        }
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_SP, value, getResources().getDisplayMetrics());
     }
@@ -131,7 +135,7 @@ public class WeatherGraphView extends View {
     }
 
     /**
-     * Sets the pattern for the x axis labels. Use the same pattern as
+     * Sets the pattern for the x-axis labels. Use the same pattern as
      * WeatherForecastLayout#setTimeFormat (settings.getFullTimeFormat()).
      */
     public void setTimeFormat(@Nullable String pattern) {
@@ -159,16 +163,12 @@ public class WeatherGraphView extends View {
         }
     }
 
-    public void setEntries(@Nullable List<WeatherEntry> weatherEntries, int temperatureUnit) {
-        setEntries(weatherEntries, temperatureUnit, false);
-    }
-
     public void setEntries(@Nullable List<WeatherEntry> weatherEntries, int temperatureUnit,
                            boolean showApparentTemperature) {
         this.entries.clear();
         if (weatherEntries != null) {
             this.entries.addAll(weatherEntries);
-            Collections.sort(this.entries, (a, b) -> Long.compare(a.timestamp, b.timestamp));
+            this.entries.sort((a, b) -> Long.compare(a.timestamp, b.timestamp));
         }
         this.temperatureUnit = temperatureUnit;
         this.showApparentTemperature = showApparentTemperature;
@@ -177,8 +177,10 @@ public class WeatherGraphView extends View {
         invalidate();
     }
 
-    /** WeatherEntry.temperature is stored in Kelvin. */
-    private double toDisplayTemperature(double kelvin) {
+    /**
+     * WeatherEntry.temperature is stored in Kelvin.
+     */
+    double toDisplayTemperature(double kelvin) {
         return switch (temperatureUnit) {
             case WeatherEntry.CELSIUS -> kelvin - 273.15;
             case WeatherEntry.FAHRENHEIT -> kelvin * 1.8 - 459.67;
@@ -186,19 +188,21 @@ public class WeatherGraphView extends View {
         };
     }
 
-    private static double rainOf(WeatherEntry entry) {
+    static double rainOf(WeatherEntry entry) {
         return entry.rain3h > 0 ? entry.rain3h : (entry.rain1h > 0 ? entry.rain1h : 0.0);
     }
 
-    private String formatTemperature(double value) {
+    String formatTemperature(double value) {
         return String.format(Locale.getDefault(), "%d°", Math.round(value));
     }
 
-    private static void drawTextVCentered(Canvas canvas, String text, float x, float yCenter,
-                                          Paint paint) {
+    static void drawTextVCentered(Canvas canvas, String text, float x, float yCenter,
+                                  Paint paint) {
         float baseline = yCenter - (paint.ascent() + paint.descent()) / 2f;
         canvas.drawText(text, x, baseline, paint);
     }
+
+    final DataRanges dataRanges = new DataRanges();
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
@@ -216,63 +220,28 @@ public class WeatherGraphView extends View {
         canvas.save();
         canvas.translate(getPaddingLeft(), getPaddingTop());
 
-        // ---- data ranges -------------------------------------------------
-        double minTemp = Double.MAX_VALUE;
-        double maxTemp = -Double.MAX_VALUE;
-        double maxRain = 0.0;
+        calculateDataRanges(dataRanges);
 
-        for (WeatherEntry entry : entries) {
-            double t = toDisplayTemperature(entry.temperature);
-            if (t < minTemp) {
-                minTemp = t;
-            }
-            if (t > maxTemp) {
-                maxTemp = t;
-            }
-            if (showApparentTemperature && entry.apparentTemperature > 0.f) {
-                double at = toDisplayTemperature(entry.apparentTemperature);
-                if (at < minTemp) {
-                    minTemp = at;
-                }
-                if (at > maxTemp) {
-                    maxTemp = at;
-                }
-            }
-            double rain = rainOf(entry);
-            if (rain > maxRain) {
-                maxRain = rain;
-            }
-        }
-
-        boolean hasRain = maxRain > 0.0;
-        if (minTemp == maxTemp) {
-            minTemp -= 1.0;
-            maxTemp += 1.0;
-        }
-        if (!hasRain) {
-            maxRain = 1.0;
-        }
-
-        // ---- margins for axis labels -------------------------------------
         float gap = dp(4f);
         float textH = textPaint.descent() - textPaint.ascent();
 
-        String maxTempLabel = formatTemperature(maxTemp);
-        String minTempLabel = formatTemperature(minTemp);
-        String midTempLabel = formatTemperature((minTemp + maxTemp) / 2.0);
-        String rainLabel = String.format(Locale.getDefault(), "%.1f mm", maxRain);
+        String maxTempLabel = formatTemperature(dataRanges.maxTemp);
+        String minTempLabel = formatTemperature(dataRanges.minTemp);
+        String midTempLabel = formatTemperature((dataRanges.minTemp + dataRanges.maxTemp) / 2.0);
+        String rainLabel = String.format(Locale.getDefault(), "%.1f mm", dataRanges.maxRain);
 
-        float yLabelWidth = Math.max(textPaint.measureText(maxTempLabel),
-                Math.max(textPaint.measureText(minTempLabel), textPaint.measureText(midTempLabel)));
-        float maxTimeLabelWidth = 0f;
-        for (String label : timeLabels) {
-            maxTimeLabelWidth = Math.max(maxTimeLabelWidth, textPaint.measureText(label));
-        }
+        float yLabelWidth = Math.max(
+                textPaint.measureText(maxTempLabel),
+                Math.max(textPaint.measureText(minTempLabel), textPaint.measureText(midTempLabel))
+        );
+        float maxTimeLabelWidth = getMaxTimeLabelWidth();
         float halfTimeLabel = maxTimeLabelWidth / 2f;
 
         float leftMargin = Math.max(yLabelWidth + gap, halfTimeLabel);
-        float rightMargin = Math.max(hasRain ? rainTextPaint.measureText(rainLabel) + gap : 0f,
-                halfTimeLabel);
+        float rightMargin = Math.max(
+                dataRanges.hasRain ? rainTextPaint.measureText(rainLabel) + gap : 0f,
+                halfTimeLabel
+        );
         float topMargin = textH / 2f;
         float bottomMargin = textH + gap * 2f;
 
@@ -288,41 +257,110 @@ public class WeatherGraphView extends View {
         }
 
         int size = entries.size();
-        float stepX = size > 1 ? plotWidth / (size - 1) : plotWidth;
+        long startTime = entries.get(0).timestamp * 1000L;
+        long endTime = entries.get(size - 1).timestamp * 1000L;
 
         float lineAreaHeight = plotHeight * 0.65f;
         float barAreaHeight = plotHeight * 0.35f;
 
-        // ---- grid + y axis (temperature) ---------------------------------
+        drawNightBackground(canvas, startTime, endTime, plotLeft, plotTop, plotBottom, plotWidth);
+
+        drawTemperatureGrid(canvas, plotLeft, plotRight, plotTop, lineAreaHeight, gap, textH,
+                maxTempLabel, minTempLabel, midTempLabel);
+
+        drawRainBars(canvas, size, startTime, endTime, plotLeft, plotRight, plotBottom,
+                plotWidth, barAreaHeight, dataRanges.maxRain, dataRanges.hasRain, rainLabel, gap);
+
+        drawTemperatureLines(canvas, size, startTime, endTime, plotLeft, plotTop, plotWidth,
+                lineAreaHeight, dataRanges.minTemp, dataRanges.maxTemp);
+
+        drawXAxis(canvas, size, startTime, endTime, plotLeft, plotRight, plotBottom, plotWidth,
+                gap, textH, maxTimeLabelWidth);
+
+        canvas.restore();
+    }
+
+    void calculateDataRanges(DataRanges ranges) {
+        ranges.minTemp = Double.MAX_VALUE;
+        ranges.maxTemp = -Double.MAX_VALUE;
+        ranges.maxRain = 0.0;
+
+        for (WeatherEntry entry : entries) {
+            double t = toDisplayTemperature(entry.temperature);
+            if (t < ranges.minTemp) {
+                ranges.minTemp = t;
+            }
+            if (t > ranges.maxTemp) {
+                ranges.maxTemp = t;
+            }
+            if (showApparentTemperature && entry.apparentTemperature > 0.f) {
+                double at = toDisplayTemperature(entry.apparentTemperature);
+                if (at < ranges.minTemp) {
+                    ranges.minTemp = at;
+                }
+                if (at > ranges.maxTemp) {
+                    ranges.maxTemp = at;
+                }
+            }
+            double rain = rainOf(entry);
+            if (rain > ranges.maxRain) {
+                ranges.maxRain = rain;
+            }
+        }
+
+        ranges.hasRain = ranges.maxRain > 0.0;
+        if (ranges.minTemp == ranges.maxTemp) {
+            ranges.minTemp -= 1.0;
+            ranges.maxTemp += 1.0;
+        }
+        if (!ranges.hasRain) {
+            ranges.maxRain = 1.0;
+        }
+    }
+
+    float getMaxTimeLabelWidth() {
+        float maxTimeLabelWidth = 0f;
+        for (String label : timeLabels) {
+            maxTimeLabelWidth = Math.max(maxTimeLabelWidth, textPaint.measureText(label));
+        }
+        return maxTimeLabelWidth;
+    }
+
+    void drawNightBackground(Canvas canvas, long startTime, long endTime,
+                             float plotLeft, float plotTop, float plotBottom,
+                             float plotWidth) {
+        if (entries.size() <= 1) {
+            return;
+        }
+        float lat = 0.0f;
+        float lon = 0.0f;
+        for (WeatherEntry entry : entries) {
+            if (entry.lat != 0.0f || entry.lon != 0.0f) {
+                lat = entry.lat;
+                lon = entry.lon;
+                break;
+            }
+        }
+        List<Utility.NightInterval> nightIntervals = Utility.calculateNightIntervals(
+                startTime, endTime, lat, lon);
+        for (Utility.NightInterval interval : nightIntervals) {
+            long nightStart = Math.max(interval.start, startTime);
+            long nightEnd = Math.min(interval.end, endTime);
+            if (nightEnd > nightStart) {
+                float left = timeToX(nightStart, startTime, endTime, plotLeft, plotWidth);
+                float right = timeToX(nightEnd, startTime, endTime, plotLeft, plotWidth);
+                canvas.drawRect(left, plotTop, right, plotBottom, nightPaint);
+            }
+        }
+    }
+
+    void drawTemperatureGrid(Canvas canvas, float plotLeft, float plotRight,
+                             float plotTop, float lineAreaHeight, float gap, float textH,
+                             String maxTempLabel, String minTempLabel,
+                             String midTempLabel) {
         float yMax = plotTop;
         float yMin = plotTop + lineAreaHeight;
         float yMid = (yMax + yMin) / 2f;
-
-        // ---- night background --------------------------------------------
-        if (size > 1) {
-            long startTime = entries.get(0).timestamp * 1000L;
-            long endTime = entries.get(size - 1).timestamp * 1000L;
-            float lat = 0.0f;
-            float lon = 0.0f;
-            for (WeatherEntry entry : entries) {
-                if (entry.lat != 0.0f || entry.lon != 0.0f) {
-                    lat = entry.lat;
-                    lon = entry.lon;
-                    break;
-                }
-            }
-            List<Utility.NightInterval> nightIntervals = Utility.calculateNightIntervals(
-                    startTime, endTime, lat, lon);
-            for (Utility.NightInterval interval : nightIntervals) {
-                long nightStart = Math.max(interval.start, startTime);
-                long nightEnd = Math.min(interval.end, endTime);
-                if (nightEnd > nightStart) {
-                    float left = timeToX(nightStart, startTime, endTime, plotLeft, plotWidth);
-                    float right = timeToX(nightEnd, startTime, endTime, plotLeft, plotWidth);
-                    canvas.drawRect(left, plotTop, right, plotBottom, nightPaint);
-                }
-            }
-        }
 
         canvas.drawLine(plotLeft, yMax, plotRight, yMax, gridPaint);
         canvas.drawLine(plotLeft, yMin, plotRight, yMin, gridPaint);
@@ -334,14 +372,47 @@ public class WeatherGraphView extends View {
             canvas.drawLine(plotLeft, yMid, plotRight, yMid, gridPaint);
             drawTextVCentered(canvas, midTempLabel, plotLeft - gap, yMid, textPaint);
         }
+    }
 
-        // ---- rain bars + y axis (precipitation) --------------------------
+    void drawRainBars(Canvas canvas, int size, long startTime, long endTime,
+                      float plotLeft, float plotRight, float plotBottom,
+                      float plotWidth, float barAreaHeight, double maxRain,
+                      boolean hasRain, String rainLabel, float gap) {
         for (int i = 0; i < size; i++) {
             double rain = rainOf(entries.get(i));
             if (rain > 0) {
+                float x = timeToX(entries.get(i).timestamp * 1000L, startTime, endTime,
+                        plotLeft, plotWidth);
+                float deltaLeft;
+                float deltaRight;
+                if (size == 1) {
+                    deltaLeft = plotWidth * 0.5f;
+                    deltaRight = plotWidth * 0.5f;
+                } else {
+                    if (i > 0) {
+                        float prevX = timeToX(entries.get(i - 1).timestamp * 1000L,
+                                startTime, endTime, plotLeft, plotWidth);
+                        deltaLeft = x - prevX;
+                    } else {
+                        float nextX = timeToX(entries.get(1).timestamp * 1000L,
+                                startTime, endTime, plotLeft, plotWidth);
+                        deltaLeft = nextX - x;
+                    }
+
+                    if (i < size - 1) {
+                        float nextX = timeToX(entries.get(i + 1).timestamp * 1000L,
+                                startTime, endTime, plotLeft, plotWidth);
+                        deltaRight = nextX - x;
+                    } else {
+                        float prevX = timeToX(entries.get(size - 2).timestamp * 1000L,
+                                startTime, endTime, plotLeft, plotWidth);
+                        deltaRight = x - prevX;
+                    }
+                }
+
                 float barHeight = (float) (rain / maxRain) * barAreaHeight;
-                float left = plotLeft + i * stepX - stepX * 0.25f;
-                float right = plotLeft + i * stepX + stepX * 0.25f;
+                float left = x - deltaLeft * 0.25f;
+                float right = x + deltaRight * 0.25f;
                 canvas.drawRect(Math.max(plotLeft, left), plotBottom - barHeight,
                         Math.min(plotRight, right), plotBottom, barPaint);
             }
@@ -351,14 +422,18 @@ public class WeatherGraphView extends View {
             rainTextPaint.setTextAlign(Paint.Align.LEFT);
             drawTextVCentered(canvas, rainLabel, plotRight + gap, yRain, rainTextPaint);
         }
+    }
 
-        // ---- temperature line --------------------------------------------
+    void drawTemperatureLines(Canvas canvas, int size, long startTime, long endTime,
+                              float plotLeft, float plotTop, float plotWidth,
+                              float lineAreaHeight, double minTemp, double maxTemp) {
         linePath.reset();
         for (int i = 0; i < size; i++) {
             double t = toDisplayTemperature(entries.get(i).temperature);
-            float x = plotLeft + i * stepX;
+            float x = timeToX(entries.get(i).timestamp * 1000L, startTime, endTime,
+                    plotLeft, plotWidth);
             float ratio = (float) ((t - minTemp) / (maxTemp - minTemp));
-            float y = yMax + lineAreaHeight * (1.0f - ratio);
+            float y = plotTop + lineAreaHeight * (1.0f - ratio);
             if (i == 0) {
                 linePath.moveTo(x, y);
             } else {
@@ -374,9 +449,10 @@ public class WeatherGraphView extends View {
                 WeatherEntry entry = entries.get(i);
                 if (entry.apparentTemperature > 0.f) {
                     double at = toDisplayTemperature(entry.apparentTemperature);
-                    float x = plotLeft + i * stepX;
+                    float x = timeToX(entry.timestamp * 1000L, startTime, endTime,
+                            plotLeft, plotWidth);
                     float ratio = (float) ((at - minTemp) / (maxTemp - minTemp));
-                    float y = yMax + lineAreaHeight * (1.0f - ratio);
+                    float y = plotTop + lineAreaHeight * (1.0f - ratio);
                     if (!hasApparent) {
                         apparentLinePath.moveTo(x, y);
                         hasApparent = true;
@@ -389,30 +465,42 @@ public class WeatherGraphView extends View {
                 canvas.drawPath(apparentLinePath, apparentLinePaint);
             }
         }
-
-        // ---- x axis (time) -----------------------------------------------
-        canvas.drawLine(plotLeft, plotBottom, plotRight, plotBottom, axisPaint);
-
-        // skip labels if they would overlap
-        int stride = 1;
-        if (stepX > 0) {
-            stride = Math.max(1, (int) Math.ceil((maxTimeLabelWidth + gap * 2f) / stepX));
-        }
-        float tickLength = dp(3f);
-        float yTimeLabel = plotBottom + gap + textH / 2f;
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        for (int i = 0; i < size && i < timeLabels.length; i += stride) {
-            float x = plotLeft + i * stepX;
-            canvas.drawLine(x, plotBottom, x, plotBottom + tickLength, axisPaint);
-            drawTextVCentered(canvas, timeLabels[i], x, yTimeLabel, textPaint);
-        }
-
-        canvas.restore();
     }
 
-    private static float timeToX(long timeMs, long startTime, long endTime,
-                                 float plotLeft, float plotWidth) {
-        if (endTime == startTime) return plotLeft;
-        return plotLeft + (float) (timeMs - startTime) / (endTime - startTime) * plotWidth;
+    void drawXAxis(Canvas canvas, int size, long startTime, long endTime,
+                   float plotLeft, float plotRight, float plotBottom,
+                   float plotWidth, float gap, float textH, float maxTimeLabelWidth) {
+        canvas.drawLine(plotLeft, plotBottom, plotRight, plotBottom, axisPaint);
+
+        float tickLength = dp(3f);
+        float yTimeLabel = plotBottom + gap + textH / 2f;
+        float minLabelSpacing = maxTimeLabelWidth + gap * 2f;
+        float lastLabelX = -1f;
+
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        for (int i = 0; i < size && i < timeLabels.length; i++) {
+            float x = timeToX(entries.get(i).timestamp * 1000L, startTime, endTime,
+                    plotLeft, plotWidth);
+            canvas.drawLine(x, plotBottom, x, plotBottom + tickLength, axisPaint);
+            if (lastLabelX < 0 || x - lastLabelX >= minLabelSpacing) {
+                drawTextVCentered(canvas, timeLabels[i], x, yTimeLabel, textPaint);
+                lastLabelX = x;
+            }
+        }
+    }
+
+    static float timeToX(long timeMs, long startTime, long endTime,
+                         float plotLeft, float plotWidth) {
+        if (endTime == startTime) {
+            return plotLeft;
+        }
+        return plotLeft + (float) ((double) (timeMs - startTime) / (endTime - startTime) * plotWidth);
+    }
+
+    static class DataRanges {
+        double minTemp;
+        double maxTemp;
+        double maxRain;
+        boolean hasRain;
     }
 }

@@ -26,6 +26,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -81,11 +82,12 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityManagerCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.palette.graphics.Palette;
 
@@ -425,13 +427,13 @@ public class Utility {
             wl.acquire();
             wl.release();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to acquire/release test wake lock", e);
         }
     }
 
     public static boolean isScreenLocked(Context context) {
         KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        return myKM.inKeyguardRestrictedInputMode();
+        return myKM != null && myKM.isKeyguardLocked();
     }
 
     public static int pixelsToDp(Context context, float px) {
@@ -506,7 +508,7 @@ public class Utility {
                 || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
             );
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to check power plugged status", e);
             return false;
         }
     }
@@ -518,6 +520,11 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    public static boolean isGermany(@Nullable Locale locale) {
+        if (locale == null) return false;
+        return "DE".equalsIgnoreCase(locale.getCountry());
     }
 
     public static boolean isEmpty(String string) {
@@ -568,48 +575,40 @@ public class Utility {
     public static void hideSystemUI(Window window) {
         if (window == null) return;
         WindowCompat.setDecorFitsSystemWindows(window, false);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            // Use WindowInsetsController for Android 11 (API 33) and above
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                // Hide status bars and navigation bars
-                controller.hide(WindowInsets.Type.systemBars());
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-
-            }
-        } else {
-            View decorView = window.getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, window.getDecorView());
+        controller.hide(WindowInsetsCompat.Type.systemBars());
+        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
     }
 
     public static void showSystemUI(Window window) {
         if (window == null) return;
         WindowCompat.setDecorFitsSystemWindows(window, false);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            // Use WindowInsetsController for Android 11 (API 33) and above
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                // Hide status bars and navigation bars
-                controller.show(WindowInsets.Type.systemBars());
-                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
-
-            }
-        }
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, window.getDecorView());
+        controller.show(WindowInsetsCompat.Type.systemBars());
+        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_DEFAULT);
     }
 
     public static Point getDisplaySize(Context context) {
         Point size = new Point();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        display.getSize(size);
+        if (wm == null) {
+            return size;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Rect bounds = wm.getCurrentWindowMetrics().getBounds();
+            size.set(bounds.width(), bounds.height());
+        } else {
+            getDisplaySizeLegacy(wm, size);
+        }
         return size;
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void getDisplaySizeLegacy(WindowManager wm, Point size) {
+        Display display = wm.getDefaultDisplay();
+        if (display != null) {
+            display.getSize(size);
+        }
     }
 
     public static Rect getSafeWindowRect(Activity context) {
@@ -715,11 +714,7 @@ public class Utility {
     }
 
     public static NotificationCompat.Builder buildNotification(Context context, String channel_id) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return new NotificationCompat.Builder(context);
-        } else {
-            return new NotificationCompat.Builder(context, channel_id);
-        }
+        return new NotificationCompat.Builder(context, channel_id);
     }
 
 
@@ -851,6 +846,7 @@ public class Utility {
         Bundle bundle = data.getExtras();
         if (bundle != null) {
             for (String key : bundle.keySet()) {
+                @SuppressWarnings("deprecation")
                 Object value = bundle.get(key);
                 String strValue = (value != null) ? value.toString() : "";
                 Log.d(TAG, String.format("> %s = '%s'", key, strValue));
@@ -883,7 +879,7 @@ public class Utility {
 
     public static boolean isLowRamDevice(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        return (ActivityManagerCompat.isLowRamDevice(activityManager));
+        return activityManager != null && activityManager.isLowRamDevice();
     }
 
     public static ArrayList<File> listFiles(File path, final String fileEnding) {
@@ -919,7 +915,7 @@ public class Utility {
             ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
             return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to read Exif orientation from file", e);
         }
         return 0;
     }
@@ -929,7 +925,7 @@ public class Utility {
             ExifInterface exif = new ExifInterface(fileDescriptor);
             return getCameraPhotoOrientation(exif);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to read Exif orientation from file descriptor", e);
         }
         return 0;
     }
@@ -1189,5 +1185,50 @@ public class Utility {
             current = current.plusDays(1);
         }
         return intervals;
+    }
+
+    public static Bitmap scaleBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        if (bitmap == null) {
+            return null;
+        }
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        if (width <= maxWidth && height <= maxHeight) {
+            return bitmap;
+        }
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxWidth;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxHeight;
+            width = (int) (height * bitmapRatio);
+        }
+        try {
+            return Bitmap.createScaledBitmap(bitmap, width, height, true);
+        } catch (Exception e) {
+            return bitmap;
+        }
+    }
+
+    public static void sendPendingIntent(Context context, PendingIntent pendingIntent) {
+        if (pendingIntent == null) {
+            return;
+        }
+        try {
+            Bundle optionsBundle = null;
+            if (Build.VERSION.SDK_INT >= 34) {
+                ActivityOptions options = ActivityOptions.makeBasic();
+                @SuppressWarnings("deprecation")
+                int startMode = ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED;
+                options.setPendingIntentBackgroundActivityStartMode(startMode);
+                optionsBundle = options.toBundle();
+            }
+            pendingIntent.send(context, 0, null, null, null, null, optionsBundle);
+        } catch (PendingIntent.CanceledException e) {
+            Log.e(TAG, "PendingIntent canceled", e);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to send PendingIntent", e);
+        }
     }
 }

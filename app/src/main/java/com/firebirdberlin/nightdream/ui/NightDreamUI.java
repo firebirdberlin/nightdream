@@ -37,6 +37,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
@@ -76,6 +77,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.firebirdberlin.nightdream.Config;
+import com.firebirdberlin.nightdream.MNotificationListener;
 import com.firebirdberlin.nightdream.ui.background.BackgroundBurnInProtectionHelper;
 import com.firebirdberlin.nightdream.Graphics;
 import com.firebirdberlin.nightdream.LightSensorEventListener;
@@ -633,9 +635,7 @@ public class NightDreamUI {
 
             //Update Notifications in ClockLayout
             if (Settings.showNotification(mContext)) {
-                Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-                i.putExtra("command", "list");
-                mContext.sendBroadcast(i);
+                MNotificationListener.requestNotificationList(mContext);
             }
 
             controlsVisible = true;
@@ -935,7 +935,7 @@ public class NightDreamUI {
 
         batteryIconView.setColor(textColor);
         batteryIconView.setVisibility(View.VISIBLE);
-        menuIcon.setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
+        menuIcon.setColorFilter(new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_ATOP));
 
         // colorize icons in the side panels
         sidePanelLeft.setAccentColor(accentColor);
@@ -967,7 +967,7 @@ public class NightDreamUI {
         int textColor = getSecondaryColor();
         final boolean webRadioViewActive = bottomPanelLayout.isWebRadioViewActive();
         final int color = (webRadioViewActive ? accentColor : textColor);
-        radioIcon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        radioIcon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
         Utility.setIconSize(mContext, radioIcon);
     }
 

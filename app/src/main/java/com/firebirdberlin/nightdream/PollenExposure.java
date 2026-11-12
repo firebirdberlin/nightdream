@@ -370,4 +370,19 @@ public class PollenExposure {
                 + " herbs=" + (pollenList.isEmpty() ? 0 : pollenList.get(0).size())
                 + " areas=" + pollenAreaList.size();
     }
+
+    public static int getDrawableResId(String key) {
+        if (key == null) return 0;
+        return switch (key) {
+            case "hazelnut" -> R.drawable.ic_hazelnut;
+            case "birch" -> R.drawable.ic_birch;
+            case "ambrosia" -> R.drawable.ic_ambrosia;
+            case "grass" -> R.drawable.ic_grass;
+            case "ash" -> R.drawable.ic_ash;
+            case "mugwort" -> R.drawable.ic_mugwort;
+            case "alder" -> R.drawable.ic_alder;
+            case "rye" -> R.drawable.ic_rye;
+            default -> 0;
+        };
+    }
 }

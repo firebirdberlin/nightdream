@@ -35,6 +35,7 @@
 
 ## Coding Standards & Utilities
 - Don't exceed a line length of 100 characters.
+- Reduce complexity of methods and classes. Split large and deeply nested methods into functional blocks.  
 - Add {} even for one line statements, except for return statements., e.g. 
 ```java
   if (condition) {

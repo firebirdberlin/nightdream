@@ -18,6 +18,7 @@
 
 package com.firebirdberlin.nightdream.receivers;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,10 +39,10 @@ import androidx.core.content.ContextCompat;
 import com.firebirdberlin.nightdream.NightDreamActivity;
 import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.Utility;
-import com.firebirdberlin.nightdream.models.SimpleTime;
 import com.firebirdberlin.nightdream.repositories.BatteryStats;
 
-import java.util.Calendar;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class ScreenReceiver extends BroadcastReceiver {
     private static final String TAG = "ScreenReceiver";
@@ -76,37 +77,28 @@ public class ScreenReceiver extends BroadcastReceiver {
     }
 
     private static void checkSensorDataAndActivate(Context context) {
-        boolean waitingForSensors = getSensorData(context);
-        long startTime = System.currentTimeMillis();
-        while (waitingForSensors && (!proximitySensorChecked || !gravitySensorChecked)) {
+        CountDownLatch latch = new CountDownLatch(1);
+        boolean waitingForSensors = getSensorData(context, latch);
+        if (waitingForSensors) {
             try {
-                Log.d(TAG, "waiting for sensor data (" + proximitySensorChecked + "," + gravitySensorChecked + ")");
-                Thread.sleep(50);
+                boolean ignored = latch.await(4000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
-            }
-
-            // timeout, sensors are not responding in time
-            if ((System.currentTimeMillis() - startTime) > 4000) {
-                break;
+                Log.e(TAG, "Interrupted while waiting for sensors", e);
+                Thread.currentThread().interrupt();
             }
         }
         Log.d(TAG, "finished waiting for sensor data (" + proximitySensorChecked + "," + gravitySensorChecked + ")");
         if (Utility.isScreenOn(context)) {
             return;
         }
-        conditionallyActivateAlwaysOn(context, false);
+        conditionallyActivateAlwaysOn(context);
     }
 
-    private static void conditionallyActivateAlwaysOn(Context context, boolean turnScreenOn) {
+    private static void conditionallyActivateAlwaysOn(Context context) {
         Settings settings = new Settings(context);
         if (shallActivateStandby(context, settings)) {
             Log.i(TAG, "conditionallyActivateAlwaysOn(): Activating standby mode");
             NightDreamActivity.start(context, "start standby mode");
-            if (turnScreenOn) {
-                Utility.turnScreenOn(context);
-            }
         } else {
             Log.i(TAG, "conditionallyActivateAlwaysOn(): Not activating standby mode");
         }
@@ -148,7 +140,8 @@ public class ScreenReceiver extends BroadcastReceiver {
         return false;
     }
 
-    private static boolean getSensorData(final Context context) {
+    private static boolean getSensorData(final Context context,
+                                         final CountDownLatch latch) {
         Log.i(TAG, "getSensorData()");
         gravitySensorChecked = false;
         proximitySensorChecked = false;
@@ -192,6 +185,7 @@ public class ScreenReceiver extends BroadcastReceiver {
                     Log.i(TAG, "unregisterListener");
                     sensorMan.unregisterListener(this);
                     broadcastReceiverThread.quitSafely();
+                    latch.countDown();
                 }
             }
 
@@ -204,6 +198,7 @@ public class ScreenReceiver extends BroadcastReceiver {
             sensorMan.registerListener(eventListener, sensor, SensorManager.SENSOR_DELAY_GAME, sensorListenerHandler);
             sensorMan.registerListener(eventListener, proximitySensor, SensorManager.SENSOR_DELAY_GAME, sensorListenerHandler);
         } catch (IllegalStateException ignored) {
+            latch.countDown();
             return false;
         }
         return true;
@@ -222,10 +217,12 @@ public class ScreenReceiver extends BroadcastReceiver {
                 wakeLock = null;
             }
             PowerManager pm = ((PowerManager) context.getSystemService(Context.POWER_SERVICE));
-            wakeLock = pm.newWakeLock(
+            @SuppressLint("Wakelock") @SuppressWarnings("deprecation")
+            PowerManager.WakeLock wl = pm.newWakeLock(
                     PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,
                     "nightdream:SCREEN_OFF_WAKE_LOCK"
             );
+            wakeLock = wl;
             wakeLock.acquire(20000);
             checkSensorDataAndActivate(context);
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {

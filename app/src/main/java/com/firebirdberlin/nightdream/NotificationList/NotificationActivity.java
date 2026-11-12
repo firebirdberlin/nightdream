@@ -18,11 +18,8 @@
 
 package com.firebirdberlin.nightdream.NotificationList;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,42 +30,44 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebirdberlin.nightdream.Config;
-import com.firebirdberlin.nightdream.R;
-import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.MNotificationListener;
+import com.firebirdberlin.nightdream.R;
+import com.firebirdberlin.nightdream.events.AppEventBus;
+import com.firebirdberlin.nightdream.events.OnNotificationsUpdated;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    public static String TAG = "NotificationActivity";
+    private static final String TAG = NotificationActivity.class.getSimpleName();
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, NotificationActivity.class);
+        context.startActivity(intent);
+    }
     NotificationList notificationList = new NotificationList();
     String packageName;
     private NotificationRecyclerViewAdapter adapter;
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive");
+    private final Consumer<Object> eventListener = event -> {
+        if (event instanceof OnNotificationsUpdated updatedEvent) {
+            List<Notification> notifications = updatedEvent.notifications;
+            Log.d(TAG, "Received notifications size: " + (notifications != null ? notifications.size() : "null"));
 
-            if (intent.hasExtra("notifications")) {
-                List<Notification> notifications = intent.getParcelableArrayListExtra("notifications");
+            NotificationList oldNotificationList = new NotificationList(
+                    notificationList.getNotifications()
+            );
 
-                NotificationList oldNotificationList = new NotificationList(
-                        notificationList.getNotifications()
-                );
-
-                if (notifications != null) {
-                    notificationList.replace(notifications, packageName);
-                }
-                adapter.updateDataSet(oldNotificationList, notificationList);
+            if (notifications != null) {
+                notificationList.replace(notifications, packageName);
             }
+            Log.d(TAG, "Filtered notificationList size: " + notificationList.size());
+            adapter.updateDataSet(oldNotificationList, notificationList);
         }
     };
 
@@ -121,22 +120,14 @@ public class NotificationActivity extends AppCompatActivity {
         );
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        ContextCompat.registerReceiver(
-                this, broadcastReceiver, new IntentFilter("Notification.Action.notificationList"), ContextCompat.RECEIVER_NOT_EXPORTED
-        );
+        AppEventBus.addListener(eventListener);
 
         MNotificationListener.requestNotificationList(getApplicationContext());
     }
 
     @Override
     public void onDestroy() {
-        try {
-            if (broadcastReceiver != null) {
-                unregisterReceiver(broadcastReceiver);
-            }
-        } catch (IllegalArgumentException ignored) {
-        }
-
+        AppEventBus.removeListener(eventListener);
         super.onDestroy();
     }
 
@@ -180,10 +171,7 @@ public class NotificationActivity extends AppCompatActivity {
             notificationsKeys.add(notification.getNotificationKey());
         }
 
-        Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-        i.putExtra("command", "clear");
-        i.putExtra("notificationKeys", notificationsKeys);
-        getApplicationContext().sendBroadcast(i);
+        MNotificationListener.clearNotifications(notificationsKeys);
     }
 
     private void deleteItem(int position) {
@@ -200,9 +188,6 @@ public class NotificationActivity extends AppCompatActivity {
         );
         adapter.removeNotification(position, oldNotificationList);
 
-        Intent i = new Intent(Config.ACTION_NOTIFICATION_LISTENER);
-        i.putExtra("command", "clear");
-        i.putExtra("notificationKeys", notificationKeys);
-        getApplicationContext().sendBroadcast(i);
+        MNotificationListener.clearNotifications(notificationKeys);
     }
 }

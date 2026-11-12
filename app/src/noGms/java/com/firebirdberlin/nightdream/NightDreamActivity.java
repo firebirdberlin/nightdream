@@ -84,7 +84,6 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 import com.firebirdberlin.nightdream.ui.BottomPanelLayout;
-import com.firebirdberlin.nightdream.ui.ClockLayoutContainer;
 import com.firebirdberlin.nightdream.ui.NightDreamUI;
 import com.firebirdberlin.nightdream.ui.SidePanel;
 import com.firebirdberlin.nightdream.ui.SleepTimerDialogFragment;
@@ -138,17 +137,15 @@ public class NightDreamActivity extends BillingHelperActivity
         return false;
     }
 
-    private boolean handleAlarmEvent(Object event) {
+    private void handleAlarmEvent(Object event) {
         if (event instanceof OnAlarmStarted || event instanceof OnAlarmStopped) {
             if (nightDreamUI != null) {
                 nightDreamUI.showAlarmClock();
             }
         }
-        return false;
     }
-    public static String TAG = "NightDreamActivity";
+    private static final String TAG = NightDreamActivity.class.getSimpleName();
     public static boolean isRunning = false;
-    static long lastNoiseTime = System.currentTimeMillis();
     public static final int MODE_NIGHT = 0;
     public static final int MODE_DAY = 2;
     private static int mode = MODE_DAY;
@@ -160,7 +157,6 @@ public class NightDreamActivity extends BillingHelperActivity
     MAudioManager AudioManage = null;
     private ImageView alarmClockIcon;
     private BottomPanelLayout bottomPanelLayout;
-    private ClockLayoutContainer clockLayoutContainer;
     private SidePanel sidePanelLeft;
     private SidePanel sidePanelRight;
     private boolean screenWasOn = false;
@@ -291,13 +287,14 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         WindowCompat.setDecorFitsSystemWindows(window, false);
 
         Log.i(TAG, "onCreate() starts: " + (System.currentTimeMillis() - startTime) + " ms");
-        context = this;
+        context = getApplicationContext();
 
         setContentView(R.layout.main);
         Log.i(TAG, "setContentView took: " + (System.currentTimeMillis() - startTime) + " ms");
@@ -317,7 +314,6 @@ public class NightDreamActivity extends BillingHelperActivity
 
         alarmClockIcon = findViewById(R.id.alarm_clock_icon);
         bottomPanelLayout = findViewById(R.id.bottomPanel);
-        clockLayoutContainer = findViewById(R.id.clockLayoutContainer);
         sidePanelLeft = findViewById(R.id.side_menu_left);
         sidePanelRight = findViewById(R.id.side_menu_right);
 
@@ -335,7 +331,10 @@ public class NightDreamActivity extends BillingHelperActivity
         mGestureDetector = new GestureDetector(this, mSimpleOnGestureListener);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(this::initTextToSpeech);
+        executor.execute(() -> {
+            initTextToSpeech();
+            executor.shutdown();
+        });
 
         String manufacturer = Build.MANUFACTURER;
         if (("samsung".equalsIgnoreCase(manufacturer) || "oppo".equalsIgnoreCase(manufacturer) || "oneplus".equalsIgnoreCase(manufacturer))
@@ -439,6 +438,7 @@ public class NightDreamActivity extends BillingHelperActivity
             setupFlashlight();
             setupRadioStreamUI();
             setupAlarmClockIcon();
+            setupNotificationActivityIcon();
 
             showToastIfNotCharging();
 
@@ -461,8 +461,9 @@ public class NightDreamActivity extends BillingHelperActivity
                 AtomicReference<WeatherEntry> oldWeatherEntry = new AtomicReference<>();
                 DownloadWeatherModel.observe(this, weatherEntry -> {
                     Log.d(TAG, "onChanged weatherEntry: " + weatherEntry);
-                    if (weatherEntry != oldWeatherEntry.get()) {
-                        Log.d(TAG, "onChanged inside weatherEntry: " + oldWeatherEntry);
+                    if (weatherEntry != null && (oldWeatherEntry.get() == null || !weatherEntry.toString().equals(oldWeatherEntry.get().toString()))) {
+                        Log.d(TAG, "onChanged inside weatherEntryNew: " + weatherEntry);
+                        Log.d(TAG, "onChanged inside weatherEntryOld: " + oldWeatherEntry.get());
                         oldWeatherEntry.set(weatherEntry);
                         nightDreamUI.weatherDataUpdated(context);
                     }
@@ -575,7 +576,9 @@ public class NightDreamActivity extends BillingHelperActivity
         PowerConnectionReceiver.schedule(this);
         ScheduledAutoStartReceiver.schedule(this);
         unregister(powerSupplyReceiver);
-        unregister(nReceiver);
+        if (nReceiver != null) {
+            nReceiver.unregister();
+        }
         LocationUpdateReceiver.unregister(this, locationReceiver);
 
         if (mySettings.shallActivateDoNotDisturb()) {
@@ -631,10 +634,7 @@ public class NightDreamActivity extends BillingHelperActivity
 
     private NotificationReceiver registerNotificationReceiver() {
         NotificationReceiver receiver = new NotificationReceiver(this);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Config.ACTION_NOTIFICATION_LISTENER);
-        filter.addAction(Config.ACTION_NOTIFICATION_APPS_LISTENER);
-        ContextCompat.registerReceiver(this, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
+        receiver.register();
         return receiver;
     }
 
@@ -648,7 +648,11 @@ public class NightDreamActivity extends BillingHelperActivity
         return receiver;
     }
 
+    @Override
     public boolean onTouch(View view, MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_UP) {
+            view.performClick();
+        }
         return mGestureDetector.onTouchEvent(e) || nightDreamUI.onTouch(view, e);
     }
 
@@ -693,8 +697,24 @@ public class NightDreamActivity extends BillingHelperActivity
         Utility.setIconSize(this, alarmClockIcon);
     }
 
+    private void setupNotificationActivityIcon() {
+        ImageView notificationActivityIcon = findViewById(R.id.notification_activity_icon);
+        if (notificationActivityIcon != null) {
+            if (BuildConfig.DEBUG) {
+                notificationActivityIcon.setVisibility(View.VISIBLE);
+                Utility.setIconSize(this, notificationActivityIcon);
+            } else {
+                notificationActivityIcon.setVisibility(View.GONE);
+            }
+        }
+    }
+
     public void onWeatherForecastClick(View v) {
         WeatherForecastActivity.start(this);
+    }
+
+    public void onNotificationActivityClick(View v) {
+        NotificationListActivity.start(this);
     }
 
     public void onNotificationListClick(View v) {
@@ -865,6 +885,7 @@ public class NightDreamActivity extends BillingHelperActivity
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void setKeepScreenOn(boolean keepScreenOn) {
         Log.i(TAG, "setKeepScreenOn(" + keepScreenOn + ") requested.");
         Window window = getWindow();

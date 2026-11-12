@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -138,10 +139,10 @@ public class AlarmVolumePreference extends Preference implements OnSeekBarChange
     private void setupIcon() {
         if (currentValue == minValue) {
             icon.setImageResource(R.drawable.ic_no_audio);
-            icon.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
+            icon.setColorFilter(new PorterDuffColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP));
         } else {
             icon.setImageResource(R.drawable.ic_audio);
-            icon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            icon.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP));
         }
         icon.invalidate();
     }

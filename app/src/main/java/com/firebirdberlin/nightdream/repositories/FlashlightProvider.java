@@ -76,7 +76,7 @@ public class FlashlightProvider {
         try {
             camManager.setTorchMode(cameraId, false);
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to turn off torch mode", e);
         }
         Settings.setFlashlightIsOn(context, false);
         isOn = false;
@@ -108,7 +108,7 @@ public class FlashlightProvider {
                 }
             }
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to get camera ID list", e);
         }
         return null;
     }

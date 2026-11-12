@@ -51,6 +51,12 @@ public class AnalogClockConfig {
     public String fontUri = "file:///android_asset/fonts/dancingscript_regular.ttf";
     transient Context context;
     transient Style style;
+
+    @SuppressWarnings("unused")
+    public AnalogClockConfig() {
+        initStyle(Style.DEFAULT);
+    }
+
     public AnalogClockConfig(Context context, Style style) {
         this.context = context;
         this.style = style;
@@ -62,18 +68,12 @@ public class AnalogClockConfig {
     }
 
     public static Style toClockStyle(int layoutId) {
-        switch (layoutId) {
-            case ClockLayout.LAYOUT_ID_ANALOG:
-                return Style.MINIMALISTIC;
-            case ClockLayout.LAYOUT_ID_ANALOG2:
-                return Style.SIMPLE;
-            case ClockLayout.LAYOUT_ID_ANALOG3:
-                return Style.ARC;
-            case ClockLayout.LAYOUT_ID_ANALOG4:
-                return Style.DEFAULT;
-            default:
-                return Style.MINIMALISTIC;
-        }
+        return switch (layoutId) {
+            case ClockLayout.LAYOUT_ID_ANALOG2 -> Style.SIMPLE;
+            case ClockLayout.LAYOUT_ID_ANALOG3 -> Style.ARC;
+            case ClockLayout.LAYOUT_ID_ANALOG4 -> Style.DEFAULT;
+            default -> Style.MINIMALISTIC;
+        };
     }
 
     public void reset() {
@@ -82,11 +82,13 @@ public class AnalogClockConfig {
     }
 
     public boolean stored_preferences_exists() {
+        if (context == null || style == null) return false;
         SharedPreferences settings = context.getSharedPreferences(style.name(), 0);
         return (settings.contains("digitStyle"));
     }
 
     public void load() {
+        if (context == null || style == null) return;
         SharedPreferences settings = context.getSharedPreferences(style.name(), 0);
         String digitStyleString = settings.getString("digitStyle", DigitStyle.NONE.name());
         digitStyle = DigitStyle.valueOf(digitStyleString);
@@ -131,6 +133,7 @@ public class AnalogClockConfig {
     }
 
     public void save(){
+        if (context == null || style == null) return;
         SharedPreferences settings = context.getSharedPreferences(style.name(), 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("emphasizeHour12", emphasizeHour12);
@@ -151,12 +154,12 @@ public class AnalogClockConfig {
         editor.putFloat("tickStartMinutes", tickStartMinutes);
         editor.putFloat("tickWidthHours", tickWidthHours);
         editor.putFloat("tickWidthMinutes", tickWidthMinutes);
-        editor.putString("decoration", decoration.name());
-        editor.putString("digitStyle", digitStyle.name() );
-        editor.putString("fontUri", fontUri);
-        editor.putString("handShape", handShape.name());
-        editor.putString("tickStyleHours", tickStyleHours.name());
-        editor.putString("tickStyleMinutes", tickStyleMinutes.name());
+        editor.putString("decoration", (decoration != null ? decoration : Decoration.NONE).name());
+        editor.putString("digitStyle", (digitStyle != null ? digitStyle : DigitStyle.ARABIC).name());
+        editor.putString("fontUri", fontUri != null ? fontUri : "file:///android_asset/fonts/dancingscript_regular.ttf");
+        editor.putString("handShape", (handShape != null ? handShape : HandShape.TRIANGLE).name());
+        editor.putString("tickStyleHours", (tickStyleHours != null ? tickStyleHours : TickStyle.CIRCLE).name());
+        editor.putString("tickStyleMinutes", (tickStyleMinutes != null ? tickStyleMinutes : TickStyle.DASH).name());
         editor.apply();
     }
 
@@ -169,12 +172,18 @@ public class AnalogClockConfig {
         Gson gson = new Gson();
         AnalogClockConfig other = gson.fromJson(json, AnalogClockConfig.class);
         if (other != null) {
-            this.decoration = other.decoration;
+            if (other.decoration != null) {
+                this.decoration = other.decoration;
+            }
             this.digitPosition = other.digitPosition;
-            this.digitStyle = other.digitStyle;
+            if (other.digitStyle != null) {
+                this.digitStyle = other.digitStyle;
+            }
             this.emphasizeHour12 = other.emphasizeHour12;
             this.showSecondHand = other.showSecondHand;
-            this.handShape = other.handShape;
+            if (other.handShape != null) {
+                this.handShape = other.handShape;
+            }
             this.handLengthHours = other.handLengthHours;
             this.handLengthMinutes = other.handLengthMinutes;
             this.handWidthHours = other.handWidthHours;
@@ -182,17 +191,23 @@ public class AnalogClockConfig {
             this.highlightQuarterOfHour = other.highlightQuarterOfHour;
             this.innerCircleRadius = other.innerCircleRadius;
             this.tickStartMinutes = other.tickStartMinutes;
-            this.tickStyleMinutes = other.tickStyleMinutes;
+            if (other.tickStyleMinutes != null) {
+                this.tickStyleMinutes = other.tickStyleMinutes;
+            }
             this.tickLengthMinutes = other.tickLengthMinutes;
             this.tickStartHours = other.tickStartHours;
             this.tickWidthHours = other.tickWidthHours;
             this.tickWidthMinutes = other.tickWidthMinutes;
-            this.tickStyleHours = other.tickStyleHours;
+            if (other.tickStyleHours != null) {
+                this.tickStyleHours = other.tickStyleHours;
+            }
             this.tickLengthHours = other.tickLengthHours;
             this.outerCircleRadius = other.outerCircleRadius;
             this.outerCircleWidth = other.outerCircleWidth;
             this.fontSize = other.fontSize;
-            this.fontUri = other.fontUri;
+            if (other.fontUri != null) {
+                this.fontUri = other.fontUri;
+            }
             save();
         }
     }

@@ -153,7 +153,7 @@ public class AlarmClockLayout extends LinearLayout {
                 (on && checkBoxIsRepeating.isChecked()) ? View.VISIBLE : View.GONE
         );
 
-        mainLayout.setBackgroundColor(on ? getResources().getColor(R.color.grey) : Color.TRANSPARENT);
+        mainLayout.setBackgroundColor(on ? ContextCompat.getColor(context, R.color.grey) : Color.TRANSPARENT);
     }
 
     private void init() {
@@ -219,7 +219,7 @@ public class AlarmClockLayout extends LinearLayout {
                             alarmClockEntry.getRemainingTimeString(context),
                             Snackbar.LENGTH_LONG
                     );
-                    snackbar.setBackgroundTint(getResources().getColor(R.color.material_grey));
+                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.material_grey));
                     snackbar.show();
                 }
             } else {

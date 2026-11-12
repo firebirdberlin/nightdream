@@ -106,7 +106,7 @@ public class BrightSkyApi {
             requestTimestamp = httpReader.getRequestTimestamp();
             return responseText;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Malformed URL for forecast request", e);
             return null;
         }
     }

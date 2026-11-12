@@ -32,6 +32,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
+import androidx.core.content.IntentCompat;
+import androidx.core.os.ParcelCompat;
+
 import java.text.SimpleDateFormat;
 
 public class Notification implements Parcelable {
@@ -106,13 +109,13 @@ public class Notification implements Parcelable {
         this.text = intent.getStringExtra("text");
         this.textBig = intent.getStringExtra("textBig");
         this.summaryText = intent.getStringExtra("summaryText");
-        this.bigPicture = intent.getParcelableExtra("bigPicture");
+        this.bigPicture = IntentCompat.getParcelableExtra(intent, "bigPicture", Bitmap.class);
         this.applicationName = intent.getStringExtra("applicationName");
         this.title = intent.getStringExtra("title");
         this.titleBig = intent.getStringExtra("titleBig");
-        this.actions = (android.app.Notification.Action[]) intent.getParcelableArrayExtra("actions");
+        this.actions = (android.app.Notification.Action[]) IntentCompat.getParcelableArrayExtra(intent, "actions", android.app.Notification.Action.class);
         this.packageName = intent.getStringExtra("packageName");
-        this.pendingIntent = intent.getParcelableExtra("contentIntent");
+        this.pendingIntent = IntentCompat.getParcelableExtra(intent, "contentIntent", PendingIntent.class);
         this.isClearable = intent.getBooleanExtra("isClearable", true);
         this.color = intent.getIntExtra("color", 0);
         this.notificationID = intent.getIntExtra("id", 0);
@@ -122,8 +125,8 @@ public class Notification implements Parcelable {
         this.cardView = getCard(context, intent, "contentView");
         this.bigCardView = getCard(context, intent, "bigContentView");
 
-        this.smallIconBitmap = intent.getParcelableExtra("smallIconBitmap");
-        this.bitmapLargeIcon = intent.getParcelableExtra("largeIconBitmap");
+        this.smallIconBitmap = IntentCompat.getParcelableExtra(intent, "smallIconBitmap", Bitmap.class);
+        this.bitmapLargeIcon = IntentCompat.getParcelableExtra(intent, "largeIconBitmap", Bitmap.class);
 
         this.notification_textlines = Html.fromHtml(intent.getStringExtra("textLines"), Html.FROM_HTML_MODE_LEGACY);
 
@@ -132,7 +135,7 @@ public class Notification implements Parcelable {
 
     View getCard(Context context, Intent intent, String name) {
         try {
-            RemoteViews remoteView = intent.getParcelableExtra(name);
+            RemoteViews remoteView = IntentCompat.getParcelableExtra(intent, name, RemoteViews.class);
             if (remoteView != null) {
                 FrameLayout container = new FrameLayout(context);
 //                View inflatedView = remoteView.apply(context, container);
@@ -148,7 +151,7 @@ public class Notification implements Parcelable {
 
     Parcelable getParcelable(Parcel in, ClassLoader classLoader) {
         try {
-            return in.readParcelable(classLoader);
+            return ParcelCompat.readParcelable(in, classLoader, Parcelable.class);
         } catch (ClassCastException ignored) {
             return null;
         }

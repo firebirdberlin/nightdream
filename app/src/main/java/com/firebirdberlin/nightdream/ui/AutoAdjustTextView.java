@@ -91,8 +91,7 @@ public class AutoAdjustTextView extends AppCompatTextView {
                 this.currentFontSizeSp = size;
             }
         } catch (NullPointerException e) {
-            Log.e(TAG, "Could not adjust the text size");
-            e.printStackTrace();
+            Log.e(TAG, "Could not adjust the text size", e);
         }
         super.invalidate();
     }

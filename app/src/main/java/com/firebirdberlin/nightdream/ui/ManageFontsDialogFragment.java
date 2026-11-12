@@ -24,7 +24,6 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -38,6 +37,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -48,7 +50,6 @@ import com.firebirdberlin.nightdream.models.FileUri;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,8 +59,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ManageFontsDialogFragment extends AppCompatDialogFragment {
-    final static String TAG = "ManageFontsDialog";
-    final static int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private static final String TAG = ManageFontsDialogFragment.class.getSimpleName();
     protected File DIRECTORY = null;
 
     String[] defaultFonts;
@@ -70,18 +70,47 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
     Uri selectedUri;
     boolean isPurchased = false;
 
+    private final ActivityResultLauncher<Intent> selectFontLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    if (DIRECTORY == null) return;
+                    Uri uri = data.getData();
+                    if (uri == null) return;
+
+                    Context context = getContext();
+                    if (context == null) return;
+                    ContentResolver contentResolver = context.getContentResolver();
+                    try (Cursor returnCursor = contentResolver.query(uri, null, null, null, null)) {
+                        if (returnCursor == null) return;
+
+                        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (!returnCursor.moveToFirst()) return;
+
+                        String fileName = returnCursor.getString(nameIndex);
+
+                        if (extensionIs(fileName, ".zip")) {
+                            extractZipFile(uri);
+                        } else if (extensionIs(fileName, ".ttf", ".otf")) {
+                            copyFileToDirectory(uri, fileName);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error processing selected font file", e);
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    selectCustomFont();
+                }
+            });
+
     private static void copyFile(FileInputStream src, FileOutputStream dst) throws IOException {
-        FileChannel inChannel = src.getChannel();
-        FileChannel outChannel = dst.getChannel();
 
-        try {
+        try (FileChannel inChannel = src.getChannel(); FileChannel outChannel = dst.getChannel()) {
             inChannel.transferTo(0, inChannel.size(), outChannel);
-        } finally {
-            if (inChannel != null) {
-                inChannel.close();
-            }
-
-            outChannel.close();
         }
     }
 
@@ -100,7 +129,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
 
-            if (i > 0 && word.length() > 0) {
+            if (i > 0 && !word.isEmpty()) {
                 builder.append(" ");
             }
 
@@ -123,28 +152,30 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         selectedUri = Uri.parse(uriString);
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        DIRECTORY = getActivity().getDir("Fonts", Context.MODE_PRIVATE);
+        Context context = getContext();
+        if (context == null) {
+            return super.onCreateDialog(savedInstanceState);
+        }
+        DIRECTORY = context.getDir("Fonts", Context.MODE_PRIVATE);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogTheme);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.DialogTheme);
+        LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(R.layout.manage_alarm_sounds_dialog, null);
         listView = view.findViewById(R.id.listView);
         btnAddCustomFont = view.findViewById(R.id.addCustomAlarmTone);
 
-        String btnTxt = getActivity().getString(R.string.add_custom_font);
+        String btnTxt = context.getString(R.string.add_custom_font);
         if (!isPurchased) {
-            String productName = getActivity().getString(R.string.product_name_pro);
+            String productName = context.getString(R.string.product_name_pro);
             btnTxt += "\n (" + productName + ")";
-            Context context = getContext();
-            if (context != null) {
-                int color = Utility.getRandomMaterialColor(getContext());
-                int textColor = Utility.getContrastColor(color);
-                btnAddCustomFont.setBackgroundColor(color);
-                btnAddCustomFont.setTextColor(textColor);
-            }
+            int color = Utility.getRandomMaterialColor(context);
+            int textColor = Utility.getContrastColor(color);
+            btnAddCustomFont.setBackgroundColor(color);
+            btnAddCustomFont.setTextColor(textColor);
         }
         btnAddCustomFont.setText(btnTxt);
 
@@ -159,9 +190,8 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-                    && !hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    && !hasPermission()) {
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
                 return;
             }
             selectCustomFont();
@@ -170,53 +200,36 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         initListView();
         builder.setTitle(R.string.typeface)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (arrayAdapter != null) {
-                            if (mListener != null) {
-                                FileUri fileUri = arrayAdapter.getSelectedUri();
-                                if (fileUri != null) {
-                                    mListener.onFontSelected(fileUri.uri, fileUri.name);
-                                }
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    if (arrayAdapter != null) {
+                        if (mListener != null) {
+                            FileUri fileUri = arrayAdapter.getSelectedUri();
+                            if (fileUri != null) {
+                                mListener.onFontSelected(fileUri.uri, fileUri.name);
                             }
-                            arrayAdapter.release();
                         }
+                        arrayAdapter.release();
                     }
                 })
-                .setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (arrayAdapter != null) {
-                            arrayAdapter.release();
-                        }
+                .setNeutralButton(android.R.string.cancel, (dialog, id) -> {
+                    if (arrayAdapter != null) {
+                        arrayAdapter.release();
                     }
                 });
 
         return Utility.createDialogTheme(builder.create());
     }
 
-    private boolean hasPermission(String permission) {
-        return Build.VERSION.SDK_INT < 23 ||
-                (getActivity().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    selectCustomFont();
-                }
-            }
-        }
+    private boolean hasPermission() {
+        Context context = getContext();
+        if (context == null) return false;
+        return context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void selectCustomFont() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("application/*");
-        startActivityForResult(intent, 1);
+        selectFontLauncher.launch(intent);
     }
 
     private void initListView() {
@@ -224,7 +237,7 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
 
         Log.i(TAG, DIRECTORY.getAbsolutePath());
         final File[] file_list = listFiles();
-        if (file_list != null && file_list.length > 0) {
+        if (file_list != null) {
             for (File file : file_list) {
                 FileUri fileUri = new FileUri(file);
                 fileUri.name = getUserFriendlyFileName(fileUri.name);
@@ -239,9 +252,16 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
             if (file == null || file.uri == null) {
                 return;
             }
-            File f = new File(file.uri.getPath());
+            String path = file.uri.getPath();
+            if (path == null) {
+                return;
+            }
+            File f = new File(path);
             if (f.exists()) {
-                f.delete();
+                boolean deleted = f.delete();
+                if (!deleted) {
+                    Log.w(TAG, "Failed to delete file: " + path);
+                }
             }
         });
         listView.setAdapter(arrayAdapter);
@@ -256,47 +276,21 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         ArrayList<FileUri> list = new ArrayList<>();
         if (defaultFonts != null) {
             for (String name : defaultFonts) {
-                list.add(getFileUri(name, R.string.typeface_roboto_regular));
+                list.add(getFileUri(name));
             }
         }
         return list;
     }
 
-    private FileUri getFileUri(String file, int resId) {
+    private FileUri getFileUri(String file) {
         Uri uri = Uri.parse("file:///android_asset/fonts/" + file);
         return new FileUri(uri, getUserFriendlyFileName(file));
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 1) {
-
-            if (resultCode == RESULT_OK) {
-                if (DIRECTORY == null) return;
-                Uri uri = data.getData();
-                ContentResolver contentResolver = getActivity().getContentResolver();
-                Cursor returnCursor = contentResolver.query(uri, null, null, null, null);
-                if (returnCursor == null) return;
-
-                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                returnCursor.moveToFirst();
-
-                String fileName = returnCursor.getString(nameIndex);
-                returnCursor.close();
-
-                if (extensionIs(fileName, ".zip")) {
-                    extractZipFile(uri);
-                } else if (extensionIs(fileName, ".ttf", ".otf")) {
-                    copyFileToDirectory(uri, fileName);
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     private void copyFileToDirectory(Uri uri, String fileName) {
-        ContentResolver contentResolver = getActivity().getContentResolver();
+        Context context = getContext();
+        if (context == null) return;
+        ContentResolver contentResolver = context.getContentResolver();
         File dstFile = new File(DIRECTORY, fileName);
         FileUri uriDst = new FileUri(dstFile);
 
@@ -304,35 +298,30 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
         try {
             isCreated = dstFile.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating destination file", e);
             return;
         }
         if (!isCreated) {
             return;
         }
 
-        FileInputStream src;
-        FileOutputStream dst;
-        try {
-            src = (FileInputStream) contentResolver.openInputStream(uri);
-            dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        try {
-            copyFile(src, dst);
+        try (FileInputStream src = (FileInputStream) contentResolver.openInputStream(uri);
+             FileOutputStream dst = (FileOutputStream) contentResolver.openOutputStream(uriDst.uri)) {
+            if (src != null && dst != null) {
+                copyFile(src, dst);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error copying file", e);
             return;
         }
 
         addFileToList(uriDst);
     }
 
-    private boolean extractZipFile(Uri uri) {
-        ContentResolver contentResolver = getActivity().getContentResolver();
+    private void extractZipFile(Uri uri) {
+        Context context = getContext();
+        if (context == null) return;
+        ContentResolver contentResolver = context.getContentResolver();
 
         InputStream is;
         ZipInputStream zis;
@@ -372,11 +361,9 @@ public class ManageFontsDialogFragment extends AppCompatDialogFragment {
 
             zis.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            Log.e(TAG, "Error extracting zip file", e);
         }
 
-        return true;
     }
 
     private boolean extensionIs(String filename, String... extensions) {

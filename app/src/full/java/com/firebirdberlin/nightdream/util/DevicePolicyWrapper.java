@@ -68,7 +68,7 @@ public class DevicePolicyWrapper {
         if (keyguardManager == null) {
             return false;
         }
-        return keyguardManager.inKeyguardRestrictedInputMode();
+        return keyguardManager.isKeyguardLocked();
     }
 
     public void setupDeviceAdministratorPermissions(boolean useDeviceLock) {

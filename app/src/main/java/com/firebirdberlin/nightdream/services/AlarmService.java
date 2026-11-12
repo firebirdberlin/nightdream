@@ -151,7 +151,7 @@ public class AlarmService extends Service
         handler.removeCallbacks(fadeIn);
         AlarmStop();
         restoreVolume();
-        stopForeground(false); // bool: true = remove Notification
+        stopForeground(Service.STOP_FOREGROUND_DETACH); // remove Notification: false
     }
 
     private void setTimerForFadeOut() {
@@ -228,11 +228,10 @@ public class AlarmService extends Service
         try {
             mMediaPlayer.setDataSource(this, soundUri);
         } catch (IOException | IllegalStateException | SecurityException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to set data source for URI: " + soundUri, e);
             return false;
         }
         return true;
-
     }
 
     @Override
