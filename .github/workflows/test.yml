@@ -41,3 +41,8 @@ jobs:
         with:
           name: code-coverage-report
           path: app/build/reports/jacoco/jacocoTestReport/
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
