@@ -26,7 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
@@ -61,16 +61,15 @@ public class BottomPanelLayout extends FrameLayout {
         public void run() {
             Log.d(TAG, "hidePanel");
             handler.removeCallbacks(this);
-            Panel panel = determineActivePanel();
-            if (panel == null) {
+            if (showAlarmsPersistently) {
+                setup();
+            } else {
                 isVisible = false;
                 setClickable(false);
                 setAlpha(self, 0.f, 2000);
                 if (tickerLayout != null) {
                     tickerLayout.pause();
                 }
-            } else {
-                setup();
             }
         }
     };
@@ -205,7 +204,7 @@ public class BottomPanelLayout extends FrameLayout {
        notifyForUpcomingAlarms = enabled;
     }
 
-    @Nullable
+    @NonNull
     public Panel determineActivePanel() {
         if (AlarmHandlerService.alarmIsRunning()) {
             return Panel.ALARM_CLOCK;
@@ -219,19 +218,15 @@ public class BottomPanelLayout extends FrameLayout {
         if (rssEnabled && (tickerLayout != null || tickerDelayPassed)) {
             return Panel.TICKER;
         }
-        if (!showAlarmsPersistently) {
-            return null;
-        }
         return Panel.ALARM_CLOCK;
     }
 
     public void hide() {
         Log.d(TAG, "hide()");
-        Panel panel = determineActivePanel();
-        if (panel == null) {
+        if (tickerLayout == null && (nextAlarmTime == null || !notifyForUpcomingAlarms || nextAlarmTime.getRemainingMillis() > 60 * 60000)) {
             handler.post(hidePanel);
         } else {
-            // A panel is active, keep visible or delay hide
+            // the ticker is active or upcoming alarm is near. It should remain visible.
             handler.postDelayed(hidePanel, 60 * 60000);
         }
     }
@@ -278,16 +273,13 @@ public class BottomPanelLayout extends FrameLayout {
         Panel panel = determineActivePanel();
         if (panel == Panel.ALARM_CLOCK) {
             showAlarmView();
-            if (rssEnabled && tickerLayout == null && !tickerDelayPassed && !AlarmHandlerService.alarmIsRunning() && !RadioStreamService.isRunning) {
+            if (rssEnabled && tickerLayout == null && !tickerDelayPassed && !AlarmHandlerService.alarmIsRunning() && !RadioStreamService.isRunning && !(notifyForUpcomingAlarms && nextAlarmTime != null && nextAlarmTime.getRemainingMillis() <= 60 * 60000)) {
                 handler.postDelayed(showTickerAfterDelay, 30000L);
             }
         } else if (panel == Panel.WEB_RADIO) {
             showWebRadioView();
         } else if (panel == Panel.TICKER) {
             showTickerView();
-        } else {
-            hide();
-            return;
         }
         show();
         invalidate();
