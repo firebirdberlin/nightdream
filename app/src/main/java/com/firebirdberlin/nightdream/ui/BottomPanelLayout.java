@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -37,6 +39,7 @@ public class BottomPanelLayout extends FrameLayout {
 
     private AlarmClock view = null;
     private Panel activePanel = Panel.ALARM_CLOCK;
+    private Panel userRequestedPanel = Panel.ALARM_CLOCK;
     private Ticker tickerLayout = null;
     private UserInteractionObserver userInteractionObserver;
     private WebRadioLayout webRadioLayout = null;
@@ -44,6 +47,7 @@ public class BottomPanelLayout extends FrameLayout {
     private boolean rssEnabled = false;
     private boolean notifyForUpcomingAlarms = false;
     private boolean showAlarmsPersistently = true;
+    private boolean tickerDelayPassed = false;
     private final Context context;
     private View self;
     private int accentColor;
@@ -57,9 +61,10 @@ public class BottomPanelLayout extends FrameLayout {
         @Override
         public void run() {
             Log.d(TAG, "hidePanel");
-            handler.removeCallbacks(hidePanel);
-            if (showAlarmsPersistently) {
-                showAlarmViewIfNoRadioIsPlaying();
+            handler.removeCallbacks(this);
+            if (showAlarmsPersistently || activePanel == Panel.TICKER
+                    || activePanel == Panel.WEB_RADIO) {
+                setup();
             } else {
                 isVisible = false;
                 setClickable(false);
@@ -71,11 +76,11 @@ public class BottomPanelLayout extends FrameLayout {
         }
     };
 
-    private final Runnable hideTicker = new Runnable() {
+    private final Runnable reevaluatePanelRunnable = new Runnable() {
         @Override
         public void run() {
-            handler.removeCallbacks(hideTicker);
-            Log.d(TAG, "hideTicker");
+            handler.removeCallbacks(this);
+            Log.d(TAG, "reevaluatePanelRunnable");
             setup();
         }
     };
@@ -83,10 +88,10 @@ public class BottomPanelLayout extends FrameLayout {
     private final Runnable showTickerAfterDelay = new Runnable() {
         @Override
         public void run() {
-            handler.removeCallbacks(showTickerAfterDelay);
-            if (shallShowTicker() && tickerLayout == null && !AlarmHandlerService.alarmIsRunning() && !RadioStreamService.isRunning && activePanel != Panel.WEB_RADIO) {
-                showTickerView();
-            }
+            handler.removeCallbacks(this);
+            Log.d(TAG, "showTickerAfterDelay");
+            tickerDelayPassed = true;
+            setup();
         }
     };
 
@@ -112,18 +117,16 @@ public class BottomPanelLayout extends FrameLayout {
                 Log.d(TAG, "next alarm: " + nextAlarm);
 
                 if (nextAlarmTime.getRemainingMillis() > 60 * 60000) {
-                    // hide the ticker one hour before the next alarm
+                    // re-evaluate panel one hour before the next alarm
                     long timeToStop = nextAlarmTime.getRemainingMillis() - 60 * 60000L;
-                    Log.d(TAG, "hideTicker in " + timeToStop);
-                    handler.removeCallbacks(hideTicker);
-                    handler.postDelayed(hideTicker, timeToStop);
+                    Log.d(TAG, "reevaluatePanel in " + timeToStop);
+                    handler.removeCallbacks(reevaluatePanelRunnable);
+                    handler.postDelayed(reevaluatePanelRunnable, timeToStop);
                 }
             } else {
                 Log.d(TAG, "no next alarm");
             }
-            if (tickerLayout != null && shallShowTicker()) {
-                showTickerView();
-            }
+            setup();
         });
     }
 
@@ -131,7 +134,7 @@ public class BottomPanelLayout extends FrameLayout {
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         handler.removeCallbacks(hidePanel);
-        handler.removeCallbacks(hideTicker);
+        handler.removeCallbacks(reevaluatePanelRunnable);
         handler.removeCallbacks(showTickerAfterDelay);
     }
 
@@ -150,12 +153,12 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     public Panel getActivePanel() {
-        return activePanel;
+        return userRequestedPanel;
     }
 
     public void setActivePanel(Panel panel) {
         Log.d(TAG, "setActivePanel: "+panel);
-        activePanel = panel;
+        userRequestedPanel = panel;
         setup();
     }
 
@@ -193,6 +196,9 @@ public class BottomPanelLayout extends FrameLayout {
     }
 
     public void setRssEnabled(boolean enabled) {
+        if (!enabled) {
+            tickerDelayPassed = false;
+        }
         rssEnabled = enabled;
     }
 
@@ -200,31 +206,37 @@ public class BottomPanelLayout extends FrameLayout {
        notifyForUpcomingAlarms = enabled;
     }
 
-    public void hide() {
-        Log.d(TAG, "hide()");
-        if (tickerLayout == null && mayHideAlarm()) {
-            handler.post(hidePanel);
-        } else {
-            // the ticker is active. It should remain visible.
-            handler.postDelayed(hidePanel, 60 * 60000);
+    @NonNull
+    public Panel determineActivePanel() {
+        if (AlarmHandlerService.alarmIsRunning()) {
+            return Panel.ALARM_CLOCK;
         }
+
+        if (userRequestedPanel != Panel.ALARM_CLOCK) {
+            return userRequestedPanel;
+        }
+
+        if (RadioStreamService.isRunning) {
+            return Panel.WEB_RADIO;
+        }
+        if (notifyForUpcomingAlarms && nextAlarmTime != null
+                && nextAlarmTime.getRemainingMillis() <= 60 * 60000) {
+            return Panel.ALARM_CLOCK;
+        }
+        if (rssEnabled && (tickerLayout != null || tickerDelayPassed)) {
+            return Panel.TICKER;
+        }
+        return Panel.ALARM_CLOCK;
     }
 
-    private void showAlarmViewIfNoRadioIsPlaying() {
-        Log.d(TAG, "showAlarmViewIfNoRadioIsPlaying");
-        if (RadioStreamService.isRunning) return;
-        if (shallShowTicker()) {
-            showTickerView();
-            return;
+    public void hide() {
+        Log.d(TAG, "hide()");
+        if (tickerLayout == null && (nextAlarmTime == null || !notifyForUpcomingAlarms || nextAlarmTime.getRemainingMillis() > 60 * 60000)) {
+            handler.post(hidePanel);
+        } else {
+            // the ticker is active or upcoming alarm is near. It should remain visible.
+            handler.postDelayed(hidePanel, 60 * 60000);
         }
-
-        removeAllViews();
-        clearViews();
-        addView(view);
-        if (self != null) {
-            self.setAlpha(1.0f);
-        }
-        invalidate();
     }
 
     private void setAlpha(View v, float alpha, int millis) {
@@ -265,41 +277,24 @@ public class BottomPanelLayout extends FrameLayout {
 
     public void setup() {
         Log.d(TAG, "setup()");
-        if (AlarmHandlerService.alarmIsRunning()) {
-            handler.removeCallbacks(showTickerAfterDelay);
+        handler.removeCallbacks(showTickerAfterDelay);
+        Panel panel = determineActivePanel();
+        if (panel == Panel.ALARM_CLOCK) {
             showAlarmView();
-        } else if (RadioStreamService.isRunning || activePanel == Panel.WEB_RADIO) {
-            handler.removeCallbacks(showTickerAfterDelay);
-            showWebRadioView();
-        } else {
-            if (shallShowTicker()) {
-                if (tickerLayout != null) {
-                    showTickerView();
-                } else {
-                    showAlarmView();
-                    handler.removeCallbacks(showTickerAfterDelay);
-                    handler.postDelayed(showTickerAfterDelay, 30000L);
-                }
-            } else {
-                handler.removeCallbacks(showTickerAfterDelay);
-                showAlarmView();
+            if (rssEnabled && tickerLayout == null && !tickerDelayPassed
+                    && !AlarmHandlerService.alarmIsRunning() && !RadioStreamService.isRunning
+                    && !(notifyForUpcomingAlarms && nextAlarmTime != null
+                    && nextAlarmTime.getRemainingMillis() <= 60 * 60000)) {
+                handler.postDelayed(showTickerAfterDelay, 30000L);
             }
+        } else if (panel == Panel.WEB_RADIO) {
+            showWebRadioView();
+        } else if (panel == Panel.TICKER) {
+            showTickerView();
         }
+        activePanel = panel;
         show();
         invalidate();
-    }
-
-    private boolean shallShowTicker() {
-        return rssEnabled && mayHideAlarm();
-    }
-
-    private boolean mayHideAlarm() {
-        Log.i(TAG, "mayHideAlarm() -> nextAlarmTIme: " + nextAlarmTime);
-        return (
-                nextAlarmTime == null
-                        || !notifyForUpcomingAlarms
-                        || nextAlarmTime.getRemainingMillis() > 60 * 60000
-        );
     }
 
     private void clearViews() {
@@ -359,7 +354,6 @@ public class BottomPanelLayout extends FrameLayout {
 
     private void showAlarmView() {
         Log.d(TAG, "showAlarmView()");
-        if (activePanel == Panel.WEB_RADIO && !AlarmHandlerService.alarmIsRunning()) return;
         removeAllViews();
         clearViews();
         setPadding(0, 0, 0, 0);
