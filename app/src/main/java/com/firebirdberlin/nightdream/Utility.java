@@ -27,6 +27,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.app.Notification;
@@ -79,6 +80,7 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -232,6 +234,23 @@ public class Utility {
                 intent,
                 flag
         );
+    }
+
+    public static void setExactAlarm(
+            @NonNull AlarmManager alarmManager,
+            int type,
+            long triggerAtMillis,
+            @NonNull PendingIntent operation
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.set(type, triggerAtMillis, operation);
+        } else {
+            try {
+                alarmManager.setExact(type, triggerAtMillis, operation);
+            } catch (SecurityException e) {
+                alarmManager.set(type, triggerAtMillis, operation);
+            }
+        }
     }
 
 

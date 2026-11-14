@@ -45,7 +45,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class ScheduledAutoStartReceiver extends BroadcastReceiver {
-    private static final String TAG = "AutoStartReceiver";
+    private static final String TAG = ScheduledAutoStartReceiver.class.getSimpleName();
     private static final int PENDING_INTENT_START_APP = 0;
     private static final String ACTION_START_SCHEDULED =
             "com.firebirdberlin.nightdream.ACTION_START_SCHEDULED";
@@ -107,8 +107,11 @@ public class ScheduledAutoStartReceiver extends BroadcastReceiver {
         Log.d(TAG, startTime.toString());
         Log.d(TAG, start.toString());
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+            Utility.setExactAlarm(
+                    alarmManager, AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
+        }
     }
 
     public static void conditionallyStartApp(final Context context) {

@@ -63,7 +63,7 @@ import java.util.concurrent.Executors;
 
 public class ClockWidgetProvider extends AppWidgetProvider {
 
-    private static final String TAG = "WidgetProvider";
+    private static final String TAG = ClockWidgetProvider.class.getSimpleName();
     private static final String LOG_FILE_WEATHER_UPDATE = "nightdream_weather_update_log.txt";
     private AlarmManager mAlarmManager;
     private static final int RC_UPDATE = 0x13;
@@ -325,7 +325,9 @@ public class ClockWidgetProvider extends AppWidgetProvider {
 
         long millis = calendar.getTimeInMillis();
         PendingIntent pendingIntent = getUpdateIntent(context, widgetIds);
-        mAlarmManager.setExact(AlarmManager.RTC, millis, pendingIntent);
+        if (mAlarmManager != null) {
+            Utility.setExactAlarm(mAlarmManager, AlarmManager.RTC, millis, pendingIntent);
+        }
     }
 
     private static ComponentName getComponentName(Context context) {
