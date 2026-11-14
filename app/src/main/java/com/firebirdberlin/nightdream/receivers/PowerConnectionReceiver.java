@@ -113,8 +113,11 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         Calendar start = new SimpleTime(settings.autostartTimeRangeStartInMinutes).getCalendar();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+            Utility.setExactAlarm(
+                    alarmManager, AlarmManager.RTC_WAKEUP, start.getTimeInMillis(), pendingIntent);
+        }
     }
 
     public static void conditionallyStartApp(final Context context, final String action) {
