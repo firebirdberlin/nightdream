@@ -45,6 +45,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -97,6 +98,8 @@ import com.firebirdberlin.nightdream.models.ParticleEffect;
 import com.firebirdberlin.nightdream.models.ThemePreset;
 import com.firebirdberlin.nightdream.repositories.ThemePresetManager;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
+import com.firebirdberlin.nightdream.services.AlarmService;
+import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.ui.background.ImageViewExtended;
 import com.firebirdberlin.nightdream.ui.background.PulsingStarsOverlayView;
 import com.firebirdberlin.nightdream.ui.background.SnowOverlayView;
@@ -176,6 +179,7 @@ public class NightDreamUI {
     private int lastPointerCount = 0;
     private float lastThreeFingerX = 0f;
     private float lastThreeFingerY = 0f;
+    private float volumeScrollAccumulator = 0f;
     private final Settings settings;
     private final Window window;
     private final Runnable fadeClock = new Runnable() {
@@ -423,15 +427,49 @@ public class NightDreamUI {
             }
 
             @Override
+            public boolean onDown(@NonNull MotionEvent e) {
+                volumeScrollAccumulator = 0f;
+                return false;
+            }
+
+            @Override
             public boolean onScroll(MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
                 Log.d(TAG, "onScroll");
-                if (
-                        clockLayoutContainer == null || brightnessProgress == null
-                ) return false;
+                if (clockLayoutContainer == null || brightnessProgress == null) return false;
+
+                Point size = Utility.getDisplaySize(mContext);
+                boolean isAudioActive = RadioStreamService.isRunning || AlarmService.isRunning;
+                if (isAudioActive && e1 != null && e1.getX() > size.x * 0.75f
+                        && Math.abs(distanceY) > Math.abs(distanceX)) {
+                    AudioManager audio =
+                            (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                    if (audio != null) {
+                        int streamType = AlarmService.isRunning ? AudioManager.STREAM_ALARM :
+                                (RadioStreamService.currentStreamType
+                                        != AudioManager.USE_DEFAULT_STREAM_TYPE
+                                        ? RadioStreamService.currentStreamType
+                                        : AudioManager.STREAM_MUSIC);
+                        int maxVol = audio.getStreamMaxVolume(streamType);
+                        if (maxVol > 0) {
+                            float stepThreshold = size.y / (float) maxVol;
+                            volumeScrollAccumulator += distanceY;
+                            int steps = (int) (volumeScrollAccumulator / stepThreshold);
+                            if (steps != 0) {
+                                volumeScrollAccumulator -= steps * stepThreshold;
+                                int currentVol = audio.getStreamVolume(streamType);
+                                int newVol = Math.min(maxVol, Math.max(0, currentVol + steps));
+                                audio.setStreamVolume(
+                                        streamType, newVol, AudioManager.FLAG_SHOW_UI
+                                );
+                            }
+                            return true;
+                        }
+                    }
+                }
+
                 if (brightnessProgress.getVisibility() == View.VISIBLE) {
                     clockLayoutContainer.getLocationInWindow(rect);
-                    if (e1.getY() < rect[1] && e2.getY() < rect[1]) {
-                        Point size = Utility.getDisplaySize(mContext);
+                    if (e1 != null && e1.getY() < rect[1] && e2.getY() < rect[1]) {
                         float dx = -2.f * (distanceX / size.x);
                         float value = (mode == 0) ? settings.getNightModeBrightness() : settings.getBrightnessOffset();
                         value += dx;
