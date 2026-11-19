@@ -207,14 +207,6 @@
             android:parentActivityName=".NightDreamActivity"
             android:theme="@style/NotificationActivityTheme" />
         <activity
-            android:name=".NotificationList.NotificationActivity"
-            android:screenOrientation="fullSensor"
-            android:configChanges="orientation|keyboard|screenSize"
-            android:excludeFromRecents="true"
-            android:finishOnCloseSystemDialogs="true"
-            android:parentActivityName=".NotificationListActivity"
-            android:theme="@style/NotificationActivityTheme" />
-        <activity
             android:name=".NightDreamActivity"
             android:configChanges="orientation|keyboard|screenSize|screenLayout|uiMode"
             android:enabled="true"

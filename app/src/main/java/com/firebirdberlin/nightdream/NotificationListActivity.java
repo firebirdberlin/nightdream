@@ -25,16 +25,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebirdberlin.nightdream.NotificationList.BrowseNotificationApps;
-import com.firebirdberlin.nightdream.NotificationList.NotificationApp;
-import com.firebirdberlin.nightdream.NotificationList.NotificationAppList;
+import com.firebirdberlin.nightdream.NotificationList.Notification;
+import com.firebirdberlin.nightdream.NotificationList.NotificationList;
+import com.firebirdberlin.nightdream.NotificationList.NotificationRecyclerViewAdapter;
 import com.firebirdberlin.nightdream.events.AppEventBus;
-import com.firebirdberlin.nightdream.events.OnNotificationAppsUpdated;
+import com.firebirdberlin.nightdream.events.OnNotificationsUpdated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +45,43 @@ import java.util.function.Consumer;
 public class NotificationListActivity extends AppCompatActivity {
 
     private static final String TAG = NotificationListActivity.class.getSimpleName();
-    List<NotificationApp> notificationApps = new ArrayList<>();
-    NotificationAppList notificationAppList;
-    private BrowseNotificationApps adapter;
+
+    private final NotificationList notificationList = new NotificationList();
+    private NotificationRecyclerViewAdapter adapter;
+
     private final Consumer<Object> eventListener = event -> {
-        if (event instanceof OnNotificationAppsUpdated updatedEvent) {
-            notificationApps = updatedEvent.notificationApps;
-            if (notificationApps != null) {
-                notificationAppList.replace(notificationApps);
+        if (event instanceof OnNotificationsUpdated updatedEvent) {
+            List<Notification> notifications = updatedEvent.notifications;
+            Log.d(TAG, "Received notifications size: " + (notifications != null ? notifications.size() : "null"));
+
+            NotificationList oldNotificationList = new NotificationList(
+                    notificationList.getNotifications()
+            );
+
+            if (notifications != null) {
+                notificationList.replace(notifications, null);
             }
-            adapter.updateData(notificationAppList.get());
+            Log.d(TAG, "Filtered notificationList size: " + notificationList.size());
+            adapter.updateDataSet(oldNotificationList, notificationList);
+        }
+    };
+
+    private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+            new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+        @Override
+        public boolean onMove(
+                @NonNull RecyclerView recyclerView,
+                @NonNull RecyclerView.ViewHolder viewHolder,
+                @NonNull RecyclerView.ViewHolder target
+        ) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            int position = viewHolder.getBindingAdapterPosition();
+            deleteItem(position);
         }
     };
 
@@ -66,17 +95,16 @@ public class NotificationListActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, "NotifyListener started");
-
-        notificationAppList = new NotificationAppList(notificationApps);
+        Log.d(TAG, "NotificationListActivity started");
         setContentView(R.layout.notification_list_layout);
 
-        adapter = new BrowseNotificationApps(this, notificationApps);
-
-        RecyclerView recyclerView = this.findViewById(R.id.recyclerView);
+        adapter = new NotificationRecyclerViewAdapter(notificationList);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(adapter);
 
-        // RecyclerView scroll vertical
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 this, LinearLayoutManager.VERTICAL, false
         );
@@ -103,11 +131,54 @@ public class NotificationListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.menuItem_delete_all) {
+        if (id == R.id.menuItem_markall) {
+            if (notificationList != null) {
+                NotificationList oldNotificationList = new NotificationList(
+                        notificationList.getNotifications()
+                );
+                for (int index = 0; index < notificationList.size(); index++) {
+                    oldNotificationList.setSelected(index, notificationList.isSelected(index));
+                    notificationList.setSelected(index, true);
+                }
+                adapter.updateDataSet(oldNotificationList, notificationList);
+            }
+            return true;
+        } else if (id == R.id.menuItem_delete) {
+            clearSelectedNotifications();
+            return true;
+        } else if (id == R.id.menuItem_delete_all) {
             MNotificationListener.clearAllNotifications();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void clearSelectedNotifications() {
+        if (notificationList == null) return;
+
+        ArrayList<String> notificationsKeys = new ArrayList<>();
+        ArrayList<Notification> selectedNotifications = new ArrayList<>(adapter.getSelectedNotifications());
+        for (Notification notification : selectedNotifications) {
+            notificationsKeys.add(notification.getNotificationKey());
+        }
+
+        MNotificationListener.clearNotifications(notificationsKeys);
+    }
+
+    private void deleteItem(int position) {
+        if (notificationList == null || position < 0) return;
+
+        ArrayList<String> notificationKeys = new ArrayList<>();
+        Notification notification = notificationList.get(position);
+        Log.d(TAG, "remove swipe: " + position);
+        notificationKeys.add(notification.getNotificationKey());
+
+        NotificationList oldNotificationList = new NotificationList(
+                notificationList.getNotifications()
+        );
+        adapter.removeNotification(position, oldNotificationList);
+
+        MNotificationListener.clearNotifications(notificationKeys);
+    }
 }
