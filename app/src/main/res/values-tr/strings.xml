@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Medya kontrolleri</string>
     <string name="notification_show_preview_summary">Gelen bildirimlerin önizlemesini göster</string>
     <string name="notification_show_preview_title">Bildirim önizlemesi</string>
+    <string name="notification_sound_interval">Bildirim sesi aralığı</string>
     <string name="notifications">Bildirimler</string>
     <string name="notificationsInStatusBarSummary">Etkinleştirilmişse bildirimleri durum çubuğunda göster. Aksi takdirde ek bir satır ekleyin.</string>
     <string name="notificationsInStatusBarTitle">Durum çubuğu</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Fındık</string>
     <string name="pollen_mugwort">Pelin</string>
     <string name="pollen_rye">Çavdar</string>
+    <string name="play_notification_sounds">Bildirim seslerinin çalmasına izin ver</string>
     <string name="power_source">güç kaynağı</string>
     <string name="preferences">Tercihler</string>
     <string name="prev">Önceki</string>

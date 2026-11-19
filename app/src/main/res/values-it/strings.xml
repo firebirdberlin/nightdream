@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Controlli multimediali</string>
     <string name="notification_show_preview_summary">Mostra un\'anteprima delle notifiche in arrivo</string>
     <string name="notification_show_preview_title">Anteprima notifiche</string>
+    <string name="notification_sound_interval">Intervallo audio delle notifiche</string>
     <string name="notifications">Notifiche</string>
     <string name="notificationsInStatusBarSummary">Mostra le notifiche nella barra di stato se abilitato. Altrimenti aggiungi una riga aggiuntiva.</string>
     <string name="notificationsInStatusBarTitle">Barra di stato</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Nocciolo</string>
     <string name="pollen_mugwort">Artemisia</string>
     <string name="pollen_rye">Segale</string>
+    <string name="play_notification_sounds">Consenti la riproduzione dei suoni di notifica</string>
     <string name="power_source">alimentazione</string>
     <string name="preferences">Preferenze</string>
     <string name="prev">Precedente</string>

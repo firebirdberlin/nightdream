@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Commandes multimédias</string>
     <string name="notification_show_preview_summary">montrer un spperçu des notifications en. cours</string>
     <string name="notification_show_preview_title">Apperçu des notifications</string>
+    <string name="notification_sound_interval">Intervalle de son des notifications</string>
     <string name="notifications">Notifications</string>
     <string name="notificationsInStatusBarSummary">Afficher les notifications dans la barre d\'état si activé. Sinon, ajoutez une ligne supplémentaire.</string>
     <string name="notificationsInStatusBarTitle">Barre de statut</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Noisetier</string>
     <string name="pollen_mugwort">Armoise</string>
     <string name="pollen_rye">Seigle</string>
+    <string name="play_notification_sounds">Autoriser la lecture des sons de notification</string>
     <string name="power_source">Source électrique</string>
     <string name="preferences">Préférences</string>
     <string name="prev">Précédent</string>

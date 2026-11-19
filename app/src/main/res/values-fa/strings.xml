@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">کنترل های رسانه ای</string>
     <string name="notification_show_preview_summary">نمایش پیش نمایش اعلان های دریافتی</string>
     <string name="notification_show_preview_title">پیش نمایش اعلان</string>
+    <string name="notification_sound_interval">فاصله زمانی صدای اعلان</string>
     <string name="notifications">اطلاعیه ها</string>
     <string name="notificationsInStatusBarSummary">در صورت فعال بودن، اعلان‌ها را در نوار وضعیت نشان دهید. در غیر این صورت یک ردیف اضافی اضافه کنید.</string>
     <string name="notificationsInStatusBarTitle">نوار وضعیت</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">فندق</string>
     <string name="pollen_mugwort">ماگورت</string>
     <string name="pollen_rye">چاودار</string>
+    <string name="play_notification_sounds">اجازه دادن به پخش صداهای اعلان</string>
     <string name="power_source">منبع برق</string>
     <string name="preferences">ترجیحات</string>
     <string name="prev">قبلی</string>

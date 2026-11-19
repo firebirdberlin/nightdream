@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Kontroller för mediaspelare</string>
     <string name="notification_show_preview_summary">Visa och förhandsgranska inkommande noti ficationer</string>
     <string name="notification_show_preview_title">förhandsgranskning Notifikation</string>
+    <string name="notification_sound_interval">Aviseringsljudintervall</string>
     <string name="notifications">Meddelanden</string>
     <string name="notificationsInStatusBarSummary">Visa meddelande på statusraden om aktiverat. Annars lägg till extra rad.</string>
     <string name="notificationsInStatusBarTitle">Statusrad</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Hasselnöt</string>
     <string name="pollen_mugwort">Gråbo</string>
     <string name="pollen_rye">Råg</string>
+    <string name="play_notification_sounds">Tillåt uppspelning av aviseringsljud</string>
     <string name="power_source">Strömkälla</string>
     <string name="preferences">Förvalda</string>
     <string name="prev">Föregående</string>

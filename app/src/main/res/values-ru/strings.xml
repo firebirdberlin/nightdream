@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Управление плеером</string>
     <string name="notification_show_preview_summary">Показывать превью входящих уведомлений</string>
     <string name="notification_show_preview_title">Превью уведомлений</string>
+    <string name="notification_sound_interval">Интервал звука уведомлений</string>
     <string name="notifications">Уведомления</string>
     <string name="notificationsInStatusBarSummary">Показывать уведомления в строке состояния, если включено, в противном случае добавить дополнительную строку.</string>
     <string name="notificationsInStatusBarTitle">Статус-бар</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Лещина</string>
     <string name="pollen_mugwort">Полынь</string>
     <string name="pollen_rye">Рожь</string>
+    <string name="play_notification_sounds">Разрешить воспроизведение звуков уведомлений</string>
     <string name="power_source">Источник питания</string>
     <string name="preferences">Предпочтения</string>
     <string name="prev">Предыдущее</string>

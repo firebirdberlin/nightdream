@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Comenzi media</string>
     <string name="notification_show_preview_summary">Afișează o previzualizare a notificărilor primite</string>
     <string name="notification_show_preview_title">Previzualizare notificări</string>
+    <string name="notification_sound_interval">Interval de sunet pentru notificări</string>
     <string name="notifications">Notificări</string>
     <string name="notificationsInStatusBarSummary">Afișați notificările în bara de stare dacă sunt activate. În caz contrar, adăugați un rând suplimentar.</string>
     <string name="notificationsInStatusBarTitle">Bara de stare</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">alune</string>
     <string name="pollen_mugwort">Aromă</string>
     <string name="pollen_rye">Secară</string>
+    <string name="play_notification_sounds">Permite redarea sunetelor de notificare</string>
     <string name="power_source">sursa de alimentare</string>
     <string name="preferences">Preferințe</string>
     <string name="prev">anterior</string>

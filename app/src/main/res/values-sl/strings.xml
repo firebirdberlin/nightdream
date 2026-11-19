@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Media controls</string>
     <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
     <string name="notification_show_preview_title">Notification preview</string>
+    <string name="notification_sound_interval">Interval zvoka obvestil</string>
     <string name="notifications">Notifications</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationsInStatusBarTitle">Status bar</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Hazelnut</string>
     <string name="pollen_mugwort">Mugwort</string>
     <string name="pollen_rye">Rye</string>
+    <string name="play_notification_sounds">Dovoli predvajanje zvokov obvestil</string>
     <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">prejšnji</string>
