@@ -121,9 +121,14 @@ public class NotificationListActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    private static final int MENU_ITEM_PREFERENCES = 3000;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.notification_list_menu, menu);
+        menu.add(Menu.NONE, MENU_ITEM_PREFERENCES, Menu.NONE, R.string.preferences)
+                .setIcon(R.drawable.ic_settings)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
 
@@ -131,7 +136,10 @@ public class NotificationListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.menuItem_markall) {
+        if (id == MENU_ITEM_PREFERENCES) {
+            NotificationPreferencesActivity.start(this);
+            return true;
+        } else if (id == R.id.menuItem_markall) {
             if (notificationList != null) {
                 NotificationList oldNotificationList = new NotificationList(
                         notificationList.getNotifications()

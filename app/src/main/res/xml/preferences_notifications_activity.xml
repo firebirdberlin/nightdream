@@ -1,0 +1,66 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:timerange="timerange"
+    app:key="notifications_activity"
+    app:title="@string/notifications">
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:key="activateDoNotDisturb"
+        app:summary="@string/activateDoNotDisturbSummary"
+        app:title="@string/activateDoNotDisturb" />
+
+    <CheckBoxPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"
+        app:dependency="activateDoNotDisturb"
+        app:key="activateDoNotDisturbAllowPriorityCalls"
+        app:title="@string/activateDoNotDisturbAllowPriority" />
+
+    <com.firebirdberlin.nightdream.WeekDaySelectionPreference
+        app:key="dndWeekdays"
+        app:title="@string/weekdays"
+        app:dependency="activateDoNotDisturb"
+        app:dialogTitle="@string/weekdays"
+        app:iconSpaceReserved="false"/>
+
+    <com.firebirdberlin.nightdream.TimeRangePreference
+        app:allowDividerAbove="false"
+        app:iconSpaceReserved="false"
+        app:defaultValue="0"
+        app:dependency="activateDoNotDisturb"
+        app:key="dnd_time_range"
+        app:title="@string/category_handle_power_autostart_time"
+        timerange:end_text="@string/autostart_timerange_label_end"
+        timerange:key_suffix_end="_end"
+        timerange:key_suffix_start="_start"
+        timerange:start_text="@string/autostart_timerange_label_start" />
+
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:defaultValue="false"
+        app:dependency="activateDoNotDisturb"
+        app:key="playNotificationSoundsEnabled"
+        app:title="@string/play_notification_sounds" />
+
+    <ListPreference
+        app:iconSpaceReserved="false"
+        app:defaultValue="5"
+        app:dependency="playNotificationSoundsEnabled"
+        app:entries="@array/notificationSoundIntervalEntries"
+        app:entryValues="@array/notificationSoundIntervalValues"
+        app:key="notificationSoundIntervalMinutes"
+        app:title="@string/notification_sound_interval"
+        app:useSimpleSummaryProvider="true" />
+
+    <ListPreference
+        app:useSimpleSummaryProvider="true"
+        app:iconSpaceReserved="false"
+        app:defaultValue="3"
+        app:key="minNotificationImportance"
+        app:title="@string/notification_lowest_importance"
+        android:entryValues="@array/notificationImportanceValues"
+        app:entries="@array/notificationImportance" />
+
+</PreferenceScreen>
