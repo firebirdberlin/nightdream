@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Controls de mitjans</string>
     <string name="notification_show_preview_summary">Mostra una vista prèvia de les notificacions entrants</string>
     <string name="notification_show_preview_title">Vista prèvia de la notificació</string>
+    <string name="notification_sound_interval">Interval de so de notificació</string>
     <string name="notifications">Notificacions</string>
     <string name="notificationsInStatusBarSummary">Mostra les notificacions a la barra d\'estat si està activat. En cas contrari, afegiu una fila addicional.</string>
     <string name="notificationsInStatusBarTitle">Barra d\'estat</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Avellana</string>
     <string name="pollen_mugwort">Artemisia</string>
     <string name="pollen_rye">Sègol</string>
+    <string name="play_notification_sounds">Permetre reproduir sons de notificació</string>
     <string name="power_source">font d\'energia</string>
     <string name="preferences">Preferències</string>
     <string name="prev">anterior</string>

@@ -264,6 +264,7 @@ OR
     <string name="notification_show_mediastyle_title">Medienplayer anzeigen</string>
     <string name="notification_show_preview_summary">Zeige Vorschau von eingehenden Benachrichtigungen</string>
     <string name="notification_show_preview_title">Benachrichtigungsvorschau</string>
+    <string name="notification_sound_interval">Intervall für Benachrichtigungstöne</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="notificationsInStatusBarSummary">Zeige Benachrichtigungen in der Statuszeile an. Andernfalls werden Benachrichtigungen unter der Uhrzeit dargestellt.</string>
     <string name="notificationsInStatusBarTitle">In Statuszeile anzeigen</string>
@@ -311,6 +312,7 @@ OR
     <string name="pollen_hazelnut">Haselnuss</string>
     <string name="pollen_mugwort">Beifuss</string>
     <string name="pollen_rye">Roggen</string>
+    <string name="play_notification_sounds">Benachrichtigungstöne erlauben</string>
     <string name="power_source">Stromquelle</string>
     <string name="preferences">Einstellungen</string>
     <string name="prev">vorheriges</string>

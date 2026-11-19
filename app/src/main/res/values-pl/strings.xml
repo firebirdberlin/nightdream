@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Sterowanie mediami</string>
     <string name="notification_show_preview_summary">Pokaż podgląd przychodzących powiadomień</string>
     <string name="notification_show_preview_title">Podgląd powiadomienia</string>
+    <string name="notification_sound_interval">Interwał dźwięku powiadomień</string>
     <string name="notifications">Powiadomienia</string>
     <string name="notificationsInStatusBarSummary">Pokaż powiadomienia w pasku statusu jeśli włączone. W innym przypadku dodaj dodatkowy wiersz.</string>
     <string name="notificationsInStatusBarTitle">Pasek stanu</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Leszczyna</string>
     <string name="pollen_mugwort">Bylica</string>
     <string name="pollen_rye">Żyto</string>
+    <string name="play_notification_sounds">Zezwalaj na odtwarzanie dźwięków powiadomień</string>
     <string name="power_source">źródło zasilania</string>
     <string name="preferences">Preferencje</string>
     <string name="prev">Poprzedni</string>

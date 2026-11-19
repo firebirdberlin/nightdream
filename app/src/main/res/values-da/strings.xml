@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Mediestyring</string>
     <string name="notification_show_preview_summary">Vis en forhåndsvisning af indgående meddelelser</string>
     <string name="notification_show_preview_title">Forhåndsvisning af meddelelser</string>
+    <string name="notification_sound_interval">Notifikationslydinterval</string>
     <string name="notifications">Beskeder</string>
     <string name="notificationsInStatusBarSummary">Vi beskeder i Status baren hvis den er aktiveret, ellers tilføj en ekstra række</string>
     <string name="notificationsInStatusBarTitle">Status bar</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Hasselnød</string>
     <string name="pollen_mugwort">Bynke</string>
     <string name="pollen_rye">Rug</string>
+    <string name="play_notification_sounds">Tillad afspilning af meddelelseslyde</string>
     <string name="power_source">Strøm kilde</string>
     <string name="preferences">Præference</string>
     <string name="prev">forrige</string>

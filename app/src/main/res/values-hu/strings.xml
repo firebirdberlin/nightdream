@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Médiavezérlők</string>
     <string name="notification_show_preview_summary">A bejövő értesítések előnézetének megjelenítése</string>
     <string name="notification_show_preview_title">Értesítés előnézete</string>
+    <string name="notification_sound_interval">Értesítési hang időköz</string>
     <string name="notifications">Értesítések</string>
     <string name="notificationsInStatusBarSummary">Értesítések megjelenítése az állapotsorban, ha engedélyezve van. Ellenkező esetben adjon hozzá egy további sort.</string>
     <string name="notificationsInStatusBarTitle">Állapotsor</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Mogyoró</string>
     <string name="pollen_mugwort">Mugwort</string>
     <string name="pollen_rye">Rozs</string>
+    <string name="play_notification_sounds">Értesítési hangok lejátszásának engedélyezése</string>
     <string name="power_source">áramforrás</string>
     <string name="preferences">Preferences</string>
     <string name="prev">előző</string>

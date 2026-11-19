@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Керування медіа</string>
     <string name="notification_show_preview_summary">Показувати попередній перегляд вхідних сповіщень</string>
     <string name="notification_show_preview_title">Попередній перегляд сповіщень</string>
+    <string name="notification_sound_interval">Інтервал звуку сповіщень</string>
     <string name="notifications">Сповіщення</string>
     <string name="notificationsInStatusBarSummary">Показувати сповіщення в рядку стану, якщо увімкнено. В іншому випадку додати додатковий рядок.</string>
     <string name="notificationsInStatusBarTitle">Рядок стану</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Ліщина</string>
     <string name="pollen_mugwort">Полин</string>
     <string name="pollen_rye">Жито</string>
+    <string name="play_notification_sounds">Дозволити відтворення звуків сповіщень</string>
     <string name="power_source">джерело живлення</string>
     <string name="preferences">Налаштування</string>
     <string name="prev">Попередній</string>

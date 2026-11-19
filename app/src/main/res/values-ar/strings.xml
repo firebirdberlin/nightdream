@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">ضوابط وسائل الإعلام</string>
     <string name="notification_show_preview_summary">عرض معاينة للإخطارات الواردة</string>
     <string name="notification_show_preview_title">معاينة الإخطار</string>
+    <string name="notification_sound_interval">فاصل صوت الإشعار</string>
     <string name="notifications">إشعارات</string>
     <string name="notificationsInStatusBarSummary">عرض الإشعارات في شريط الحالات إذا تم تمكينه. خلاف ذلك أضفها إي صف إضافي </string>
     <string name="notificationsInStatusBarTitle">شريط الحالات</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">البندق</string>
     <string name="pollen_mugwort">موغورت</string>
     <string name="pollen_rye">الجاودار</string>
+    <string name="play_notification_sounds">السماح بتشغيل أصوات الإشعارات</string>
     <string name="power_source">مصدر الطاقة</string>
     <string name="preferences">تفضيلات</string>
     <string name="prev">السابق</string>

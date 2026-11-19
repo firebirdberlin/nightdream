@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Media-instellingen</string>
     <string name="notification_show_preview_summary">Toon een voorbeeld van inkomende meldingen</string>
     <string name="notification_show_preview_title">Voorbeeld van melding</string>
+    <string name="notification_sound_interval">Interval voor meldingsgeluid</string>
     <string name="notifications">Notificaties</string>
     <string name="notificationsInStatusBarSummary">Meldingen weergeven in de statusbalk indien ingeschakeld. Voeg anders een extra rij toe.</string>
     <string name="notificationsInStatusBarTitle">Statusbalk</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Hazelaar</string>
     <string name="pollen_mugwort">Bijvoet</string>
     <string name="pollen_rye">Rogge</string>
+    <string name="play_notification_sounds">Meldingsgeluiden afspelen toestaan</string>
     <string name="power_source">Energiebron</string>
     <string name="preferences">Voorkeuren</string>
     <string name="prev">vorige</string>

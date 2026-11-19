@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">媒体控制</string>
     <string name="notification_show_preview_summary">显示传入通知的预览</string>
     <string name="notification_show_preview_title">通知预览</string>
+    <string name="notification_sound_interval">通知声音间隔</string>
     <string name="notifications">通知</string>
     <string name="notificationsInStatusBarSummary">如果启用，则在状态栏中显示通知。否则添加额外的行。</string>
     <string name="notificationsInStatusBarTitle">状态栏</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">榛子</string>
     <string name="pollen_mugwort">艾蒿</string>
     <string name="pollen_rye">黑麦</string>
+    <string name="play_notification_sounds">允许播放通知声音</string>
     <string name="power_source">电源</string>
     <string name="preferences">偏好设置</string>
     <string name="prev">以前的</string>

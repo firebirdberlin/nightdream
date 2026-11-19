@@ -254,6 +254,7 @@ OR
     <string name="notification_show_mediastyle_title">Ovládání médií</string>
     <string name="notification_show_preview_summary">Zobrazit náhled příchozích oznámení</string>
     <string name="notification_show_preview_title">Náhled oznámení</string>
+    <string name="notification_sound_interval">Interval zvuků oznámení</string>
     <string name="notifications">Oznámení</string>
     <string name="notificationsInStatusBarSummary">Zobrazovat oznámení ve stavovém řádku, pokud je povolený. Jinak přidat řádek.</string>
     <string name="notificationsInStatusBarTitle">Stavový řádek</string>
@@ -301,6 +302,7 @@ OR
     <string name="pollen_hazelnut">Líska</string>
     <string name="pollen_mugwort">Pelyněk</string>
     <string name="pollen_rye">Žito</string>
+    <string name="play_notification_sounds">Povolit přehrávání zvuků oznámení</string>
     <string name="power_source">zdroj napájení</string>
     <string name="preferences">Předvolby</string>
     <string name="prev">předchozí</string>
