@@ -114,7 +114,7 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.3.0"
     implementation 'androidx.exifinterface:exifinterface:1.4.2'
     implementation 'androidx.fragment:fragment-ktx:1.9.1'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.1"
     implementation 'androidx.palette:palette-ktx:1.1.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.work:work-runtime-ktx:2.12.0'
@@ -139,7 +139,7 @@ dependencies {
     implementation 'org.shredzone.commons:commons-suncalc:3.11'
 
     // Full flavor specific dependencies
-    fullImplementation 'com.android.billingclient:billing:9.1.0'
+    fullImplementation 'com.android.billingclient:billing:9.2.0'
     fullImplementation 'com.google.android.gms:play-services-cast-framework:23.0.0'
     fullImplementation 'androidx.media3:media3-cast:1.11.1'
     fullImplementation 'com.google.android.play:review:2.0.2'
