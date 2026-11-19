@@ -200,6 +200,11 @@ public class Settings {
     public Set<Integer> autostartWeekdays;
     public Set<Integer> alwaysOnWeekdays;
     public Set<Integer> scheduledAutostartWeekdays;
+    public Set<Integer> dndWeekdays;
+    public int dndTimeRangeStartInMinutes = -1;
+    public int dndTimeRangeEndInMinutes = -1;
+    public boolean playNotificationSoundsEnabled = false;
+    public int notificationSoundIntervalMinutes = 5;
     public double NOISE_AMPLITUDE_WAKE = Config.NOISE_AMPLITUDE_WAKE;
     public double NOISE_AMPLITUDE_SLEEP = Config.NOISE_AMPLITUDE_SLEEP;
     public int clockLayout;
@@ -533,6 +538,14 @@ public class Settings {
         maxBrightnessBattery = 0.01f * settings.getInt("maxBrightnessBattery", 25);
         nightModeTimeRangeStartInMinutes = settings.getInt("nightmode_timerange_start_minutes", -1);
         nightModeTimeRangeEndInMinutes = settings.getInt("nightmode_timerange_end_minutes", -1);
+        dndTimeRangeStartInMinutes = settings.getInt("dnd_time_range_start_minutes", -1);
+        dndTimeRangeEndInMinutes = settings.getInt("dnd_time_range_end_minutes", -1);
+        playNotificationSoundsEnabled = settings.getBoolean("playNotificationSoundsEnabled", false);
+        try {
+            notificationSoundIntervalMinutes = Integer.parseInt(settings.getString("notificationSoundIntervalMinutes", "5"));
+        } catch (Exception e) {
+            notificationSoundIntervalMinutes = 5;
+        }
         unlockCount = settings.getInt("unlockCount", 0);
         lastUnlockHintShownTime = settings.getLong("lastUnlockHintShownTime", 0L);
         lastReviewRequestTime = settings.getLong("lastReviewRequestTime", 0L);
@@ -618,6 +631,13 @@ public class Settings {
         scheduledAutostartWeekdays = new HashSet<>();
         for (String weekday : scheduledAutostartWeekdaysStrings) {
             scheduledAutostartWeekdays.add(Integer.valueOf(weekday));
+        }
+        Set<String> dndWeekdaysStrings = settings.getStringSet("dndWeekdays", defaultWeekdays);
+        dndWeekdays = new HashSet<>();
+        if (dndWeekdaysStrings != null) {
+            for (String weekday : dndWeekdaysStrings) {
+                dndWeekdays.add(Integer.valueOf(weekday));
+            }
         }
     }
 
@@ -997,7 +1017,27 @@ public class Settings {
         if (!purchaseManager.isPurchased(PurchaseManager.ITEM_ACTIONS)) {
             return false;
         }
-        return activateDoNotDisturb;
+        if (!activateDoNotDisturb) {
+            return false;
+        }
+        Calendar now = Calendar.getInstance();
+        if (dndWeekdays != null && !dndWeekdays.isEmpty() && !dndWeekdays.contains(now.get(Calendar.DAY_OF_WEEK))) {
+            return false;
+        }
+        if (dndTimeRangeStartInMinutes >= 0 && dndTimeRangeEndInMinutes >= 0) {
+            Calendar start = new SimpleTime(dndTimeRangeStartInMinutes).getCalendar();
+            Calendar end = new SimpleTime(dndTimeRangeEndInMinutes).getCalendar();
+            if (end.before(start)) {
+                if (!now.after(start) && !now.before(end)) {
+                    return false;
+                }
+            } else if (!start.equals(end)) {
+                if (!now.after(start) || !now.before(end)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public boolean isSpeakTimeEnabled() {

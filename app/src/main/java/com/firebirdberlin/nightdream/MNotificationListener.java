@@ -19,6 +19,8 @@
 package com.firebirdberlin.nightdream;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -34,8 +36,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -53,9 +60,11 @@ import com.firebirdberlin.nightdream.events.OnNotificationsUpdated;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -68,6 +77,15 @@ public class MNotificationListener extends NotificationListenerService {
     private final List<com.firebirdberlin.nightdream.NotificationList.Notification> notifications = new ArrayList<>();
     private final List<NotificationApp> notificationApps = new ArrayList<>();
     int minNotificationImportance = 2;
+
+    private final List<Uri> pendingBatchSounds = new CopyOnWriteArrayList<>();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean isFlushScheduled = false;
+
+    private final Runnable flushBatchRunnable = () -> {
+        isFlushScheduled = false;
+        flushPendingBatchSounds();
+    };
 
     public static MNotificationListener getInstance() {
         return instance;
@@ -158,6 +176,15 @@ public class MNotificationListener extends NotificationListenerService {
         logNotification(sbn);
         if (shallIgnoreNotification(sbn)) return;
 
+        Settings settings = new Settings(this);
+        if (settings.shallActivateDoNotDisturb() && settings.playNotificationSoundsEnabled) {
+            Uri soundUri = getNotificationSoundUri(sbn);
+            if (soundUri != null) {
+                pendingBatchSounds.add(soundUri);
+                scheduleBatchFlush(settings.notificationSoundIntervalMinutes);
+            }
+        }
+
         Intent i = getIntentForBroadCast(sbn);
         if (i != null) {
             AppEventBus.publish(new OnNotificationPreviewEvent("added_preview", i));
@@ -167,6 +194,82 @@ public class MNotificationListener extends NotificationListenerService {
 
         if (!Utility.isScreenOn(this)) {
             conditionallyStartActivity();
+        }
+    }
+
+    private Uri getNotificationSoundUri(StatusBarNotification sbn) {
+        Notification notification = sbn.getNotification();
+        if (notification == null) return null;
+
+        Uri soundUri = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = notification.getChannelId();
+            if (channelId != null) {
+                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nm != null) {
+                    NotificationChannel channel = nm.getNotificationChannel(channelId);
+                    if (channel != null) {
+                        soundUri = channel.getSound();
+                    }
+                }
+            }
+        }
+        if (soundUri == null) {
+            soundUri = notification.sound;
+        }
+        if (soundUri == null && (notification.defaults & Notification.DEFAULT_SOUND) != 0) {
+            soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
+        return soundUri;
+    }
+
+    private synchronized void scheduleBatchFlush(int intervalMinutes) {
+        if (isFlushScheduled) return;
+
+        if (intervalMinutes <= 0) intervalMinutes = 5;
+
+        Calendar now = Calendar.getInstance();
+        int currentMinute = now.get(Calendar.MINUTE);
+        int nextIntervalMinute = ((currentMinute / intervalMinutes) + 1) * intervalMinutes;
+
+        Calendar target = (Calendar) now.clone();
+        target.set(Calendar.MINUTE, 0);
+        target.set(Calendar.SECOND, 0);
+        target.set(Calendar.MILLISECOND, 0);
+        target.add(Calendar.MINUTE, nextIntervalMinute);
+
+        long delayMs = target.getTimeInMillis() - now.getTimeInMillis();
+        if (delayMs <= 0) {
+            delayMs = intervalMinutes * 60_000L;
+        }
+
+        isFlushScheduled = true;
+        mainHandler.postDelayed(flushBatchRunnable, delayMs);
+    }
+
+    private void flushPendingBatchSounds() {
+        if (pendingBatchSounds.isEmpty()) return;
+
+        List<Uri> soundsToPlay = new ArrayList<>(pendingBatchSounds);
+        pendingBatchSounds.clear();
+
+        int maxSounds = Math.min(soundsToPlay.size(), 5);
+        for (int index = 0; index < maxSounds; index++) {
+            final Uri soundUri = soundsToPlay.get(index);
+            final long delay = index * 500L;
+            mainHandler.postDelayed(() -> playSoundUri(soundUri), delay);
+        }
+    }
+
+    private void playSoundUri(Uri soundUri) {
+        if (soundUri == null) return;
+        try {
+            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundUri);
+            if (ringtone != null) {
+                ringtone.play();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error playing sound URI: " + soundUri, e);
         }
     }
 

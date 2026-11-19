@@ -33,6 +33,8 @@ import java.util.Set;
 
 public class WeekDaySelectionPreference extends MultiSelectListPreference {
 
+    private static final String TAG = WeekDaySelectionPreference.class.getSimpleName();
+
     public WeekDaySelectionPreference(Context context) {
         super(context);
         init();
@@ -61,7 +63,7 @@ public class WeekDaySelectionPreference extends MultiSelectListPreference {
         int firstDay = cal.getFirstDayOfWeek();
         for (int i = firstDay; i < firstDay + 8; i++) {
             if (i % 8 == 0) continue;
-            Log.d("TAG", i + " " + (i % 8) + " "+ weekdays[i % 8]);
+            Log.d(TAG, i + " " + (i % 8) + " "+ weekdays[i % 8]);
             entries.add(weekdays[i % 8]);
             values.add(String.valueOf(i % 8));
         }
@@ -69,6 +71,28 @@ public class WeekDaySelectionPreference extends MultiSelectListPreference {
         setEntryValues(values.toArray(new String[0]));
         Set<String> defaults = new HashSet<>(values);
         setDefaultValue(defaults);
+
+        setSummaryProvider(preference -> {
+            Set<String> selectedValues = getValues();
+            if (Utility.isEmpty(selectedValues)) {
+                return "";
+            }
+            CharSequence[] entryValues = getEntryValues();
+            CharSequence[] entryTexts = getEntries();
+            if (entryValues == null || entryTexts == null) {
+                return "";
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < entryValues.length; i++) {
+                if (selectedValues.contains(entryValues[i].toString())) {
+                    if (sb.length() > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(entryTexts[i]);
+                }
+            }
+            return sb.toString();
+        });
     }
 
     private static String[] getWeekdayStrings() {
