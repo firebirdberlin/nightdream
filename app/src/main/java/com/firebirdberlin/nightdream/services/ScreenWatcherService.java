@@ -18,6 +18,7 @@
 
 package com.firebirdberlin.nightdream.services;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -26,10 +27,11 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import android.util.Log;
 
 import com.firebirdberlin.nightdream.Config;
 import com.firebirdberlin.nightdream.NightDreamActivity;
@@ -43,7 +45,7 @@ import com.firebirdberlin.openweathermapapi.models.WeatherEntry;
 
 
 public class ScreenWatcherService extends Service {
-    private static String TAG = "ScreenWatcherService";
+    private static final String TAG = ScreenWatcherService.class.getSimpleName();
 
     public static boolean isRunning = false;
     private ScreenReceiver mReceiver;
@@ -59,13 +61,20 @@ public class ScreenWatcherService extends Service {
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(
-                    Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-            );
-        } else {
-            startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(
+                        Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note,
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                );
+            } else {
+                startForeground(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, note);
+            }
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Failed to start foreground service in onCreate", e);
+            isRunning = false;
+            stopSelf();
+            return;
         }
 
         mReceiver = ScreenReceiver.register(this);
@@ -105,9 +114,14 @@ public class ScreenWatcherService extends Service {
         updateNotification(context, note);
     }
 
+    @SuppressLint("MissingPermission")
     public static void updateNotification(Context context, Notification notification) {
         NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
-        mNotificationManager.notify(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, notification);
+        try {
+            mNotificationManager.notify(Config.NOTIFICATION_ID_FOREGROUND_SERVICES, notification);
+        } catch (SecurityException e) {
+            Log.e(TAG, "Missing notification permission", e);
+        }
     }
 
     private static Notification buildNotification(Context context, String title, String text,

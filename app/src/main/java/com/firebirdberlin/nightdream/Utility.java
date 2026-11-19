@@ -76,7 +76,6 @@ import android.view.DisplayCutout;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -111,7 +110,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -740,29 +738,16 @@ public class Utility {
 
     public static void startForegroundService(Context context, Intent i) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(i);
+            try {
+                context.startForegroundService(i);
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Failed to start foreground service", e);
+            }
         } else {
             context.startService(i);
         }
     }
 
-    public static Notification getForegroundServiceNotification(Context context, int resIdText) {
-        createNotificationChannels(context);
-        Notification note =
-                Utility.buildNotification(context, Config.NOTIFICATION_CHANNEL_ID_SERVICES)
-                        .setOngoing(true)
-                        .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(context.getString(resIdText))
-                        .setSmallIcon(R.drawable.ic_expert)
-                        .setAutoCancel(true)
-                        .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                        .setPriority(NotificationCompat.PRIORITY_MIN)
-                        .build();
-
-        note.flags |= Notification.FLAG_NO_CLEAR;
-        note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-        return note;
-    }
     public static boolean checkNotificationChannel(Context context, @Nullable String channelId){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if(!TextUtils.isEmpty(channelId)) {
@@ -953,17 +938,12 @@ public class Utility {
         int rotate = 0;
         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotate = 270;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotate = 180;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotate = 90;
-                break;
-        }
+        rotate = switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_270 -> 270;
+            case ExifInterface.ORIENTATION_ROTATE_180 -> 180;
+            case ExifInterface.ORIENTATION_ROTATE_90 -> 90;
+            default -> rotate;
+        };
 
         Log.i("RotateImage", "Exif orientation: " + orientation);
         Log.i("RotateImage", "Rotate value: " + rotate);
