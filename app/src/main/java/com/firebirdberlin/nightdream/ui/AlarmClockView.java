@@ -58,6 +58,7 @@ import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class AlarmClockView extends View {
@@ -79,6 +80,8 @@ public class AlarmClockView extends View {
     private boolean userChangesAlarmTime = false;
     private boolean FingerDownDeleteAlarm = false;
     private boolean useAlarmSwipeGesture = false;
+    private String alarmSwipeMode = Settings.ALARM_SWIPE_MODE_ALARM;
+    private int currentNapMinutes = 1;
     public boolean useAlarmStopSlider = false;
     private boolean useSingleTap = true;
     private boolean useLongPress = false;
@@ -163,11 +166,62 @@ public class AlarmClockView extends View {
         this.paddingHorizontal = paddingHorizontal;
     }
 
-    public void setUseAlarmSwipeGesture(boolean enabled) {
+    public void setUseAlarmSwipeGesture(boolean enabled, String mode) {
         useAlarmSwipeGesture = enabled;
+        alarmSwipeMode = (mode != null) ? mode : Settings.ALARM_SWIPE_MODE_ALARM;
         if (enabled) {
             this.setUseLongPress(true);
         }
+    }
+
+    public void setUseAlarmSwipeGesture(boolean enabled) {
+        setUseAlarmSwipeGesture(enabled, Settings.ALARM_SWIPE_MODE_ALARM);
+    }
+
+    public boolean isPowerNapMode() {
+        return Settings.ALARM_SWIPE_MODE_POWER_NAP.equals(alarmSwipeMode);
+    }
+
+    private boolean hasUpcomingAlarmInNext60Minutes() {
+        if (alarmIsRunning()) {
+            return true;
+        }
+        if (time == null || !time.isActive) {
+            return false;
+        }
+        Calendar alarmTime = time.getCalendar();
+        if (alarmTime == null) {
+            return false;
+        }
+        long now = System.currentTimeMillis();
+        long alarmMs = alarmTime.getTimeInMillis();
+        long diffMs = alarmMs - now;
+        return diffMs >= 0 && diffMs <= 60 * 60 * 1000L;
+    }
+
+    private void calculatePowerNapTime(float x) {
+        int w = getWidth();
+        float startX = paddingHorizontal + touch_zone_radius;
+        float endX = (float) w - paddingHorizontal;
+        if (endX <= startX) {
+            endX = w;
+        }
+        float availableWidth = endX - startX;
+        if (availableWidth <= 0) {
+            availableWidth = 1f;
+        }
+        float progress = (x - startX) / availableWidth;
+        progress = Math.max(0.0f, Math.min(1.0f, progress));
+        int napMinutes = 1 + Math.round(progress * 59.0f);
+        currentNapMinutes = Math.max(1, Math.min(60, napMinutes));
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, currentNapMinutes);
+        setAlarmTime(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+    }
+
+    public boolean isUserChangesAlarmTime() {
+        return userChangesAlarmTime;
     }
 
     public void setUseAlarmStopSlider(boolean enabled) {
@@ -254,6 +308,7 @@ public class AlarmClockView extends View {
                 // Allow start only in the lower left corner
                 if (dist > quiet_zone_size && cornerLeft.isInside(click)) { // left corner
                     FingerDown = true;
+                    currentNapMinutes = 1;
                     this.invalidate();
                     this.lastMoveEventY = tY;
                     this.lastMinSinceDragStart = 0;
@@ -265,7 +320,11 @@ public class AlarmClockView extends View {
                 if (dist > touch_zone_radius) {
                     userChangesAlarmTime = true;
                     cancelAlarm();
-                    XYtotime(tX, tY);
+                    if (isPowerNapMode()) {
+                        calculatePowerNapTime(tX);
+                    } else {
+                        XYtotime(tX, tY);
+                    }
                 } else {
                     userChangesAlarmTime = false;
                 }
@@ -275,7 +334,11 @@ public class AlarmClockView extends View {
             case MotionEvent.ACTION_UP:
                 if (!FingerDown) return false;
                 if (dist > touch_zone_radius) {
-                    XYtotime(tX, tY);
+                    if (isPowerNapMode()) {
+                        calculatePowerNapTime(tX);
+                    } else {
+                        XYtotime(tX, tY);
+                    }
                     setAlarm();
                 }
                 FingerDown = false;
@@ -464,6 +527,57 @@ public class AlarmClockView extends View {
                     -1.f * maxHeight,
                     paint
             );
+
+            if (time != null) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setTextSize(Utility.dpToPx(getContext(), 24));
+                paint.setTextAlign(Paint.Align.CENTER);
+                String timeStr = Utility.getTimeFormatted(ctx, time.getCalendar());
+                String displayText;
+                if (isPowerNapMode()) {
+                    displayText = String.format(Locale.US, "+%d min - %s", currentNapMinutes, timeStr);
+                } else {
+                    displayText = timeStr;
+                }
+
+                float textWidth = paint.measureText(displayText);
+                Paint.FontMetrics fm = paint.getFontMetrics();
+                float textHeight = fm.descent - fm.ascent;
+
+                float centerX = w / 2.0f;
+                float centerY = -1.f * maxHeight - Utility.dpToPx(getContext(), 20);
+
+                float paddingH = Utility.dpToPx(getContext(), 20);
+                float paddingV = Utility.dpToPx(getContext(), 10);
+
+                RectF pillRect = new RectF(
+                        centerX - (textWidth / 2.0f) - paddingH,
+                        centerY + fm.ascent - paddingV,
+                        centerX + (textWidth / 2.0f) + paddingH,
+                        centerY + fm.descent + paddingV
+                );
+
+                float cornerRadius = textHeight / 2.0f + paddingV;
+
+                // Draw semi-transparent dark rounded pill background (#99000000)
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(Color.parseColor("#99000000"));
+                canvas.drawRoundRect(pillRect, cornerRadius, cornerRadius, paint);
+
+                // Subtle white highlight border
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(2.0f);
+                paint.setColor(Color.WHITE);
+                paint.setAlpha(50);
+                canvas.drawRoundRect(pillRect, cornerRadius, cornerRadius, paint);
+
+                // Draw text with shadow
+                paint.setStyle(Paint.Style.FILL);
+                paint.setAlpha(255);
+                paint.setShadowLayer(8f, 2f, 2f, Color.BLACK);
+                canvas.drawText(displayText, centerX, centerY, paint);
+                paint.clearShadowLayer();
+            }
         }
     }
 
@@ -531,8 +645,17 @@ public class AlarmClockView extends View {
     }
 
     private boolean showLeftCorner() {
-        return FingerDown || (!locked && useAlarmSwipeGesture && !isAlarmSet());
-
+        if (locked || !useAlarmSwipeGesture) {
+            return FingerDown;
+        }
+        if (FingerDown) {
+            return true;
+        }
+        if (isPowerNapMode()) {
+            return !hasUpcomingAlarmInNext60Minutes();
+        } else {
+            return !isAlarmSet();
+        }
     }
 
     private boolean showRightCorner() {
@@ -613,7 +736,11 @@ public class AlarmClockView extends View {
         handler.removeCallbacks(blink);
         this.blinkStateOn = false;
         time.isActive = true;
-        time.name = getResources().getString(R.string.alarm);
+        if (isPowerNapMode()) {
+            time.name = getResources().getString(R.string.power_nap);
+        } else {
+            time.name = getResources().getString(R.string.alarm);
+        }
         AlarmHandlerService.set(ctx, time);
     }
 

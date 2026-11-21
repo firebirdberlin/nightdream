@@ -44,6 +44,9 @@ OR
     <string name="alarmName">Name of the alarm</string>
     <string name="alarmStartDate">Next alarm on</string>
     <string name="alarmStartsFrom">from</string>
+    <string name="alarmSwipeModeAlarm" tools:ignore="MissingTranslation">Normal alarm</string>
+    <string name="alarmSwipeModePowerNap" tools:ignore="MissingTranslation">Power nap</string>
+    <string name="alarmSwipeModeTitle" tools:ignore="MissingTranslation">Swipe gesture action</string>
     <string name="alarmUpcoming">Upcoming alarm</string>
     <string name="alarmVolume">Volume</string>
     <string name="allow_screen_off">Turn screen off</string>
@@ -315,6 +318,7 @@ OR
     <string name="pollen_mugwort">Mugwort</string>
     <string name="pollen_rye">Rye</string>
     <string name="play_notification_sounds">Allow to play notification sounds</string>
+    <string name="power_nap" tools:ignore="MissingTranslation">Power nap</string>
     <string name="power_source">power source</string>
     <string name="preferences">Preferences</string>
     <string name="prev">previous</string>

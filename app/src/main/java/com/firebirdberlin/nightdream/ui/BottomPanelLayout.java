@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
+import com.firebirdberlin.nightdream.Settings;
 import com.firebirdberlin.nightdream.services.AlarmHandlerService;
 import com.firebirdberlin.nightdream.services.RadioStreamService;
 import com.firebirdberlin.nightdream.models.SimpleTime;
@@ -166,10 +167,14 @@ public class BottomPanelLayout extends FrameLayout {
         userInteractionObserver = o;
     }
 
-    public void setUseAlarmSwipeGesture(boolean enabled) {
+    public void setUseAlarmSwipeGesture(boolean enabled, String mode) {
         if (view != null && view.alarmClockView != null) {
-            view.alarmClockView.setUseAlarmSwipeGesture(enabled);
+            view.alarmClockView.setUseAlarmSwipeGesture(enabled, mode);
         }
+    }
+
+    public void setUseAlarmSwipeGesture(boolean enabled) {
+        setUseAlarmSwipeGesture(enabled, Settings.ALARM_SWIPE_MODE_ALARM);
     }
 
     public void setAlarmUseSingleTap(boolean enabled) {
