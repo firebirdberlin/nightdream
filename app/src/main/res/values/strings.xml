@@ -265,6 +265,8 @@ OR
     <string name="notification_show_preview_summary">Show a preview of incoming notifications</string>
     <string name="notification_show_preview_title">Notification preview</string>
     <string name="notification_sound_interval">Notification sound interval</string>
+    <string name="notification_stack_count" translatable="false">%s (%d)</string>
+    <string name="notification_stack_collapse" translatable="false">Collapse stack</string>
     <string name="notifications">Notifications</string>
     <string name="notificationsInStatusBarSummary">Show notifications in the status bar if enabled. Otherwise add an additional row.</string>
     <string name="notificationsInStatusBarTitle">Status bar</string>
