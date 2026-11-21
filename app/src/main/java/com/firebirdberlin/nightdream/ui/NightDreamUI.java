@@ -1314,7 +1314,7 @@ public class NightDreamUI {
         bottomPanelLayout.setRssEnabled(settings.isRssEnabled());
         bottomPanelLayout.setNotifyForUpComingAlarms(settings.notifyForUpcomingAlarms);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture);
+        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture, settings.alarmSwipeMode);
         bottomPanelLayout.setup();
     }
 

@@ -210,7 +210,7 @@ public class AlarmClock extends RelativeLayout {
         alarmClockView.setOnAlarmChangedListener(alarmString -> {
             Log.i(TAG, "onAlarmChanged() alarmString: " + alarmString);
             alarmTimeTextView.setText(alarmString);
-            alarmTimeTextView.setVisibility(alarmString.isEmpty() ? GONE : VISIBLE);
+            alarmTimeTextView.setVisibility((alarmString.isEmpty() || alarmClockView.isUserChangesAlarmTime()) ? GONE : VISIBLE);
             alarmTimeTextView.setSelected(true);
             updateLabel();
             alarmTimeTextView.invalidate();
@@ -330,7 +330,7 @@ public class AlarmClock extends RelativeLayout {
             }
         } else {
             String alarmString = alarmClockView.getAlarmTimeFormatted();
-            if (alarmString.isEmpty()) {
+            if (alarmString.isEmpty() || alarmClockView.isUserChangesAlarmTime()) {
                 alarmTimeTextView.setVisibility(GONE);
             } else {
                 alarmTimeTextView.setVisibility(VISIBLE);

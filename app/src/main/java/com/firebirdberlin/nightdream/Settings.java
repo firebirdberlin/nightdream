@@ -120,6 +120,9 @@ public class Settings {
     public boolean stopAlarmOnLongPress = false;
     public boolean stopAlarmWithSlider = false;
     public boolean useAlarmSwipeGesture = false;
+    public static final String ALARM_SWIPE_MODE_ALARM = "alarm";
+    public static final String ALARM_SWIPE_MODE_POWER_NAP = "power_nap";
+    public String alarmSwipeMode = ALARM_SWIPE_MODE_ALARM;
     public boolean showAlarmsPersistently = false;
     public boolean isUIlocked = false;
     public boolean radioStreamMusicIsAllowedForAlarms = false;
@@ -585,6 +588,7 @@ public class Settings {
         useDeviceLock = settings.getBoolean("useDeviceLock", false);
         nightModeActivationMode = Integer.parseInt(settings.getString("nightModeActivationMode", "0"));
         useAlarmSwipeGesture = settings.getBoolean("useAlarmSwipeGesture", false);
+        alarmSwipeMode = settings.getString("alarmSwipeMode", ALARM_SWIPE_MODE_ALARM);
         showAlarmsPersistently = settings.getBoolean("showAlarmsPersistently", false);
         radioStreamMusicIsAllowedForAlarms = settings.getBoolean("radioStreamMusicIsAllowedForAlarms", false);
         radioStreamRequireWiFi = settings.getBoolean("radioStreamRequireWiFi", false);

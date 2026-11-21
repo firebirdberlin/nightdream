@@ -113,6 +113,16 @@
             app:key="useAlarmSwipeGesture"
             app:title="@string/useAlarmSwipeGesture" />
 
+        <ListPreference
+            android:defaultValue="alarm"
+            android:entries="@array/alarmSwipeModeEntries"
+            android:entryValues="@array/alarmSwipeModeValues"
+            android:key="alarmSwipeMode"
+            android:title="@string/alarmSwipeModeTitle"
+            app:dependency="useAlarmSwipeGesture"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
         <MultiSelectListPreference
             android:key="optionsStopAlarms"
             android:title="@string/options_stop_alarms_title"
