@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class PurchaseManager {
@@ -35,12 +36,10 @@ public class PurchaseManager {
     public static final String ITEM_WEB_RADIO = "web_radio";
     public static final String ITEM_PRO = "pro";
     public static final String ITEM_ACTIONS = "actions";
-    static final String TAG = "PurchaseManager";
-//    private static final int PRODUCT_ID_WEATHER_DATA = 0;  #noqa
-//    private static final int PRODUCT_ID_WEB_RADIO = 1;
+    private static final String TAG = PurchaseManager.class.getSimpleName();
+
     public static final int PRODUCT_ID_DONATION = 2;
     public static final int PRODUCT_ID_PRO = 3;
-    //    private static final int PRODUCT_ID_ACTIONS = 4;
     public static final int PRODUCT_ID_ONE_YEAR_SUBSCRIPTION = 5;
 
     public static List<String> fullSkuList = new ArrayList<>(
@@ -61,13 +60,14 @@ public class PurchaseManager {
         return prices.get(productId);
     }
 
-    private static HashMap<String, String> prices = new HashMap<>();
+    private static final HashMap<String, String> prices = new HashMap<>();
 
     private PurchaseManager(Context context) {
         preferences = Settings.getDefaultSharedPreferences(context);
         if (preferences != null) { // initialize from cache
             for (String sku : fullSkuList) {
-                boolean isPurchased = preferences.getBoolean(String.format("purchased_%s", sku), false);
+                boolean isPurchased = preferences.getBoolean(
+                        String.format(Locale.US, "purchased_%s", sku), false);
                 purchases.put(sku, isPurchased);
             }
         }
@@ -88,49 +88,37 @@ public class PurchaseManager {
         return def;
     }
 
-
     public boolean isPurchased(String sku) {
         // Check if it's a debuggable build, if so, bypass the check and return true.
-        if (BuildConfig.FLAVOR == "noGms") {
-            return true;
-        }
-        if (BuildConfig.DEBUG || Utility.isEmulator()) {
+        if ("noGms".equalsIgnoreCase(BuildConfig.FLAVOR) || BuildConfig.DEBUG || Utility.isEmulator()) {
             return true;
         }
 
         if (purchases != null) {
+            boolean hasDonation = Boolean.TRUE.equals(purchases.get(ITEM_DONATION));
+            boolean hasSubscription = Boolean.TRUE.equals(purchases.get(ITEM_ONE_YEAR_SUBSCRIPTION));
+            boolean hasRawPro = Boolean.TRUE.equals(purchases.get(ITEM_PRO));
+
+            // Grandfather rule: Owning all 3 legacy features grants PRO entitlement
+            boolean hasLegacyAllThree = Boolean.TRUE.equals(purchases.get(ITEM_WEATHER_DATA))
+                    && Boolean.TRUE.equals(purchases.get(ITEM_WEB_RADIO))
+                    && Boolean.TRUE.equals(purchases.get(ITEM_ACTIONS));
+
+            boolean hasProAccess = hasDonation || hasSubscription || hasRawPro || hasLegacyAllThree;
+
             switch (sku) {
                 case ITEM_DONATION:
-                    return Boolean.TRUE.equals(purchases.get(ITEM_DONATION));
+                    return hasDonation;
                 case ITEM_ONE_YEAR_SUBSCRIPTION:
-                    return Boolean.TRUE.equals(purchases.get(ITEM_ONE_YEAR_SUBSCRIPTION));
+                    return hasSubscription;
                 case ITEM_PRO:
-                    return (
-                            Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_ONE_YEAR_SUBSCRIPTION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
-                    );
+                    return hasProAccess;
                 case ITEM_WEATHER_DATA:
-                    return (
-                            Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_ONE_YEAR_SUBSCRIPTION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_WEATHER_DATA))
-                    );
+                    return hasProAccess || Boolean.TRUE.equals(purchases.get(ITEM_WEATHER_DATA));
                 case ITEM_WEB_RADIO:
-                    return (
-                            Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_ONE_YEAR_SUBSCRIPTION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_WEB_RADIO))
-                    );
+                    return hasProAccess || Boolean.TRUE.equals(purchases.get(ITEM_WEB_RADIO));
                 case ITEM_ACTIONS:
-                    return (
-                            Boolean.TRUE.equals(purchases.get(ITEM_DONATION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_ONE_YEAR_SUBSCRIPTION))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_PRO))
-                                    || Boolean.TRUE.equals(purchases.get(ITEM_ACTIONS))
-                    );
+                    return hasProAccess || Boolean.TRUE.equals(purchases.get(ITEM_ACTIONS));
             }
         }
         return false;
@@ -141,11 +129,11 @@ public class PurchaseManager {
     }
 
     void setPurchased(String sku, boolean value) {
-        Log.i(TAG, String.format("setPurchased(%s, %s)", sku, value));
+        Log.i(TAG, String.format(Locale.US, "setPurchased(%s, %s)", sku, value));
         purchases.put(sku, value);
         if (preferences != null) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(String.format("purchased_%s", sku), value);
+            editor.putBoolean(String.format(Locale.US, "purchased_%s", sku), value);
             editor.apply();
         }
     }
