@@ -45,9 +45,10 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class BillingHelperActivity extends AppCompatActivity {
-    static final String TAG = "BillingHelperActivity";
+    private static final String TAG = BillingHelperActivity.class.getSimpleName();
     List<ProductDetails> productDetails;
     private BillingClient mBillingClient;
     private PurchaseManager purchaseManager = null;
@@ -89,28 +90,20 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
 
     public void showPurchaseDialog() {
         Log.i(TAG, "showPurchaseDialog()");
-        // if (isPurchased(PurchaseManager.ITEM_DONATION)) return;
         List<CharSequence> entries = new ArrayList<>();
         final List<Integer> values = new ArrayList<>();
 
-        boolean purchased_weather_data = isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
-        boolean purchased_web_radio = isPurchased(PurchaseManager.ITEM_WEB_RADIO);
-        boolean purchased_actions = isPurchased(PurchaseManager.ITEM_ACTIONS);
-        boolean purchased_pro = isPurchased(PurchaseManager.ITEM_PRO);
-        boolean purchased_donation = isPurchased(PurchaseManager.ITEM_DONATION);
-        boolean purchased_subscription = isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION); // Check for subscription
-        Log.i(TAG, String.format("purchased_subscription = %s", purchased_subscription));
+        boolean hasProAccess = isPurchased(PurchaseManager.ITEM_PRO);
+        boolean hasDonation = isPurchased(PurchaseManager.ITEM_DONATION);
+        boolean hasSubscription = isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+        Log.i(TAG, String.format(Locale.US, "purchased_subscription = %s", hasSubscription));
 
+        if (!hasSubscription && !hasProAccess) {
+            entries.add(getProductWithPrice(R.string.product_name_pro, PurchaseManager.ITEM_PRO));
+            values.add(PurchaseManager.PRODUCT_ID_PRO);
+        }
 
-//        purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
-//        if (!purchased_subscription) {
-//            if (!purchased_pro) {
-//                entries.add(getProductWithPrice(R.string.product_name_pro, PurchaseManager.ITEM_PRO));
-//                values.add(PurchaseManager.PRODUCT_ID_PRO);
-//            }
-//        }
-
-        if (!purchased_donation) {
+        if (!hasDonation) {
             entries.add(getProductWithPrice(R.string.product_name_donation, PurchaseManager.ITEM_DONATION));
             values.add(PurchaseManager.PRODUCT_ID_DONATION);
         }
@@ -123,7 +116,7 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
                 .setItems(
                         entries.toArray(new CharSequence[0]),
                         (dialogInterface, which) -> {
-                            Log.i(TAG, String.format("selected %d", which));
+                            Log.i(TAG, String.format(Locale.US, "selected %d", which));
                             int selected = values.get(which);
                             switch (selected) {
                                 case PurchaseManager.PRODUCT_ID_DONATION:
@@ -144,18 +137,12 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
 
     public void showSubscriptionDialog() {
         Log.i(TAG, "showSubscriptionDialog()");
-        // if (isPurchased(PurchaseManager.ITEM_DONATION)) return;
-        boolean purchased_weather_data = isPurchased(PurchaseManager.ITEM_WEATHER_DATA);
-        boolean purchased_web_radio = isPurchased(PurchaseManager.ITEM_WEB_RADIO);
-        boolean purchased_actions = isPurchased(PurchaseManager.ITEM_ACTIONS);
-        boolean purchased_pro = isPurchased(PurchaseManager.ITEM_PRO);
-        boolean purchased_subscription = isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
-        Log.i(TAG, String.format("purchased_subscription = %s", purchased_subscription));
+        boolean hasProAccess = isPurchased(PurchaseManager.ITEM_PRO);
+        boolean hasSubscription = isPurchased(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
+        Log.i(TAG, String.format(Locale.US, "purchased_subscription = %s", hasSubscription));
 
-
-        String description = getDetailedSubscriptionDescription(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
-        purchased_pro = (purchased_pro || (purchased_weather_data && purchased_web_radio && purchased_actions));
-        if (purchased_subscription || purchased_pro || description == null) {
+        String description = getDetailedSubscriptionDescription();
+        if (hasSubscription || hasProAccess || description == null) {
             return;
         }
 
@@ -165,7 +152,7 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
                 .setNeutralButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok,
                         (dialogInterface, which) -> {
-                            Log.i(TAG, String.format("selected %d", which));
+                            Log.i(TAG, String.format(Locale.US, "selected %d", which));
                             launchBillingFlow(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
                         }
                 )
@@ -173,8 +160,8 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
         );
     }
 
-    private String getDetailedSubscriptionDescription(String sku) {
-        ProductDetails details = getProductDetails(sku);
+    private String getDetailedSubscriptionDescription() {
+        ProductDetails details = getProductDetails(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION);
         if (details == null || !details.getProductType().equals(BillingClient.ProductType.SUBS)) {
             return null;
         }
@@ -250,23 +237,24 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
                 return period;
         }
 
-        if (onlyUnit){
+        if (onlyUnit) {
             return unit;
         } else {
-            return String.format("%d %s", cycleCount, unit);
+            return String.format(Locale.getDefault(), "%d %s", cycleCount, unit);
         }
     }
 
-private String getProductWithPrice(int resId, String sku) {
+    private String getProductWithPrice(int resId, String sku) {
         String price = PurchaseManager.getPrice(sku);
         if (price != null) {
-            return String.format("%s (%s)", getResources().getString(resId), price);
+            return String.format(Locale.getDefault(), "%s (%s)", getResources().getString(resId), price);
         }
         return getResources().getString(resId);
     }
 
     private void updateAllPurchases() {
-        if (mBillingClient != null && mBillingClient.isReady()) {
+        if (mBillingClient != null
+                && mBillingClient.getConnectionState() == BillingClient.ConnectionState.CONNECTED) {
             queryPurchases();
         }
     }
@@ -326,7 +314,12 @@ private String getProductWithPrice(int resId, String sku) {
 
         if (productType.equals(BillingClient.ProductType.SUBS)) {
 
-            ProductDetails.SubscriptionOfferDetails offer = details.getSubscriptionOfferDetails().get(0);
+            List<ProductDetails.SubscriptionOfferDetails> offerDetailsList = details.getSubscriptionOfferDetails();
+            if (offerDetailsList == null || offerDetailsList.isEmpty()) {
+                Log.e(TAG, "No subscription offer details found for sku: " + sku);
+                return;
+            }
+            ProductDetails.SubscriptionOfferDetails offer = offerDetailsList.get(0);
 
             BillingFlowParams.ProductDetailsParams params =
                     BillingFlowParams.ProductDetailsParams.newBuilder()
@@ -360,7 +353,7 @@ private String getProductWithPrice(int resId, String sku) {
     protected void onPurchasesInitialized() {
         for (String sku : PurchaseManager.fullSkuList) {
             boolean isPurchased = purchaseManager.rawIsPurchased(sku);
-            Log.i(TAG, String.format("onPurchasesInitialized(%s, %s)", sku, isPurchased));
+            Log.i(TAG, String.format(Locale.US, "onPurchasesInitialized(%s, %s)", sku, isPurchased));
         }
         com.firebirdberlin.nightdream.repositories.ThemePresetManager.validateActiveTheme(this);
     }
@@ -381,25 +374,28 @@ private String getProductWithPrice(int resId, String sku) {
         }
 
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            List<String> skus = purchase.getProducts();
-            for (String sku : skus) {
-                if (PurchaseManager.fullSkuList.contains(sku)) { // Check if it's a product we are managing
-                    if (sku.equals(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)) {
-                        // Handle Subscription
-                        if (!purchase.isAcknowledged()) {
-                            acknowledgePurchase(purchase); // Acknowledge subscriptions
+            List<Purchase.Product> products = purchase.getProductsList();
+            if (products != null) {
+                for (Purchase.Product product : products) {
+                    String sku = product.getProductId();
+                    if (PurchaseManager.fullSkuList.contains(sku)) { // Check if it's a product we are managing
+                        if (sku.equals(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)) {
+                            // Handle Subscription
+                            if (!purchase.isAcknowledged()) {
+                                acknowledgePurchase(purchase); // Acknowledge subscriptions
+                            }
+                            purchaseManager.setPurchased(sku, true); // Update cache
+                            onItemPurchased(sku); // Your custom logic for purchased items
+                            Log.i(TAG, "Subscription purchased: " + sku);
+                        } else {
+                            // Handle In-App Purchases
+                            if (!purchase.isAcknowledged()) {
+                                acknowledgePurchase(purchase); // Acknowledge in-app items
+                            }
+                            purchaseManager.setPurchased(sku, true); // Update cache
+                            onItemPurchased(sku); // Your custom logic for purchased items
+                            Log.i(TAG, "In-app item purchased: " + sku);
                         }
-                        purchaseManager.setPurchased(sku, true); // Update cache
-                        onItemPurchased(sku); // Your custom logic for purchased items
-                        Log.i(TAG, "Subscription purchased: " + sku);
-                    } else {
-                        // Handle In-App Purchases
-                        if (!purchase.isAcknowledged()) {
-                            acknowledgePurchase(purchase); // Acknowledge in-app items
-                        }
-                        purchaseManager.setPurchased(sku, true); // Update cache
-                        onItemPurchased(sku); // Your custom logic for purchased items
-                        Log.i(TAG, "In-app item purchased: " + sku);
                     }
                 }
             }
@@ -473,23 +469,23 @@ private String getProductWithPrice(int resId, String sku) {
             return;
         }
         for (Purchase purchase : purchaseList) {
-            List<String> skus = purchase.getProducts();
-            for (String sku : skus) {
-                if (PurchaseManager.fullSkuList.contains(sku)) { // Ensure it's a product we care about
-                    int state = purchase.getPurchaseState();
-                    boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
-                    purchaseManager.setPurchased(sku, purchased);
-                    Log.i(TAG, String.format("In-App purchased %s = %s", sku, purchased));
-                    // For in-app items, you might acknowledge or consume here if not handled in handlePurchase
-                    if (!purchase.isAcknowledged()) {
-                        acknowledgePurchase(purchase); // Helper method to acknowledge
+            List<Purchase.Product> products = purchase.getProductsList();
+            if (products != null) {
+                for (Purchase.Product product : products) {
+                    String sku = product.getProductId();
+                    if (PurchaseManager.fullSkuList.contains(sku)) { // Ensure it's a product we care about
+                        int state = purchase.getPurchaseState();
+                        boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
+                        purchaseManager.setPurchased(sku, purchased);
+                        Log.i(TAG, String.format(Locale.US, "In-App purchased %s = %s", sku, purchased));
+                        // For in-app items, you might acknowledge or consume here if not handled in handlePurchase
+                        if (!purchase.isAcknowledged()) {
+                            acknowledgePurchase(purchase); // Helper method to acknowledge
+                        }
                     }
-//                    ATTENTION only activate temporarily
-//                    consumePurchase(purchase);
                 }
             }
         }
-//        onPurchasesInitialized(); // Call this after all purchases are processed
     }
 
     private void handleSubscriptionPurchasesResult(BillingResult billingResult, List<Purchase> activeSubscriptions) {
@@ -501,16 +497,19 @@ private String getProductWithPrice(int resId, String sku) {
         boolean isItemOneYearSubscribed = false;
         // this goes through all ACTIVE subscriptions
         for (Purchase purchase : activeSubscriptions) {
-            List<String> productIds = purchase.getProducts();
-            for (String productId : productIds) {
-                Log.i(TAG, "handleSubscriptionPurchasesResult: " + productId);
-                if (PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION.equals(productId)) {
-                    int purchaseState = purchase.getPurchaseState();
-                    isItemOneYearSubscribed = (purchaseState == Purchase.PurchaseState.PURCHASED);
-                    Log.i(TAG, String.format("Subscription purchased %s = %s", productId, isItemOneYearSubscribed));
-                    // Subscriptions need to be acknowledged, but not consumed.
-                    if (!purchase.isAcknowledged()) {
-                        acknowledgePurchase(purchase); // Helper method to acknowledge
+            List<Purchase.Product> products = purchase.getProductsList();
+            if (products != null) {
+                for (Purchase.Product product : products) {
+                    String productId = product.getProductId();
+                    Log.i(TAG, "handleSubscriptionPurchasesResult: " + productId);
+                    if (PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION.equals(productId)) {
+                        int purchaseState = purchase.getPurchaseState();
+                        isItemOneYearSubscribed = (purchaseState == Purchase.PurchaseState.PURCHASED);
+                        Log.i(TAG, String.format(Locale.US, "Subscription purchased %s = %s", productId, isItemOneYearSubscribed));
+                        // Subscriptions need to be acknowledged, but not consumed.
+                        if (!purchase.isAcknowledged()) {
+                            acknowledgePurchase(purchase); // Helper method to acknowledge
+                        }
                     }
                 }
             }
@@ -605,7 +604,7 @@ private String getProductWithPrice(int resId, String sku) {
                 ProductDetails.OneTimePurchaseOfferDetails oneTimeOffer = details.getOneTimePurchaseOfferDetails();
                 if (oneTimeOffer != null) {
                     String price = oneTimeOffer.getFormattedPrice();
-                    Log.i(TAG, String.format("INAPP price %s = %s", productId, price));
+                    Log.i(TAG, String.format(Locale.US, "INAPP price %s = %s", productId, price));
                     PurchaseManager.setPrice(productId, price);
                 } else {
                     Log.w(TAG, "No OneTimePurchaseOfferDetails for INAPP product: " + productId);
@@ -624,7 +623,7 @@ private String getProductWithPrice(int resId, String sku) {
                         ProductDetails.PricingPhase pricingPhase = offerDetails.getPricingPhases().getPricingPhaseList().get(0);
                         if (pricingPhase != null) {
                             String price = pricingPhase.getFormattedPrice();
-                            Log.i(TAG, String.format("SUBS price %s = %s", productId, price));
+                            Log.i(TAG, String.format(Locale.US, "SUBS price %s = %s", productId, price));
                             PurchaseManager.setPrice(productId, price);
                             // Break if you only want the price from the first offer detail found
                             break;
@@ -637,15 +636,17 @@ private String getProductWithPrice(int resId, String sku) {
         }
     }
 
+    @SuppressWarnings("unused")
     void consumePurchase(Purchase purchase) {
-        final List<String> skus = purchase.getProducts();
+        List<Purchase.Product> products = purchase.getProductsList();
         String token = purchase.getPurchaseToken();
         ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(token).build();
         mBillingClient.consumeAsync(consumeParams, (billingResult, purchaseToken) -> {
             Log.d(TAG, "onConsumeResponse: " + billingResult.getDebugMessage());
             int response = billingResult.getResponseCode();
-            if (response == BillingClient.BillingResponseCode.OK) {
-                for (String sku : skus) {
+            if (response == BillingClient.BillingResponseCode.OK && products != null) {
+                for (Purchase.Product product : products) {
+                    String sku = product.getProductId();
                     purchaseManager.setPurchased(sku, false);
                     onItemConsumed(sku);
                 }
