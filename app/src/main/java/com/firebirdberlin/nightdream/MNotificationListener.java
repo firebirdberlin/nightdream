@@ -71,6 +71,7 @@ import java.util.concurrent.Executors;
 public class MNotificationListener extends NotificationListenerService {
 
     public static boolean running = false;
+    public static boolean DEBUG_ADD_TEST_SOUND = false;
     private static volatile MNotificationListener instance;
     private static final String TAG = MNotificationListener.class.getSimpleName();
     private final ExecutorService notificationExecutor = Executors.newSingleThreadExecutor();
@@ -89,6 +90,26 @@ public class MNotificationListener extends NotificationListenerService {
 
     public static MNotificationListener getInstance() {
         return instance;
+    }
+
+    @SuppressWarnings("unused")
+    public static void addDebugSoundToBatch(Context context) {
+        Log.d(TAG, "addDebugSoundToBatch called");
+        MNotificationListener listener = instance;
+        if (listener != null) {
+            Uri defaultUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            if (defaultUri != null) {
+                listener.pendingBatchSounds.add(defaultUri);
+                Settings settings = new Settings(context);
+                listener.scheduleBatchFlush(settings.notificationSoundIntervalMinutes);
+                Log.d(TAG, "Added debug sound to batch: " + defaultUri
+                        + ". Total pending sounds: " + listener.pendingBatchSounds.size());
+            } else {
+                Log.w(TAG, "addDebugSoundToBatch: default notification URI is null");
+            }
+        } else {
+            Log.w(TAG, "addDebugSoundToBatch: MNotificationListener instance is null");
+        }
     }
 
     public static void requestNotificationList(Context context) {
@@ -174,15 +195,30 @@ public class MNotificationListener extends NotificationListenerService {
 
         Log.i(TAG, "++++ notification posted ++++");
         logNotification(sbn);
-        if (shallIgnoreNotification(sbn)) return;
+        if (shallIgnoreNotification(sbn)) {
+            Log.d(TAG, "onNotificationPosted: Notification ignored by filter rules.");
+            return;
+        }
 
         Settings settings = new Settings(this);
-        if (settings.shallActivateDoNotDisturb() && settings.playNotificationSoundsEnabled) {
+        boolean dndActive = settings.shallActivateDoNotDisturb();
+        boolean soundsEnabled = settings.playNotificationSoundsEnabled;
+        Log.d(TAG, "onNotificationPosted: sound check - dndActive=" + dndActive
+                + ", playNotificationSoundsEnabled=" + soundsEnabled
+                + ", DEBUG_ADD_TEST_SOUND=" + DEBUG_ADD_TEST_SOUND);
+
+        if ((dndActive && soundsEnabled) || DEBUG_ADD_TEST_SOUND) {
             Uri soundUri = getNotificationSoundUri(sbn);
             if (soundUri != null) {
                 pendingBatchSounds.add(soundUri);
+                Log.d(TAG, "Added sound URI to batch: " + soundUri
+                        + ". Total pending sounds: " + pendingBatchSounds.size());
                 scheduleBatchFlush(settings.notificationSoundIntervalMinutes);
+            } else {
+                Log.w(TAG, "Notification posted but soundUri is null.");
             }
+        } else {
+            Log.d(TAG, "Notification sound skipped (DND or sound setting inactive).");
         }
 
         Intent i = getIntentForBroadCast(sbn);
@@ -204,33 +240,51 @@ public class MNotificationListener extends NotificationListenerService {
         Uri soundUri = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = notification.getChannelId();
+            Log.d(TAG, "getNotificationSoundUri: channelId=" + channelId);
             if (channelId != null) {
                 NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (nm != null) {
                     NotificationChannel channel = nm.getNotificationChannel(channelId);
                     if (channel != null) {
                         soundUri = channel.getSound();
+                        Log.d(TAG, "getNotificationSoundUri: channel soundUri=" + soundUri);
+                    } else {
+                        Log.d(TAG, "getNotificationSoundUri: NotificationChannel is null for id=" + channelId);
                     }
                 }
             }
         }
         if (soundUri == null) {
             soundUri = notification.sound;
+            if (soundUri != null) {
+                Log.d(TAG, "getNotificationSoundUri: notification.sound=" + soundUri);
+            }
         }
         if (soundUri == null && (notification.defaults & Notification.DEFAULT_SOUND) != 0) {
             soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Log.d(TAG, "getNotificationSoundUri: using DEFAULT_SOUND=" + soundUri);
         }
+
+        if (soundUri == null && DEBUG_ADD_TEST_SOUND) {
+            soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Log.d(TAG, "getNotificationSoundUri: DEBUG_ADD_TEST_SOUND enabled, fallback debug soundUri=" + soundUri);
+        }
+
+        Log.d(TAG, "getNotificationSoundUri: resolved soundUri=" + soundUri);
         return soundUri;
     }
 
     private synchronized void scheduleBatchFlush(int intervalMinutes) {
-        if (isFlushScheduled) return;
+        if (isFlushScheduled) {
+            Log.d(TAG, "scheduleBatchFlush: flush already scheduled.");
+            return;
+        }
 
-        if (intervalMinutes <= 0) intervalMinutes = 5;
+        int actualIntervalMinutes = intervalMinutes > 0 ? intervalMinutes : 5;
 
         Calendar now = Calendar.getInstance();
         int currentMinute = now.get(Calendar.MINUTE);
-        int nextIntervalMinute = ((currentMinute / intervalMinutes) + 1) * intervalMinutes;
+        int nextIntervalMinute = ((currentMinute / actualIntervalMinutes) + 1) * actualIntervalMinutes;
 
         Calendar target = (Calendar) now.clone();
         target.set(Calendar.MINUTE, 0);
@@ -240,33 +294,49 @@ public class MNotificationListener extends NotificationListenerService {
 
         long delayMs = target.getTimeInMillis() - now.getTimeInMillis();
         if (delayMs <= 0) {
-            delayMs = intervalMinutes * 60_000L;
+            delayMs = actualIntervalMinutes * 60_000L;
         }
 
+        Log.d(TAG, "scheduleBatchFlush: intervalMinutes=" + actualIntervalMinutes
+                + ", target=" + target.getTime() + ", delayMs=" + delayMs);
         isFlushScheduled = true;
         mainHandler.postDelayed(flushBatchRunnable, delayMs);
     }
 
     private void flushPendingBatchSounds() {
-        if (pendingBatchSounds.isEmpty()) return;
+        if (pendingBatchSounds.isEmpty()) {
+            Log.d(TAG, "flushPendingBatchSounds: pendingBatchSounds is empty.");
+            return;
+        }
 
         List<Uri> soundsToPlay = new ArrayList<>(pendingBatchSounds);
         pendingBatchSounds.clear();
 
+        Log.d(TAG, "flushPendingBatchSounds: flushing " + soundsToPlay.size() + " sound(s).");
         int maxSounds = Math.min(soundsToPlay.size(), 5);
         for (int index = 0; index < maxSounds; index++) {
             final Uri soundUri = soundsToPlay.get(index);
             final long delay = index * 500L;
+            Log.d(TAG, "flushPendingBatchSounds: scheduling play for index " + index
+                    + " with delay " + delay + " ms, soundUri=" + soundUri);
             mainHandler.postDelayed(() -> playSoundUri(soundUri), delay);
         }
     }
 
     private void playSoundUri(Uri soundUri) {
-        if (soundUri == null) return;
+        if (soundUri == null) {
+            Log.w(TAG, "playSoundUri: soundUri is null");
+            return;
+        }
+        Log.d(TAG, "playSoundUri: attempting to play soundUri=" + soundUri);
         try {
             Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), soundUri);
             if (ringtone != null) {
+                Log.d(TAG, "playSoundUri: playing ringtone title='"
+                        + ringtone.getTitle(getApplicationContext()) + "' for Uri=" + soundUri);
                 ringtone.play();
+            } else {
+                Log.w(TAG, "playSoundUri: RingtoneManager returned null for soundUri=" + soundUri);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error playing sound URI: " + soundUri, e);
