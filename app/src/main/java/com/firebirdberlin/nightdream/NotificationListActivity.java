@@ -55,7 +55,7 @@ public class NotificationListActivity extends AppCompatActivity {
             Log.d(TAG, "Received notifications size: " + (notifications != null ? notifications.size() : "null"));
 
             NotificationList oldNotificationList = new NotificationList(
-                    notificationList.getNotifications()
+                    notificationList
             );
 
             if (notifications != null) {
@@ -142,7 +142,7 @@ public class NotificationListActivity extends AppCompatActivity {
         } else if (id == R.id.menuItem_markall) {
             if (notificationList != null) {
                 NotificationList oldNotificationList = new NotificationList(
-                        notificationList.getNotifications()
+                        notificationList
                 );
                 for (int index = 0; index < notificationList.size(); index++) {
                     oldNotificationList.setSelected(index, notificationList.isSelected(index));
@@ -177,16 +177,14 @@ public class NotificationListActivity extends AppCompatActivity {
     private void deleteItem(int position) {
         if (notificationList == null || position < 0) return;
 
-        ArrayList<String> notificationKeys = new ArrayList<>();
-        Notification notification = notificationList.get(position);
-        Log.d(TAG, "remove swipe: " + position);
-        notificationKeys.add(notification.getNotificationKey());
+        List<String> notificationKeys = notificationList.getAllNotificationKeys(position);
+        Log.d(TAG, "remove swipe: " + position + ", keys count: " + notificationKeys.size());
 
         NotificationList oldNotificationList = new NotificationList(
-                notificationList.getNotifications()
+                notificationList
         );
         adapter.removeNotification(position, oldNotificationList);
 
-        MNotificationListener.clearNotifications(notificationKeys);
+        MNotificationListener.clearNotifications(new ArrayList<>(notificationKeys));
     }
 }

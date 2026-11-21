@@ -41,6 +41,9 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder {
     FrameLayout notificationActions;
     View itemView;
     TextView[] notificationActionText;
+    View stackBg1;
+    View stackBg2;
+    TextView notifyStackCount;
 
     public NotificationViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -61,5 +64,9 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder {
         this.notificationActionText[0] = itemView.findViewById(R.id.notify_actiontext1);
         this.notificationActionText[1] = itemView.findViewById(R.id.notify_actiontext2);
         this.notificationActionText[2] = itemView.findViewById(R.id.notify_actiontext3);
+
+        this.stackBg1 = itemView.findViewById(R.id.notify_stack_bg_1);
+        this.stackBg2 = itemView.findViewById(R.id.notify_stack_bg_2);
+        this.notifyStackCount = itemView.findViewById(R.id.notify_stack_count);
     }
 }

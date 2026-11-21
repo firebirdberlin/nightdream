@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 public class NotificationDiffCallback extends DiffUtil.Callback {
-    public static String TAG = "NotificationDiffCallback";
+    private static final String TAG = NotificationDiffCallback.class.getSimpleName();
     private final NotificationList oldNotificationList;
     private final NotificationList newNotificationList;
 
@@ -46,25 +46,46 @@ public class NotificationDiffCallback extends DiffUtil.Callback {
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
         Log.d(TAG, "areItemsTheSame");
-        return oldNotificationList.getNotifications().get(oldItemPosition).getNotificationID() ==
-                newNotificationList.getNotifications().get(newItemPosition).getNotificationID();
+        NotificationList.Entry oldEntry = oldNotificationList.getEntry(oldItemPosition);
+        NotificationList.Entry newEntry = newNotificationList.getEntry(newItemPosition);
+        if (oldEntry.isStack() && newEntry.isStack()) {
+            return oldEntry.getPackageName().equals(newEntry.getPackageName());
+        }
+        if (oldEntry.isHeader() && newEntry.isHeader()) {
+            return oldEntry.getPackageName().equals(newEntry.getPackageName());
+        }
+        if (!oldEntry.isStack() && !oldEntry.isHeader() && !newEntry.isStack() && !newEntry.isHeader()) {
+            return oldEntry.getPrimaryNotification().getNotificationID() ==
+                    newEntry.getPrimaryNotification().getNotificationID();
+        }
+        return false;
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         Log.d(TAG, "areContentsTheSame");
-        final Notification oldNotification = oldNotificationList.get(oldItemPosition);
-        final Notification newNotification = newNotificationList.get(newItemPosition);
+        NotificationList.Entry oldEntry = oldNotificationList.getEntry(oldItemPosition);
+        NotificationList.Entry newEntry = newNotificationList.getEntry(newItemPosition);
+        if (oldEntry.isStack() != newEntry.isStack() || oldEntry.isHeader() != newEntry.isHeader()) {
+            return false;
+        }
+        if (oldEntry.isStack() || oldEntry.isHeader()) {
+            return oldEntry.getPackageName().equals(newEntry.getPackageName()) &&
+                    oldEntry.getNotifications().size() == newEntry.getNotifications().size() &&
+                    oldNotificationList.isSelected(oldItemPosition) == newNotificationList.isSelected(newItemPosition);
+        } else {
+            final Notification oldNotification = oldEntry.getPrimaryNotification();
+            final Notification newNotification = newEntry.getPrimaryNotification();
 
-        return (oldNotification.getNotificationKey().equals(newNotification.getNotificationKey()) &&
-                oldNotification.getPostTimestamp() == newNotification.getPostTimestamp() &&
-                oldNotificationList.isSelected(oldItemPosition) == newNotificationList.isSelected(newItemPosition));
+            return (oldNotification.getNotificationKey().equals(newNotification.getNotificationKey()) &&
+                    oldNotification.getPostTimestamp() == newNotification.getPostTimestamp() &&
+                    oldNotificationList.isSelected(oldItemPosition) == newNotificationList.isSelected(newItemPosition));
+        }
     }
 
     @Nullable
     @Override
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-        // Implement method if you're going to use ItemAnimator
         return super.getChangePayload(oldItemPosition, newItemPosition);
     }
 }

@@ -37,8 +37,11 @@ import com.firebirdberlin.nightdream.Utility;
 
 import java.util.ArrayList;
 
-public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationViewHolder> {
-    public static String TAG = "CustomRecyclerViewAdapter";
+public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = NotificationRecyclerViewAdapter.class.getSimpleName();
+    public static final int VIEW_TYPE_NOTIFICATION = 0;
+    public static final int VIEW_TYPE_HEADER = 1;
+
     private final int[] colorResId = new int[]{
             R.color.grey_bg,
             R.color.material_blue_grey
@@ -49,9 +52,40 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         this.notificationList = notificationList;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (notificationList.isHeader(position)) {
+            return VIEW_TYPE_HEADER;
+        }
+        return VIEW_TYPE_NOTIFICATION;
+    }
+
     @NonNull
     @Override
-    public NotificationViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_HEADER) {
+            View headerView = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.notification_list_group_header, parent, false
+            );
+            headerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        int itemPosition = ((RecyclerView) parent).getChildLayoutPosition(v);
+                        if (itemPosition != RecyclerView.NO_POSITION) {
+                            NotificationList.Entry entry = notificationList.getEntry(itemPosition);
+                            NotificationList oldList = new NotificationList(notificationList);
+                            notificationList.stack(entry.getPackageName());
+                            updateDataSet(oldList, notificationList);
+                        }
+                    } catch (Exception ex) {
+                        Log.e(TAG, "header onClick", ex);
+                    }
+                }
+            });
+            return new HeaderViewHolder(headerView);
+        }
+
         Log.d(TAG, "BrowseNotification started");
 
         final View recyclerViewItem = LayoutInflater.from(parent.getContext()).inflate(
@@ -63,7 +97,17 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
             @Override
             public void onClick(View v) {
                 try {
-                    handleRecyclerItemClick((RecyclerView) parent, v);
+                    int itemPosition = ((RecyclerView) parent).getChildLayoutPosition(v);
+                    if (itemPosition != RecyclerView.NO_POSITION) {
+                        NotificationList.Entry entry = notificationList.getEntry(itemPosition);
+                        if (entry.isStack()) {
+                            NotificationList oldList = new NotificationList(notificationList);
+                            notificationList.unstack(entry.getPackageName());
+                            updateDataSet(oldList, notificationList);
+                        } else {
+                            handleRecyclerItemClick((RecyclerView) parent, v);
+                        }
+                    }
                 } catch (Exception ex) {
                     Log.e(TAG, "setOnClickListener", ex);
                 }
@@ -76,7 +120,9 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
                 int index = Integer.parseInt((String) view.getTag());
                 boolean isSelected = notificationList.isSelected(index);
                 View cardView = recyclerViewItem.findViewById(R.id.notify);
-                cardView.setBackgroundResource(colorResId[isSelected ? 0 : 1]);
+                if (cardView != null) {
+                    cardView.setBackgroundResource(colorResId[isSelected ? 0 : 1]);
+                }
                 notificationList.setSelected(index, !isSelected);
 
                 return true;
@@ -100,10 +146,25 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
     //Called by RecyclerView to display the data at the specified position.
     @Override
-    public void onBindViewHolder(NotificationViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder rawHolder, int position) {
+        final NotificationList.Entry entry = this.notificationList.getEntry(position);
+        rawHolder.itemView.setTag("" + position);
 
-        final Notification notification = this.notificationList.get(position);
-        holder.itemView.setTag("" + position);
+        if (getItemViewType(position) == VIEW_TYPE_HEADER) {
+            HeaderViewHolder holder = (HeaderViewHolder) rawHolder;
+            Notification primaryNotification = entry.getPrimaryNotification();
+            if (primaryNotification != null) {
+                holder.headerAppname.setText(primaryNotification.getApplicationName());
+                if (primaryNotification.getSmallIconBitmap() != null) {
+                    holder.headerIcon.setImageBitmap(primaryNotification.getSmallIconBitmap());
+                }
+            }
+            holder.headerCount.setText(String.valueOf(entry.getNotifications().size()));
+            return;
+        }
+
+        NotificationViewHolder holder = (NotificationViewHolder) rawHolder;
+        final Notification notification = entry.getPrimaryNotification();
 
         // Bind data to viewholder
         holder.notificationLargePicture.setVisibility(View.GONE);
@@ -129,6 +190,30 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
 
         holder.notificationAppname.setText(notification.getApplicationName());
         holder.notificationpostTimeView.setText(notification.getPostTime());
+
+        if (entry.isStack()) {
+            int stackSize = entry.getNotifications().size();
+            if (holder.notifyStackCount != null) {
+                holder.notifyStackCount.setText(String.valueOf(stackSize));
+                holder.notifyStackCount.setVisibility(View.VISIBLE);
+            }
+            if (holder.stackBg1 != null) {
+                holder.stackBg1.setVisibility(stackSize > 1 ? View.VISIBLE : View.GONE);
+            }
+            if (holder.stackBg2 != null) {
+                holder.stackBg2.setVisibility(stackSize > 2 ? View.VISIBLE : View.GONE);
+            }
+        } else {
+            if (holder.notifyStackCount != null) {
+                holder.notifyStackCount.setVisibility(View.GONE);
+            }
+            if (holder.stackBg1 != null) {
+                holder.stackBg1.setVisibility(View.GONE);
+            }
+            if (holder.stackBg2 != null) {
+                holder.stackBg2.setVisibility(View.GONE);
+            }
+        }
         holder.notificationTitle.setText(notification.getTitle());
         holder.notificationText.setText(notification.getText());
 
@@ -286,7 +371,7 @@ public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<Notifi
         ArrayList<Notification> notifications = new ArrayList<>();
         for (int index = 0; index < notificationList.size(); index++) {
             if (notificationList.isSelected(index)) {
-                notifications.add(notificationList.get(index));
+                notifications.addAll(notificationList.getEntry(index).getNotifications());
             }
         }
         return notifications;
