@@ -374,10 +374,9 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
         }
 
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            List<Purchase.Product> products = purchase.getProductsList();
+            List<String> products = purchase.getProducts();
             if (products != null) {
-                for (Purchase.Product product : products) {
-                    String sku = product.getProductId();
+                for (String sku : products) {
                     if (PurchaseManager.fullSkuList.contains(sku)) { // Check if it's a product we are managing
                         if (sku.equals(PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION)) {
                             // Handle Subscription
@@ -469,10 +468,9 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
             return;
         }
         for (Purchase purchase : purchaseList) {
-            List<Purchase.Product> products = purchase.getProductsList();
+            List<String> products = purchase.getProducts();
             if (products != null) {
-                for (Purchase.Product product : products) {
-                    String sku = product.getProductId();
+                for (String sku : products) {
                     if (PurchaseManager.fullSkuList.contains(sku)) { // Ensure it's a product we care about
                         int state = purchase.getPurchaseState();
                         boolean purchased = (state == Purchase.PurchaseState.PURCHASED);
@@ -497,10 +495,9 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
         boolean isItemOneYearSubscribed = false;
         // this goes through all ACTIVE subscriptions
         for (Purchase purchase : activeSubscriptions) {
-            List<Purchase.Product> products = purchase.getProductsList();
+            List<String> products = purchase.getProducts();
             if (products != null) {
-                for (Purchase.Product product : products) {
-                    String productId = product.getProductId();
+                for (String productId : products) {
                     Log.i(TAG, "handleSubscriptionPurchasesResult: " + productId);
                     if (PurchaseManager.ITEM_ONE_YEAR_SUBSCRIPTION.equals(productId)) {
                         int purchaseState = purchase.getPurchaseState();
@@ -638,15 +635,14 @@ public abstract class BillingHelperActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     void consumePurchase(Purchase purchase) {
-        List<Purchase.Product> products = purchase.getProductsList();
+        List<String> products = purchase.getProducts();
         String token = purchase.getPurchaseToken();
         ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseToken(token).build();
         mBillingClient.consumeAsync(consumeParams, (billingResult, purchaseToken) -> {
             Log.d(TAG, "onConsumeResponse: " + billingResult.getDebugMessage());
             int response = billingResult.getResponseCode();
             if (response == BillingClient.BillingResponseCode.OK && products != null) {
-                for (Purchase.Product product : products) {
-                    String sku = product.getProductId();
+                for (String sku : products) {
                     purchaseManager.setPurchased(sku, false);
                     onItemConsumed(sku);
                 }
