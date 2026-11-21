@@ -101,7 +101,7 @@ android {
         buildConfig = true
         dataBinding = true
         renderScript = false
-        aidl = true
+        aidl = false
     }
 }
 
