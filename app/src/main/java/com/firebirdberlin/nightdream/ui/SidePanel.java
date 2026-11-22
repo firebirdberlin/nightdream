@@ -312,6 +312,27 @@ public class SidePanel extends FlexboxLayout {
         }
     }
 
+    public void setTimerIconActive(boolean on) {
+        ImageView timerIcon = findViewById(R.id.timer_icon);
+        if (timerIcon != null) {
+            timerIcon.setTag(on);
+            if (on) {
+                setIconActive(timerIcon);
+            } else {
+                setIconInactive(timerIcon);
+            }
+        }
+    }
+
+    public boolean isTimerIconActive() {
+        ImageView timerIcon = findViewById(R.id.timer_icon);
+        if (timerIcon != null) {
+            Object tag = timerIcon.getTag();
+            return tag instanceof Boolean && (Boolean) tag;
+        }
+        return false;
+    }
+
     private void setIconActive(ImageView icon) {
         post(() -> {
             icon.setColorFilter(new PorterDuffColorFilter(mAccentColor, PorterDuff.Mode.SRC_ATOP));

@@ -737,6 +737,41 @@ public class NightDreamActivity extends BillingHelperActivity
     }
 
     @SuppressWarnings("UnusedParameters")
+    public void onTimerClick(View v) {
+        if (AlarmHandlerService.alarmIsRunning()) return;
+
+        boolean isTimerActive = sidePanelLeft != null && sidePanelLeft.isTimerIconActive();
+
+        if (isTimerActive) {
+            bottomPanelLayout.setUseAlarmSwipeGesture(
+                    mySettings.useAlarmSwipeGesture,
+                    mySettings.alarmSwipeMode
+            );
+            bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.NONE);
+        } else {
+            if (RadioStreamService.isRunning) {
+                RadioStreamService.stop(this);
+            }
+            if (mCastSession != null) {
+                RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
+                if (mRemoteMediaPlayer != null) {
+                    mRemoteMediaPlayer.stop();
+                }
+                SessionManager mSessionManager = mCastContext.getSessionManager();
+                mSessionManager.endCurrentSession(true);
+            }
+            RadioStreamService.isRunning = false;
+
+            bottomPanelLayout.setUseAlarmSwipeGesture(true, Settings.ALARM_SWIPE_MODE_POWER_NAP);
+            bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
+        }
+        updateSidePanelIcons();
+        if (nightDreamUI != null) {
+            nightDreamUI.showAlarmClock();
+        }
+    }
+
+    @SuppressWarnings("UnusedParameters")
     public void onRadioClick(View v) {
         if (AlarmHandlerService.alarmIsRunning()) {
             AlarmHandlerService.stop(this);
@@ -748,8 +783,14 @@ public class NightDreamActivity extends BillingHelperActivity
 
         BottomPanelLayout.Panel panel = bottomPanelLayout.getActivePanel();
         if (panel == BottomPanelLayout.Panel.WEB_RADIO) {
-            if (RadioStreamService.isRunning) RadioStreamService.stop(this);
-            bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.ALARM_CLOCK);
+            if (RadioStreamService.isRunning) {
+                RadioStreamService.stop(this);
+            }
+            bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.NONE);
+            bottomPanelLayout.setUseAlarmSwipeGesture(
+                    mySettings.useAlarmSwipeGesture,
+                    mySettings.alarmSwipeMode
+            );
             if (mCastSession != null) {
                 RemoteMediaClient mRemoteMediaPlayer = mCastSession.getRemoteMediaClient();
                 if (mRemoteMediaPlayer != null) {
@@ -761,9 +802,22 @@ public class NightDreamActivity extends BillingHelperActivity
             RadioStreamService.isRunning = false;
         } else {
             bottomPanelLayout.setActivePanel(BottomPanelLayout.Panel.WEB_RADIO);
+            bottomPanelLayout.setUseAlarmSwipeGesture(
+                    mySettings.useAlarmSwipeGesture,
+                    mySettings.alarmSwipeMode
+            );
         }
-        sidePanelLeft.setRadioIconActive(panel != BottomPanelLayout.Panel.WEB_RADIO);
+        updateSidePanelIcons();
         nightDreamUI.showAlarmClock();
+    }
+
+    private void updateSidePanelIcons() {
+        if (sidePanelLeft == null || bottomPanelLayout == null) return;
+        boolean isWebRadioActive = bottomPanelLayout.getActivePanel() == BottomPanelLayout.Panel.WEB_RADIO;
+        boolean isTimerActive = bottomPanelLayout.getActivePanel() == BottomPanelLayout.Panel.ALARM_CLOCK
+                && bottomPanelLayout.isPowerNapMode();
+        sidePanelLeft.setRadioIconActive(isWebRadioActive);
+        sidePanelLeft.setTimerIconActive(isTimerActive);
     }
 
     public void onLocationFailure() {

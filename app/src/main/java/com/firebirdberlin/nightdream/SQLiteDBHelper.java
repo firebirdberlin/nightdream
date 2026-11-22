@@ -33,13 +33,14 @@ import org.json.JSONException;
 public class SQLiteDBHelper extends SQLiteOpenHelper {
     Context context;
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
     private static final String DATABASE_NAME = "sqlite.db";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + AlarmEntry.TABLE_NAME + " (" +
                     AlarmEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     AlarmEntry.COLUMN_HOUR + " INTEGER NOT NULL, " +
                     AlarmEntry.COLUMN_MINUTE + " INTEGER NOT NULL, " +
+                    AlarmEntry.COLUMN_SECOND + " INTEGER DEFAULT 0, " +
                     AlarmEntry.COLUMN_DAYS + " INTEGER DEFAULT 0, " +
                     AlarmEntry.COLUMN_IS_ACTIVE + " INTEGER DEFAULT 0, " +
                     AlarmEntry.COLUMN_IS_NEXT_ALARM + " INTEGER DEFAULT 0, " +
@@ -99,6 +100,11 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
 
         if (newVersion >= 8 && oldVersion < 8) {
             db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NAME + " text");
+        }
+
+        if (newVersion >= 9 && oldVersion < 9) {
+            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " +
+                    AlarmEntry.COLUMN_SECOND + " INTEGER DEFAULT 0");
         }
     }
 
@@ -162,6 +168,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         public static final String TABLE_NAME = "alarms";
         public static final String COLUMN_HOUR = "hour";
         public static final String COLUMN_MINUTE = "minute";
+        public static final String COLUMN_SECOND = "second";
         public static final String COLUMN_DAYS = "days";
         public static final String COLUMN_IS_ACTIVE = "isActive";
         public static final String COLUMN_IS_NEXT_ALARM = "isNextAlarm";

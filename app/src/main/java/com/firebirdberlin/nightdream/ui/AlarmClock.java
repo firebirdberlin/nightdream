@@ -354,4 +354,8 @@ public class AlarmClock extends RelativeLayout {
         alarmClockView.setPaddingHorizontal(paddingHorizontal);
         alarmTimeTextView.setMaxWidth(getWidth() - 2 * alarmClockView.touch_zone_radius);
     }
+
+    public boolean isPowerNapMode() {
+        return alarmClockView != null && alarmClockView.isPowerNapMode();
+    }
 }

@@ -211,6 +211,7 @@ public class ImportPreferences {
                 time.id = -1L;
                 time.hour = alarmObj.optInt("hour", 0);
                 time.min = alarmObj.optInt("min", 0);
+                time.second = alarmObj.optInt("second", 0);
                 time.recurringDays = alarmObj.optInt("recurringDays", 0);
                 time.isActive = alarmObj.optBoolean("isActive", false);
                 time.isNextAlarm = alarmObj.optBoolean("isNextAlarm", false);

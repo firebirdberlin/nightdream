@@ -1314,7 +1314,11 @@ public class NightDreamUI {
         bottomPanelLayout.setRssEnabled(settings.isRssEnabled());
         bottomPanelLayout.setNotifyForUpComingAlarms(settings.notifyForUpcomingAlarms);
         bottomPanelLayout.setShowAlarmsPersistently(settings.showAlarmsPersistently);
-        bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture, settings.alarmSwipeMode);
+        if (bottomPanelLayout.isPowerNapMode()) {
+            bottomPanelLayout.setUseAlarmSwipeGesture(true, Settings.ALARM_SWIPE_MODE_POWER_NAP);
+        } else {
+            bottomPanelLayout.setUseAlarmSwipeGesture(settings.useAlarmSwipeGesture, settings.alarmSwipeMode);
+        }
         bottomPanelLayout.setup();
     }
 

@@ -26,6 +26,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -232,22 +233,7 @@ public class ExportPreferences {
             List<SimpleTime> alarms = dataSource.getAlarms();
             if (alarms != null) {
                 for (SimpleTime alarm : alarms) {
-                    JSONObject alarmObj = new JSONObject();
-                    alarmObj.put("hour", alarm.hour);
-                    alarmObj.put("min", alarm.min);
-                    alarmObj.put("recurringDays", alarm.recurringDays);
-                    alarmObj.put("isActive", alarm.isActive);
-                    alarmObj.put("isNextAlarm", alarm.isNextAlarm);
-                    alarmObj.put("radioStationIndex", alarm.radioStationIndex);
-                    alarmObj.put("soundUri", alarm.soundUri != null ? alarm.soundUri : "");
-                    alarmObj.put("vibrate", alarm.vibrate);
-                    alarmObj.put("numAutoSnoozeCycles", alarm.numAutoSnoozeCycles);
-                    if (alarm.name != null) {
-                        alarmObj.put("name", alarm.name);
-                    }
-                    if (alarm.nextEventAfter != null) {
-                        alarmObj.put("nextEventAfter", alarm.nextEventAfter);
-                    }
+                    JSONObject alarmObj = createAlarmObj(alarm);
                     alarmsArray.put(alarmObj);
                 }
             }
@@ -258,6 +244,28 @@ public class ExportPreferences {
         root.put("alarms", alarmsArray);
 
         return root;
+    }
+
+    @NonNull
+    private static JSONObject createAlarmObj(SimpleTime alarm) throws JSONException {
+        JSONObject alarmObj = new JSONObject();
+        alarmObj.put("hour", alarm.hour);
+        alarmObj.put("min", alarm.min);
+        alarmObj.put("second", alarm.second);
+        alarmObj.put("recurringDays", alarm.recurringDays);
+        alarmObj.put("isActive", alarm.isActive);
+        alarmObj.put("isNextAlarm", alarm.isNextAlarm);
+        alarmObj.put("radioStationIndex", alarm.radioStationIndex);
+        alarmObj.put("soundUri", alarm.soundUri != null ? alarm.soundUri : "");
+        alarmObj.put("vibrate", alarm.vibrate);
+        alarmObj.put("numAutoSnoozeCycles", alarm.numAutoSnoozeCycles);
+        if (alarm.name != null) {
+            alarmObj.put("name", alarm.name);
+        }
+        if (alarm.nextEventAfter != null) {
+            alarmObj.put("nextEventAfter", alarm.nextEventAfter);
+        }
+        return alarmObj;
     }
 
     private List<String> getSharedPreferencesNames() {

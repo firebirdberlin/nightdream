@@ -39,8 +39,8 @@ public class BottomPanelLayout extends FrameLayout {
     private static final String TAG = BottomPanelLayout.class.getSimpleName();
 
     private AlarmClock view = null;
-    private Panel activePanel = Panel.ALARM_CLOCK;
-    private Panel userRequestedPanel = Panel.ALARM_CLOCK;
+    private Panel activePanel = Panel.NONE;
+    private Panel userRequestedPanel = Panel.NONE;
     private Ticker tickerLayout = null;
     private UserInteractionObserver userInteractionObserver;
     private WebRadioLayout webRadioLayout = null;
@@ -63,7 +63,8 @@ public class BottomPanelLayout extends FrameLayout {
         public void run() {
             Log.d(TAG, "hidePanel");
             handler.removeCallbacks(this);
-            if (showAlarmsPersistently || activePanel == Panel.TICKER
+            if ((showAlarmsPersistently && activePanel == Panel.ALARM_CLOCK)
+                    || activePanel == Panel.TICKER
                     || activePanel == Panel.WEB_RADIO) {
                 setup();
             } else {
@@ -213,11 +214,12 @@ public class BottomPanelLayout extends FrameLayout {
 
     @NonNull
     public Panel determineActivePanel() {
+        // this method must return
         if (AlarmHandlerService.alarmIsRunning()) {
             return Panel.ALARM_CLOCK;
         }
 
-        if (userRequestedPanel != Panel.ALARM_CLOCK) {
+        if (userRequestedPanel != Panel.NONE) {
             return userRequestedPanel;
         }
 
@@ -296,6 +298,9 @@ public class BottomPanelLayout extends FrameLayout {
             showWebRadioView();
         } else if (panel == Panel.TICKER) {
             showTickerView();
+        } else {
+            clearViews();
+            removeAllViews();
         }
         activePanel = panel;
         show();
@@ -378,6 +383,10 @@ public class BottomPanelLayout extends FrameLayout {
         return view;
     }
 
+    public boolean isPowerNapMode() {
+        return view != null && view.isPowerNapMode();
+    }
+
     @Override
     public void setClickable(boolean clickable) {
         super.setClickable(clickable);
@@ -390,6 +399,6 @@ public class BottomPanelLayout extends FrameLayout {
         setCustomColor(accentColor, textColor);
     }
 
-    public enum Panel {ALARM_CLOCK, WEB_RADIO, TICKER}
+    public enum Panel {NONE, ALARM_CLOCK, WEB_RADIO, TICKER}
 }
 

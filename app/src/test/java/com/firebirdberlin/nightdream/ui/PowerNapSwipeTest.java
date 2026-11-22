@@ -24,30 +24,81 @@ import org.junit.Test;
 public class PowerNapSwipeTest {
 
     @Test
-    public void testPowerNapMinutesCalculation() {
+    public void testPowerNapMinutesCalculationSwipingRight() {
         float startX = 150f;
-        float endX = 1000f;
-        float availableWidth = endX - startX;
+        float endX = 850f;
 
-        // Test start (progress = 0) -> 1 minute
-        float xStart = startX;
-        float progressStart = Math.max(0.0f, Math.min(1.0f, (xStart - startX) / availableWidth));
-        int napMinutesStart = 1 + Math.round(progressStart * 59.0f);
-        napMinutesStart = Math.max(1, Math.min(60, napMinutesStart));
-        Assert.assertEquals(1, napMinutesStart);
+        // At start (x = startX) -> 1 minute
+        int minAtStart = AlarmClockView.calculatePowerNapMinutes(startX, startX, endX, true);
+        Assert.assertEquals(1, minAtStart);
 
-        // Test end (progress = 1) -> 60 minutes
-        float xEnd = endX;
-        float progressEnd = Math.max(0.0f, Math.min(1.0f, (xEnd - startX) / availableWidth));
-        int napMinutesEnd = 1 + Math.round(progressEnd * 59.0f);
-        napMinutesEnd = Math.max(1, Math.min(60, napMinutesEnd));
-        Assert.assertEquals(60, napMinutesEnd);
+        // At end (x = endX) -> 60 minutes
+        int minAtEnd = AlarmClockView.calculatePowerNapMinutes(endX, startX, endX, true);
+        Assert.assertEquals(60, minAtEnd);
 
-        // Test middle (progress = 0.5) -> ~30-31 minutes
-        float xMid = startX + availableWidth * 0.5f;
-        float progressMid = Math.max(0.0f, Math.min(1.0f, (xMid - startX) / availableWidth));
-        int napMinutesMid = 1 + Math.round(progressMid * 59.0f);
-        napMinutesMid = Math.max(1, Math.min(60, napMinutesMid));
-        Assert.assertTrue(napMinutesMid >= 25 && napMinutesMid <= 35);
+        // Beyond end -> 60 minutes
+        int minBeyondEnd = AlarmClockView.calculatePowerNapMinutes(endX + 100f, startX, endX, true);
+        Assert.assertEquals(60, minBeyondEnd);
+
+        // All intermediate values when swiping right must be multiples of 5 or 1 minute
+        for (float x = startX; x <= endX; x += 10f) {
+            int mins = AlarmClockView.calculatePowerNapMinutes(x, startX, endX, true);
+            Assert.assertTrue(mins >= 1 && mins <= 60);
+            Assert.assertTrue("Value " + mins + " must be multiple of 5 or 1",
+                    mins == 1 || mins % 5 == 0);
+        }
+    }
+
+    @Test
+    public void testPowerNapMinutesCalculationSwipingLeft() {
+        float startX = 150f;
+        float endX = 850f;
+
+        // At start (x = startX) -> 1 minute
+        int minAtStart = AlarmClockView.calculatePowerNapMinutes(startX, startX, endX, false);
+        Assert.assertEquals(1, minAtStart);
+
+        // At end (x = endX) -> 60 minutes
+        int minAtEnd = AlarmClockView.calculatePowerNapMinutes(endX, startX, endX, false);
+        Assert.assertEquals(60, minAtEnd);
+
+        // Swiping left provides minute precision
+        int minMid = AlarmClockView.calculatePowerNapMinutes(startX + (endX - startX) * 0.5f,
+                startX, endX, false);
+        Assert.assertEquals(31, minMid);
+    }
+
+    @Test
+    public void testPowerNapRemainingTimeFormatting() {
+        // > 60 minutes: returns null (indicating show day and time as usual)
+        Assert.assertNull(formatPowerNapRemainingTime(61 * 60 * 1000L));
+
+        // 5 to 60 minutes: show remaining minutes
+        Assert.assertEquals("60 min", formatPowerNapRemainingTime(60 * 60 * 1000L));
+        Assert.assertEquals("20 min", formatPowerNapRemainingTime(20 * 60 * 1000L));
+        Assert.assertEquals("5 min", formatPowerNapRemainingTime(5 * 60 * 1000L));
+
+        // < 5 minutes: count down with seconds
+        Assert.assertEquals("04:59", formatPowerNapRemainingTime(4 * 60 * 1000L + 59 * 1000L));
+        Assert.assertEquals("01:05", formatPowerNapRemainingTime(60 * 1000L + 5 * 1000L));
+        Assert.assertEquals("00:45", formatPowerNapRemainingTime(45 * 1000L));
+        Assert.assertEquals("00:00", formatPowerNapRemainingTime(0L));
+    }
+
+    private static String formatPowerNapRemainingTime(long remainingMs) {
+        if (remainingMs <= 60 * 60 * 1000L) {
+            long validRemainingMs = Math.max(0L, remainingMs);
+            long totalSeconds = validRemainingMs / 1000;
+            long totalMinutes = (validRemainingMs + 59999) / 60000;
+            long minutes = (totalSeconds % 3600) / 60;
+            long seconds = totalSeconds % 60;
+
+            if (validRemainingMs < 5 * 60 * 1000L) {
+                return String.format(java.util.Locale.US, "%02d:%02d", minutes, seconds);
+            } else {
+                return String.format(java.util.Locale.US, "%d min", totalMinutes);
+            }
+        }
+        return null;
     }
 }

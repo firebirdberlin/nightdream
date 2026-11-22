@@ -33,7 +33,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -44,6 +44,8 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.firebirdberlin.nightdream.R;
 import com.firebirdberlin.nightdream.SetAlarmClockActivity;
@@ -62,7 +64,7 @@ import java.util.Locale;
 
 
 public class AlarmClockView extends View {
-    private static final String TAG = "AlarmClockView";
+    private static final String TAG = AlarmClockView.class.getSimpleName();
     final Handler mHandler = new Handler(Looper.getMainLooper());
     final private Handler handler = new Handler(Looper.getMainLooper());
     private final Context ctx;
@@ -104,7 +106,19 @@ public class AlarmClockView extends View {
             }
         }
     };
+    Runnable powerNapTick = new Runnable() {
+        public void run() {
+            handler.removeCallbacks(powerNapTick);
+            if (isPowerNap() && isAlarmSet() && !alarmIsRunning()) {
+                postAlarmTime();
+                invalidate();
+                handler.postDelayed(powerNapTick, 1000);
+            }
+        }
+    };
     private Float lastMoveEventY = null;
+    private Float lastMoveEventX = null;
+    private boolean isSwipingRight = true;
     private int lastMinSinceDragStart = 0;
     private onAlarmChangeListener listener;
     private float lastHourX = -1;
@@ -113,19 +127,20 @@ public class AlarmClockView extends View {
     public AlarmClockView(Context context) {
         super(context);
         this.ctx = context;
-        init(null);
+        init();
     }
 
     public AlarmClockView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
-        init(attrs);
+        init();
     }
 
     private final java.util.function.Consumer<Object> eventListener = event -> {
         if (event instanceof OnAlarmStarted || event instanceof OnAlarmStopped) {
             post(() -> {
                 handler.removeCallbacks(blink);
+                handler.removeCallbacks(powerNapTick);
                 blinkStateOn = false;
                 isSliding = false;
                 sliderHandleX = -1;
@@ -133,6 +148,9 @@ public class AlarmClockView extends View {
                     activateAlarmUI();
                 } else {
                     time = null;
+                }
+                if (isPowerNap() && isAlarmSet() && !alarmIsRunning()) {
+                    handler.post(powerNapTick);
                 }
                 postAlarmTime();
                 invalidate();
@@ -145,21 +163,29 @@ public class AlarmClockView extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         AppEventBus.addListener(eventListener);
+        if (isPowerNap() && isAlarmSet() && !alarmIsRunning()) {
+            handler.post(powerNapTick);
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        handler.removeCallbacks(blink);
+        handler.removeCallbacks(powerNapTick);
         AppEventBus.removeListener(eventListener);
     }
 
-    private void init(AttributeSet attrs) {
+    private void init() {
         mGestureDetector = new GestureDetector(ctx, mSimpleOnGestureListener);
         cornerLeft = new HotCorner(Position.LEFT);
-        cornerLeft.setIconResource(getResources(), R.drawable.ic_alarm_clock);
+        cornerLeft.setIconResource(getResources(), isPowerNapMode() ? R.drawable.ic_hourglass : R.drawable.ic_alarm_clock_icon);
         cornerRight = new HotCorner(Position.RIGHT);
         cornerRight.setIconResource(getResources(), R.drawable.ic_no_alarm_clock);
         initColorFilters();
+        if (isPowerNap() && isAlarmSet() && !alarmIsRunning()) {
+            handler.post(powerNapTick);
+        }
     }
 
     public void setPaddingHorizontal(int paddingHorizontal) {
@@ -167,9 +193,17 @@ public class AlarmClockView extends View {
     }
 
     public void setUseAlarmSwipeGesture(boolean enabled, String mode) {
-        useAlarmSwipeGesture = enabled;
         alarmSwipeMode = (mode != null) ? mode : Settings.ALARM_SWIPE_MODE_ALARM;
-        if (enabled) {
+        useAlarmSwipeGesture = enabled || isPowerNapMode();
+        if (cornerLeft != null) {
+            cornerLeft.setIconResource(getResources(), isPowerNapMode() ? R.drawable.ic_hourglass : R.drawable.ic_alarm_clock_icon);
+        }
+        if (isPowerNap() && isAlarmSet() && !alarmIsRunning()) {
+            handler.post(powerNapTick);
+        } else {
+            handler.removeCallbacks(powerNapTick);
+        }
+        if (useAlarmSwipeGesture) {
             this.setUseLongPress(true);
         }
     }
@@ -182,42 +216,44 @@ public class AlarmClockView extends View {
         return Settings.ALARM_SWIPE_MODE_POWER_NAP.equals(alarmSwipeMode);
     }
 
-    private boolean hasUpcomingAlarmInNext60Minutes() {
-        if (alarmIsRunning()) {
+    public boolean isPowerNap() {
+        if (isPowerNapMode()) {
             return true;
         }
-        if (time == null || !time.isActive) {
-            return false;
+        if (time != null && !Utility.isEmpty(time.name)) {
+            return java.util.Objects.equals(time.name, ctx.getString(R.string.power_nap));
         }
-        Calendar alarmTime = time.getCalendar();
-        if (alarmTime == null) {
-            return false;
+        return false;
+    }
+
+    public static int calculatePowerNapMinutes(float x, float startX, float endX,
+                                               boolean isSwipingRight) {
+        float actualEndX = (endX <= startX) ? startX + 1.0f : endX;
+        float width = Math.max(1.0f, actualEndX - startX);
+        float progressVal = Math.max(0.0f, Math.min(1.0f, (x - startX) / width));
+        float rawMinutes = 1.0f + progressVal * 59.0f;
+        int napMinutes;
+        if (isSwipingRight) {
+            napMinutes = Math.round(rawMinutes / 5.0f) * 5;
+        } else {
+            napMinutes = Math.round(rawMinutes);
         }
-        long now = System.currentTimeMillis();
-        long alarmMs = alarmTime.getTimeInMillis();
-        long diffMs = alarmMs - now;
-        return diffMs >= 0 && diffMs <= 60 * 60 * 1000L;
+        return Math.max(1, Math.min(60, napMinutes));
     }
 
     private void calculatePowerNapTime(float x) {
         int w = getWidth();
         float startX = paddingHorizontal + touch_zone_radius;
-        float endX = (float) w - paddingHorizontal;
-        if (endX <= startX) {
-            endX = w;
-        }
-        float availableWidth = endX - startX;
-        if (availableWidth <= 0) {
-            availableWidth = 1f;
-        }
-        float progress = (x - startX) / availableWidth;
-        progress = Math.max(0.0f, Math.min(1.0f, progress));
-        int napMinutes = 1 + Math.round(progress * 59.0f);
-        currentNapMinutes = Math.max(1, Math.min(60, napMinutes));
+        float endX = (float) w - paddingHorizontal - touch_zone_radius;
+        currentNapMinutes = calculatePowerNapMinutes(x, startX, endX, isSwipingRight);
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, currentNapMinutes);
-        setAlarmTime(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+        setAlarmTime(
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE),
+                cal.get(Calendar.SECOND)
+        );
     }
 
     public boolean isUserChangesAlarmTime() {
@@ -311,6 +347,8 @@ public class AlarmClockView extends View {
                     currentNapMinutes = 1;
                     this.invalidate();
                     this.lastMoveEventY = tY;
+                    this.lastMoveEventX = tX;
+                    this.isSwipingRight = true;
                     this.lastMinSinceDragStart = 0;
                     return true;
                 }
@@ -320,6 +358,13 @@ public class AlarmClockView extends View {
                 if (dist > touch_zone_radius) {
                     userChangesAlarmTime = true;
                     cancelAlarm();
+                    if (lastMoveEventX != null) {
+                        if (tX > lastMoveEventX) {
+                            isSwipingRight = true;
+                        } else if (tX < lastMoveEventX) {
+                            isSwipingRight = false;
+                        }
+                    }
                     if (isPowerNapMode()) {
                         calculatePowerNapTime(tX);
                     } else {
@@ -330,10 +375,18 @@ public class AlarmClockView extends View {
                 }
                 this.invalidate();
                 this.lastMoveEventY = tY;
+                this.lastMoveEventX = tX;
                 break;
             case MotionEvent.ACTION_UP:
                 if (!FingerDown) return false;
                 if (dist > touch_zone_radius) {
+                    if (lastMoveEventX != null) {
+                        if (tX > lastMoveEventX) {
+                            isSwipingRight = true;
+                        } else if (tX < lastMoveEventX) {
+                            isSwipingRight = false;
+                        }
+                    }
                     if (isPowerNapMode()) {
                         calculatePowerNapTime(tX);
                     } else {
@@ -345,6 +398,7 @@ public class AlarmClockView extends View {
                 userChangesAlarmTime = false;
                 this.invalidate();
                 this.lastMoveEventY = null;
+                this.lastMoveEventX = null;
                 break;
         }
         return false;
@@ -421,64 +475,58 @@ public class AlarmClockView extends View {
         return false;
     }
 
-    private void XYtotime(float x, float y) {
+    private void XYtotime(float touchX, float touchY) {
         int w = getWidth() - 2 * touch_zone_radius;
         int h = Utility.getDisplaySize(ctx).y - 2 * touch_zone_radius;
 
-        final boolean movingDown = (lastMoveEventY != null && y > lastMoveEventY);
+        final boolean movingDown = (lastMoveEventY != null && touchY > lastMoveEventY);
 
-        x -= touch_zone_radius;
-        x = (x < 0) ? 0 : x;
+        float x = Math.max(0.0f, touchX - touch_zone_radius);
 
         // the coordinate is negative outside the view
-        y *= -1.f;
+        float y = touchY * -1.f;
 
         // separate hours from minutes
-        int separator = 1 * touch_zone_radius;
+        int separator = touch_zone_radius;
 
         // adjust time in 5-minute intervals when dragging upwards, and 1-minute interval when dragging downwards.
         int roundTo = (movingDown) ? 1 : 5;
         if (y > separator) {
             lastHour = (int) (lastHourX / w * 24);
-            int diff = (int) ((x - lastHourX) / w * 8);
-            diff = to_range(diff, -1, 1);
-            lastHour = lastHour + diff;
+            int diffVal = to_range((int) ((x - lastHourX) / w * 8), -1, 1);
+            lastHour = lastHour + diffVal;
             lastHour = (lastHour >= 24) ? 23 : lastHour;
         } else {
             lastHourX = x;
             int hours = (int) (x / w * 24);
             lastHour = (hours >= 24) ? 23 : hours;
         }
-        int mins = (int) (((y - separator) / (h - separator) * 60)) / roundTo * roundTo;
-        if (movingDown) {
-            // make sure time never increases while dragging downwards
-            mins = Math.min(mins, lastMinSinceDragStart);
-        } else {
-            // make sure time never decreases while dragging upwards
-            mins = Math.max(mins, lastMinSinceDragStart);
-        }
-        lastMinSinceDragStart = mins; //save mins, but without going back from value 60 to 0
-        mins = to_range(mins, 0, 59);
-        setAlarmTime(lastHour, mins);
+        int rawMins = (int) (((y - separator) / (h - separator) * 60)) / roundTo * roundTo;
+        int resultMins = movingDown ? Math.min(rawMins, lastMinSinceDragStart)
+                              : Math.max(rawMins, lastMinSinceDragStart);
+        lastMinSinceDragStart = resultMins; //save mins, but without going back from value 60 to 0
+        int finalMins = to_range(resultMins, 0, 59);
+        setAlarmTime(lastHour, finalMins, 0);
     }
 
     private int to_range(int value, int min, int max) {
         return Math.max(Math.min(value, max), min);
     }
 
-    private void setAlarmTime(int hour, int min) {
+    private void setAlarmTime(int hour, int min, int second) {
         if (time == null) {
             time = new SimpleTime();
         }
         time.hour = hour;
         time.min = min;
+        time.second = second;
         time.soundUri = Settings.getDefaultAlarmTone(ctx);
         time.radioStationIndex = Settings.getDefaultRadioStation(ctx);
         postAlarmTime();
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         if (!isClickable()) return;
 
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -632,11 +680,11 @@ public class AlarmClockView extends View {
 
         // Draw Handle
         float handleX = isSliding ? sliderHandleX : centerX;
-        handleX = Math.max(sliderLeft + handleRadius + 10, Math.min(handleX, sliderLeft + actualSliderWidth - handleRadius - 10));
+        float clampedHandleX = Math.max(sliderLeft + handleRadius + 10, Math.min(handleX, sliderLeft + actualSliderWidth - handleRadius - 10));
 
         paint.setColor(customColor);
         paint.setAlpha(blinkStateOn ? 255 : 200);
-        canvas.drawCircle(handleX, centerY, handleRadius - 4, paint);
+        canvas.drawCircle(clampedHandleX, centerY, handleRadius - 4, paint);
         paint.setColorFilter(null);
     }
 
@@ -656,6 +704,23 @@ public class AlarmClockView extends View {
         } else {
             return !isAlarmSet();
         }
+    }
+
+    private boolean hasUpcomingAlarmInNext60Minutes() {
+        if (alarmIsRunning()) {
+            return true;
+        }
+        if (time == null || !time.isActive) {
+            return false;
+        }
+        Calendar alarmTime = time.getCalendar();
+        if (alarmTime == null) {
+            return false;
+        }
+        long now = System.currentTimeMillis();
+        long alarmMs = alarmTime.getTimeInMillis();
+        long diffMs = alarmMs - now;
+        return diffMs >= 0 && diffMs <= 60 * 60 * 1000L;
     }
 
     private boolean showRightCorner() {
@@ -681,6 +746,21 @@ public class AlarmClockView extends View {
             }
         }
         if ((userChangesAlarmTime || isAlarmSet()) && time != null) {
+            if (isPowerNap() && !userChangesAlarmTime) {
+                final long remainingMs = Math.max(0L, time.getRemainingMillis());
+                if (remainingMs <= 60 * 60 * 1000L) {
+                    long totalSeconds = remainingMs / 1000;
+                    long totalMinutes = (remainingMs + 59999) / 60000;
+                    long minutes = (totalSeconds % 3600) / 60;
+                    long seconds = totalSeconds % 60;
+
+                    if (remainingMs < 5 * 60 * 1000L) {
+                        return String.format(Locale.US, "%02d:%02d", minutes, seconds);
+                    } else {
+                        return String.format(Locale.US, "%d min", totalMinutes);
+                    }
+                }
+            }
             return Utility.getTimeFormatted(ctx, time.getCalendar());
         }
         return "";
@@ -691,7 +771,9 @@ public class AlarmClockView extends View {
     }
 
     public void activateAlarmUI() {
-        if (locked) return;
+        if (locked) {
+            return;
+        }
         handler.removeCallbacks(blink);
         if (alarmIsRunning()) {
             handler.postDelayed(blink, 1000);
@@ -705,6 +787,7 @@ public class AlarmClockView extends View {
     public void stopAlarm() {
         Log.d(TAG, "stopAlarm()");
         handler.removeCallbacks(blink);
+        handler.removeCallbacks(powerNapTick);
         this.blinkStateOn = false;
         this.isSliding = false;
         this.sliderHandleX = -1;
@@ -734,10 +817,12 @@ public class AlarmClockView extends View {
 
     private void setAlarm() {
         handler.removeCallbacks(blink);
+        handler.removeCallbacks(powerNapTick);
         this.blinkStateOn = false;
         time.isActive = true;
         if (isPowerNapMode()) {
             time.name = getResources().getString(R.string.power_nap);
+            handler.post(powerNapTick);
         } else {
             time.name = getResources().getString(R.string.alarm);
         }
@@ -746,6 +831,7 @@ public class AlarmClockView extends View {
 
     public void cancelAlarm() {
         Log.d(TAG, "cancelAlarm()");
+        handler.removeCallbacks(powerNapTick);
         if (isAlarmSet()) {
             AlarmHandlerService.cancel(ctx);
         }
@@ -755,6 +841,10 @@ public class AlarmClockView extends View {
 
     protected void updateTime(SimpleTime time) {
         this.time = time;
+        handler.removeCallbacks(powerNapTick);
+        if (isPowerNap() && isAlarmSet() && !alarmIsRunning()) {
+            handler.post(powerNapTick);
+        }
         post(() -> {
             postAlarmTime();
             invalidate();
@@ -856,13 +946,13 @@ public class AlarmClockView extends View {
 
 
         void setRadius(int radius) {
-            if (radius == this.radius) return;
-            if (radius < 100) radius = 100;
+            final int r = Math.max(100, radius);
+            if (r == this.radius) return;
 
-            this.radius = radius;
-            this.radius2 = (int) (0.93 * radius);
-            this.radius3 = (int) (0.86 * radius);
-            this.radius4 = (int) (0.6 * radius);
+            this.radius = r;
+            this.radius2 = (int) (0.93 * r);
+            this.radius3 = (int) (0.86 * r);
+            this.radius4 = (int) (0.6 * r);
             if (this.icon != null) {
                 this.scaledIcon = Bitmap.createScaledBitmap(this.icon, radius4, radius4, false);
             }
@@ -874,7 +964,17 @@ public class AlarmClockView extends View {
         }
 
         void setIconResource(Resources res, int iconID) {
-            this.icon = BitmapFactory.decodeResource(res, iconID);
+            Drawable drawable = androidx.core.content.res.ResourcesCompat.getDrawable(res, iconID, null);
+            if (drawable != null) {
+                final int w = (drawable.getIntrinsicWidth() <= 0) ? 96 : drawable.getIntrinsicWidth();
+                final int h = (drawable.getIntrinsicHeight() <= 0) ? 96 : drawable.getIntrinsicHeight();
+                this.icon = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(this.icon);
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                drawable.draw(canvas);
+            } else {
+                this.icon = BitmapFactory.decodeResource(res, iconID);
+            }
             if (this.icon != null) {
                 this.scaledIcon = Bitmap.createScaledBitmap(this.icon, radius4, radius4, false);
             }

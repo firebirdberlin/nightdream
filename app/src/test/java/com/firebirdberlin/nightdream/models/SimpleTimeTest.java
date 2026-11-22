@@ -59,6 +59,36 @@ public class SimpleTimeTest {
     }
 
     @Test
+    public void testSecondsDefaultZero() {
+        SimpleTime defaultTime = new SimpleTime();
+        Assert.assertEquals(0, defaultTime.second);
+
+        SimpleTime time = new SimpleTime(13, 25);
+        Assert.assertEquals(0, time.second);
+    }
+
+    @Test
+    public void testSecondsConstructorAndToSeconds() {
+        SimpleTime time = new SimpleTime(1, 2, 30, 0);
+        Assert.assertEquals(1, time.hour);
+        Assert.assertEquals(2, time.min);
+        Assert.assertEquals(30, time.second);
+        Assert.assertEquals(3750, time.toSeconds());
+    }
+
+    @Test
+    public void testSimpleTimeFromMillisWithSeconds() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 14);
+        cal.set(Calendar.MINUTE, 30);
+        cal.set(Calendar.SECOND, 45);
+        SimpleTime time = new SimpleTime(cal.getTimeInMillis());
+        Assert.assertEquals(14, time.hour);
+        Assert.assertEquals(30, time.min);
+        Assert.assertEquals(45, time.second);
+    }
+
+    @Test
     public void testAddRecurringDay() {
         SimpleTime time = new SimpleTime(13, 25);
         Assert.assertFalse(time.isRecurring());

@@ -92,6 +92,7 @@ public class DataSource {
         }
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_HOUR, time.hour);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE, time.min);
+        values.put(SQLiteDBHelper.AlarmEntry.COLUMN_SECOND, time.second);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_DAYS, time.recurringDays);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE, time.isActive);
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM, time.isNextAlarm);
@@ -166,6 +167,7 @@ public class DataSource {
                 SQLiteDBHelper.AlarmEntry._ID,
                 SQLiteDBHelper.AlarmEntry.COLUMN_HOUR,
                 SQLiteDBHelper.AlarmEntry.COLUMN_MINUTE,
+                SQLiteDBHelper.AlarmEntry.COLUMN_SECOND,
                 SQLiteDBHelper.AlarmEntry.COLUMN_DAYS,
                 SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE,
                 SQLiteDBHelper.AlarmEntry.COLUMN_IS_NEXT_ALARM,
@@ -185,17 +187,19 @@ public class DataSource {
         long id = cursor.getLong(0);
         int hour = cursor.getInt(1);
         int minute = cursor.getInt(2);
-        int days = cursor.getInt(3);
+        int second = cursor.getInt(3);
+        int days = cursor.getInt(4);
 
         SimpleTime time = new SimpleTime(id, hour, minute, days);
-        time.isActive = (cursor.getInt(4) == 1);
-        time.isNextAlarm = (cursor.getInt(5) == 1);
-        time.soundUri = cursor.getString(6);
-        time.nextEventAfter = cursor.getLong(7);
-        time.radioStationIndex = cursor.getInt(8);
-        time.vibrate = (cursor.getInt(9) == 1);
-        time.numAutoSnoozeCycles = cursor.getInt(10);
-        time.name = cursor.getString(11);
+        time.second = second;
+        time.isActive = (cursor.getInt(5) == 1);
+        time.isNextAlarm = (cursor.getInt(6) == 1);
+        time.soundUri = cursor.getString(7);
+        time.nextEventAfter = cursor.getLong(8);
+        time.radioStationIndex = cursor.getInt(9);
+        time.vibrate = (cursor.getInt(10) == 1);
+        time.numAutoSnoozeCycles = cursor.getInt(11);
+        time.name = cursor.getString(12);
         return time;
     }
 

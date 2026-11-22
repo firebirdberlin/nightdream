@@ -62,6 +62,18 @@
             app:srcCompat="@drawable/ic_lightbulb" />
 
         <ImageView
+            android:id="@+id/timer_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contentDescription="@string/power_nap"
+            android:focusable="true"
+            android:onClick="onTimerClick"
+            android:padding="5dp"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_hourglass" />
+
+        <ImageView
             android:id="@+id/radio_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.firebirdberlin.nightdream.R;
 
 import java.text.DateFormatSymbols;
@@ -30,6 +32,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +52,7 @@ public class SimpleTime {
     public long id = -1L;
     public int hour = 0;
     public int min = 0;
+    public int second = 0;
     public int recurringDays = 0;
     public boolean isActive = false;
     public boolean isNextAlarm = false;
@@ -69,6 +73,7 @@ public class SimpleTime {
         calendar.setTimeInMillis(millis);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         min = calendar.get(Calendar.MINUTE);
+        second = calendar.get(Calendar.SECOND);
     }
 
     public SimpleTime(int hour, int min) {
@@ -82,10 +87,25 @@ public class SimpleTime {
         this.recurringDays = recurringDays;
     }
 
+    public SimpleTime(int hour, int min, int second, int recurringDays) {
+        this.hour = hour;
+        this.min = min;
+        this.second = second;
+        this.recurringDays = recurringDays;
+    }
+
     public SimpleTime(long id, int hour, int min, int recurringDays) {
         this.id = id;
         this.hour = hour;
         this.min = min;
+        this.recurringDays = recurringDays;
+    }
+
+    public SimpleTime(long id, int hour, int min, int second, int recurringDays) {
+        this.id = id;
+        this.hour = hour;
+        this.min = min;
+        this.second = second;
         this.recurringDays = recurringDays;
     }
 
@@ -98,6 +118,7 @@ public class SimpleTime {
         this.id = bundle.getLong("id", -1L);
         this.hour = bundle.getInt("hour", 0);
         this.min = bundle.getInt("min", 0);
+        this.second = bundle.getInt("second", 0);
         this.recurringDays = bundle.getInt("recurringDays", 0);
         this.isActive = bundle.getBoolean("isActive", false);
         this.isNextAlarm = bundle.getBoolean("isNextAlarm", false);
@@ -131,6 +152,10 @@ public class SimpleTime {
 
     public int toMinutes() {
         return this.hour * 60 + this.min;
+    }
+
+    public int toSeconds() {
+        return (this.hour * 60 + this.min) * 60 + this.second;
     }
 
     public long getMillis() {
@@ -183,6 +208,7 @@ public class SimpleTime {
         bundle.putLong("id", this.id);
         bundle.putInt("hour", this.hour);
         bundle.putInt("min", this.min);
+        bundle.putInt("second", this.second);
         bundle.putInt("recurringDays", this.recurringDays);
         bundle.putBoolean("isNextAlarm", this.isNextAlarm);
         bundle.putBoolean("isActive", this.isActive);
@@ -202,7 +228,7 @@ public class SimpleTime {
         Calendar cal = (Calendar) reference.clone();
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, min);
-        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.SECOND, second);
         cal.set(Calendar.MILLISECOND, 0);
         return cal;
     }
@@ -212,7 +238,7 @@ public class SimpleTime {
         cal.setTimeInMillis(reference);
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, min);
-        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.SECOND, second);
         cal.set(Calendar.MILLISECOND, 0);
         return cal;
     }
@@ -291,9 +317,10 @@ public class SimpleTime {
         return (1 << (day - 1));
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return String.format("%02d:%02d", hour, min);
+        return String.format(Locale.getDefault(), "%02d:%02d", hour, min);
     }
 
     public String getWeekDaysAsString() {
