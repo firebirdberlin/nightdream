@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.view.View;
 
 import com.firebirdberlin.nightdream.Utility;
@@ -35,6 +36,7 @@ import java.util.Set;
 
 public class TickerAnimationController {
     private static final String TAG = TickerAnimationController.class.getSimpleName();
+    public static final float BATTERY_SAVER_TEXT_SIZE_SCALE = 0.75f;
 
     private long animationSpeed = 5L;
     private final List<String> headlines = new ArrayList<>();
@@ -54,8 +56,18 @@ public class TickerAnimationController {
         this.handler = new Handler(Looper.getMainLooper());
     }
 
+    public boolean isBatterySavingMode() {
+        if (context == null) {
+            return false;
+        }
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        boolean isPowerSave = pm != null && pm.isPowerSaveMode();
+        return isPowerSave || !Utility.isPlugged(context)
+                || !Utility.areSystemAnimationsEnabled(context);
+    }
+
     public boolean isAnimationActive() {
-        return Utility.isPlugged(context) && Utility.areSystemAnimationsEnabled(context);
+        return !isBatterySavingMode();
     }
 
     public void setTickerSpeed(Long speed) {
@@ -93,11 +105,17 @@ public class TickerAnimationController {
     }
 
     public float getTextSize() {
-        return textSize;
+        float baseSize = textSize > 0 ? textSize : 28.f;
+        if (isBatterySavingMode()) {
+            return Math.max(10.f, baseSize * BATTERY_SAVER_TEXT_SIZE_SCALE);
+        }
+        return baseSize;
     }
 
     public void setTextSize(float textSize) {
-        this.textSize = textSize;
+        if (textSize > 0) {
+            this.textSize = textSize;
+        }
     }
 
     public boolean isPaused() {

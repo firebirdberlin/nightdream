@@ -122,4 +122,70 @@ public class TickerTest {
         Assert.assertFalse(Ticker.shouldFillLeftGap(0f));
         Assert.assertFalse(Ticker.shouldFillLeftGap(-50f));
     }
+
+    @Test
+    public void testCalculateLeftPosition_centeredInBatterySavingMode() {
+        int paddingPx = 30;
+        // Battery saving mode (isAnimationActive = false) and text shorter than available width (1000 - 60 = 940)
+        int left = Ticker.calculateLeftPosition(400, 1000, paddingPx, false);
+        Assert.assertEquals(300, left);
+
+        // Battery saving mode and text longer than available width
+        int leftLong = Ticker.calculateLeftPosition(1200, 1000, paddingPx, false);
+        Assert.assertEquals(30, leftLong);
+
+        // Normal animation mode (isAnimationActive = true)
+        int leftActive = Ticker.calculateLeftPosition(400, 1000, paddingPx, true);
+        Assert.assertEquals(0, leftActive);
+    }
+
+    @Test
+    public void testCalculateLayoutWidth() {
+        int paddingPx = 30;
+        // At rest (!isDraggingOrScrolled): long text layout width is capped to availableWidth (940) so '...' is displayed
+        int widthRest = Ticker.calculateLayoutWidth(1200, 1000, paddingPx, false, false);
+        Assert.assertEquals(940, widthRest);
+
+        // While dragging/scrolled (isDraggingOrScrolled = true): layout width is full text width (1200) for full swiping
+        int widthDragging = Ticker.calculateLayoutWidth(1200, 1000, paddingPx, false, true);
+        Assert.assertEquals(1200, widthDragging);
+
+        // Short text (400 <= 940): layout width is text width (400)
+        int widthShort = Ticker.calculateLayoutWidth(400, 1000, paddingPx, false, false);
+        Assert.assertEquals(400, widthShort);
+    }
+
+    @Test
+    public void testCalculateMaxScroll() {
+        int paddingPx = 30;
+        // Available width = 1000 - 60 = 940. Long text 1200 -> maxScroll = 1200 - 940 = 260
+        Assert.assertEquals(260, Ticker.calculateMaxScroll(1200, 1000, paddingPx));
+
+        // Short text 400 <= 940 -> maxScroll = 0
+        Assert.assertEquals(0, Ticker.calculateMaxScroll(400, 1000, paddingPx));
+    }
+
+    @Test
+    public void testDetermineDragAction() {
+        int maxScroll = 200;
+        int touchSlop = 8;
+
+        // Swiping right past touchSlop -> PREVIOUS
+        Assert.assertEquals(Ticker.DRAG_ACTION_PREVIOUS, Ticker.determineDragAction(20f, maxScroll, touchSlop));
+
+        // Swiping left past maxScroll + touchSlop (-208) -> NEXT
+        Assert.assertEquals(Ticker.DRAG_ACTION_NEXT, Ticker.determineDragAction(-220f, maxScroll, touchSlop));
+
+        // Scrolling within range [0, -200] -> KEEP_SCROLL
+        Assert.assertEquals(Ticker.DRAG_ACTION_KEEP_SCROLL, Ticker.determineDragAction(-100f, maxScroll, touchSlop));
+    }
+
+    @Test
+    public void testClampScrollTranslationX() {
+        int maxScroll = 200;
+
+        Assert.assertEquals(0f, Ticker.clampScrollTranslationX(50f, maxScroll), 0.01f);
+        Assert.assertEquals(-200f, Ticker.clampScrollTranslationX(-300f, maxScroll), 0.01f);
+        Assert.assertEquals(-100f, Ticker.clampScrollTranslationX(-100f, maxScroll), 0.01f);
+    }
 }

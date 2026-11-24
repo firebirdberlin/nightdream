@@ -20,8 +20,10 @@ package com.firebirdberlin.nightdream.ui;
 
 import android.animation.Animator;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -29,6 +31,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -37,7 +40,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -64,6 +66,7 @@ public class Ticker extends FrameLayout {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final TickerAnimationController animationController;
     private final TickerTouchHandler touchHandler;
+    private BroadcastReceiver powerSaveReceiver;
 
     public Ticker(Context context) {
         super(context);
@@ -82,6 +85,10 @@ public class Ticker extends FrameLayout {
     }
 
     private void init(AttributeSet attrs) {
+        int paddingPx = Utility.dpToPx(context, PADDING_DP);
+        setPadding(paddingPx, 0, paddingPx, 0);
+        setClipToPadding(true);
+
         GradientDrawable background = new GradientDrawable();
         background.setColor(Color.parseColor("#AA212121"));
         background.setCornerRadii(new float[]{30, 30, 30, 30, 0, 0, 0, 0});
@@ -159,6 +166,7 @@ public class Ticker extends FrameLayout {
         requestLayout();
         invalidate();
         run(true);
+        post(this::requestLayout);
     }
 
     private void updateChildren() {
@@ -195,12 +203,28 @@ public class Ticker extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         AppEventBus.addListener(eventListener);
+        if (powerSaveReceiver == null) {
+            powerSaveReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    restart();
+                }
+            };
+        }
+        IntentFilter filter = new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
+        getContext().registerReceiver(powerSaveReceiver, filter);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         AppEventBus.removeListener(eventListener);
+        if (powerSaveReceiver != null) {
+            try {
+                getContext().unregisterReceiver(powerSaveReceiver);
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
         handler.removeCallbacksAndMessages(null);
         animationController.cancelAnimations();
     }
@@ -211,6 +235,10 @@ public class Ticker extends FrameLayout {
         if (oldw > 0 && w != oldw) {
             restart();
         }
+    }
+
+    public void postLayout() {
+        post(this::requestLayout);
     }
 
     public void pause() {
@@ -261,6 +289,9 @@ public class Ticker extends FrameLayout {
                     if (!touchHandler.isDragging()) {
                         touchHandler.setDragging(true);
                         pause();
+                        if (!animationController.isAnimationActive()) {
+                            requestLayout();
+                        }
                     }
                 }
 
@@ -441,13 +472,41 @@ public class Ticker extends FrameLayout {
         Log.d(TAG, "resumeFromDrag()");
         if (!animationController.isAnimationActive()) {
             handler.removeCallbacksAndMessages(null);
-            float dragDistance = touchHandler.getLastX() - touchHandler.getDownX();
-            if (dragDistance < -touchHandler.getTouchSlop()) {
+            TextView tv = getChildCount() > 0 && getChildAt(getChildCount() - 1) instanceof TextView
+                    ? (TextView) getChildAt(getChildCount() - 1) : null;
+            if (tv == null) {
+                launchNext();
+                return;
+            }
+            int textWidth = (int) tv.getPaint().measureText(tv.getText().toString());
+            int containerWidth = getWidth();
+            int paddingPx = Utility.dpToPx(getContext(), PADDING_DP);
+            int maxScroll = calculateMaxScroll(textWidth, containerWidth, paddingPx);
+            int touchSlop = touchHandler.getTouchSlop();
+            float curTranslationX = tv.getTranslationX();
+
+            int action = determineDragAction(curTranslationX, maxScroll, touchSlop);
+            if (action == DRAG_ACTION_NEXT) {
                 animateToNextHeadline();
-            } else if (dragDistance > touchHandler.getTouchSlop()) {
+            } else if (action == DRAG_ACTION_PREVIOUS) {
                 animateToPreviousHeadline();
             } else {
-                launchCurrent();
+                for (int i = getChildCount() - 1; i >= 0; i--) {
+                    View child = getChildAt(i);
+                    if (child != tv) {
+                        child.animate().setListener(null);
+                        child.animate().cancel();
+                        removeView(child);
+                    }
+                }
+                float targetX = clampScrollTranslationX(curTranslationX, maxScroll);
+                tv.animate()
+                        .translationX(targetX)
+                        .setDuration(150)
+                        .withEndAction(this::requestLayout)
+                        .start();
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(this::launchNext, 10000);
             }
             return;
         }
@@ -559,11 +618,76 @@ public class Ticker extends FrameLayout {
         }
     }
 
+    public static final int PADDING_DP = 16;
+    public static final int DRAG_ACTION_PREVIOUS = -1;
+    public static final int DRAG_ACTION_KEEP_SCROLL = 0;
+    public static final int DRAG_ACTION_NEXT = 1;
+
+    public static int calculateMaxScroll(int textWidth, int containerWidth, int paddingPx) {
+        int availableWidth = Math.max(0, containerWidth - 2 * paddingPx);
+        return Math.max(0, textWidth - availableWidth);
+    }
+
+    public static int calculateLeftPosition(int textWidth, int containerWidth,
+            int paddingPx, boolean isAnimationActive) {
+        if (!isAnimationActive) {
+            int availableWidth = Math.max(0, containerWidth - 2 * paddingPx);
+            if (textWidth < availableWidth) {
+                return paddingPx + (availableWidth - textWidth) / 2;
+            }
+            return paddingPx;
+        }
+        return 0;
+    }
+
+    public static int calculateLayoutWidth(int textWidth, int containerWidth,
+            int paddingPx, boolean isAnimationActive, boolean isDraggingOrScrolled) {
+        if (!isAnimationActive) {
+            int availableWidth = Math.max(0, containerWidth - 2 * paddingPx);
+            if (textWidth >= availableWidth && !isDraggingOrScrolled) {
+                return availableWidth;
+            }
+        }
+        return textWidth;
+    }
+
+    public static int determineDragAction(float translationX, int maxScroll, int touchSlop) {
+        if (translationX > touchSlop) {
+            return DRAG_ACTION_PREVIOUS;
+        }
+        if (translationX < -maxScroll - touchSlop) {
+            return DRAG_ACTION_NEXT;
+        }
+        return DRAG_ACTION_KEEP_SCROLL;
+    }
+
+    public static float clampScrollTranslationX(float translationX, int maxScroll) {
+        return Math.max(-maxScroll, Math.min(0f, translationX));
+    }
+
     @Override
     @SuppressLint("DrawAllocation")
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int containerWidth = r - l;
+        int containerHeight = b - t;
+        if (containerHeight <= 0) {
+            containerHeight = getMeasuredHeight();
+        }
+        if (containerHeight <= 0) {
+            containerHeight = getHeight();
+        }
+        if (containerHeight <= 0 && getParent() instanceof View) {
+            containerHeight = ((View) getParent()).getHeight();
+        }
+        if (containerHeight <= 0) {
+            containerHeight = Utility.dpToPx(getContext(), 48);
+            postLayout();
+        }
+
         Paint textPaint = new Paint();
         textPaint.setTypeface(Typeface.DEFAULT);
+        int paddingPx = Utility.dpToPx(getContext(), PADDING_DP);
+        boolean animationActive = animationController.isAnimationActive();
 
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
@@ -571,8 +695,26 @@ public class Ticker extends FrameLayout {
                 textPaint.setTextSize(tv.getTextSize());
                 String text = tv.getText().toString();
                 int w = (int) textPaint.measureText(text, 0, text.length());
-                int h = tv.getMeasuredHeight();
-                tv.layout(0, 0, w, h);
+
+                if (animationActive) {
+                    tv.setGravity(Gravity.CENTER_VERTICAL);
+                    tv.layout(0, 0, w, containerHeight);
+                } else {
+                    boolean isDraggingOrScrolled = touchHandler.isDragging()
+                            || Math.abs(tv.getTranslationX()) > 0.5f;
+                    int availableWidth = Math.max(0, containerWidth - 2 * paddingPx);
+                    if (w >= availableWidth && !isDraggingOrScrolled) {
+                        tv.setEllipsize(TextUtils.TruncateAt.END);
+                    } else {
+                        tv.setEllipsize(null);
+                    }
+
+                    tv.setGravity(Gravity.CENTER);
+                    int left = calculateLeftPosition(w, containerWidth, paddingPx, false);
+                    int width = calculateLayoutWidth(w, containerWidth, paddingPx,
+                            false, isDraggingOrScrolled);
+                    tv.layout(left, 0, left + width, containerHeight);
+                }
             }
         }
     }
@@ -588,62 +730,18 @@ public class Ticker extends FrameLayout {
 
     private void animateToNextHeadline() {
         Log.i(TAG, "animateToNextHeadline()");
-        int width = getWidth() > 0 ? getWidth() : 1000;
         int[] outIndex = {animationController.getIndex()};
         String headline = getNextHeadline(animationController.getHeadlines(), animationController.getIndex(), false, outIndex);
         animationController.setIndex(outIndex[0]);
-
-        final View oldView = getChildCount() > 0 ? getChildAt(getChildCount() - 1) : null;
-        if (oldView != null) {
-            oldView.animate()
-                    .translationX(-width)
-                    .setDuration(250)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .withEndAction(() -> removeView(oldView))
-                    .start();
-        }
-
-        TextView newTv = getTextView(false, headline);
-        newTv.setTranslationX(width);
-        addView(newTv);
-        newTv.animate()
-                .translationX(0)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .start();
-
-        handler.removeCallbacksAndMessages(null);
-        handler.postDelayed(this::launchNext, 10000);
+        displayHeadline(false, headline);
     }
 
     private void animateToPreviousHeadline() {
         Log.i(TAG, "animateToPreviousHeadline()");
-        int width = getWidth() > 0 ? getWidth() : 1000;
         int[] outIndex = {animationController.getIndex()};
         String headline = getPreviousHeadline(animationController.getHeadlines(), animationController.getIndex(), false, outIndex);
         animationController.setIndex(outIndex[0]);
-
-        final View oldView = getChildCount() > 0 ? getChildAt(getChildCount() - 1) : null;
-        if (oldView != null) {
-            oldView.animate()
-                    .translationX(width)
-                    .setDuration(250)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .withEndAction(() -> removeView(oldView))
-                    .start();
-        }
-
-        TextView newTv = getTextView(false, headline);
-        newTv.setTranslationX(-width);
-        addView(newTv);
-        newTv.animate()
-                .translationX(0)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .start();
-
-        handler.removeCallbacksAndMessages(null);
-        handler.postDelayed(this::launchNext, 10000);
+        displayHeadline(false, headline);
     }
 
     private void launchPrevious() {
@@ -696,6 +794,7 @@ public class Ticker extends FrameLayout {
             handler.postDelayed(this::launchNext, 10000);
         }
         addView(tv);
+        postLayout();
     }
 
     public static String getNextHeadline(List<String> headlines, int currentIndex, boolean animationsEnabled, int[] outIndex) {
@@ -768,17 +867,12 @@ public class Ticker extends FrameLayout {
 
     private TextView getTextView(boolean animationsEnabled, String headline, int itemIndex) {
         TextView tv = new TextView(getContext());
-        if (animationsEnabled) {
-            tv.setGravity(Gravity.CENTER_VERTICAL);
-            tv.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        } else {
-            tv.setGravity(Gravity.CENTER);
-            tv.setSelected(true);
-            tv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-            tv.setMarqueeRepeatLimit(101);
-            tv.setHorizontallyScrolling(true);
-        }
-        tv.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        tv.setLayoutParams(params);
+        tv.setGravity(animationsEnabled ? Gravity.CENTER_VERTICAL : Gravity.CENTER);
         tv.setSingleLine(true);
         tv.setTag(itemIndex);
         tv.setTextColor(animationController.getTextColor());

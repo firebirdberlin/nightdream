@@ -61,4 +61,15 @@ public class TickerAnimationControllerTest {
         Assert.assertTrue(controller.getHeadlines().isEmpty());
         Assert.assertEquals(-1, controller.getIndex());
     }
+
+    @Test
+    public void testTextSizeInNormalMode() {
+        TickerAnimationController controller = new TickerAnimationController(null);
+        // When context is null, isBatterySavingMode returns false
+        Assert.assertFalse(controller.isBatterySavingMode());
+        Assert.assertEquals(28.f, controller.getTextSize(), 0.01f);
+
+        controller.setTextSize(20.f);
+        Assert.assertEquals(20.f, controller.getTextSize(), 0.01f);
+    }
 }
