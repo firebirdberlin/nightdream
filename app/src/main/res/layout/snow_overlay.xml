@@ -1,0 +1,5 @@
+<com.firebirdberlin.nightdream.ui.background.SnowOverlayView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/snow_overlay_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

@@ -36,17 +36,17 @@
                 android:contentDescription="Background Image"
                 tools:ignore="HardcodedText"/>
 
-            <com.firebirdberlin.nightdream.ui.background.PulsingStarsOverlayView
-                android:id="@+id/stars_overlay_view"
+            <ViewStub
+                android:id="@+id/stars_overlay_stub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:layout="@layout/stars_overlay" />
 
-            <com.firebirdberlin.nightdream.ui.background.SnowOverlayView
-                android:id="@+id/snow_overlay_view"
+            <ViewStub
+                android:id="@+id/snow_overlay_stub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:layout="@layout/snow_overlay" />
 
         </FrameLayout>
 

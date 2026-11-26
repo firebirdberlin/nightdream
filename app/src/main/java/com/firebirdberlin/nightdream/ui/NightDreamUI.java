@@ -58,6 +58,7 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AlphaAnimation;
@@ -140,8 +141,8 @@ public class NightDreamUI {
     private final RelativeLayout parentLayout;
     private final ExifView exifView;
     private final ImageViewExtended[] backgroundImages = new ImageViewExtended[2];
-    private final SnowOverlayView snowOverlayView;
-    private final PulsingStarsOverlayView starsOverlayView;
+    private SnowOverlayView snowOverlayView;
+    private PulsingStarsOverlayView starsOverlayView;
     private final View backgroundScrim;
     private final ImageView menuIcon;
     private final ImageView nightModeIcon;
@@ -480,8 +481,7 @@ public class NightDreamUI {
         backgroundImages[0] = rootView.findViewById(R.id.background_view);
         backgroundImages[1] = rootView.findViewById(R.id.background_view2);
         backgroundScrim = rootView.findViewById(R.id.background_scrim);
-        snowOverlayView = rootView.findViewById(R.id.snow_overlay_view);
-        starsOverlayView = rootView.findViewById(R.id.stars_overlay_view);
+
         activeBackgroundImage = 1;
         backgroundBurnInHelper = new BackgroundBurnInProtectionHelper(mContext, handler);
 
@@ -1667,16 +1667,75 @@ public class NightDreamUI {
     }
 
     public void updateThemeOverlays() {
-        if (snowOverlayView == null || starsOverlayView == null) return;
-
         boolean isEligible = ThemePresetManager.isUserEligible(mContext);
         SharedPreferences prefs = ThemePresetManager.getPreferences(mContext);
         boolean animEnabled = isEligible && prefs.getBoolean("theme_animation_enabled", false);
-        ParticleEffect particleEffect = ParticleEffect.fromPreference(prefs, "theme_particle_effect", ParticleEffect.SNOW);
+        ParticleEffect particleEffect = ParticleEffect.fromPreference(
+                prefs, "theme_particle_effect", ParticleEffect.SNOW
+        );
 
         boolean snowEnabled = animEnabled && (particleEffect == ParticleEffect.SNOW);
         boolean starsEnabled = animEnabled && (particleEffect == ParticleEffect.GOLDEN_STARS);
         boolean animOnlyCharging = prefs.getBoolean("theme_animation_only_charging", false);
+
+        if (!snowEnabled && !starsEnabled) {
+            if (snowOverlayView != null) {
+                snowOverlayView.setVisibility(View.GONE);
+            }
+            if (starsOverlayView != null) {
+                starsOverlayView.setVisibility(View.GONE);
+            }
+            return;
+        }
+
+        if (snowEnabled) {
+            if (snowOverlayView == null) {
+                ViewStub stub = mainFrame.findViewById(R.id.snow_overlay_stub);
+                if (stub != null) {
+                    snowOverlayView = (SnowOverlayView) stub.inflate();
+                }
+            }
+            if (snowOverlayView != null) {
+                snowOverlayView.setVisibility(View.VISIBLE);
+                snowOverlayView.setSnowEnabled(true);
+            }
+        } else {
+            if (snowOverlayView != null) {
+                snowOverlayView.setVisibility(View.GONE);
+            }
+        }
+
+        if (starsEnabled) {
+            if (starsOverlayView == null) {
+                ViewStub stub = mainFrame.findViewById(R.id.stars_overlay_stub);
+                if (stub != null) {
+                    starsOverlayView = (PulsingStarsOverlayView) stub.inflate();
+                }
+            }
+            if (starsOverlayView != null) {
+                starsOverlayView.setVisibility(View.VISIBLE);
+                String activePresetId = ThemePresetManager.getActivePresetId(mContext);
+                ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
+                if (preset != null) {
+                    starsOverlayView.setMaxYRatio(
+                            preset.starMaxYRatio > 0 ? preset.starMaxYRatio : 0.75f
+                    );
+                    starsOverlayView.setStarSizeScale(
+                            preset.starSizeScale > 0 ? preset.starSizeScale : 1.0f
+                    );
+                    starsOverlayView.setNumStars(preset.starCount > 0 ? preset.starCount : 25);
+                } else {
+                    starsOverlayView.setMaxYRatio(0.75f);
+                    starsOverlayView.setStarSizeScale(1.0f);
+                    starsOverlayView.setNumStars(25);
+                }
+                starsOverlayView.setStarsEnabled(true);
+            }
+        } else {
+            if (starsOverlayView != null) {
+                starsOverlayView.setVisibility(View.GONE);
+            }
+        }
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = mContext.registerReceiver(null, filter);
@@ -1687,28 +1746,20 @@ public class NightDreamUI {
                          status == BatteryManager.BATTERY_STATUS_FULL;
         }
 
-        snowOverlayView.setSnowEnabled(snowEnabled);
-
-        String activePresetId = ThemePresetManager.getActivePresetId(mContext);
-        ThemePreset preset = ThemePresetManager.getPreset(activePresetId);
-        if (preset != null) {
-            starsOverlayView.setMaxYRatio(preset.starMaxYRatio > 0 ? preset.starMaxYRatio : 0.75f);
-            starsOverlayView.setStarSizeScale(preset.starSizeScale > 0 ? preset.starSizeScale : 1.0f);
-            starsOverlayView.setNumStars(preset.starCount > 0 ? preset.starCount : 25);
-        } else {
-            starsOverlayView.setMaxYRatio(0.75f);
-            starsOverlayView.setStarSizeScale(1.0f);
-            starsOverlayView.setNumStars(25);
+        boolean pauseForBattery = animOnlyCharging && !isCharging;
+        if (snowOverlayView != null) {
+            snowOverlayView.setPausedByPowerSetting(pauseForBattery);
+        }
+        if (starsOverlayView != null) {
+            starsOverlayView.setPausedByPowerSetting(pauseForBattery);
         }
 
-        starsOverlayView.setStarsEnabled(starsEnabled);
-
-        boolean pauseForBattery = animOnlyCharging && !isCharging;
-        snowOverlayView.setPausedByPowerSetting(pauseForBattery);
-        starsOverlayView.setPausedByPowerSetting(pauseForBattery);
-
-        if (snowEnabled) snowOverlayView.invalidate();
-        if (starsEnabled) starsOverlayView.invalidate();
+        if (snowEnabled && snowOverlayView != null) {
+            snowOverlayView.invalidate();
+        }
+        if (starsEnabled && starsOverlayView != null) {
+            starsOverlayView.invalidate();
+        }
     }
 
     private void blinkIfLocked() {
