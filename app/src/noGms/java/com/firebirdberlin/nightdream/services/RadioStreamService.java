@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -45,6 +46,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.ServiceCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.IntentCompat;
 import androidx.media3.common.AudioAttributes;
@@ -261,7 +263,24 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
-        startForeground(NOTIFY_ID, note);
+        startForegroundSafe(note);
+    }
+
+    private void startForegroundSafe(Notification note) {
+        try {
+            int foregroundServiceType = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK;
+            }
+            ServiceCompat.startForeground(
+                    this,
+                    NOTIFY_ID,
+                    note,
+                    foregroundServiceType
+            );
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to start foreground service", e);
+        }
     }
 
     @Override
@@ -747,7 +766,7 @@ public class RadioStreamService extends Service implements HttpStatusCheckTask.A
         note.flags |= Notification.FLAG_NO_CLEAR;
         note.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
-        startForeground(NOTIFY_ID, note);
+        startForegroundSafe(note);
     }
 
     /*
