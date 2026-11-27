@@ -43,13 +43,14 @@ public class DataSource {
     }
 
     public void open() throws SQLException {
-        if (db == null) {
+        if (db == null || !db.isOpen()) {
             db = mDBHelper.getWritableDatabase();
         }
     }
 
     public void close() {
         mDBHelper.close();
+        db = null;
     }
 
     public SimpleTime save(SimpleTime time) {
@@ -57,6 +58,9 @@ public class DataSource {
     }
 
     public SimpleTime save(SimpleTime time, boolean raise_event) {
+        if (time == null) return null;
+        open();
+        if (db == null) return null;
         if (time.id == -1L) {
             return insert(time);
         } else {
@@ -65,14 +69,19 @@ public class DataSource {
     }
 
     private SimpleTime insert(SimpleTime time) {
-        ContentValues values = toContentValues(time);
+        if (time == null) return null;
+        open();
         if (db == null) return null;
+        ContentValues values = toContentValues(time);
         long new_id = db.insert(SQLiteDBHelper.AlarmEntry.TABLE_NAME, null, values);
         time.id = new_id;
         return time;
     }
 
     private SimpleTime update(SimpleTime time, boolean raise_event) {
+        if (time == null) return null;
+        open();
+        if (db == null) return null;
         ContentValues values = toContentValues(time);
 
         String selection = SQLiteDBHelper.AlarmEntry._ID + " = ?";
@@ -106,6 +115,9 @@ public class DataSource {
     }
 
     public void delete(SimpleTime time) {
+        if (time == null) return;
+        open();
+        if (db == null) return;
         String selection = SQLiteDBHelper.AlarmEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(time.id)};
 
@@ -114,6 +126,8 @@ public class DataSource {
     }
 
     public void updateNextEventAfter(long alarmTimeId, long nextEventAfter) {
+        open();
+        if (db == null) return;
         ContentValues values = new ContentValues();
         values.put(SQLiteDBHelper.AlarmEntry.COLUMN_NEXT_EVENT_AFTER, nextEventAfter);
 
@@ -128,6 +142,8 @@ public class DataSource {
     }
 
     public void deleteOneTimeAlarm(long id) {
+        open();
+        if (db == null) return;
         String selection = SQLiteDBHelper.AlarmEntry._ID + " = ? AND " +
                 SQLiteDBHelper.AlarmEntry.COLUMN_DAYS + " = ? AND " +
                 SQLiteDBHelper.AlarmEntry.COLUMN_IS_ACTIVE + " = ?";
@@ -144,6 +160,7 @@ public class DataSource {
     public List<SimpleTime> getAlarms() {
         Cursor cursor = getQueryCursor(null, null);
         List<SimpleTime> items = new ArrayList<>();
+        if (cursor == null) return items;
         while (cursor.moveToNext()) {
             SimpleTime time = cursorToSimpleTime(cursor);
             items.add(time);
@@ -156,13 +173,15 @@ public class DataSource {
         String where = SQLiteDBHelper.AlarmEntry._ID + " = ? ";
         String[] whereArgs = {String.valueOf(id)};
         Cursor cursor = getQueryCursor(where, whereArgs);
-        if (cursor.moveToFirst()) {
-            return cursorToSimpleTime(cursor);
-        }
-        return null;
+        if (cursor == null) return null;
+        SimpleTime time = cursor.moveToFirst() ? cursorToSimpleTime(cursor) : null;
+        cursor.close();
+        return time;
     }
 
     private Cursor getQueryCursor(String where, String[] whereArgs) {
+        open();
+        if (db == null) return null;
         String[] projection = {
                 SQLiteDBHelper.AlarmEntry._ID,
                 SQLiteDBHelper.AlarmEntry.COLUMN_HOUR,
@@ -204,6 +223,8 @@ public class DataSource {
     }
 
     public void dropData() {
+        open();
+        if (db == null) return;
         db.execSQL("delete from " + SQLiteDBHelper.AlarmEntry.TABLE_NAME + ";");
     }
 }

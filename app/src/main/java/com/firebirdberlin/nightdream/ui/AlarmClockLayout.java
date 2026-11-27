@@ -60,7 +60,7 @@ import java.util.Calendar;
 
 public class AlarmClockLayout extends LinearLayout {
 
-    private static final String TAG = "AlarmClockLayout";
+    private static final String TAG = AlarmClockLayout.class.getSimpleName();
     private final Context context;
     private final ToggleButton[] dayButtons = new ToggleButton[7];
     private final int firstDayOfWeek = Utility.getFirstDayOfWeek();
@@ -68,22 +68,21 @@ public class AlarmClockLayout extends LinearLayout {
     private String dateFormat;
     private ConstraintLayout mainLayout = null;
     private SimpleTime alarmClockEntry = null;
-    private final ToggleButton.OnClickListener dayButtonOnclickListener =
-            new ToggleButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+    private boolean isUpdatingCheckedState = false;
+    private final View.OnClickListener dayButtonOnclickListener = view -> {
+        if (alarmClockEntry == null) return;
+        int day = (int) view.getTag();
+        ToggleButton button = (ToggleButton) view;
 
-                    int day = (int) view.getTag();
-                    ToggleButton button = (ToggleButton) view;
-
-                    if (button.isChecked()) {
-                        alarmClockEntry.addRecurringDay(day);
-                    } else {
-                        alarmClockEntry.removeRecurringDay(day);
-                    }
-                    ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-                }
-            };
+        if (button.isChecked()) {
+            alarmClockEntry.addRecurringDay(day);
+        } else {
+            alarmClockEntry.removeRecurringDay(day);
+        }
+        if (getContext() instanceof SetAlarmClockActivity) {
+            ((SetAlarmClockActivity) getContext()).onEntryStateChanged(alarmClockEntry);
+        }
+    };
     private TextView nameView = null;
     private TextView timeView = null;
     private TextView textViewSound = null;
@@ -92,17 +91,16 @@ public class AlarmClockLayout extends LinearLayout {
     private TextView textViewWhen = null;
     private ImageView buttonDown = null;
     private ConstraintLayout layoutDays = null;
-    private final CheckBox.OnCheckedChangeListener checkboxOnCheckedChangeListener =
-            new CheckBox.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
-                    if (!checked) {
-                        for (int d : SimpleTime.DAYS) {
-                            alarmClockEntry.removeRecurringDay(d);
-                            dayButtons[d - 1].setChecked(false);
-                        }
-                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+    private final CompoundButton.OnCheckedChangeListener checkboxOnCheckedChangeListener =
+            (compoundButton, checked) -> {
+                layoutDays.setVisibility((checked) ? View.VISIBLE : View.GONE);
+                if (!checked && alarmClockEntry != null) {
+                    for (int d : SimpleTime.DAYS) {
+                        alarmClockEntry.removeRecurringDay(d);
+                        dayButtons[d - 1].setChecked(false);
+                    }
+                    if (getContext() instanceof SetAlarmClockActivity) {
+                        ((SetAlarmClockActivity) getContext()).onEntryStateChanged(alarmClockEntry);
                     }
                 }
             };
@@ -208,32 +206,41 @@ public class AlarmClockLayout extends LinearLayout {
 
         checkBoxIsRepeating.setOnCheckedChangeListener(checkboxOnCheckedChangeListener);
         update();
-        SwitchCompat.OnCheckedChangeListener checkedChangeListener = (compoundButton, isChecked) -> {
-            alarmClockEntry.isActive = isChecked;
-            if (isChecked) {
-                switchActive.setChecked(true);
-                toggleActive.setChecked(true);
-                if (Utility.languageIs("de", "en")) {
-                    Snackbar snackbar = Snackbar.make(
-                            child,
-                            alarmClockEntry.getRemainingTimeString(context),
-                            Snackbar.LENGTH_LONG
-                    );
-                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.material_grey));
-                    snackbar.show();
-                }
-            } else {
-                switchActive.setChecked(false);
-                toggleActive.setChecked(false);
-            }
-            ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
-            child.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-        };
+        CompoundButton.OnCheckedChangeListener checkedChangeListener =
+                (compoundButton, isChecked) -> {
+                    if (alarmClockEntry == null || isUpdatingCheckedState) return;
+                    isUpdatingCheckedState = true;
+                    alarmClockEntry.isActive = isChecked;
+
+                    switchActive.setChecked(isChecked);
+                    toggleActive.setChecked(isChecked);
+
+                    if (isChecked && Utility.languageIs("de", "en")) {
+                        Snackbar snackbar = Snackbar.make(
+                                child,
+                                alarmClockEntry.getRemainingTimeString(context),
+                                Snackbar.LENGTH_LONG
+                        );
+                        snackbar.setBackgroundTint(
+                                ContextCompat.getColor(context, R.color.material_grey)
+                        );
+                        snackbar.show();
+                    }
+
+                    if (context instanceof SetAlarmClockActivity) {
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
+                    child.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                    isUpdatingCheckedState = false;
+                };
         toggleActive.setOnCheckedChangeListener(checkedChangeListener);
         switchActive.setOnCheckedChangeListener(checkedChangeListener);
-        nameView.setOnClickListener(((SetAlarmClockActivity) context)::onNameClicked);
-        timeView.setOnClickListener(((SetAlarmClockActivity) context)::onTimeClicked);
-        textViewWhen.setOnClickListener(((SetAlarmClockActivity) context)::onDateClicked);
+        if (context instanceof SetAlarmClockActivity) {
+            SetAlarmClockActivity activity = (SetAlarmClockActivity) context;
+            nameView.setOnClickListener(activity::onNameClicked);
+            timeView.setOnClickListener(activity::onTimeClicked);
+            textViewWhen.setOnClickListener(activity::onDateClicked);
+        }
 
         textViewSound.setOnClickListener(view -> {
             if (alarmClockEntry == null) return;
@@ -247,17 +254,19 @@ public class AlarmClockLayout extends LinearLayout {
                 @Override
                 public void onAlarmToneSelected(Uri uri, String name) {
                     Log.i(TAG, "onAlarmToneSelected: " + uri + ", " + name);
-                    if (alarmClockEntry == null) {
-                        return;
-                    }
+                    if (alarmClockEntry == null) return;
                     alarmClockEntry.soundUri = uri.toString();
-                    ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    if (context instanceof SetAlarmClockActivity) {
+                        ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+                    }
                 }
 
                 @Override
                 public void onPurchaseRequested() {
                     Log.w(TAG, "purchase requested");
-                    ((BillingHelperActivity) context).showSubscriptionDialog();
+                    if (context instanceof BillingHelperActivity) {
+                        ((BillingHelperActivity) context).showSubscriptionDialog();
+                    }
                 }
 
             });
@@ -267,6 +276,7 @@ public class AlarmClockLayout extends LinearLayout {
         String stationName = getResources().getString(R.string.radio_station_none);
         if (
                 purchaseManager.isPurchased(PurchaseManager.ITEM_WEB_RADIO)
+                && alarmClockEntry != null
                 && alarmClockEntry.radioStationIndex > -1
         ) {
 
@@ -284,32 +294,37 @@ public class AlarmClockLayout extends LinearLayout {
         textViewRadio.setOnClickListener(view -> {
             if (alarmClockEntry == null) return;
 
-            BillingHelperActivity billingHelperActivity = (BillingHelperActivity) context;
-            if (!billingHelperActivity.isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
-                billingHelperActivity.showSubscriptionDialog();
-            } else {
-                FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
-                SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
-                dialog.setRadioStations(radioStations);
-                dialog.setOnStationSlotSelectedListener(
-                        (index, name) -> {
-                            Log.i(TAG, "onStationSlotSelected: " + index + ", " + name);
-                            if (alarmClockEntry == null) {
-                                return;
-                            }
-                            textViewRadio.setText(name);
-                            alarmClockEntry.radioStationIndex = index - 1;
+            if (context instanceof BillingHelperActivity) {
+                BillingHelperActivity billingHelperActivity = (BillingHelperActivity) context;
+                if (!billingHelperActivity.isPurchased(PurchaseManager.ITEM_WEB_RADIO)) {
+                    billingHelperActivity.showSubscriptionDialog();
+                    return;
+                }
+            }
+            FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+            SelectRadioStationSlotDialogFragment dialog = new SelectRadioStationSlotDialogFragment();
+            dialog.setRadioStations(radioStations);
+            dialog.setOnStationSlotSelectedListener(
+                    (index, name) -> {
+                        Log.i(TAG, "onStationSlotSelected: " + index + ", " + name);
+                        if (alarmClockEntry == null) return;
+                        textViewRadio.setText(name);
+                        alarmClockEntry.radioStationIndex = index - 1;
+                        if (context instanceof SetAlarmClockActivity) {
                             ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
                         }
-                );
-                dialog.show(fm, "radio station");
-            }
+                    }
+            );
+            dialog.show(fm, "radio station");
         });
 
         textViewVibrate.setVisibility(VibrationHandler.hasVibrator(context) ? VISIBLE : GONE);
         textViewVibrate.setOnClickListener(view -> {
+            if (alarmClockEntry == null) return;
             alarmClockEntry.vibrate = !alarmClockEntry.vibrate;
-            ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+            if (context instanceof SetAlarmClockActivity) {
+                ((SetAlarmClockActivity) context).onEntryStateChanged(alarmClockEntry);
+            }
             setupVibrationIcon();
         });
     }

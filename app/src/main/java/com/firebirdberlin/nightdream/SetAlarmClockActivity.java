@@ -64,7 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SetAlarmClockActivity extends BillingHelperActivity {
-    static final String TAG = "SetAlarmClockActivity";
+    private static final String TAG = SetAlarmClockActivity.class.getSimpleName();
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -374,8 +374,12 @@ public class SetAlarmClockActivity extends BillingHelperActivity {
     }
 
     public void onEntryStateChanged(SimpleTime entry) {
-        db.save(entry);
-        SqliteIntentService.scheduleAlarm(this);
+        if (entry == null) return;
+        openDB();
+        if (db != null) {
+            db.save(entry);
+            SqliteIntentService.scheduleAlarm(this);
+        }
     }
 
     public void onAlarmEntryChanged(OnAlarmEntryChanged event) {
