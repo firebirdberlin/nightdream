@@ -37,4 +37,20 @@ public class PollenExposureTest {
         Assert.assertEquals(122, PollenExposure.plzToArea(80));
         Assert.assertEquals(12, PollenExposure.plzToArea(20));
     }
+
+    @Test
+    public void testParseDwdTime() {
+        Assert.assertEquals(-1L, PollenExposure.parseDwdTime(null));
+        Assert.assertEquals(-1L, PollenExposure.parseDwdTime("invalid"));
+        long time = PollenExposure.parseDwdTime("2026-03-30 11:00 Uhr");
+        Assert.assertTrue(time > 0L);
+    }
+
+    @Test
+    public void testGetDrawableResId() {
+        Assert.assertEquals(R.drawable.ic_birch, PollenExposure.getDrawableResId("birch"));
+        Assert.assertEquals(R.drawable.ic_hazelnut, PollenExposure.getDrawableResId("hazelnut"));
+        Assert.assertEquals(0, PollenExposure.getDrawableResId("unknown"));
+        Assert.assertEquals(0, PollenExposure.getDrawableResId(null));
+    }
 }

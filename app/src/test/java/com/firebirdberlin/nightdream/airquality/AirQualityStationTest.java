@@ -1,0 +1,34 @@
+/*
+ * NightDream
+ * Copyright (C) 2026 Stefan Fruhner
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package com.firebirdberlin.nightdream.airquality;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+public class AirQualityStationTest {
+
+    @Test
+    public void testGetDisplayName() {
+        AirQualityStation s1 = new AirQualityStation("1", "DE01", "Potsdam-Zentrum", "Potsdam", 52.4, 13.0);
+        Assert.assertEquals("Potsdam-Zentrum", s1.getDisplayName());
+
+        AirQualityStation s2 = new AirQualityStation("2", "DE02", "Zentrum", "Potsdam", 52.4, 13.0);
+        Assert.assertEquals("Potsdam (Zentrum)", s2.getDisplayName());
+    }
+}
