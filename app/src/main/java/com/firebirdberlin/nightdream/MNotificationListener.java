@@ -20,7 +20,6 @@ package com.firebirdberlin.nightdream;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -239,19 +238,18 @@ public class MNotificationListener extends NotificationListenerService {
 
         Uri soundUri = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = notification.getChannelId();
-            Log.d(TAG, "getNotificationSoundUri: channelId=" + channelId);
-            if (channelId != null) {
-                NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (nm != null) {
-                    NotificationChannel channel = nm.getNotificationChannel(channelId);
-                    if (channel != null) {
-                        soundUri = channel.getSound();
-                        Log.d(TAG, "getNotificationSoundUri: channel soundUri=" + soundUri);
-                    } else {
-                        Log.d(TAG, "getNotificationSoundUri: NotificationChannel is null for id=" + channelId);
-                    }
+            Ranking ranking = getRanking(sbn);
+            if (ranking != null) {
+                NotificationChannel channel = ranking.getChannel();
+                if (channel != null) {
+                    soundUri = channel.getSound();
+                    Log.d(TAG, "getNotificationSoundUri: channel soundUri=" + soundUri);
+                } else {
+                    Log.d(TAG, "getNotificationSoundUri: NotificationChannel is null for key="
+                            + sbn.getKey());
                 }
+            } else {
+                Log.d(TAG, "getNotificationSoundUri: Ranking is null for key=" + sbn.getKey());
             }
         }
         if (soundUri == null) {
@@ -265,9 +263,10 @@ public class MNotificationListener extends NotificationListenerService {
             Log.d(TAG, "getNotificationSoundUri: using DEFAULT_SOUND=" + soundUri);
         }
 
-        if (soundUri == null && DEBUG_ADD_TEST_SOUND) {
+        if (soundUri == null) {
             soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Log.d(TAG, "getNotificationSoundUri: DEBUG_ADD_TEST_SOUND enabled, fallback debug soundUri=" + soundUri);
+            Log.d(TAG, "getNotificationSoundUri: fallback to default notification soundUri="
+                    + soundUri);
         }
 
         Log.d(TAG, "getNotificationSoundUri: resolved soundUri=" + soundUri);
