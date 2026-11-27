@@ -209,9 +209,13 @@ public class MNotificationListener extends NotificationListenerService {
         if ((dndActive && soundsEnabled) || DEBUG_ADD_TEST_SOUND) {
             Uri soundUri = getNotificationSoundUri(sbn);
             if (soundUri != null) {
-                pendingBatchSounds.add(soundUri);
-                Log.d(TAG, "Added sound URI to batch: " + soundUri
-                        + ". Total pending sounds: " + pendingBatchSounds.size());
+                if (!pendingBatchSounds.contains(soundUri)) {
+                    pendingBatchSounds.add(soundUri);
+                    Log.d(TAG, "Added sound URI to batch: " + soundUri
+                            + ". Total pending sounds: " + pendingBatchSounds.size());
+                } else {
+                    Log.d(TAG, "Sound URI already in batch, skipping duplicate: " + soundUri);
+                }
                 scheduleBatchFlush(settings.notificationSoundIntervalMinutes);
             } else {
                 Log.w(TAG, "Notification posted but soundUri is null.");
@@ -308,10 +312,15 @@ public class MNotificationListener extends NotificationListenerService {
             return;
         }
 
-        List<Uri> soundsToPlay = new ArrayList<>(pendingBatchSounds);
+        List<Uri> soundsToPlay = new ArrayList<>();
+        for (Uri uri : pendingBatchSounds) {
+            if (uri != null && !soundsToPlay.contains(uri)) {
+                soundsToPlay.add(uri);
+            }
+        }
         pendingBatchSounds.clear();
 
-        Log.d(TAG, "flushPendingBatchSounds: flushing " + soundsToPlay.size() + " sound(s).");
+        Log.d(TAG, "flushPendingBatchSounds: flushing " + soundsToPlay.size() + " unique sound(s).");
         int maxSounds = Math.min(soundsToPlay.size(), 5);
         for (int index = 0; index < maxSounds; index++) {
             final Uri soundUri = soundsToPlay.get(index);
