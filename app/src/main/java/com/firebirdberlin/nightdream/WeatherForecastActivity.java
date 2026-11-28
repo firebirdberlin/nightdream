@@ -167,6 +167,10 @@ public class WeatherForecastActivity
         }
     };
 
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    }
+
     public static void start(Context context) {
         Intent intent = new Intent(context, WeatherForecastActivity.class);
         context.startActivity(intent);
@@ -175,7 +179,6 @@ public class WeatherForecastActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_forecast);
         viewPager = findViewById(R.id.viewPager);

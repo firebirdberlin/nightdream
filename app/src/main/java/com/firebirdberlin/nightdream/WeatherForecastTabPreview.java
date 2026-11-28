@@ -20,6 +20,7 @@ package com.firebirdberlin.nightdream;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +39,12 @@ import java.util.List;
 
 public class WeatherForecastTabPreview extends Fragment {
 
+    private static final String TAG = WeatherForecastTabPreview.class.getSimpleName();
     private Context context;
     private RecyclerView recyclerView;
     private WeatherForecastAdapter adapter;
+    private Settings settings;
+    private List<WeatherEntry> fakeEntries = null;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -66,12 +70,19 @@ public class WeatherForecastTabPreview extends Fragment {
             adapter = new WeatherForecastAdapter(context);
             adapter.setShowSubscriptionHeader(true);
             adapter.setCollapseAll(true);
+            if (fakeEntries != null && settings != null) {
+                adapter.setEntries(fakeEntries, settings);
+                recyclerView.setAdapter(adapter);
+            }
         }
     }
 
     public void setupForecastPreview(Settings settings) {
+        Log.d(TAG, "setupForecastPreview");
+        this.settings = settings;
+        this.fakeEntries = getFakeEntries();
         if (adapter != null && recyclerView != null) {
-            adapter.setEntries(getFakeEntries(), settings);
+            adapter.setEntries(fakeEntries, settings);
             recyclerView.setAdapter(adapter);
         }
     }
