@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.firebirdberlin.radiostreamapi.models.FavoriteRadioStations;
 import com.firebirdberlin.radiostreamapi.models.RadioStation;
@@ -31,6 +32,7 @@ import com.firebirdberlin.radiostreamapi.models.RadioStation;
 import org.json.JSONException;
 
 public class SQLiteDBHelper extends SQLiteOpenHelper {
+    private static final String TAG = SQLiteDBHelper.class.getSimpleName();
     Context context;
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 9;
@@ -71,7 +73,7 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         }
 
         if (oldVersion < 3) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_ALARM_SOUND_URI + " text");
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_ALARM_SOUND_URI + " text");
             // migrate the current setting of the alarm tone uri
             Settings settings = new Settings(this.context);
             if (!Utility.isEmpty(settings.AlarmToneUri)) {
@@ -82,29 +84,37 @@ public class SQLiteDBHelper extends SQLiteOpenHelper {
         }
 
         if (newVersion >= 4 && oldVersion < 4) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL");
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NEXT_EVENT_AFTER + " INTEGER DEFAULT NULL");
         }
 
         if (newVersion >= 5 && oldVersion < 5) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1");
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_RADIO_STATION_INDEX + " INTEGER DEFAULT -1");
             updateAlarmClockRadioStation(db);
         }
 
         if (newVersion >= 6 && oldVersion < 6) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0");
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_VIBRATE + " INTEGER DEFAULT 0");
         }
 
         if (newVersion >= 7 && oldVersion < 7) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0");
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NUM_AUTO_SNOOZE_CYCLES + " INTEGER DEFAULT 0");
         }
 
         if (newVersion >= 8 && oldVersion < 8) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NAME + " text");
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " + AlarmEntry.COLUMN_NAME + " text");
         }
 
         if (newVersion >= 9 && oldVersion < 9) {
-            db.execSQL("ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " +
+            tryExecSQL(db, "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " +
                     AlarmEntry.COLUMN_SECOND + " INTEGER DEFAULT 0");
+        }
+    }
+
+    private void tryExecSQL(SQLiteDatabase db, String sql) {
+        try {
+            db.execSQL(sql);
+        } catch (android.database.SQLException e) {
+            Log.w(TAG, "SQL execution failed: " + sql, e);
         }
     }
 

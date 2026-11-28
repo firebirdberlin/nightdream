@@ -30,18 +30,25 @@ import com.firebirdberlin.nightdream.services.ScreenWatcherService;
 import com.firebirdberlin.nightdream.services.SqliteIntentService;
 
 public class BootReceiver extends BroadcastReceiver {
-    private static final String TAG = "BootReceiver";
+    private static final String TAG = BootReceiver.class.getSimpleName();
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "BootReceiver: " + intent.getAction());
-        Utility.createNotificationChannels(context);
-        PowerConnectionReceiver.schedule(context);
-        ScheduledAutoStartReceiver.schedule(context);
-        CheckChargingStateJob.schedule(context);
+        if (intent != null) {
+            Log.i(TAG, "BootReceiver: " + intent.getAction());
+        }
+        try {
+            Utility.createNotificationChannels(context);
+            PowerConnectionReceiver.schedule(context);
+            ScheduledAutoStartReceiver.schedule(context);
+            CheckChargingStateJob.schedule(context);
 
-        SqliteIntentService.scheduleAlarm(context);
+            SqliteIntentService.scheduleAlarm(context);
 
-        Settings settings = new Settings(context);
-        ScreenWatcherService.conditionallyStart(context, settings);
+            Settings settings = new Settings(context);
+            ScreenWatcherService.conditionallyStart(context, settings);
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onReceive", e);
+        }
     }
 }
